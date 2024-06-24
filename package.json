@@ -23,5 +23,8 @@
     "three": "^0.165.0",
     "three-stdlib": "^2.30.3",
     "tone": "^15.0.4"
+  },
+  "devDependencies": {
+    "typescript": "5.5.2"
   }
 }
