@@ -1,11 +1,5 @@
-"use client";
+import NN3D from "@/components/test/nn-3d";
 
-import * as S from "./styles";
-
-export default function NN3D() {
-  return (
-    <S.Container>
-      <h1>3D</h1>
-    </S.Container>
-  );
+export default function NN3DPage() {
+  return <NN3D />;
 }
