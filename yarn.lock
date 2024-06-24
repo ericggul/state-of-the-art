@@ -545,6 +545,14 @@ engine.io@~6.5.2:
     engine.io-parser "~5.2.1"
     ws "~8.17.1"
 
+enhanced-resolve@^5.10.0:
+  version "5.17.0"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.17.0.tgz#d037603789dd9555b89aaec7eb78845c49089bc5"
+  integrity sha512-dwDPwZL0dmye8Txp2gzFmA6sxALaSvdRDjPH0viLcKrtlOL3tw62nWWweVD1SdILDTJrbrL6tdWVN58Wo6U3eA==
+  dependencies:
+    graceful-fs "^4.2.4"
+    tapable "^2.2.0"
+
 fflate@^0.6.9:
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.6.10.tgz#5f40f9659205936a2d18abf88b2e7781662b6d43"
@@ -574,7 +582,7 @@ glsl-noise@^0.0.0:
   resolved "https://registry.yarnpkg.com/glsl-noise/-/glsl-noise-0.0.0.tgz#367745f3a33382c0eeec4cb54b7e99cfc1d7670b"
   integrity sha512-b/ZCF6amfAUb7dJM/MxRs7AetQEahYzJ8PtgfrmEdtw6uyGOr+ZSGtgjFm6mfsBkxJ4d2W7kg+Nlqzqvn3Bc0w==
 
-graceful-fs@^4.2.11:
+graceful-fs@^4.2.11, graceful-fs@^4.2.4:
   version "4.2.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
@@ -681,6 +689,13 @@ negotiator@0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
+
+next-transpile-modules@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/next-transpile-modules/-/next-transpile-modules-10.0.1.tgz#1ca2b735b14781f4792f6214f808b600574e0348"
+  integrity sha512-4VX/LCMofxIYAVV58UmD+kr8jQflpLWvas/BQ4Co0qWLWzVh06FoZkECkrX5eEZT6oJFqie6+kfbTA3EZCVtdQ==
+  dependencies:
+    enhanced-resolve "^5.10.0"
 
 next@14.2.4:
   version "14.2.4"
@@ -959,6 +974,11 @@ suspend-react@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/suspend-react/-/suspend-react-0.1.3.tgz#a52f49d21cfae9a2fb70bd0c68413d3f9d90768e"
   integrity sha512-aqldKgX9aZqpoDp3e8/BZ8Dm7x1pJl+qI3ZKxDN0i/IQTWUwBx/ManmlVJ3wowqbno6c2bmiIfs+Um6LbsjJyQ==
+
+tapable@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.2.1.tgz#1967a73ef4060a82f12ab96af86d52fdb76eeca0"
+  integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
 three-mesh-bvh@^0.7.0:
   version "0.7.5"
