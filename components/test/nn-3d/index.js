@@ -7,55 +7,74 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 
-// Define nodes and their positions
-const nodes = [
-  { position: [-4, 4, 0] },
-  { position: [0, 4, 0] },
-  { position: [4, 4, 0] }, // Input layer
-  { position: [-4, 0, 0] },
-  { position: [0, 0, 0] },
-  { position: [4, 0, 0] }, // Hidden layer
-  { position: [0, -4, 0] }, // Output layer
+const WIREFRAME_DIVISION = 15;
 
-  { position: [-4, 4, 1] },
-  { position: [0, 4, 1] },
-  { position: [4, 4, 0.3] }, // Input layer
-  { position: [-4, 0, 1] },
-  { position: [0, 0, 1] },
-  { position: [4, 0, 1] }, // Hidden layer
-  { position: [0, -4, 1] }, // Output layer
-];
+// Main component to render the neural network
+export default function NN3D() {
+  return (
+    <S.Container>
+      <Canvas>
+        <Perf position="top-left" />
+        <ambientLight intensity={1} />
+        <pointLight position={[10, 10, 10]} />
+        <directionalLight position={[0, 10, 10]} intensity={2} />
+        <directionalLight position={[10, 0, 10]} intensity={2} />
 
-// Define connections between nodes
-const connections = [
-  { from: 0, to: 3 },
-  { from: 0, to: 4 },
-  { from: 0, to: 5 },
-  { from: 1, to: 3 },
-  { from: 1, to: 4 },
-  { from: 1, to: 5 },
-  { from: 2, to: 3 },
-  { from: 2, to: 4 },
-  { from: 2, to: 5 },
-  { from: 3, to: 6 },
-  { from: 4, to: 6 },
-  { from: 5, to: 6 },
-];
+        {new Array(50).fill(0).map((_, i) => (
+          <Layer
+            position={[0, 0, (i - 25) * 5]}
+            node={{
+              size: [2, 2, 0.3],
+            }}
+            grid={{
+              xCount: 5,
+              yCount: 5,
+              xInterval: 3,
+              yInterval: 3,
+            }}
+            color={"white"}
+          />
+        ))}
+
+        <OrbitControls />
+      </Canvas>
+    </S.Container>
+  );
+}
+
+const Layer = ({ position, node, grid, color }) => {
+  return (
+    <group position={position}>
+      {new Array(grid.xCount).fill(0).map((_, i) => (
+        <group key={i} position={[grid.xInterval * i - ((grid.xCount - 1) * grid.xInterval) / 2, 0, 0]}>
+          {new Array(grid.yCount).fill(0).map((_, j) => (
+            <Node {...node} color={color} key={j} position={[0, grid.yInterval * j - ((grid.yCount - 1) * grid.yInterval) / 2, 0]} />
+          ))}
+        </group>
+      ))}
+    </group>
+  );
+};
 
 // Component to render each node as a box
-const Node = ({ position }) => (
-  <mesh position={position}>
-    <boxGeometry args={[2, 2, 1, 10, 10, 10]} />
-    <meshStandardMaterial
-      color="white"
-      // roughness={0.2}
-      // metalness={1}
-      wireframe={true}
-      //wierframelinewidth
-      wireframeLinewidth={3}
-    />
-  </mesh>
-);
+const Node = ({ position, size, color }) => {
+  return (
+    <mesh position={position}>
+      <boxGeometry args={[...size, WIREFRAME_DIVISION, WIREFRAME_DIVISION, 2]} />
+      <meshStandardMaterial
+        color={color}
+        // roughness={0.2}
+        // metalness={0.9}
+        wireframe={true}
+        wireframeLinewidth={3}
+        //opacity
+
+        // opacity={0.4}
+        // transparent={true}
+      />
+    </mesh>
+  );
+};
 
 // Component to render connections between nodes
 const Connection = ({ from, to }) => {
@@ -68,29 +87,7 @@ const Connection = ({ from, to }) => {
 
   return (
     <line geometry={ref}>
-      <lineBasicMaterial color={Math.random() < 0.3 ? "hsl(180, 100%, 70%)" : "white"} linewidth={2} linecap="round" linejoin="round" />
+      <lineBasicMaterial color={"white"} linewidth={2} linecap="round" linejoin="round" />
     </line>
   );
 };
-
-// Main component to render the neural network
-export default function NN3D() {
-  return (
-    <S.Container>
-      <Canvas>
-        <Perf position="top-left" />
-        <ambientLight intensity={1} />
-        <pointLight position={[10, 10, 10]} />
-        <directionalLight position={[0, 10, 10]} intensity={2} />
-        <directionalLight position={[10, 0, 10]} intensity={2} />
-        {nodes.map((node, index) => (
-          <Node key={index} position={node.position} />
-        ))}
-        {connections.map((connection, index) => (
-          <Connection key={index} from={nodes[connection.from].position} to={nodes[connection.to].position} />
-        ))}
-        <OrbitControls />
-      </Canvas>
-    </S.Container>
-  );
-}
