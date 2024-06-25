@@ -43,7 +43,6 @@ const Node = ({ position }) => (
       // roughness={0.2}
       // metalness={1}
       wireframe={true}
-      //wierframelinewidth
       wireframeLinewidth={3}
     />
   </mesh>
