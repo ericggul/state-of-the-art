@@ -2,34 +2,20 @@
 
 import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useSpring, animated, Globals } from "@react-spring/three";
 
-import { useMemo, useState, useRef, Suspense } from "react";
+import { useMemo, useState, useRef } from "react";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
-
-const getRandomInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
 // Main component to render the neural network
 export default function NN3D() {
   return (
     <S.Container>
-      <Canvas
-        camera={{
-          position: [40, 30, 50],
-          fov: 50,
-          near: 0.1,
-          far: 1000,
-        }}
-      >
+      <Canvas>
         <Perf position="top-left" />
-
-        <Suspense fallback={null}>
-          <Environment preset="warehouse" />
-        </Suspense>
-
-        {/* <ambientLight intensity={1} /> */}
+        <ambientLight intensity={1} />
         <pointLight position={[10, 10, 10]} />
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
@@ -37,7 +23,7 @@ export default function NN3D() {
         {new Array(25).fill(0).map((_, i) => (
           <Layer
             key={i}
-            position={[0, 0, (i - 12) * 4]}
+            position={[0, 0, (i - 25) * 5]}
             node={{
               size: [2, 2, 0.3],
               wireframeDivision: 10,
@@ -47,12 +33,12 @@ export default function NN3D() {
               wireframeDivision: 50,
             }}
             grid={{
-              xCount: 5 + (i % 5),
-              yCount: 5 + (i % 5),
+              xCount: 5,
+              yCount: 5,
               xInterval: 3,
               yInterval: 3,
             }}
-            color={"blue"}
+            color={"white"}
           />
         ))}
 
@@ -69,6 +55,13 @@ const Layer = (props) => {
     e.stopPropagation();
     setExpanded((b) => !b);
   }
+
+  // Setup the animation for smoothedExpanded
+
+  // const { smoothedExpanded } = useSpring({
+  //   smoothedExpanded: expanded ? 1 : 0,
+  //   config: { duration: 500 },
+  // });
 
   const [smoothedExpanded, setSmoothedExpanded] = useState(0);
 
@@ -104,19 +97,20 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, wireframeDivision = 10, size, color = "red", opacity = 0.4, scale }) => {
+const Node = ({ position, wireframeDivision = 10, size, color = "white", opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, wireframeDivision, wireframeDivision, 1]} />
+      <boxGeometry args={[...size, wireframeDivision, wireframeDivision, 2]} />
       <meshStandardMaterial
         color={color}
-        roughness={0.2}
-        metalness={0.9}
+        // roughness={0.2}
+        // metalness={0.9}
+        wireframe={true}
+        wireframeLinewidth={3}
         //opacity
         opacity={opacity}
         transparent={true}
       />
-      {/* <Wireframe fill="white" fillMix={0} fillOpacity={1} thickness={0.1} dash={false} squeeze={false} /> */}
     </mesh>
   );
 };
