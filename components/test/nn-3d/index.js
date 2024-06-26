@@ -3,12 +3,11 @@
 import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useSpring, animated, Globals } from "@react-spring/three";
 
 import { useMemo, useState, useRef } from "react";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
-
-const WIREFRAME_DIVISION = 10;
 
 // Main component to render the neural network
 export default function NN3D() {
@@ -52,31 +51,45 @@ export default function NN3D() {
 const Layer = (props) => {
   const [expanded, setExpanded] = useState(false);
 
-  const timeoutRef = useRef(null);
-
   function handleClick(e) {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     e.stopPropagation();
-    setExpanded(true);
-
-    timeoutRef.current = setTimeout(() => {
-      setExpanded(false);
-    }, 2000);
+    setExpanded((b) => !b);
   }
 
+  // Setup the animation for smoothedExpanded
+
+  // const { smoothedExpanded } = useSpring({
+  //   smoothedExpanded: expanded ? 1 : 0,
+  //   config: { duration: 500 },
+  // });
+
+  const [smoothedExpanded, setSmoothedExpanded] = useState(0);
+
+  useSpring({
+    from: { smoothedExpanded: 0 },
+    to: { smoothedExpanded: expanded ? 1 : 0 },
+    config: { duration: 500 },
+    onChange: (value) => {
+      setSmoothedExpanded(value.value.smoothedExpanded);
+    },
+  });
+
   return (
-    <group position={props.position} onPointerEnter={handleClick} onPointerLeave={handleClick}>
-      {expanded ? (
+    <group position={props.position} onClick={handleClick}>
+      {smoothedExpanded > 0 &&
         new Array(props.grid.xCount).fill(0).map((_, i) => (
-          <group key={i} position={[props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2, 0, 0]}>
+          <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
             {new Array(props.grid.yCount).fill(0).map((_, j) => (
-              <Node {...props.node} color={props.color} key={j} position={[0, props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2, 0]} />
+              <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
+                <Node {...props.node} color={props.color} key={j} opacity={smoothedExpanded} />
+              </animated.group>
             ))}
-          </group>
-        ))
-      ) : (
+          </animated.group>
+        ))}
+
+      {smoothedExpanded < 1 && (
         <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} />
+          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
         </>
       )}
     </group>
@@ -84,9 +97,9 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, wireframeDivision = 10, size, color = "white" }) => {
+const Node = ({ position, wireframeDivision = 10, size, color = "white", opacity = 0.4, scale }) => {
   return (
-    <mesh position={position}>
+    <mesh position={position} scale={scale}>
       <boxGeometry args={[...size, wireframeDivision, wireframeDivision, 2]} />
       <meshStandardMaterial
         color={color}
@@ -95,8 +108,7 @@ const Node = ({ position, wireframeDivision = 10, size, color = "white" }) => {
         wireframe={true}
         wireframeLinewidth={3}
         //opacity
-
-        opacity={0.4}
+        opacity={opacity}
         transparent={true}
       />
     </mesh>
