@@ -179,7 +179,7 @@ const InstancedNodes = ({ xCount, yCount, zCount, xInterval, yInterval, node, sm
   return (
     <Instances limit={xCount * yCount}>
       <boxGeometry args={[...node.size]} />
-      <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} opacity={1} transparent={true} />
+      <meshStandardMaterial color={color} roughness={0.2} metalness={1} opacity={smoothedExpanded} transparent={true} />
       {positions.map((position, i) => (
         <Instance key={i} position={position} />
       ))}
