@@ -90,8 +90,8 @@ export default function NN3D() {
               xCount: kernel.number,
               yCount: kernel.number,
               zCount: dimensions[2],
-              xInterval: kernel.size * 0.5 * 1.3,
-              yInterval: kernel.size * 0.5 * 1.3,
+              xInterval: kernel.size * 0.5 * 2,
+              yInterval: kernel.size * 0.5 * 2,
             }}
             type={type}
             color={COLORS.find((c) => c.type === type)?.color || "white"}
