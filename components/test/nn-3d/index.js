@@ -2,14 +2,34 @@
 
 import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
-import { useSpring, animated, Globals } from "@react-spring/three";
-
-import { useMemo, useState, useRef, Suspense } from "react";
-import * as THREE from "three";
+import { OrbitControls, Environment, Instances, Instance } from "@react-three/drei";
+import { useSpring, animated } from "@react-spring/three";
+import { useState, useMemo, Suspense } from "react";
 import { Perf } from "r3f-perf";
 
-const getRandomInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+// AlexNet structure definition
+const STRUCTURE = [
+  { dimensions: [227, 227, 3], type: "input" },
+  { dimensions: [55, 55, 96], type: "conv" },
+  { dimensions: [27, 27, 96], type: "pool" },
+  { dimensions: [27, 27, 256], type: "conv" },
+  { dimensions: [13, 13, 256], type: "pool" },
+  { dimensions: [13, 13, 384], type: "conv" },
+  { dimensions: [13, 13, 384], type: "conv" },
+  { dimensions: [13, 13, 256], type: "conv" },
+  { dimensions: [6, 6, 256], type: "pool" },
+  { dimensions: [4096, 1, 1], type: "fc" },
+  { dimensions: [4096, 1, 1], type: "fc" },
+  { dimensions: [1000, 1, 1], type: "output" },
+];
+
+const COLORS = [
+  { type: "input", color: "hsl(120, 100%, 50%)" }, // Green for input, symbolizing the start or entry point
+  { type: "conv", color: "hsl(240, 100%, 50%)" }, // Blue for convolutional layers, representing processing and feature extraction
+  { type: "pool", color: "hsl(330, 100%, 50%)" }, // Orange for pooling layers, indicating reduction and simplification
+  { type: "fc", color: "hsl(291, 100%, 50%)" }, // Purple for fully connected layers, representing dense connections and high-level reasoning
+  { type: "output", color: "hsl(0, 100%, 50%)" }, // Red for output, symbolizing the end result or classification
+];
 
 // Main component to render the neural network
 export default function NN3D() {
@@ -24,35 +44,33 @@ export default function NN3D() {
         }}
       >
         <Perf position="top-left" />
-
         <Suspense fallback={null}>
           <Environment preset="warehouse" />
         </Suspense>
-
-        {/* <ambientLight intensity={1} /> */}
         <pointLight position={[10, 10, 10]} />
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {new Array(25).fill(0).map((_, i) => (
+        {STRUCTURE.map(({ dimensions, type }, i) => (
           <Layer
             key={i}
-            position={[0, 0, (i - 12) * 4]}
+            position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 40]}
             node={{
               size: [2, 2, 0.3],
               wireframeDivision: 10,
             }}
             unexpandedNode={{
-              size: [8, 8, 0.3],
+              size: [dimensions[0], dimensions[1], dimensions[2] * 0.1],
               wireframeDivision: 50,
             }}
             grid={{
-              xCount: 5 + (i % 5),
-              yCount: 5 + (i % 5),
+              xCount: dimensions[0],
+              yCount: dimensions[1],
               xInterval: 3,
               yInterval: 3,
             }}
-            color={"blue"}
+            type={type}
+            color={COLORS.find((c) => c.type === type)?.color || "white"}
           />
         ))}
 
@@ -66,6 +84,7 @@ const Layer = (props) => {
   const [expanded, setExpanded] = useState(false);
 
   function handleClick(e) {
+    if (props.type === "input" || props.type === "output") return;
     e.stopPropagation();
     setExpanded((b) => !b);
   }
@@ -83,22 +102,8 @@ const Layer = (props) => {
 
   return (
     <group position={props.position} onClick={handleClick}>
-      {smoothedExpanded > 0 &&
-        new Array(props.grid.xCount).fill(0).map((_, i) => (
-          <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
-            {new Array(props.grid.yCount).fill(0).map((_, j) => (
-              <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} color={props.color} key={j} opacity={smoothedExpanded} />
-              </animated.group>
-            ))}
-          </animated.group>
-        ))}
-
-      {smoothedExpanded < 1 && (
-        <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
-        </>
-      )}
+      {smoothedExpanded > 0 && <InstancedNodes {...props.grid} node={props.node} smoothedExpanded={smoothedExpanded} color={props.color} />}
+      {smoothedExpanded < 1 && <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />}
     </group>
   );
 };
@@ -106,18 +111,35 @@ const Layer = (props) => {
 // Component to render each node as a box
 const Node = ({ position, wireframeDivision = 10, size, color = "red", opacity = 0.4, scale }) => {
   return (
-    <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, wireframeDivision, wireframeDivision, 1]} />
-      <meshStandardMaterial
-        color={color}
-        roughness={0.2}
-        metalness={0.9}
-        //opacity
-        opacity={opacity}
-        transparent={true}
-      />
-      {/* <Wireframe fill="white" fillMix={0} fillOpacity={1} thickness={0.1} dash={false} squeeze={false} /> */}
-    </mesh>
+    <group position={position} scale={scale}>
+      <mesh>
+        <boxGeometry args={[...size, wireframeDivision, wireframeDivision, 1]} />
+        <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} opacity={opacity} transparent={true} />
+      </mesh>
+    </group>
+  );
+};
+
+// Component to render instances of nodes
+const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, node, smoothedExpanded, color }) => {
+  const positions = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < xCount; i++) {
+      for (let j = 0; j < yCount; j++) {
+        temp.push([(xInterval * i - ((xCount - 1) * xInterval) / 2) * smoothedExpanded, (yInterval * j - ((yCount - 1) * yInterval) / 2) * smoothedExpanded, 0]);
+      }
+    }
+    return temp;
+  }, [xCount, yCount, xInterval, yInterval, smoothedExpanded]);
+
+  return (
+    <Instances limit={xCount * yCount}>
+      <boxGeometry args={[...node.size]} />
+      <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} opacity={1} transparent={true} />
+      {positions.map((position, i) => (
+        <Instance key={i} position={position} />
+      ))}
+    </Instances>
   );
 };
 
