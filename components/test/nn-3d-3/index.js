@@ -57,11 +57,11 @@ export default function NN3D() {
             position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 60]}
             unexpandedNode={{
               size: [dimensions[0], dimensions[1], dimensions[2] * 0.1],
-              wireframeDivision: 50,
+              wireframeDivision: 1,
             }}
             node={{
               size: [dimensions[0] * 0.5, dimensions[1] * 0.5, 1],
-              wireframeDivision: 10,
+              wireframeDivision: 1,
             }}
             grid={{
               xCount: zSpan[0],

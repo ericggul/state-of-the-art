@@ -45,13 +45,13 @@ export default function NN3D() {
     const interval = setInterval(() => {
       setExpandedIdx((idx) => {
         let newIdx = idx + directionRef.current;
-        if (newIdx > STRUCTURE.length - 1 || newIdx < 0) {
+        if (newIdx > STRUCTURE.length - 1 || newIdx < -5) {
           directionRef.current *= -1;
           console.log("49", newIdx, directionRef.current);
         }
         return newIdx;
       });
-    }, 250);
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
@@ -80,18 +80,18 @@ export default function NN3D() {
             position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 60]}
             unexpandedNode={{
               size: [dimensions[0], dimensions[1], dimensions[2] * 0.1],
-              wireframeDivision: 50,
+              wireframeDivision: 1,
             }}
             node={{
               size: [dimensions[0] * NODE_SCALE, dimensions[1] * NODE_SCALE, 1],
-              wireframeDivision: 10,
+              wireframeDivision: 1,
             }}
             grid={{
               xCount: zSpan[0],
               yCount: zSpan[1],
               zCount: dimensions[2],
-              xInterval: dimensions[0] * NODE_SCALE * 1.1,
-              yInterval: dimensions[1] * NODE_SCALE * 1.1,
+              xInterval: dimensions[0] * NODE_SCALE * 1.3,
+              yInterval: dimensions[1] * NODE_SCALE * 1.3,
             }}
             type={type}
             color={COLORS.find((c) => c.type === type)?.color || "white"}
@@ -122,7 +122,7 @@ const Layer = (props) => {
       //timeout 500ms
       const timeout = setTimeout(() => {
         setExpanded(false);
-      }, 500);
+      }, 700);
       return () => clearTimeout(timeout);
     }
   }, [props.isExpanded]);
@@ -132,7 +132,12 @@ const Layer = (props) => {
   useSpring({
     from: { smoothedExpanded: 0 },
     to: { smoothedExpanded: expanded ? 1 : 0 },
-    config: { duration: 500 },
+    config: {
+      mass: 1,
+      tension: 120,
+      friction: 13,
+    },
+
     onChange: (value) => {
       setSmoothedExpanded(value.value.smoothedExpanded);
     },
@@ -147,7 +152,7 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, wireframeDivision = 10, size, color = "red", opacity = 0.4, scale }) => {
+const Node = ({ position, wireframeDivision = 1, size, color = "red", opacity = 0.4, scale }) => {
   return (
     <group position={position} scale={scale}>
       <mesh>
