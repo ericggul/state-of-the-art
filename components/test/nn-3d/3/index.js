@@ -94,7 +94,7 @@ const Layer = (props) => {
   useSpring({
     from: { smoothedExpanded: 0 },
     to: { smoothedExpanded: expanded ? 1 : 0 },
-    config: { duration: 500 },
+    config: { mass: 1, tension: 120, friction: 13 },
     onChange: (value) => {
       setSmoothedExpanded(value.value.smoothedExpanded);
     },
