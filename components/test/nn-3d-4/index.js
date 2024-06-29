@@ -79,19 +79,19 @@ export default function NN3D() {
             key={i}
             position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 100]}
             unexpandedNode={{
-              size: [dimensions[0], dimensions[1], dimensions[2] * 0.2],
+              size: [dimensions[0] * 2, dimensions[1] * 2, dimensions[2] * 0.2],
               wireframeDivision: 1,
             }}
             node={{
-              size: [kernel.size * 0.5, kernel.size * 0.5, dimensions[2] * 0.2],
+              size: [kernel.size, kernel.size, dimensions[2] * 0.2],
               wireframeDivision: 1,
             }}
             grid={{
               xCount: kernel.number,
               yCount: kernel.number,
               zCount: dimensions[2],
-              xInterval: kernel.size * 0.5 * 2,
-              yInterval: kernel.size * 0.5 * 2,
+              xInterval: kernel.size * 2,
+              yInterval: kernel.size * 2,
             }}
             type={type}
             color={COLORS.find((c) => c.type === type)?.color || "white"}

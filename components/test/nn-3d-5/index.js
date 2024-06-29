@@ -21,9 +21,20 @@ export const STRUCTURE = [
   { dimensions: [13, 13, 384], zSpan: [24, 16], type: "conv", kernel: { size: 3, number: 13 } },
   { dimensions: [13, 13, 256], zSpan: [16, 16], type: "conv", kernel: { size: 3, number: 6 } },
   { dimensions: [6, 6, 256], zSpan: [16, 16], type: "pool", kernel: { size: 1, number: 30 } },
-  { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
-  { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
+  // { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
+  // { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
   { dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output", kernel: { size: 1, number: 30 } },
+  // { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
+  // { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc", kernel: { size: 1, number: 30 } },
+  { dimensions: [6, 6, 256], zSpan: [16, 16], type: "pool", kernel: { size: 1, number: 30 } },
+  { dimensions: [13, 13, 256], zSpan: [16, 16], type: "conv", kernel: { size: 3, number: 6 } },
+  { dimensions: [13, 13, 384], zSpan: [24, 16], type: "conv", kernel: { size: 3, number: 13 } },
+  { dimensions: [13, 13, 384], zSpan: [24, 16], type: "conv", kernel: { size: 3, number: 13 } },
+  { dimensions: [13, 13, 256], zSpan: [16, 16], type: "pool", kernel: { size: 3, number: 13 } },
+  { dimensions: [27, 27, 256], zSpan: [16, 16], type: "conv", kernel: { size: 3, number: 13 } },
+  { dimensions: [27, 27, 96], zSpan: [12, 8], type: "pool", kernel: { size: 5, number: 27 } },
+  { dimensions: [55, 55, 96], zSpan: [12, 8], type: "conv", kernel: { size: 3, number: 27 } },
+  { dimensions: [227, 227, 3], zSpan: [3, 1], type: "input", kernel: { size: 11, number: 55 } },
 ];
 
 export const NODE_SCALE = 1;
