@@ -12,3 +12,11 @@ export const Container = styled.div`
     height: 100%;
   }
 `;
+
+export const OrientationPermissionModal = styled.div`
+  ${WholeContainer}
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  z-index: 10;
+  ${FlexCenterStyle}
+`;

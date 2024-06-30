@@ -2,7 +2,7 @@
 
 import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
+import { OrbitControls, Wireframe, Environment, DeviceOrientationControls } from "@react-three/drei";
 import { useSpring, animated, Globals } from "@react-spring/three";
 
 import { useMemo, useState, useRef, Suspense } from "react";

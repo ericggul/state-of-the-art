@@ -106,8 +106,8 @@ export const STRUCTURE = [
       size: [8, 8, 0.3],
     },
     grid: {
-      xCount: 3,
-      yCount: 2,
+      xCount: 2,
+      yCount: 4,
       xInterval: 5,
       yInterval: 5,
     },

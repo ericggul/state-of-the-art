@@ -1,21 +1,28 @@
 "use client";
 
+import { useMemo, useState, useRef, Suspense } from "react";
 import * as S from "./styles";
+
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
+import DeviceOrientationControls from "@/utils/comps/orientation/device-orientation-controls";
 import { useSpring, animated, Globals } from "@react-spring/three";
-
-import { useMemo, useState, useRef, Suspense } from "react";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
 
-import Connections from "./connections";
+import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOrientationSupported";
 
+import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
 export default function NN3D() {
   const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(false));
+
+  const [requestPermission, setReq] = useState(false);
+  const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
+
+  console.log(supports, permission, requestPermission);
 
   return (
     <S.Container>
@@ -53,8 +60,11 @@ export default function NN3D() {
         ))}
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
-        <OrbitControls />
+        {(!supports || !permission) && <OrbitControls />}
+        {supports && permission && <DeviceOrientationControls />}
       </Canvas>
+
+      {supports && !requestPermission && <S.OrientationPermissionModal onClick={() => setReq(true)}>Ask for device orientation</S.OrientationPermissionModal>}
     </S.Container>
   );
 }
