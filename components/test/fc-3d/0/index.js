@@ -60,7 +60,8 @@ export default function NN3D() {
         ))}
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
-        {(!supports || !permission) && <OrbitControls />}
+
+        <OrbitControls />
         {supports && permission && <DeviceOrientationControls />}
       </Canvas>
 
