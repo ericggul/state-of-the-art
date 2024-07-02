@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 
+import mobileSetup from "./socket-setups/mobile";
+
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
     console.log("Socket already set up");
@@ -7,17 +9,11 @@ export default function SocketHandler(req, res) {
     return;
   }
 
-  const io = new Server(res.socket.server, {
-    path: "/api/socket", // Ensure you set the path to match the client side
-  });
+  const io = new Server(res.socket.server);
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
-    console.log("Client connected");
-
-    socket.on("send-message", (obj) => {
-      io.emit("receive-message", obj);
-    });
+    mobileSetup({ socket, io });
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
