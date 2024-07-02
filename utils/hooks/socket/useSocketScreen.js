@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
-export default function Mobile() {
+export default function useSocketScreen({ handleHelloWorld }) {
   const socket = useRef(null);
 
   useEffect(() => {
@@ -20,12 +20,8 @@ export default function Mobile() {
     socket.current = io();
 
     socket.current.on("connect", () => {
-      console.log("socket connected");
-    });
-
-    socket.current.on("test", () => {
-      console.log("20");
-      console.log("test");
+      socket.current.emit("screen-init");
+      socket.current.on("new-screen-hello-world", handleHelloWorld);
     });
   };
 

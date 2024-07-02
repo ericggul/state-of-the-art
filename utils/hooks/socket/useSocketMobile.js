@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
-export default function Mobile({ handleHelloWorld }) {
+export default function useSocketMobile({ handleHelloWorld }) {
   const socket = useRef(null);
 
   useEffect(() => {
