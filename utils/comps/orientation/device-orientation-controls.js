@@ -37,8 +37,6 @@ export default function DeviceOrientationControls() {
     const betaRad = THREE.MathUtils.degToRad(-beta);
     const gammaRad = THREE.MathUtils.degToRad(-gamma);
 
-    console.log(betaRad);
-
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
