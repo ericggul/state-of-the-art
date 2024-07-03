@@ -36,9 +36,18 @@ export default function Mobile() {
     memorisedLayersRef.current = layersExpanded;
   }, [layersExpanded]);
 
+  function handleTrainButtonClick() {
+    if (socket && socket.current) {
+      socket.current.emit("mobile-training", {
+        mobileId: mobileId.current,
+      });
+    }
+  }
+
   return (
     <S.Container>
       <FC3D0 onLayerChange={setLayersExpanded} />
+      <S.TrainButton onClick={handleTrainButtonClick}>{">>"} Train Model</S.TrainButton>
     </S.Container>
   );
 }

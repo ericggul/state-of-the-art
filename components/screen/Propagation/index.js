@@ -1,7 +1,5 @@
-"use client";
-
 import * as S from "./styles";
 
-export default function Main() {
-  return <S.Container>Intro</S.Container>;
+export default function Propagation() {
+  return <S.Container></S.Container>;
 }

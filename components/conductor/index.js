@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 
 import useSocket from "@/utils/socket/useSocketConductor";
+
+const LAYER_NUMBER = 5;
 
 export default function Conductor() {
   const socket = useSocket({ handleNewMobile, handleNewTraining });
@@ -12,9 +14,50 @@ export default function Conductor() {
     console.log("new mobile", data);
   }
 
+  const timeoutRefs = useRef([]);
+
   function handleNewTraining(data) {
     console.log("training", data);
+
+    // Clear previous timeouts if any
+    timeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
+    timeoutRefs.current = [];
+
+    // PROPAGATION
+    for (let i = 0; i < LAYER_NUMBER; i++) {
+      const timeout = setTimeout(() => {
+        if (socket && socket.current) {
+          socket.current.emit("conductor-propagation", {
+            layerIdx: i,
+            type: "propagation",
+          });
+        }
+      }, i * 100);
+
+      timeoutRefs.current.push(timeout);
+    }
+
+    // BACK PROPAGATION
+    for (let i = 0; i < LAYER_NUMBER; i++) {
+      const timeout = setTimeout(() => {
+        if (socket && socket.current) {
+          socket.current.emit("conductor-propagation", {
+            layerIdx: LAYER_NUMBER - 1 - i,
+            type: "back-propagation",
+          });
+        }
+      }, (i + LAYER_NUMBER) * 100);
+
+      timeoutRefs.current.push(timeout);
+    }
   }
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, []);
 
   return null;
 }

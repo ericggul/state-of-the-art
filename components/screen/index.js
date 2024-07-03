@@ -12,6 +12,7 @@ export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
 
   const [layerExpanded, setLayerExpanded] = useState(false);
+  const [propagatedState, setPropagatedState] = useState("idle");
 
   const socket = useSocket({
     layerIdx,
@@ -38,7 +39,7 @@ export default function Screen({ layerIdx }) {
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
       {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} />}
-      {pageState === "propagation" && <Propagation layerIdx={layerIdx} />}
+      {pageState === "main" && <Propagation layerIdx={layerIdx} />}
     </>
   );
 }
