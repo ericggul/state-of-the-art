@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
-export default function useSocketMobile() {
+export default function useSocketMobile({ mobileId }) {
   const socket = useRef(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      console.log("9");
       socketInitializer();
       return () => {
         if (socket.current) {
@@ -20,7 +21,8 @@ export default function useSocketMobile() {
     socket.current = io();
 
     socket.current.on("connect", () => {
-      socket.current.emit("mobile-init");
+      console.log("23", mobileId);
+      socket.current.emit("mobile-init", { mobileId });
     });
   };
 

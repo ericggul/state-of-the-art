@@ -22,8 +22,6 @@ export default function NN3D() {
   const [requestPermission, setReq] = useState(false);
   const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
 
-  console.log(supports, permission, requestPermission);
-
   return (
     <S.Container>
       <Canvas

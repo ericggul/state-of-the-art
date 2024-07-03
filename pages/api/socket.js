@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
 
-import mobileSetup from "./socket-setups/mobile";
-import screenSetup from "./socket-setups/screen";
+import setup from "./socket-setups";
+// import mobileSetup from "./socket-setups/mobile";
+// import screenSetup from "./socket-setups/screen";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -14,8 +15,7 @@ export default function SocketHandler(req, res) {
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
-    mobileSetup({ socket, io });
-    screenSetup({ socket, io });
+    setup({ socket, io });
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");

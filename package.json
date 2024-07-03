@@ -28,7 +28,8 @@
     "styled-components": "^6.1.11",
     "three": "^0.165.0",
     "three-stdlib": "^2.30.3",
-    "tone": "^15.0.4"
+    "tone": "^15.0.4",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "typescript": "5.5.2"

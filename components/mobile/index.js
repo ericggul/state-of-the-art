@@ -5,14 +5,15 @@ import * as S from "./styles";
 import { useEffect, useRef } from "react";
 import useSocket from "@/utils/hooks/socket/useSocketMobile";
 
+//uuid v4
+import { v4 as uuidv4 } from "uuid";
+
 export default function Mobile() {
-  const socket = useSocket();
+  const mobileId = useRef(uuidv4());
 
-  function handleClick() {
-    if (socket && socket.current) {
-      socket.current.emit("hello-world", "Hello world from mobile");
-    }
-  }
+  const socket = useSocket({
+    mobileId: mobileId.current,
+  });
 
-  return <S.Container onClick={handleClick}>Testing Screen</S.Container>;
+  return <S.Container>Testing Screen</S.Container>;
 }

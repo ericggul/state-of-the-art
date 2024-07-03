@@ -36,8 +36,6 @@ export default function Screen({ layerIdx }) {
     console.log("new propagation", data);
   }
 
-  console.log(layerIdx);
-
   // Get the Component corresponding to the current state
   const CurrentPageComponent = PAGES[pageState];
 
