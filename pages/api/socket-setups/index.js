@@ -14,22 +14,26 @@ export default function mobileSetup({ socket, io }) {
     socket.join("conductor");
   });
 
+  ////MOBILE INITIATED
   socket.on("mobile-init", (data) => {
     console.log("mobile init", data);
     socket.to("conductor").emit("new-mobile-init", data);
     socket.to("screen").emit("new-mobile-init", data);
   });
 
+  //WHEN MOBILE LAYER CLICKED
   socket.on("mobile-layer-clicked", (data) => {
     console.log("layer clicked", data);
     socket.to("screen").emit("new-mobile-layer-clicked", data);
   });
 
+  //WHEN MOBILE TRAINING COMMAND: MOBILES -> CONDUCTOR
   socket.on("mobile-training", (data) => {
     console.log("mobile training", data);
     socket.to("conductor").emit("new-mobile-training", data);
   });
 
+  //CONDUCTOR -> SCREEN PROPAGATION REQUEST
   socket.on("conductor-propagation", (data) => {
     console.log("conductor propagation", data);
     socket.to("screen").emit("new-conductor-propagation", data);
