@@ -28,18 +28,23 @@ export default function Screen({ layerIdx }) {
 
   function handleNewLayerClicked(data) {
     console.log("new layer clicked", data);
+    setPageState("main");
     setLayerExpanded(data.layerVal);
   }
 
   function handleNewPropagation(data) {
     console.log("new propagation", data);
+    setPageState("main");
+    setPropagatedState(data.type);
   }
+
+  console.log(pageState, "page state");
 
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
       {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} />}
-      {pageState === "main" && <Propagation layerIdx={layerIdx} />}
+      {pageState === "main" && <Propagation layerIdx={layerIdx} propagatedState={propagatedState} setPropagatedState={setPropagatedState} />}
     </>
   );
 }
