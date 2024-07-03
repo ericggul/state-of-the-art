@@ -6,13 +6,7 @@ import { useEffect, useRef } from "react";
 import useSocket from "@/utils/hooks/socket/useSocketMobile";
 
 export default function Mobile() {
-  const socket = useSocket({ handleHelloWorld });
-
-  function handleHelloWorld(data) {
-    console.log(data);
-  }
-
-  useEffect(() => {}, []);
+  const socket = useSocket();
 
   function handleClick() {
     if (socket && socket.current) {
