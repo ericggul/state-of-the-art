@@ -8,17 +8,11 @@ import Intro from "@/components/screen/Intro";
 import Main from "@/components/screen/Main";
 import Propagation from "@/components/screen/Propagation";
 
-// Define the different states and their corresponding components
-const PAGES = {
-  intro: Intro,
-  main: Main,
-  propagation: Propagation,
-};
-
 export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
 
-  console.log("layerIdx", layerIdx);
+  const [layerClicked, setLayerclicked] = useState(false);
+
   const socket = useSocket({
     layerIdx,
     handleNewMobile,
@@ -33,14 +27,18 @@ export default function Screen({ layerIdx }) {
 
   function handleNewLayerClicked(data) {
     console.log("new layer clicked", data);
+    setLayerclicked(data.layerVal);
   }
 
   function handleNewPropagation(data) {
     console.log("new propagation", data);
   }
 
-  // Get the Component corresponding to the current state
-  const CurrentPageComponent = PAGES[pageState];
-
-  return <CurrentPageComponent layerIdx={layerIdx} />;
+  return (
+    <>
+      {pageState === "intro" && <Intro layerIdx={layerIdx} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layerClicked={layerClicked} />}
+      {pageState === "propagation" && <Propagation layerIdx={layerIdx} />}
+    </>
+  );
 }
