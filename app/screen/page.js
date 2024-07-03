@@ -3,7 +3,7 @@
 import ScreenEl from "@/components/screen";
 import Conductor from "@/components/conductor";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function Screen() {
@@ -11,6 +11,14 @@ export default function Screen() {
 
   const layerIdx = searchParams.get("layerIdx");
   const isConductor = useMemo(() => layerIdx == "0", [layerIdx]);
+
+  useEffect(() => {
+    if (layerIdx !== null) {
+      document.title = `Screen ${layerIdx} | DDP AI`;
+    } else {
+      document.title = "Screen | DDP AI";
+    }
+  }, [layerIdx]);
 
   return (
     <>
