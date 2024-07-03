@@ -7,9 +7,16 @@ export default function mobileSetup({ socket, io }) {
     socket.join("mobile");
     socket.emit("mobile-init", { mobileId });
   });
-  socket.on("screen-init", () => {
+
+  socket.on("screen-init", (data) => {
+    console.log("INIT INIT");
+    console.log(data);
+    //typeof layeridx
+    console.log("screen init", data.layerIdx, typeof data.layerIdx);
     socket.join("screen");
+    socket.join(`layer-${data.layerIdx}`);
   });
+
   socket.on("conductor-init", () => {
     socket.join("conductor");
   });
@@ -24,7 +31,11 @@ export default function mobileSetup({ socket, io }) {
   //WHEN MOBILE LAYER CLICKED
   socket.on("mobile-layer-clicked", (data) => {
     console.log("layer clicked", data);
-    socket.to("screen").emit("new-mobile-layer-clicked", data);
+    if (data.layerIdx) {
+      console.log(typeof data.layerIdx, `layer-${data.layerIdx}`);
+      socket.to(`layer-${data.layerIdx}`).emit("new-mobile-layer-clicked", data);
+    }
+    // socket.to("screen").emit("new-mobile-layer-clicked", data);
   });
 
   //WHEN MOBILE TRAINING COMMAND: MOBILES -> CONDUCTOR

@@ -3,10 +3,10 @@
 import { useState } from "react";
 import * as S from "./styles";
 
-import useSocket from "@/utils/hooks/socket/useSocketScreen";
-import Intro from "@/foundations/screen/Intro";
-import Main from "@/foundations/screen/Main";
-import Propagation from "@/foundations/screen/Propagation";
+import useSocket from "@/utils/socket/useSocketScreen";
+import Intro from "@/components/screen/Intro";
+import Main from "@/components/screen/Main";
+import Propagation from "@/components/screen/Propagation";
 
 // Define the different states and their corresponding components
 const PAGES = {
@@ -18,7 +18,9 @@ const PAGES = {
 export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
 
+  console.log("layerIdx", layerIdx);
   const socket = useSocket({
+    layerIdx,
     handleNewMobile,
     handleNewLayerClicked,
     handleNewPropagation,
@@ -26,6 +28,7 @@ export default function Screen({ layerIdx }) {
 
   function handleNewMobile(data) {
     console.log("new mobile", data);
+    setPageState("main");
   }
 
   function handleNewLayerClicked(data) {

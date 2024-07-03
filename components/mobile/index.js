@@ -3,7 +3,7 @@
 import * as S from "./styles";
 
 import { useEffect, useRef, useState } from "react";
-import useSocket from "@/utils/hooks/socket/useSocketMobile";
+import useSocket from "@/utils/socket/useSocketMobile";
 
 //uuid v4
 import { v4 as uuidv4 } from "uuid";

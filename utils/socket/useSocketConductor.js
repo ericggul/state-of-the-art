@@ -23,7 +23,7 @@ export default function useSocketConductor({ handleNewMobile, handleNewTraining 
     socket.current = io();
 
     socket.current.on("connect", () => {
-      socket.current.emit("screen-init");
+      socket.current.emit("conductor-init");
       socket.current.on("new-mobile-init", handleNewMobile);
       socket.current.on("new-mobile-training", handleNewTraining);
     });

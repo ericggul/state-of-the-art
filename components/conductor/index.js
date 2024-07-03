@@ -3,7 +3,7 @@
 import { useState } from "react";
 import * as S from "./styles";
 
-import useSocket from "@/utils/hooks/socket/useSocketConductor";
+import useSocket from "@/utils/socket/useSocketConductor";
 
 export default function Conductor() {
   const socket = useSocket({ handleNewMobile, handleNewTraining });
