@@ -9,7 +9,7 @@ import useSocket from "@/utils/socket/useSocketMobile";
 import { v4 as uuidv4 } from "uuid";
 
 ///Test: FC-3d 0
-import FC3D0 from "@/components/test/fc-3d/0";
+import FC3D0 from "./fc-3d-test";
 
 export default function Mobile() {
   const mobileId = useRef(uuidv4());
@@ -36,17 +36,19 @@ export default function Mobile() {
     memorisedLayersRef.current = layersExpanded;
   }, [layersExpanded]);
 
+  const [trainingIteration, setTrainingIteration] = useState(0);
   function handleTrainButtonClick() {
     if (socket && socket.current) {
       socket.current.emit("mobile-training", {
         mobileId: mobileId.current,
       });
+      setTrainingIteration((i) => i + 1);
     }
   }
 
   return (
     <S.Container>
-      <FC3D0 onLayerChange={setLayersExpanded} />
+      <FC3D0 onLayerChange={setLayersExpanded} training={trainingIteration} />
       <S.TrainButton onClick={handleTrainButtonClick}>{">>"} Train Model</S.TrainButton>
     </S.Container>
   );

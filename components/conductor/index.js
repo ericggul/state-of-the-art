@@ -20,10 +20,6 @@ export default function Conductor() {
   function handleNewTraining(data) {
     console.log("training", data);
 
-    // Clear previous timeouts if any
-    timeoutRefs.current.forEach((timeout) => clearTimeout(timeout));
-    timeoutRefs.current = [];
-
     // PROPAGATION
     for (let i = 0; i < LAYER_NUMBER; i++) {
       const timeout = setTimeout(() => {
