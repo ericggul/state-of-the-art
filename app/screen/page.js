@@ -3,10 +3,18 @@
 import ScreenEl from "@/components/screen";
 import Conductor from "@/components/conductor";
 
-import { useMemo, useEffect } from "react";
+import { Suspense, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Screen() {
+export default function ScreenWrapper() {
+  return (
+    <Suspense>
+      <Screen />
+    </Suspense>
+  );
+}
+
+function Screen() {
   const searchParams = useSearchParams();
 
   const layerIdx = searchParams.get("layerIdx");
