@@ -28,14 +28,19 @@ async function simpleTone(layerExpanded) {
   // Ensure Tone.js context is started
   await Tone.start();
 
-  // Define the sound properties based on layerExpanded
-  const frequency = layerExpanded ? "C5" : "C4";
-  const duration = "8n";
-  const envelope = layerExpanded ? { attack: 0.1, decay: 0.3, sustain: 0.7, release: 0.2 } : { attack: 0.3, decay: 0.5, sustain: 0.5, release: 0.4 };
-
   // Create a basic synth with the desired envelope settings and connect it to the main output (speakers)
-  const synth = new Tone.PolySynth({ envelope }).toDestination();
+  const synth = new Tone.PolySynth().toDestination();
 
-  // Play the note
-  synth.triggerAttackRelease(frequency, duration);
+  const now = Tone.now();
+  const NOTES = ["C4", "E4", "G4", "B4"];
+
+  if (layerExpanded) {
+    NOTES.forEach((note, i) => {
+      synth.triggerAttackRelease(note, "16n", now + i * 0.1);
+    });
+  } else {
+    NOTES.reverse().forEach((note, i) => {
+      synth.triggerAttackRelease(note, "16n", now + i * 0.1);
+    });
+  }
 }

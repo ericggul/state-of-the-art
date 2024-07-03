@@ -9,6 +9,6 @@ export const Container = styled.div`
 export const Bg = styled.div`
   ${WholeContainer}
   background: white;
-  transition: all 0.07s;
+  transition: opacity 0.07s;
   z-index: 2;
 `;
