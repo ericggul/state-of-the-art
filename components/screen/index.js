@@ -11,7 +11,7 @@ import Propagation from "@/components/screen/Propagation";
 export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
 
-  const [layerClicked, setLayerclicked] = useState(false);
+  const [layerExpanded, setLayerExpanded] = useState(false);
 
   const socket = useSocket({
     layerIdx,
@@ -27,7 +27,7 @@ export default function Screen({ layerIdx }) {
 
   function handleNewLayerClicked(data) {
     console.log("new layer clicked", data);
-    setLayerclicked(data.layerVal);
+    setLayerExpanded(data.layerVal);
   }
 
   function handleNewPropagation(data) {
@@ -37,7 +37,7 @@ export default function Screen({ layerIdx }) {
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layerClicked={layerClicked} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} />}
       {pageState === "propagation" && <Propagation layerIdx={layerIdx} />}
     </>
   );
