@@ -6,8 +6,6 @@ import * as Tone from "tone";
 export default function Propagation({ propagatedState, setPropagatedState, layerIdx }) {
   const timeoutRef = useRef();
 
-  console.log("7");
-
   useEffect(() => {
     if (propagatedState !== "idle") {
       simpleTone({ propagatedState, layerIdx });

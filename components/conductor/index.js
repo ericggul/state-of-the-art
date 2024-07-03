@@ -6,6 +6,7 @@ import * as S from "./styles";
 import useSocket from "@/utils/socket/useSocketConductor";
 
 const LAYER_NUMBER = 5;
+const TRAINING_INTERVAL = 100;
 
 export default function Conductor() {
   const socket = useSocket({ handleNewMobile, handleNewTraining });
@@ -32,7 +33,7 @@ export default function Conductor() {
             type: "propagation",
           });
         }
-      }, i * 100);
+      }, i * TRAINING_INTERVAL);
 
       timeoutRefs.current.push(timeout);
     }
@@ -46,7 +47,7 @@ export default function Conductor() {
             type: "back-propagation",
           });
         }
-      }, (i + LAYER_NUMBER) * 100);
+      }, (i + LAYER_NUMBER) * TRAINING_INTERVAL);
 
       timeoutRefs.current.push(timeout);
     }
