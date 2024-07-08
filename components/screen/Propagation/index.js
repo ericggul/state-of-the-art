@@ -1,6 +1,8 @@
 import * as S from "./styles";
 import { useState, useEffect, useRef } from "react";
 
+import useResize from "@/utils/hooks/useResize";
+import Image from "next/image";
 import * as Tone from "tone";
 
 export default function Propagation({ propagatedState, setPropagatedState, layerIdx }) {
@@ -13,7 +15,7 @@ export default function Propagation({ propagatedState, setPropagatedState, layer
 
       timeoutRef.current = setTimeout(() => {
         setPropagatedState("idle");
-      }, 100);
+      }, 200);
 
       return () => {
         if (timeoutRef && timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -21,13 +23,26 @@ export default function Propagation({ propagatedState, setPropagatedState, layer
     }
   }, [propagatedState]);
 
+  const [windowWidth, windowHeight] = useResize();
+
   return (
     <S.Container>
       <S.Bg
         style={{
           opacity: propagatedState === "idle" ? 0 : 1,
         }}
-      />
+      >
+        {/* <Image
+          src={`/images/test/${layerIdx}.png`}
+          // width={windowWidth}
+          // height={windowHeight}
+          //image to fill
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          alt="FC-3D Test Image"
+        /> */}
+      </S.Bg>
     </S.Container>
   );
 }

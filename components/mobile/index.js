@@ -11,8 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 ///Test: FC-3d 0
 import FC3D0 from "./fc-3d-test";
 
-const LAYER_NUMBER = 5;
-const TRAINING_INTERVAL = 100;
+import { LAYER_NUMBER, TRAINING_INTERVAL } from "./constants";
 
 export default function Mobile() {
   const mobileId = useRef(uuidv4());

@@ -1,5 +1,4 @@
-const LAYER_NUMBER = 5;
-const TRAINING_INTERVAL = 100;
+import { LAYER_NUMBER, TRAINING_INTERVAL } from "../constants";
 
 import { useState, useEffect, useRef } from "react";
 

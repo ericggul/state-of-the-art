@@ -8,7 +8,8 @@ export const Container = styled.div`
 
 export const Bg = styled.div`
   ${WholeContainer}
+  ${FlexCenterStyle}
   background: white;
-  transition: opacity 0.07s;
+  transition: opacity 0.1s;
   z-index: 2;
 `;
