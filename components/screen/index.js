@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 
 import useSocket from "@/utils/socket/useSocketScreen";
@@ -10,8 +10,9 @@ import Propagation from "@/components/screen/Propagation";
 
 export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
-
   const [layerExpanded, setLayerExpanded] = useState(false);
+  const [propagations, setPropagations] = useState([]);
+  const timeoutRef = useRef([]);
 
   const socket = useSocket({
     layerIdx,
@@ -31,12 +32,24 @@ export default function Screen({ layerIdx }) {
     setLayerExpanded(data.layerVal);
   }
 
-  const [propagations, setPropagations] = useState([]);
-
   function handleNewPropagation(data) {
     setPageState("main");
     setPropagations((arr) => [...arr, data]);
+
+    const timeoutId = setTimeout(() => {
+      setPropagations((arr) => {
+        return arr.filter((propagation) => propagation !== data);
+      });
+    }, 200);
+
+    timeoutRef.current.push(timeoutId);
   }
+
+  useEffect(() => {
+    return () => {
+      timeoutRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
+    };
+  }, []);
 
   return (
     <>

@@ -2,15 +2,13 @@ import * as S from "./styles";
 import { useState, useEffect, useRef } from "react";
 
 import useResize from "@/utils/hooks/useResize";
-import Image from "next/image";
 import * as Tone from "tone";
 
 export default function Propagation({ propagations, setPropagations, layerIdx }) {
-  const timeoutRef = useRef();
   const storedPropagationsRef = useRef([]);
 
   useEffect(() => {
-    //detect if propagations has new element
+    // detect if propagations has new element
     const newEl = propagations.find((propagation, idx) => propagation !== storedPropagationsRef.current[idx]);
     console.log(propagations, newEl);
 
@@ -18,27 +16,8 @@ export default function Propagation({ propagations, setPropagations, layerIdx })
 
     if (newEl) {
       simpleTone({ propagationState: newEl.type, layerIdx });
-
-      timeoutRef.current = setTimeout(() => {
-        console.log("23");
-        //detect newel and delete
-        setPropagations((arr) => {
-          console.log(
-            "26",
-            arr,
-            arr.filter((propagation) => propagation !== newEl)
-          );
-          return arr.filter((propagation) => propagation !== newEl);
-        });
-      }, 200);
-
-      return () => {
-        if (timeoutRef && timeoutRef.current) clearTimeout(timeoutRef.current);
-      };
     }
-  }, [propagations]);
-
-  // console.log(propagations);
+  }, [propagations, setPropagations, layerIdx]);
 
   const [windowWidth, windowHeight] = useResize();
 
@@ -73,7 +52,7 @@ async function simpleTone({ propagationState, layerIdx }) {
 
   const now = Tone.now();
 
-  //notes: all note from C2 to C3
+  // notes: all note from C2 to C3
   const NOTES = ["C5", "E5", "G5", "B5", "C6"];
 
   if (propagationState === "propagation") {
