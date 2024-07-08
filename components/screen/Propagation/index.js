@@ -5,23 +5,40 @@ import useResize from "@/utils/hooks/useResize";
 import Image from "next/image";
 import * as Tone from "tone";
 
-export default function Propagation({ propagatedState, setPropagatedState, layerIdx }) {
+export default function Propagation({ propagations, setPropagations, layerIdx }) {
   const timeoutRef = useRef();
+  const storedPropagationsRef = useRef([]);
 
   useEffect(() => {
-    if (propagatedState !== "idle") {
-      simpleTone({ propagatedState, layerIdx });
-      if (timeoutRef && timeoutRef.current) clearTimeout(timeoutRef.current);
+    //detect if propagations has new element
+    const newEl = propagations.find((propagation, idx) => propagation !== storedPropagationsRef.current[idx]);
+    console.log(propagations, newEl);
+
+    storedPropagationsRef.current = propagations;
+
+    if (newEl) {
+      simpleTone({ propagationState: newEl.type, layerIdx });
 
       timeoutRef.current = setTimeout(() => {
-        setPropagatedState("idle");
+        console.log("23");
+        //detect newel and delete
+        setPropagations((arr) => {
+          console.log(
+            "26",
+            arr,
+            arr.filter((propagation) => propagation !== newEl)
+          );
+          return arr.filter((propagation) => propagation !== newEl);
+        });
       }, 200);
 
       return () => {
         if (timeoutRef && timeoutRef.current) clearTimeout(timeoutRef.current);
       };
     }
-  }, [propagatedState]);
+  }, [propagations]);
+
+  // console.log(propagations);
 
   const [windowWidth, windowHeight] = useResize();
 
@@ -29,7 +46,7 @@ export default function Propagation({ propagatedState, setPropagatedState, layer
     <S.Container>
       <S.Bg
         style={{
-          opacity: propagatedState === "idle" ? 0 : 1,
+          opacity: propagations.length * 0.5,
         }}
       >
         {/* <Image
@@ -47,7 +64,7 @@ export default function Propagation({ propagatedState, setPropagatedState, layer
   );
 }
 
-async function simpleTone({ propagatedState, layerIdx }) {
+async function simpleTone({ propagationState, layerIdx }) {
   // Ensure Tone.js context is started
   await Tone.start();
 
@@ -59,8 +76,7 @@ async function simpleTone({ propagatedState, layerIdx }) {
   //notes: all note from C2 to C3
   const NOTES = ["C5", "E5", "G5", "B5", "C6"];
 
-  if (propagatedState === "propagation") {
-    console.log("50");
+  if (propagationState === "propagation") {
     synth.triggerAttackRelease(NOTES[layerIdx % NOTES.length], "8n", now);
   } else {
     synth.triggerAttackRelease(NOTES[layerIdx % NOTES.length], "8n", now);

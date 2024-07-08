@@ -41,6 +41,7 @@ export default function Mobile() {
   const timeoutRefs = useRef([]);
   const [trainingIteration, setTrainingIteration] = useState(0);
   function handleTrainButtonClick() {
+    const propagationId = uuidv4();
     if (socket && socket.current) {
       // socket.current.emit("mobile-training", {
       //   mobileId: mobileId.current,
@@ -52,6 +53,8 @@ export default function Mobile() {
             socket.current.emit("conductor-propagation", {
               layerIdx: i,
               type: "propagation",
+              mobileId: mobileId.current,
+              propagationId,
             });
           }
         }, i * TRAINING_INTERVAL);
@@ -66,6 +69,8 @@ export default function Mobile() {
             socket.current.emit("conductor-propagation", {
               layerIdx: LAYER_NUMBER - 1 - i,
               type: "back-propagation",
+              mobileId: mobileId.current,
+              propagationId,
             });
           }
         }, (i + LAYER_NUMBER) * TRAINING_INTERVAL);
