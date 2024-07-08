@@ -40,7 +40,14 @@ export default function TextGrid() {
       >
         {new Array(100).fill(0).map((_, i) => (
           <text key={i} x="5" y={i * 20} color="white">
-            {numbers.join("")}
+            {
+              // numbers
+              numbers
+                .slice((i * Math.floor(i ** 2 * 0.3 - i * 7)) % 100)
+                .concat(numbers.slice(0, (i * Math.floor(i ** 2 * 0.3 - i * 7)) % 100))
+
+                .join("")
+            }
           </text>
         ))}
       </S.InnerSVG>
