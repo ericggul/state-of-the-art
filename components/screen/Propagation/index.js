@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import useResize from "@/utils/hooks/useResize";
 import * as Tone from "tone";
 
+import GridTest from "@/components/test/grid/0";
+
 export default function Propagation({ propagations, setPropagations, layerIdx }) {
   const storedPropagationsRef = useRef([]);
 
@@ -23,22 +25,7 @@ export default function Propagation({ propagations, setPropagations, layerIdx })
 
   return (
     <S.Container>
-      <S.Bg
-        style={{
-          opacity: propagations.length * 0.5,
-        }}
-      >
-        {/* <Image
-          src={`/images/test/${layerIdx}.png`}
-          // width={windowWidth}
-          // height={windowHeight}
-          //image to fill
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
-          alt="FC-3D Test Image"
-        /> */}
-      </S.Bg>
+      <GridTest activated={propagations.length > 0} />
     </S.Container>
   );
 }
