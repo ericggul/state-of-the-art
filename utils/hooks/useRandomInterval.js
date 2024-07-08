@@ -1,29 +1,35 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 
-import { getRandom } from "@/utils/functions/getRandom";
+const getRandom = (a, b) => Math.random() * (b - a) + a;
 
 export default function useRandomInterval(callback, minDelay, maxDelay) {
-  const timeoutRef = useRef(null);
-  const callbackRef = useRef(callback);
+  const timeoutId = useRef();
+  const savedCallback = useRef();
 
+  // Remember the latest callback.
   useEffect(() => {
-    callbackRef.current = callback;
+    savedCallback.current = callback;
   }, [callback]);
 
+  // Set up the interval.
   useEffect(() => {
-    const handleTick = () => {
-      const nextTickAt = getRandom(minDelay, maxDelay);
-      timeoutRef.current = setTimeout(() => {
-        callbackRef.current();
-        handleTick();
-      }, nextTickAt);
-    };
-    handleTick();
-    return () => {
-      clearTimeout(timeoutRef.current);
-    };
+    const isEnabled = typeof minDelay === "number" && typeof maxDelay === "number";
+
+    if (isEnabled) {
+      const handleTick = () => {
+        const nextTickAt = getRandom(minDelay, maxDelay);
+
+        timeoutId.current = setTimeout(() => {
+          savedCallback.current();
+          handleTick();
+        }, nextTickAt);
+      };
+
+      handleTick();
+    }
+
+    return () => timeoutId.current && clearTimeout(timeoutId.current);
   }, [minDelay, maxDelay]);
 
-  const cancel = useCallback(() => clearTimeout(timeoutRef.current), [timeoutRef]);
-  return cancel;
+  return timeoutId.current;
 }

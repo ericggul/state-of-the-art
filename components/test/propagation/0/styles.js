@@ -6,4 +6,9 @@ export const Container = styled.div`
   ${FlexCenterStyle}
 
   background: #111;
+  color: white;
+`;
+
+export const TextGrid = styled.div`
+  ${WholeContainer}
 `;

@@ -1,8 +1,8 @@
 "use client";
 
 import * as S from "./styles";
+import React, { useState, useEffect, useRef } from "react";
 
-// Main component to render the neural network
-export default function Prop() {
+export default function Propagation() {
   return <S.Container></S.Container>;
 }
