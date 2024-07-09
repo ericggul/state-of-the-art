@@ -5,11 +5,21 @@ import { useParams } from "next/navigation";
 
 const Grid0 = dynamic(() => import("@/components/test/grid/0"));
 const Grid1 = dynamic(() => import("@/components/test/grid/1"));
+
+//GRAPHS
 const Grid2 = dynamic(() => import("@/components/test/grid/2"));
 const Grid21 = dynamic(() => import("@/components/test/grid/2/2-1"));
+
+//SIGMOID
 const Grid22 = dynamic(() => import("@/components/test/grid/2/2-2"));
 const Grid221 = dynamic(() => import("@/components/test/grid/2/2-2/2-2-1"));
+
+//RELU
 const Grid23 = dynamic(() => import("@/components/test/grid/2/2-3"));
+const Grid231 = dynamic(() => import("@/components/test/grid/2/2-3/2-3-1"));
+
+//RANDOM SINE WAVES
+const Grid24 = dynamic(() => import("@/components/test/grid/2/2-4"));
 
 export default function NNPage() {
   const { idx } = useParams();
@@ -29,7 +39,12 @@ export default function NNPage() {
       {idx === "2-2" && <Grid22 isTesting={true} />}
       {idx === "2-2-1" && <Grid221 isTesting={true} />}
 
+      {/* RELU */}
       {idx === "2-3" && <Grid23 isTesting={true} />}
+      {idx === "2-3-1" && <Grid231 isTesting={true} />}
+
+      {/* RANDOM SINE WAVES */}
+      {idx === "2-4" && <Grid24 isTesting={true} />}
     </>
   );
 }

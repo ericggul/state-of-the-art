@@ -12,10 +12,10 @@ const inverseSigmoid = (x) => {
   return Math.log(x / (1 - x));
 };
 
-function blanksGenerator() {
+export function animateBlanks(cutFromIdx) {
   const res = [];
 
-  const cutFrom = YLEN * 0.9;
+  const cutFrom = YLEN * cutFromIdx;
 
   for (let y = 0; y < YLEN; y++) {
     res.push([]);
@@ -29,5 +29,3 @@ function blanksGenerator() {
   }
   return res;
 }
-
-export const TEST_BLANKS = blanksGenerator();
