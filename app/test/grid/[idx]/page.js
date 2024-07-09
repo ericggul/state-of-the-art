@@ -8,6 +8,7 @@ const Grid1 = dynamic(() => import("@/components/test/grid/1"));
 const Grid2 = dynamic(() => import("@/components/test/grid/2"));
 const Grid21 = dynamic(() => import("@/components/test/grid/2-1"));
 const Grid22 = dynamic(() => import("@/components/test/grid/2-2"));
+const Grid23 = dynamic(() => import("@/components/test/grid/2-3"));
 
 export default function NNPage() {
   const { idx } = useParams();
@@ -19,6 +20,7 @@ export default function NNPage() {
       {idx === "2" && <Grid2 isTesting={true} />}
       {idx === "2-1" && <Grid21 isTesting={true} />}
       {idx === "2-2" && <Grid22 isTesting={true} />}
+      {idx === "2-3" && <Grid23 isTesting={true} />}
     </>
   );
 }

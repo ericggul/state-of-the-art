@@ -7,6 +7,11 @@ export const getRandomMax = (max) => {
   return res == 0 ? " " : res;
 };
 
+export const getRandomDigit = () => {
+  let res = Math.floor(Math.random() * 10);
+  return res == 0 ? " " : res;
+};
+
 export const TEST_BLANKS = new Array(YLEN)
   .fill([
     [30, 60],
