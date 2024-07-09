@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 
 const Grid0 = dynamic(() => import("@/components/test/grid/0"));
 const Grid1 = dynamic(() => import("@/components/test/grid/1"));
+const Grid2 = dynamic(() => import("@/components/test/grid/2"));
 
 export default function NNPage() {
   const { idx } = useParams();
@@ -13,6 +14,7 @@ export default function NNPage() {
     <>
       {idx === "0" && <Grid0 isTesting={true} />}
       {idx === "1" && <Grid1 isTesting={true} />}
+      {idx === "2" && <Grid2 isTesting={true} />}
     </>
   );
 }
