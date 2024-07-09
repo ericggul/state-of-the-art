@@ -12,3 +12,18 @@ export const Container = styled.div`
 export const TextGrid = styled.div`
   ${WholeContainer}
 `;
+
+export const InnerSVG = styled.svg`
+  ${WholeContainer}
+
+  color: white;
+
+  text {
+    font-size: 1vw;
+    font-family: monospace;
+    dominant-baseline: hanging;
+    white-space: pre;
+    color: white;
+    fill: white;
+  }
+`;

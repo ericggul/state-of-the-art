@@ -2,8 +2,12 @@
 
 import * as S from "./styles";
 import React, { useState, useEffect, useRef, useMemo, act } from "react";
+import useResize from "@/utils/hooks/useResize";
 
-const getRandomDigit = () => Math.floor(Math.random() * 10);
+const getRandomDigit = () => {
+  let res = Math.floor(Math.random() * 10);
+  return res == 0 ? " " : res;
+};
 
 export default function TextGrid({ isTesting = false, activated = false }) {
   const [localActivated, setLocalActivated] = useState(activated);
@@ -23,7 +27,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     };
   }, [isTesting]);
 
-  const [numbers, setNumbers] = useState(new Array(150).fill(0).map((_, i) => getRandomDigit()));
+  const [numbers, setNumbers] = useState(new Array(200).fill(0).map((_, i) => getRandomDigit()));
 
   useEffect(() => {
     if (!localActivated) return;
@@ -36,6 +40,8 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     };
   }, [localActivated]);
 
+  const [windowWidth, windowHeight] = useResize();
+
   return (
     <S.Container>
       <S.InnerSVG
@@ -43,21 +49,21 @@ export default function TextGrid({ isTesting = false, activated = false }) {
           opacity: localActivated ? 1 : 0.05,
         }}
       >
-        {new Array(100).fill(0).map((_, i) => (
-          <SingleLine key={i} i={i} numbers={numbers} />
+        {new Array(50).fill(0).map((_, i) => (
+          <SingleLine key={i} i={i} numbers={numbers} yInterval={windowHeight * 0.02} />
         ))}
       </S.InnerSVG>
     </S.Container>
   );
 }
 
-function SingleLine({ i, numbers }) {
-  const sliceIdx = useMemo(() => (i * Math.floor(i ** 2 * 0.3 - i * 7)) % 100, [i]);
+function SingleLine({ i, numbers, yInterval }) {
+  const sliceIdx = useMemo(() => ((i * Math.floor(i ** 2 * 0.3 - i * 7)) % 100) + Math.floor(30 * Math.sin(i * 0.7 + i ** 1.3)), [i]);
 
   const textEl = useMemo(() => (i !== 1000 ? numbers.slice(sliceIdx).concat(numbers.slice(0, sliceIdx)).join("") : "Lorem Ipsum "), [i, numbers, sliceIdx]);
 
   return (
-    <text x="5" y={i * 20} color="white">
+    <text x="5" y={i * yInterval} color="white">
       {textEl}
     </text>
   );

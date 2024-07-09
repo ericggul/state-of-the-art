@@ -19,7 +19,7 @@ export const InnerSVG = styled.svg`
   color: white;
 
   text {
-    font-size: 21.3577px;
+    font-size: 1vw;
     font-family: monospace;
     dominant-baseline: hanging;
     white-space: pre;
