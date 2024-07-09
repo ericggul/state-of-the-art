@@ -4,14 +4,7 @@ import * as S from "./styles";
 import React, { useState, useEffect, useRef, useMemo, act } from "react";
 import useResize from "@/utils/hooks/useResize";
 
-const getRandomMax = (max) => {
-  let res = Math.floor(Math.random() * Math.min(max, 10));
-  return res == 0 ? " " : res;
-};
-
-const ACCELERATION = 0.03;
-const XLEN = 167;
-const YLEN = 50;
+import { TEST_BLANKS, ACCELERATION, XLEN, YLEN, getRandomMax } from "./const";
 
 export default function TextGrid({ isTesting = false, activated = false }) {
   const [localActivated, setLocalActivated] = useState(activated);
@@ -32,7 +25,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     };
   }, [isTesting]);
 
-  const [numbers, setNumbers] = useState(new Array(XLEN).fill(0).map((_, i) => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.5)));
+  const [numbers, setNumbers] = useState(new Array(XLEN).fill(0).map((_, i) => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.85)));
 
   useEffect(() => {
     if (!localActivated) {
@@ -42,7 +35,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     }
     const interval = setInterval(() => {
       iterationAfterActivatedRef.current++;
-      setNumbers(numbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.5)));
+      setNumbers(numbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.85)));
     }, 20);
 
     return () => {
@@ -67,32 +60,15 @@ export default function TextGrid({ isTesting = false, activated = false }) {
   );
 }
 
-const BLANKS = [
-  [30, 60],
-  [80, 100],
-];
-
-const TEST_BLANKS = new Array(YLEN).fill([
-  [30, 60],
-  [80, 100],
-]);
-
 function SingleLine({ i, numbers, yInterval }) {
   const sliceIdx = useMemo(() => ((i * Math.floor(i ** 2 * 0.3 - i * 7)) % 100) + Math.floor(30 * Math.sin(i * 0.7 + i ** 1.3)), [i]);
   const textEl = useMemo(() => {
     const slicedArr = numbers.slice(sliceIdx).concat(numbers.slice(0, sliceIdx));
-
-    //from here, take only 30th-60th items and 80th-100th items, other items make it " "
+    const targetBlanks = TEST_BLANKS[i];
     const res = slicedArr.map((el, idx) => {
-      if (idx >= 30 && idx <= 60) {
-        return el;
-      } else if (idx >= 80 && idx <= 100) {
-        return el;
-      } else {
-        return " ";
-      }
+      const isBlank = targetBlanks.some(([start, end]) => idx >= start && idx <= end);
+      return isBlank ? el : " ";
     });
-
     return res.join("");
   }, [i, numbers, sliceIdx]);
 
