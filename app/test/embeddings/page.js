@@ -2,12 +2,12 @@
 
 import dynamic from "next/dynamic";
 
-const Brain = dynamic(() => import("@/components/test/brain"));
+const Embeddings = dynamic(() => import("@/components/test/embeddings"));
 
 export default function NNPage() {
   return (
     <>
-      <Brain />
+      <Embeddings />
     </>
   );
 }
