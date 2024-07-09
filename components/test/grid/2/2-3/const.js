@@ -7,7 +7,7 @@ export const getRandomMax = (max) => {
   return res == 0 ? " " : res;
 };
 
-//IMPLEMENTED SIGMOID
+//SIGMOID VARIATION
 const inverseSigmoid = (x) => {
   return Math.log(x / (1 - x));
 };
@@ -18,14 +18,15 @@ function blanksGenerator() {
     res.push([]);
 
     const adjustedY = YLEN - 1 - y;
-    const sigmoidVal = inverseSigmoid(adjustedY * (1 / (YLEN - 1))) * 80;
-    const VAL = 600;
 
-    const stretchedVal = ((sigmoidVal + VAL) * XLEN) / (2 * VAL);
+    const sigmoidA = inverseSigmoid((adjustedY - 3) * (1 / (YLEN - 1))) * 80;
+    const sigmoidB = inverseSigmoid((adjustedY + 3) * (1 / (YLEN - 1))) * 80;
 
-    console.log(adjustedY, sigmoidVal, stretchedVal);
+    const STRETCH_X = 600;
 
-    res[y].push([stretchedVal, XLEN]);
+    const strechVal = (v) => ((v + STRETCH_X) * XLEN) / (2 * STRETCH_X);
+
+    res[y].push([strechVal(sigmoidA), strechVal(sigmoidB)]);
 
     for (let j = 0; j < 2; j++) {
       // res[i].push([

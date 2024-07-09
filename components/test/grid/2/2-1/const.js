@@ -7,6 +7,7 @@ export const getRandomMax = (max) => {
   return res == 0 ? " " : res;
 };
 
+//COMPLETE RANDOM
 function blanksGenerator() {
   const res = [];
   for (let i = 0; i < YLEN; i++) {
