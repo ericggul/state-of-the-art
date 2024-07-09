@@ -14,19 +14,18 @@ const inverseSigmoid = (x) => {
 
 function blanksGenerator() {
   const res = [];
+
+  const cutFrom = YLEN * 0.9;
+
   for (let y = 0; y < YLEN; y++) {
     res.push([]);
 
-    const adjustedY = YLEN - 1 - y;
+    let start = 0;
+    if (y < cutFrom) {
+      start = XLEN * 0.5 + (((cutFrom - y) * XLEN) / YLEN) * 0.7;
+    }
 
-    const sigmoidA = inverseSigmoid((adjustedY - 3) * (1 / (YLEN - 1))) * 80;
-    const sigmoidB = inverseSigmoid((adjustedY + 3) * (1 / (YLEN - 1))) * 80;
-
-    const STRETCH_X = 600;
-
-    const strechVal = (v) => ((v + STRETCH_X) * XLEN) / (2 * STRETCH_X);
-
-    res[y].push([strechVal(sigmoidA), strechVal(sigmoidB)]);
+    res[y].push([start, XLEN]);
 
     for (let j = 0; j < 2; j++) {
       // res[i].push([
