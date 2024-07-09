@@ -48,7 +48,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
 
   useEffect(() => {
     async function fetchData() {
-      const imageData = await getImageData("/images/grid/test.png"); // Ensure this path is correct
+      const imageData = await getImageData("/images/grid/test4.jpeg");
       const processedResult = processImage(imageData, XLEN, YLEN);
       const blanks = [];
       console.log(processedResult);
