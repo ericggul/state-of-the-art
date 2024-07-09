@@ -21,6 +21,8 @@ const Grid231 = dynamic(() => import("@/components/test/grid/2/2-3/2-3-1"));
 //RANDOM SINE WAVES
 const Grid24 = dynamic(() => import("@/components/test/grid/2/2-4"));
 
+const Grid25 = dynamic(() => import("@/components/test/grid/2/2-5"));
+
 export default function NNPage() {
   const { idx } = useParams();
 
@@ -45,6 +47,8 @@ export default function NNPage() {
 
       {/* RANDOM SINE WAVES */}
       {idx === "2-4" && <Grid24 isTesting={true} />}
+
+      {idx === "2-5" && <Grid25 isTesting={true} />}
     </>
   );
 }

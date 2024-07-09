@@ -65,6 +65,7 @@ function SingleLine({ i, numbers, yInterval, iterationAfterActivatedRef }) {
   const textEl = useMemo(() => {
     const slicedArr = numbers.slice(sliceIdx).concat(numbers.slice(0, sliceIdx));
     const targetBlanks = animateBlanks(iterationAfterActivatedRef.current)[i];
+
     const res = slicedArr.map((el, idx) => {
       const isBlank = targetBlanks.some(([start, end]) => idx >= start && idx <= end);
       return isBlank ? el : " ";
