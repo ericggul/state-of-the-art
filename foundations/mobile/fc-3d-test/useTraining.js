@@ -1,4 +1,4 @@
-import { LAYER_NUMBER, TRAINING_INTERVAL } from "../constants";
+import { LAYER_NUMBER, TRAINING_INTERVAL } from "./constants";
 
 import { useState, useEffect, useRef } from "react";
 

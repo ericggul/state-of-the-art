@@ -9,9 +9,8 @@ import useSocket from "@/utils/socket/useSocketMobile";
 import { v4 as uuidv4 } from "uuid";
 
 ///Test: FC-3d 0
-import FC3D0 from "./fc-3d-test";
-
-import { LAYER_NUMBER, TRAINING_INTERVAL } from "./constants";
+import FC3D0 from "@/foundations/mobile/fc-3d-test";
+import UI from "@/foundations/mobile/ui";
 
 export default function Mobile() {
   const mobileId = useRef(uuidv4());
@@ -43,40 +42,41 @@ export default function Mobile() {
   function handleTrainButtonClick() {
     const propagationId = uuidv4();
     if (socket && socket.current) {
-      // socket.current.emit("mobile-training", {
-      //   mobileId: mobileId.current,
-      // });
+      socket.current.emit("mobile-training", {
+        mobileId: mobileId.current,
+        propagationId,
+      });
 
-      for (let i = 0; i < LAYER_NUMBER; i++) {
-        const timeout = setTimeout(() => {
-          if (socket && socket.current) {
-            socket.current.emit("conductor-propagation", {
-              layerIdx: i,
-              type: "propagation",
-              mobileId: mobileId.current,
-              propagationId,
-            });
-          }
-        }, i * TRAINING_INTERVAL);
+      // for (let i = 0; i < LAYER_NUMBER; i++) {
+      //   const timeout = setTimeout(() => {
+      //     if (socket && socket.current) {
+      //       socket.current.emit("conductor-propagation", {
+      //         layerIdx: i,
+      //         type: "propagation",
+      //         mobileId: mobileId.current,
+      //         propagationId,
+      //       });
+      //     }
+      //   }, i * TRAINING_INTERVAL);
 
-        timeoutRefs.current.push(timeout);
-      }
+      //   timeoutRefs.current.push(timeout);
+      // }
 
-      // BACK PROPAGATION
-      for (let i = 0; i < LAYER_NUMBER; i++) {
-        const timeout = setTimeout(() => {
-          if (socket && socket.current) {
-            socket.current.emit("conductor-propagation", {
-              layerIdx: LAYER_NUMBER - 1 - i,
-              type: "back-propagation",
-              mobileId: mobileId.current,
-              propagationId,
-            });
-          }
-        }, (i + LAYER_NUMBER) * TRAINING_INTERVAL);
+      // // BACK PROPAGATION
+      // for (let i = 0; i < LAYER_NUMBER; i++) {
+      //   const timeout = setTimeout(() => {
+      //     if (socket && socket.current) {
+      //       socket.current.emit("conductor-propagation", {
+      //         layerIdx: LAYER_NUMBER - 1 - i,
+      //         type: "back-propagation",
+      //         mobileId: mobileId.current,
+      //         propagationId,
+      //       });
+      //     }
+      //   }, (i + LAYER_NUMBER) * TRAINING_INTERVAL);
 
-        timeoutRefs.current.push(timeout);
-      }
+      //   timeoutRefs.current.push(timeout);
+      // }
 
       setTrainingIteration((i) => i + 1);
     }
@@ -85,7 +85,7 @@ export default function Mobile() {
   return (
     <S.Container>
       <FC3D0 onLayerChange={setLayersExpanded} training={trainingIteration} />
-      <S.TrainButton onClick={handleTrainButtonClick}>{">>"} Train Model</S.TrainButton>
+      <UI handleTrainButtonClick={handleTrainButtonClick} />
     </S.Container>
   );
 }
