@@ -18,8 +18,10 @@ export default function Conductor() {
   const timeoutRefs = useRef([]);
 
   function handleNewTraining(data) {
+    console.log("21 New Training", data);
     // PROPAGATION
     for (let i = 0; i < LAYER_NUMBER; i++) {
+      console.log("23 prop", data);
       const timeout = setTimeout(() => {
         if (socket && socket.current) {
           socket.current.emit("conductor-propagation", {
@@ -37,6 +39,7 @@ export default function Conductor() {
 
     // BACK PROPAGATION
     for (let i = 0; i < LAYER_NUMBER; i++) {
+      console.log("23 back-prop", data);
       const timeout = setTimeout(() => {
         if (socket && socket.current) {
           socket.current.emit("conductor-propagation", {
