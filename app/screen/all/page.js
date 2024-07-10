@@ -1,10 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import * as S from "./styles";
 
 import { useSearchParams } from "next/navigation";
 
-export default function Screen() {
+export default function ScreenWrapper() {
+  return (
+    <Suspense>
+      <Screen />
+    </Suspense>
+  );
+}
+
+function Screen() {
   const searchParams = useSearchParams();
 
   const testIdx = searchParams.get("testIdx");
