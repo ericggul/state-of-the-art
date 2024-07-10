@@ -12,14 +12,18 @@ export const metadata = {
     // url: "portfolio-jyc.org",
     siteName: "DDP AI Exhibition",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport = {
+  themeColor: "black",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: "no",
 };
 
 //FONTS SETUP
