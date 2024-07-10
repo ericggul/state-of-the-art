@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function UI({ handleTrain }) {
   const [expanded, setExpanded] = useState(false);
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState("Today Tom went to the market. He bought some fruits. He then went back to his home. It was such a triing day.");
 
   function handleButtonClick() {
     setExpanded((ex) => !ex);

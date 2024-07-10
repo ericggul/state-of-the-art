@@ -1,7 +1,8 @@
 import * as S from "./styles";
 import axios from "axios";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import useResize from "@/utils/hooks/useResize";
 
 export default function Layer0({ tokens }) {
   const [embeddings, setEmbeddings] = useState({});
@@ -19,6 +20,7 @@ export default function Layer0({ tokens }) {
     if (!text) return;
     let res = await axios.post("/api/openai/embeddings", {
       text,
+      dim: 256,
     });
 
     setEmbeddings((embd) => {
@@ -29,29 +31,65 @@ export default function Layer0({ tokens }) {
     });
   }
 
-  console.log(embeddings);
+  const [windowWidth, windowHeight] = useResize();
 
   return (
     <S.Container>
       <S.Tokens>
         {tokens.map((token, i) => (
-          <Token key={i} token={token} embedding={embeddings[token] || null} />
+          <Token key={i} token={token} embedding={embeddings[token] || null} unitWidth={windowWidth * 0.01} />
         ))}
       </S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding }) {
+//arr rearra
+
+function Token({ token, embedding, unitWidth }) {
+  const sortedPosNegEmbedding = useMemo(() => {
+    if (!embedding) return { pos: null, neg: null };
+
+    const pos = [];
+    const neg = [];
+
+    embedding.forEach((a) => {
+      if (a > 0) {
+        pos.push(a);
+      } else if (a < 0) {
+        neg.push(a);
+      }
+    });
+
+    pos.sort((a, b) => b - a).slice(0, 50);
+    neg.sort((a, b) => b - a).slice(0, 50);
+
+    return { pos, neg };
+  }, [embedding]);
+
+  const sortedPosEmbedding = sortedPosNegEmbedding.pos;
+  const sortedNegEmbedding = sortedPosNegEmbedding.neg;
+
   return (
-    <S.Token
-      style={{
-        background: `hsl(0, 100%, 80%)`,
-      }}
-      startsWithSpace={token.startsWith(" ")}
-    >
+    <S.Token startswithspace={token.startsWith(" ")}>
       {token}
-      <S.Vector>{embedding.join(" ")}</S.Vector>
+
+      <S.PosVector>
+        {sortedPosEmbedding &&
+          sortedPosEmbedding.map((num, i) => (
+            <S.Num key={i} num={Math.abs(num)}>
+              {num}
+            </S.Num>
+          ))}
+      </S.PosVector>
+      <S.NegVector>
+        {sortedNegEmbedding &&
+          sortedNegEmbedding.map((num, i) => (
+            <S.Num key={i} num={Math.abs(num)}>
+              {num}
+            </S.Num>
+          ))}
+      </S.NegVector>
     </S.Token>
   );
 }
