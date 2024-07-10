@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
-const FC0 = dynamic(() => import("@/components/test/fc-3d/0"));
-const FC1 = dynamic(() => import("@/components/test/fc-3d/1"));
+const FC0 = dynamic(() => import("@/foundations/test/fc-3d/0"));
+const FC1 = dynamic(() => import("@/foundations/test/fc-3d/1"));
 
 export default function FCPage() {
   const { idx } = useParams();

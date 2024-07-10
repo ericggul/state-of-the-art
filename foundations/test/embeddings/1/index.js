@@ -45,13 +45,14 @@ export default function Layer0({ tokens }) {
 }
 
 //arr rearra
+const CUT = 10;
 
 function Token({ token, embedding, unitWidth }) {
   const sortedPosNegEmbedding = useMemo(() => {
     if (!embedding) return { pos: null, neg: null };
 
-    const pos = [];
-    const neg = [];
+    let pos = [];
+    let neg = [];
 
     embedding.forEach((a) => {
       if (a > 0) {
@@ -61,8 +62,8 @@ function Token({ token, embedding, unitWidth }) {
       }
     });
 
-    pos.sort((a, b) => b - a).slice(0, 50);
-    neg.sort((a, b) => b - a).slice(0, 50);
+    pos = pos.sort((a, b) => b - a).slice(0, 50);
+    neg = neg.sort((a, b) => b - a).slice(0, 50);
 
     return { pos, neg };
   }, [embedding]);
@@ -73,22 +74,15 @@ function Token({ token, embedding, unitWidth }) {
   return (
     <S.Token startswithspace={token.startsWith(" ")}>
       {token}
-
       <S.PosVector>
-        {sortedPosEmbedding &&
-          sortedPosEmbedding.map((num, i) => (
-            <S.Num key={i} num={Math.abs(num)}>
-              {num}
-            </S.Num>
-          ))}
+        <S.Inner>
+          {sortedPosEmbedding && sortedPosEmbedding.join(" ")}
+
+          <S.Overlay />
+        </S.Inner>
       </S.PosVector>
       <S.NegVector>
-        {sortedNegEmbedding &&
-          sortedNegEmbedding.map((num, i) => (
-            <S.Num key={i} num={Math.abs(num)}>
-              {num}
-            </S.Num>
-          ))}
+        <S.Inner>{sortedNegEmbedding && sortedNegEmbedding.join(" ")}</S.Inner>
       </S.NegVector>
     </S.Token>
   );

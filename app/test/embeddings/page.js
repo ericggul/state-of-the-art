@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const Embeddings = dynamic(() => import("@/components/test/embeddings"));
+const Embeddings = dynamic(() => import("@/foundations/test/embeddings/0"));
 
 export default function NNPage() {
   return (

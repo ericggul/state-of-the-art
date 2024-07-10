@@ -23,6 +23,48 @@ export const Token = styled.span`
   position: relative;
 `;
 
+// export const PosVector = styled.div`
+//   position: absolute;
+//   top: 2vw;
+//   width: 100%;
+//   color: white;
+//   font-size: 0.5vw;
+//   font-weight: 300;
+
+//   display: flex;
+//   justify-content: center;
+// `;
+
+// export const NegVector = styled.div`
+//   position: absolute;
+//   bottom: 2vw;
+//   width: 100%;
+//   color: white;
+//   font-size: 0.5vw;
+//   font-weight: 300;
+
+//   display: flex;
+//   justify-content: center;
+// `;
+
+export const Inner = styled.div`
+  width: 2vw;
+  text-align: center;
+  position: relative;
+`;
+
+export const Overlay = styled.div`
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, #000 13.85%, #fff 100%);
+  z-index: 10;
+  mix-blend-mode: darken;
+  -webkit-mix-blend-mode: darken;
+`;
+
 export const PosVector = styled.div`
   position: absolute;
   top: 2vw;
