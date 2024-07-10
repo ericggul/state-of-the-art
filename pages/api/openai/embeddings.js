@@ -6,12 +6,14 @@ const openai = new OpenAI({
 
 export default async function handler(req, res) {
   const text = req.body.text;
+  const dim = req.body.dim || 128;
 
   try {
     const embedding = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: text,
       encoding_format: "float",
+      num_dimensions: dim,
     });
 
     res.status(200).json(embedding.data);
