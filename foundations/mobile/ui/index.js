@@ -15,13 +15,12 @@ export default function UI({ handleTrain }) {
     <>
       {expanded && (
         <S.Modal>
-          <h1>Text</h1>
-          <S.Input value={inputText} onChange={(e) => setInputText(e.target.value)} />
+          <S.Input value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Input Text" />
           <S.Button onClick={() => handleTrain(inputText)}>Train</S.Button>
         </S.Modal>
       )}
 
-      <S.TrainButton onClick={handleButtonClick}>{">>"} Train Model</S.TrainButton>
+      <S.TrainButton onClick={handleButtonClick}>{expanded ? "X Close" : ">> Train Model"}</S.TrainButton>
     </>
   );
 }

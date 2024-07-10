@@ -12,6 +12,7 @@ export default function Screen({ layerIdx }) {
   const [pageState, setPageState] = useState("intro");
   const [layerExpanded, setLayerExpanded] = useState(false);
   const [propagations, setPropagations] = useState([]);
+  const [latestPropagation, setLatestPropagation] = useState({});
   const timeoutRef = useRef([]);
 
   const socket = useSocket({
@@ -36,6 +37,7 @@ export default function Screen({ layerIdx }) {
     console.log(data);
     setPageState("main");
     setPropagations((arr) => [...arr, data]);
+    setLatestPropagation(data);
 
     const timeoutId = setTimeout(() => {
       setPropagations((arr) => {
@@ -55,8 +57,8 @@ export default function Screen({ layerIdx }) {
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} />}
-      {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} setPropagations={setPropagations} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} latestPropagation={latestPropagation} />}
+      {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
     </>
   );
 }

@@ -6,21 +6,14 @@ import * as Tone from "tone";
 
 import GridTest from "@/components/test/grid/2/2-4";
 
-export default function Propagation({ propagations, setPropagations, layerIdx }) {
+export default function Propagation({ propagations, setPropagations, latestPropagation, layerIdx }) {
   const storedPropagationsRef = useRef([]);
 
   useEffect(() => {
-    // detect if propagations has new element
-    const newEl = propagations.find((propagation, idx) => propagation !== storedPropagationsRef.current[idx]);
-
-    storedPropagationsRef.current = propagations;
-
-    if (newEl) {
-      simpleTone({ propagationState: newEl.type, layerIdx });
+    if (latestPropagation) {
+      simpleTone({ propagateState: latestPropagation.type, layerIdx });
     }
-  }, [propagations, setPropagations, layerIdx]);
-
-  const [windowWidth, windowHeight] = useResize();
+  }, [latestPropagation, layerIdx]);
 
   return (
     <S.Container

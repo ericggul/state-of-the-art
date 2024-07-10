@@ -19,7 +19,9 @@ export const Input = styled.input`
 
   background: transparent;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+
+  font-family: "Fira Code", monospace;
 
   text-align: center;
 
