@@ -16,15 +16,15 @@ export const TextGrid = styled.div`
 export const InnerSVG = styled.svg`
   ${WholeContainer}
 
-  color: white;
+  filter: drop-shadow(0 0 0.1rem blue) drop-shadow(0 0 0.2rem red);
 
   text {
     font-size: 1vw;
     font-family: var(--fira-code);
     dominant-baseline: hanging;
     white-space: pre;
-    color: white;
-    fill: white;
+    color: hsla(240, 100%, 90%);
+    fill: hsla(240, 100%, 90%);
   }
 `;
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import useResize from "@/utils/hooks/useResize";
 import * as Tone from "tone";
 
-import GridTest from "@/components/test/grid/0";
+import GridTest from "@/components/test/grid/2/2-5";
 
 export default function Propagation({ propagations, setPropagations, layerIdx }) {
   const storedPropagationsRef = useRef([]);
@@ -12,7 +12,6 @@ export default function Propagation({ propagations, setPropagations, layerIdx })
   useEffect(() => {
     // detect if propagations has new element
     const newEl = propagations.find((propagation, idx) => propagation !== storedPropagationsRef.current[idx]);
-    console.log(propagations, newEl);
 
     storedPropagationsRef.current = propagations;
 
@@ -24,7 +23,11 @@ export default function Propagation({ propagations, setPropagations, layerIdx })
   const [windowWidth, windowHeight] = useResize();
 
   return (
-    <S.Container>
+    <S.Container
+      style={{
+        opacity: propagations.length > 0 ? 1 : 0,
+      }}
+    >
       <GridTest activated={propagations.length > 0} />
     </S.Container>
   );

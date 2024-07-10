@@ -1,61 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import * as S from "./styles";
+import dynamic from "next/dynamic";
 
-import useSocket from "@/utils/socket/useSocketScreen";
-import Intro from "@/components/screen/Intro";
-import Main from "@/components/screen/Main";
-import Propagation from "@/components/screen/Propagation";
+const Screen0 = dynamic(() => import("@/components/screen/0"));
+const Screen1 = dynamic(() => import("@/components/screen/1"));
 
-export default function Screen({ layerIdx }) {
-  const [pageState, setPageState] = useState("intro");
-  const [layerExpanded, setLayerExpanded] = useState(false);
-  const [propagations, setPropagations] = useState([]);
-  const timeoutRef = useRef([]);
+const ARR = [Screen0, Screen1];
 
-  const socket = useSocket({
-    layerIdx,
-    handleNewMobile,
-    handleNewLayerClicked,
-    handleNewPropagation,
-  });
-
-  function handleNewMobile(data) {
-    console.log("new mobile", data);
-    setPageState("main");
-  }
-
-  function handleNewLayerClicked(data) {
-    console.log("new layer clicked", data);
-    setPageState("main");
-    setLayerExpanded(data.layerVal);
-  }
-
-  function handleNewPropagation(data) {
-    setPageState("main");
-    setPropagations((arr) => [...arr, data]);
-
-    const timeoutId = setTimeout(() => {
-      setPropagations((arr) => {
-        return arr.filter((propagation) => propagation !== data);
-      });
-    }, 200);
-
-    timeoutRef.current.push(timeoutId);
-  }
-
-  useEffect(() => {
-    return () => {
-      timeoutRef.current.forEach((timeoutId) => clearTimeout(timeoutId));
-    };
-  }, []);
-
+export default function ScreenWrapper({ layerIdx, testIdx = 0 }) {
   return (
     <>
-      {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} />}
-      {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} setPropagations={setPropagations} />}
+      {testIdx == 0 && <Screen0 layerIdx={layerIdx} />}
+      {testIdx == 1 && <Screen1 layerIdx={layerIdx} />}
     </>
   );
 }

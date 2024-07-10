@@ -38,7 +38,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     }
     const interval = setInterval(() => {
       iterationAfterActivatedRef.current++;
-      setNumbers((prevNumbers) => prevNumbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.95)));
+      setNumbers((prevNumbers) => prevNumbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 1)));
     }, 20);
 
     return () => {
@@ -48,10 +48,9 @@ export default function TextGrid({ isTesting = false, activated = false }) {
 
   useEffect(() => {
     async function fetchData() {
-      const imageData = await getImageData("/images/grid/test4.jpeg");
+      const imageData = await getImageData("/images/grid/test.png");
       const processedResult = processImage(imageData, XLEN, YLEN);
       const blanks = [];
-      console.log(processedResult);
 
       for (let y = 0; y < YLEN; y++) {
         const row = [];
@@ -71,7 +70,6 @@ export default function TextGrid({ isTesting = false, activated = false }) {
         blanks.push(row);
       }
 
-      console.log(blanks);
       setTestBlanks(blanks);
     }
 
@@ -105,7 +103,7 @@ function SingleLine({ i, numbers, yInterval, testBlanks }) {
   }, [i, numbers, sliceIdx, testBlanks]);
 
   return (
-    <text x="0" y={i * yInterval} color="white">
+    <text x="0" y={i * yInterval}>
       {textEl}
     </text>
   );
