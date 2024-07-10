@@ -16,13 +16,13 @@ export default function ScreenWrapper() {
 function Screen() {
   const searchParams = useSearchParams();
 
-  const testIdx = searchParams.get("testIdx");
+  const v = searchParams.get("v");
 
   return (
     <S.Container>
       {new Array(4).fill(0).map((_, i) => (
         <S.Element key={i}>
-          <iframe src={`/screen?layerIdx=${i}&testIdx=${testIdx}`} />
+          <iframe src={`/screen?layerIdx=${i}&v=${v}`} />
         </S.Element>
       ))}
     </S.Container>

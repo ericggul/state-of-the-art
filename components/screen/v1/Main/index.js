@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import * as S from "./styles";
 
-import useTone from "@/foundations/screen/1/Main/useTone";
-import useTokenisation from "@/foundations/screen/1/Main/useTokenisation";
+import useTone from "@/foundations/screen/Main/useTone";
+import useTokenisation from "@/foundations/screen/Main/useTokenisation";
+
+import Layer0 from "@/foundations/layer0";
 
 export default function Main({ layerIdx, layerExpanded, latestPropagation }) {
   useTone({ layerExpanded });
@@ -21,6 +23,7 @@ export default function Main({ layerIdx, layerExpanded, latestPropagation }) {
         <br />
         This layer is currently expanded.
       </p>
+      {tokens && <Layer0 tokens={tokens} />}
     </S.Container>
   );
 }

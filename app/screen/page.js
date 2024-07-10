@@ -18,7 +18,7 @@ function Screen() {
   const searchParams = useSearchParams();
 
   const layerIdx = searchParams.get("layerIdx");
-  const testIdx = searchParams.get("testIdx") || 0;
+  const versionIdx = searchParams.get("v") || 0;
 
   const isConductor = useMemo(() => layerIdx == "0", [layerIdx]);
 
@@ -32,7 +32,7 @@ function Screen() {
 
   return (
     <>
-      <ScreenEl layerIdx={layerIdx} testIdx={testIdx} />
+      <ScreenEl layerIdx={layerIdx} versionIdx={versionIdx} />
       {isConductor && <Conductor />}
     </>
   );
