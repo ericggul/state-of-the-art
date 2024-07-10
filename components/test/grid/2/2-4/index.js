@@ -25,7 +25,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     };
   }, [isTesting]);
 
-  const [numbers, setNumbers] = useState(new Array(XLEN).fill(0).map((_, i) => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.95)));
+  const [numbers, setNumbers] = useState(new Array(XLEN).fill(0).map((_, i) => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 1.15)));
 
   useEffect(() => {
     if (!localActivated) {
@@ -35,7 +35,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
     }
     const interval = setInterval(() => {
       iterationAfterActivatedRef.current++;
-      setNumbers(numbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 0.95)));
+      setNumbers(numbers.map(() => getRandomMax(iterationAfterActivatedRef.current * ACCELERATION + 1.15)));
     }, 20);
 
     return () => {

@@ -27,6 +27,7 @@ export default function Conductor() {
             type: "propagation",
             mobileId: data.mobileId,
             propagationId: data.propagationId,
+            text: data.text,
           });
         }
       }, i * TRAINING_INTERVAL);
@@ -43,6 +44,7 @@ export default function Conductor() {
             type: "back-propagation",
             mobileId: data.mobileId,
             propagationId: data.propagationId,
+            text: data.text,
           });
         }
       }, (i + LAYER_NUMBER) * TRAINING_INTERVAL);

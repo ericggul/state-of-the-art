@@ -33,6 +33,7 @@ export default function Screen({ layerIdx }) {
   }
 
   function handleNewPropagation(data) {
+    console.log(data);
     setPageState("main");
     setPropagations((arr) => [...arr, data]);
 

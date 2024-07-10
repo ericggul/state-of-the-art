@@ -2,13 +2,26 @@ import * as S from "./styles";
 
 import { useState, useEffect } from "react";
 
-export default function UI({ handleTrainButtonClick }) {
+export default function UI({ handleTrain }) {
+  const [expanded, setExpanded] = useState(false);
   const [inputText, setInputText] = useState("");
 
+  function handleButtonClick() {
+    setExpanded((ex) => !ex);
+    // handleTrain();
+  }
+
   return (
-    <S.Container>
-      <S.Input value={inputText} onChange={(e) => setInputText(e.target.value)} />
-      <S.TrainButton onClick={handleTrainButtonClick}>{">>"} Train Model</S.TrainButton>
-    </S.Container>
+    <>
+      {expanded && (
+        <S.Modal>
+          <h1>Text</h1>
+          <S.Input value={inputText} onChange={(e) => setInputText(e.target.value)} />
+          <S.Button onClick={() => handleTrain(inputText)}>Train</S.Button>
+        </S.Modal>
+      )}
+
+      <S.TrainButton onClick={handleButtonClick}>{">>"} Train Model</S.TrainButton>
+    </>
   );
 }

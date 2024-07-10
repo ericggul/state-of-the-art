@@ -39,12 +39,13 @@ export default function Mobile() {
 
   const timeoutRefs = useRef([]);
   const [trainingIteration, setTrainingIteration] = useState(0);
-  function handleTrainButtonClick() {
+  function handleTrain(text) {
     const propagationId = uuidv4();
     if (socket && socket.current) {
       socket.current.emit("mobile-training", {
         mobileId: mobileId.current,
         propagationId,
+        text,
       });
 
       // for (let i = 0; i < LAYER_NUMBER; i++) {
@@ -85,7 +86,7 @@ export default function Mobile() {
   return (
     <S.Container>
       <FC3D0 onLayerChange={setLayersExpanded} training={trainingIteration} />
-      <UI handleTrainButtonClick={handleTrainButtonClick} />
+      <UI handleTrain={handleTrain} />
     </S.Container>
   );
 }
