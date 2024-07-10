@@ -7,6 +7,7 @@ import useTokenisation from "@/foundations/screen/1/Main/useTokenisation";
 export default function Main({ layerIdx, layerExpanded, latestPropagation }) {
   useTone({ layerExpanded });
   const tokens = useTokenisation({ text: latestPropagation.text || "" });
+  console.log(tokens);
 
   return (
     <S.Container>

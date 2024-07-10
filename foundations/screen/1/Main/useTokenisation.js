@@ -3,19 +3,19 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export default function useTokenisation({ text }) {
-  const [tokens, setTokens] = useState(null);
+  const [tokenisedArr, setTokenisedArr] = useState(null);
   useEffect(() => {
     handleTokenisation(text);
   }, [text]);
 
   async function handleTokenisation(text) {
     if (!text) return;
-    const tokens = await axios.post("/api/openai/tokenisation", { text });
-    console.log(tokens);
-    setTokens(tokens);
+    const res = await axios.post("/api/openai/tokenisation", { text });
+    console.log(res);
+    setTokenisedArr(res.data.decodedArr);
   }
 
-  return tokens;
+  return tokenisedArr;
 }
 
 function useTokenisationLocally({ text }) {
