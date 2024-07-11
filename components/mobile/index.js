@@ -42,15 +42,15 @@ export default function Mobile() {
     memorisedLayersRef.current = layersExpanded;
   }, [layersExpanded]);
 
-  const timeoutRefs = useRef([]);
   const [trainingIteration, setTrainingIteration] = useState(0);
-  function handleTrain(text) {
+  function handleTrain({ text, params }) {
     const propagationId = uuidv4();
     if (socket && socket.current) {
       socket.current.emit("mobile-training", {
         mobileId: mobileId.current,
         propagationId,
         text,
+        params,
       });
 
       // for (let i = 0; i < LAYER_NUMBER; i++) {

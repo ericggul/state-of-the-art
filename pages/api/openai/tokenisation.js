@@ -8,7 +8,7 @@ export default function handler(req, res) {
 
   let decodedArr = [];
   tokens.forEach((token) => {
-    let decoded = new TextDecoder().decode(encoding.decode([token]));
+    let decoded = new TextDecoder("utf-8").decode(encoding.decode([token]));
     decodedArr.push(decoded);
   });
 

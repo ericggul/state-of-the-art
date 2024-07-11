@@ -22,14 +22,26 @@ export default function Conductor() {
       socket,
     });
 
-    await getGPT(data.text);
+    await getGPT(data);
   }
 
-  async function getGPT(text) {
+  async function getGPT(data) {
     const response = await axios.post("/api/openai/gpt-4o", {
-      text,
+      text: data.text,
+      params: {
+        frequency_penalty: parseFloat(data.params.frequency_penalty),
+        temperature: parseFloat(data.params.temperature),
+      },
     });
-    console.log(response.data);
+
+    console.log(response.data.message.content);
+
+    socket.current.emit("conductor-new-data", {
+      generatedOutput: response.data,
+      mobileId: data.mobileId,
+      propagationId: data.propagationId,
+      text: data.text,
+    });
   }
 
   // Cleanup timeouts on unmount

@@ -6,6 +6,7 @@ const openai = new OpenAI({
 
 export default async function handler(req, res) {
   const text = req.body.text;
+  const params = req.body.params;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -13,23 +14,22 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant.",
+          content: "Generate next sentence of this poem.",
         },
         {
           role: "user",
           content: text,
         },
       ],
+      max_tokens: 30,
       logprobs: true,
       top_logprobs: 5,
-      frequency_penalty: 1.0,
-      presence_penalty: 1.0,
+      ...params,
     });
-
-    console.log(completion, completion.choices[0]);
 
     res.status(200).json(completion.choices[0]);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 }

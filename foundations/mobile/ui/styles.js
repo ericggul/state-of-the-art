@@ -5,6 +5,8 @@ export const Modal = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
   flex-direction: column;
+  backdrop-filter: blur(0.3rem);
+  -webkit-backdrop-filter: blur(0.3rem);
 `;
 
 export const Input = styled.input`
@@ -32,13 +34,31 @@ export const Input = styled.input`
   }
 `;
 
+export const Slider = styled.input`
+  -webkit-appearance: none;
+  width: 15rem;
+  height: 0.8vw;
+  background: white;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 export const Button = styled.div`
   border: 1px solid white;
   padding: 0.3rem 1rem;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 `;
 
-export const TrainButton = styled.div`
+export const ModalButton = styled.div`
   z-index: 10;
 
   position: absolute;
