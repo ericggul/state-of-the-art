@@ -3,8 +3,11 @@ import axios from "axios";
 
 import { useState, useEffect, useMemo } from "react";
 import useResize from "@/utils/hooks/useResize";
+import useTokenisation from "../useTokenisation";
 
-export default function Layer0({ tokens }) {
+export default function Layer0({ text }) {
+  const tokens = useTokenisation({ text: text || "" });
+
   const [embeddings, setEmbeddings] = useState({});
 
   useEffect(() => {

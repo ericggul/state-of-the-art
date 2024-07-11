@@ -2,10 +2,15 @@ import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
 
-export default function Layer0({ tokens }) {
+import useTokenisation from "../useTokenisation";
+
+export default function Layer0({ text }) {
+  const tokens = useTokenisation({ text: text || "" });
+
   const [embeddings, setEmbeddings] = useState({});
 
   useEffect(() => {
+    if (!tokens) return;
     tokens.forEach((token) => {
       if (!embeddings[token]) {
         fetchEmbedding(token);
@@ -40,11 +45,7 @@ export default function Layer0({ tokens }) {
 
   return (
     <S.Container>
-      <S.Tokens>
-        {tokens.map((token, i) => (
-          <Token key={i} token={token} embedding={embeddings[token]} />
-        ))}
-      </S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
       <S.Overlay isPos={true} />
       <S.Overlay isPos={false} />
     </S.Container>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export default function useTokenisation({ text }) {
-  const [tokenisedArr, setTokenisedArr] = useState(null);
+  const [tokenisedArr, setTokenisedArr] = useState([]);
   useEffect(() => {
     handleTokenisation(text);
   }, [text]);
