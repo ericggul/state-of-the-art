@@ -46,22 +46,22 @@ export default function Layer0({ text }) {
   return (
     <S.Container>
       <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
-      <S.Overlay isPos={true} />
-      <S.Overlay isPos={false} />
+      <S.Overlay ispos={"true"} />
+      <S.Overlay ispos={""} />
     </S.Container>
   );
 }
 
 function Token({ token, embedding }) {
   return (
-    <S.Token startswithspace={token.startsWith(" ")}>
+    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       {token}
       {embedding && (
         <>
-          <S.Vector isPos={true}>
+          <S.Vector ispos={"true"}>
             <S.Inner>{embedding.pos.join(" ")}</S.Inner>
           </S.Vector>
-          <S.Vector isPos={false}>
+          <S.Vector ispos={""}>
             <S.Inner>{embedding.neg.join(" ")}</S.Inner>
           </S.Vector>
         </>

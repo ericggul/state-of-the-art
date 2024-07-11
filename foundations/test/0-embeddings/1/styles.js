@@ -29,7 +29,7 @@ export const Vector = styled.div`
   color: white;
   font-size: 0.5vw;
   font-weight: 300;
-  ${({ isPos }) => (isPos ? `top: 2vw` : `bottom: 2vw`)};
+  ${({ ispos }) => (ispos ? `top: 2vw` : `bottom: 2vw`)};
   display: flex;
   justify-content: center;
 `;
@@ -45,8 +45,8 @@ export const Overlay = styled.div`
   position: absolute;
   width: 100vw;
   height: calc(50vh - 1vw);
-  top: ${({ isPos }) => (isPos ? `calc(50vh + 1vw)` : "0")};
-  background: linear-gradient(${({ isPos }) => (isPos ? 0 : 180)}deg, #000 13.85%, #fff 100%);
+  top: ${({ ispos }) => (ispos ? `calc(50vh + 1vw)` : "0")};
+  background: linear-gradient(${({ ispos }) => (ispos ? 0 : 180)}deg, #000 13.85%, #fff 100%);
   mix-blend-mode: darken;
   -webkit-mix-blend-mode: darken;
 `;

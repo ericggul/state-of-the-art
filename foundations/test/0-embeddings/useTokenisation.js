@@ -11,7 +11,6 @@ export default function useTokenisation({ text }) {
   async function handleTokenisation(text) {
     if (!text) return;
     const res = await axios.post("/api/openai/tokenisation", { text });
-    console.log(res);
     setTokenisedArr(res.data.decodedArr);
   }
 
@@ -27,7 +26,6 @@ function useTokenisationLocally({ text }) {
   async function handleTokenisation(text) {
     if (!text) return;
     const tokens = await encoding.encode(text);
-    console.log(tokens);
     setTokens(tokens);
   }
 
