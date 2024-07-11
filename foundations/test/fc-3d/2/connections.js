@@ -48,8 +48,8 @@ function SingleConnection({ layerFrom, layerTo, expanded }) {
             const toYPos = toYInterval * toJ - ((toYCount - 1) * toYInterval) / 2 + layerTo.position[1];
 
             temp.push({
-              from: [fromXPos, fromYPos, layerFrom.position[2]],
-              to: [toXPos, toYPos, layerTo.position[2]],
+              from: [fromXPos, fromYPos, layerFrom.position[2] - 1],
+              to: [toXPos, toYPos, layerTo.position[2] + 1],
             });
           }
         }
@@ -81,7 +81,7 @@ const SingleLine = React.memo(({ from, to }) => {
 
   return (
     <line geometry={geometry}>
-      <lineBasicMaterial color="white" transparent opacity={0.5} linewidth={1} linecap="round" linejoin="round" />
+      <lineBasicMaterial color="white" transparent opacity={1} linewidth={1} linecap="round" linejoin="round" />
     </line>
   );
 });

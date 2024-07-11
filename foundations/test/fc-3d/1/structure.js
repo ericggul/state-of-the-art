@@ -1,6 +1,6 @@
 export const STRUCTURE = [
   {
-    position: [0, 0, -20],
+    position: [0, 0, 20],
     node: {
       size: [4, 4, 0.3],
     },
@@ -16,7 +16,7 @@ export const STRUCTURE = [
     color: "blue",
   },
   {
-    position: [0, 0, -10],
+    position: [0, 0, 10],
     node: {
       size: [2, 2, 0.3],
     },
@@ -49,7 +49,7 @@ export const STRUCTURE = [
   },
 
   {
-    position: [0, 0, 10],
+    position: [0, 0, -10],
     node: {
       size: [2, 2, 0.3],
     },
@@ -65,7 +65,7 @@ export const STRUCTURE = [
     color: "blue",
   },
   {
-    position: [0, 0, 20],
+    position: [0, 0, -20],
     node: {
       size: [4, 4, 0.3],
     },

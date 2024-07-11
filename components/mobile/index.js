@@ -29,13 +29,20 @@ export default function Mobile() {
 
   useEffect(() => {
     if (layersExpanded.length > 0 && socket && socket.current) {
-      const layerVal = layersExpanded.find((layer, idx) => layer !== memorisedLayersRef.current[idx]);
-      const layerIdx = layersExpanded.findIndex((layer, idx) => layer !== memorisedLayersRef.current[idx]);
+      //OLD VERSION
+      // const layerVal = layersExpanded.find((layer, idx) => layer !== memorisedLayersRef.current[idx]);
+      // const layerIdx = layersExpanded.findIndex((layer, idx) => layer !== memorisedLayersRef.current[idx]);
 
+      // socket.current.emit("mobile-layer-clicked", {
+      //   mobileId: mobileId.current,
+      //   layerIdx,
+      //   layerVal,
+      // });
+
+      //NEW VERSION
       socket.current.emit("mobile-layer-clicked", {
         mobileId: mobileId.current,
-        layerIdx,
-        layerVal,
+        layersExpanded,
       });
     }
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState, useRef, Suspense } from "react";
+import { useMemo, useEffect, useState, useRef, Suspense } from "react";
 import * as S from "./styles";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
 import { useSpring, animated, Globals } from "@react-spring/three";
 import * as THREE from "three";
@@ -15,9 +15,7 @@ import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
-export default function NN3D() {
-  const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(true));
-
+export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
   const [requestPermission, setReq] = useState(false);
   const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
 
@@ -25,14 +23,16 @@ export default function NN3D() {
     <S.Container>
       <Canvas
         camera={{
-          position: [-15, 0, 0],
+          position: [-15, 0, STRUCTURE[layerIdx].position[2] + 10],
+          // lookAt: [0, 0, -15],
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
       >
-        <Perf position="top-left" />
+        {/* <Perf position="top-left" /> */}
 
+        <CameraLookAt layerIdx={layerIdx} />
         <Suspense fallback={null}>
           <Environment preset="city" />
         </Suspense>
@@ -42,18 +42,7 @@ export default function NN3D() {
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
         {STRUCTURE.map((structureEl, i) => (
-          <Layer
-            key={i}
-            {...structureEl}
-            expanded={layersExpanded[i]}
-            setExpanded={() => {
-              setLayersExpanded((prev) => {
-                const newExpanded = [...prev];
-                newExpanded[i] = !prev[i];
-                return newExpanded;
-              });
-            }}
-          />
+          <Layer key={i} {...structureEl} expanded={layersExpanded[i]} />
         ))}
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
@@ -64,13 +53,21 @@ export default function NN3D() {
   );
 }
 
-const Layer = (props) => {
-  const { expanded, setExpanded } = props;
+function CameraLookAt({ layerIdx }) {
+  useFrame((state) => {
+    state.camera.lookAt(
+      0,
+      0,
 
-  function handleClick(e) {
-    e.stopPropagation();
-    setExpanded();
-  }
+      STRUCTURE[layerIdx].position[2]
+    );
+  });
+
+  return null;
+}
+
+const Layer = (props) => {
+  const { expanded } = props;
 
   const [smoothedExpanded, setSmoothedExpanded] = useState(0);
 
@@ -84,7 +81,7 @@ const Layer = (props) => {
   });
 
   return (
-    <group position={props.position} onClick={handleClick}>
+    <group position={props.position}>
       {smoothedExpanded > 0 &&
         new Array(props.grid.xCount).fill(0).map((_, i) => (
           <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>

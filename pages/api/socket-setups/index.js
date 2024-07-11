@@ -20,7 +20,8 @@ export default function mobileSetup({ socket, io }) {
 
   ///////////
   socket.on("mobile-layer-clicked", (data) => {
-    socket.to(`layer-${data.layerIdx}`).emit("new-mobile-layer-clicked", data);
+    socket.to(`screen`).emit("new-mobile-layer-clicked", data);
+    // socket.to(`layer-${data.layerIdx}`).emit("new-mobile-layer-clicked", data);
   });
 
   socket.on("mobile-training", (data) => {
