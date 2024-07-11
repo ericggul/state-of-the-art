@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         },
       ],
       logprobs: true,
-      top_logprobs: 3,
+      top_logprobs: 5,
       frequency_penalty: 1.0,
       presence_penalty: 1.0,
     });
