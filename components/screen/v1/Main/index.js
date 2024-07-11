@@ -4,7 +4,7 @@ import * as S from "./styles";
 import useTone from "@/foundations/screen/Main/useTone";
 import useTokenisation from "@/foundations/screen/Main/useTokenisation";
 
-import Layer0 from "@/foundations/test/embeddings/1";
+import Layer0 from "@/foundations/test/0-embeddings/1";
 
 export default function Main({ layerIdx, layerExpanded, latestPropagation }) {
   useTone({ layerExpanded });

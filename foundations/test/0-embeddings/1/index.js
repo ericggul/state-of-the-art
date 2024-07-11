@@ -30,8 +30,9 @@ export default function Layer0({ tokens }) {
           .slice(0, 50),
         neg: newRes
           .filter((a) => a < 0)
-          .sort((a, b) => b - a)
-          .slice(0, 50),
+          .sort((a, b) => a - b)
+          .slice(0, 50)
+          .reverse(),
       };
       return copy;
     });
