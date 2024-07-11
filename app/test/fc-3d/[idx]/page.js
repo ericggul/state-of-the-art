@@ -6,6 +6,9 @@ import { useParams } from "next/navigation";
 const FC0 = dynamic(() => import("@/foundations/test/fc-3d/0"));
 const FC1 = dynamic(() => import("@/foundations/test/fc-3d/1"));
 
+//fc 2: for screen
+const FC2 = dynamic(() => import("@/foundations/test/fc-3d/2"));
+
 export default function FCPage() {
   const { idx } = useParams();
 
@@ -13,6 +16,7 @@ export default function FCPage() {
     <>
       {idx === "0" && <FC0 />}
       {idx === "1" && <FC1 />}
+      {idx === "2" && <FC2 />}
     </>
   );
 }

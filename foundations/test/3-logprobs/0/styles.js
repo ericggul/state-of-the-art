@@ -30,17 +30,14 @@ export const Vector = styled.div`
   position: absolute;
   width: 100%;
   color: white;
-  font-size: 0.5vw;
+  font-size: 0.8vw;
   font-weight: 300;
   ${({ ispos }) => (ispos ? `top: 2vw` : `bottom: 2vw`)};
   display: flex;
   justify-content: center;
-`;
 
-export const Inner = styled.div`
-  max-width: calc(min(2vw, 100%));
+  white-space: pre-wrap;
   text-align: center;
-  position: relative;
 `;
 
 export const Overlay = styled.div`

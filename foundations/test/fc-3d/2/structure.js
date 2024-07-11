@@ -13,7 +13,7 @@ export const STRUCTURE = [
       xInterval: 5,
       yInterval: 5,
     },
-    color: "blue",
+    color: "white",
   },
   {
     position: [0, 0, -10],
@@ -29,7 +29,7 @@ export const STRUCTURE = [
       xInterval: 3,
       yInterval: 3,
     },
-    color: "blue",
+    color: "white",
   },
   {
     position: [0, 0, 0],
@@ -45,7 +45,7 @@ export const STRUCTURE = [
       xInterval: 5,
       yInterval: 5,
     },
-    color: "blue",
+    color: "white",
   },
 
   {
@@ -62,7 +62,7 @@ export const STRUCTURE = [
       xInterval: 3,
       yInterval: 3,
     },
-    color: "blue",
+    color: "white",
   },
   {
     position: [0, 0, 20],
@@ -78,6 +78,6 @@ export const STRUCTURE = [
       xInterval: 5,
       yInterval: 5,
     },
-    color: "blue",
+    color: "white",
   },
 ];

@@ -1,6 +1,6 @@
 export const STRUCTURE = [
   {
-    position: [0, 0, -30],
+    position: [0, 0, -20],
     node: {
       size: [4, 4, 0.3],
     },
@@ -12,61 +12,28 @@ export const STRUCTURE = [
       yCount: 2,
       xInterval: 5,
       yInterval: 5,
-    },
-    color: "blue",
-  },
-  {
-    position: [0, 0, -20],
-    node: {
-      size: [2, 2, 0.3],
-    },
-    unexpandedNode: {
-      size: [8, 8, 0.3],
-    },
-    grid: {
-      xCount: 5,
-      yCount: 5,
-      xInterval: 3,
-      yInterval: 3,
     },
     color: "blue",
   },
   {
     position: [0, 0, -10],
     node: {
-      size: [4, 4, 0.3],
+      size: [2, 2, 0.3],
     },
     unexpandedNode: {
       size: [8, 8, 0.3],
     },
     grid: {
-      xCount: 3,
-      yCount: 2,
-      xInterval: 5,
-      yInterval: 5,
+      xCount: 5,
+      yCount: 5,
+      xInterval: 3,
+      yInterval: 3,
     },
     color: "blue",
   },
-
   {
     position: [0, 0, 0],
     node: {
-      size: [2, 2, 0.3],
-    },
-    unexpandedNode: {
-      size: [8, 8, 0.3],
-    },
-    grid: {
-      xCount: 5,
-      yCount: 5,
-      xInterval: 3,
-      yInterval: 3,
-    },
-    color: "blue",
-  },
-  {
-    position: [0, 0, 10],
-    node: {
       size: [4, 4, 0.3],
     },
     unexpandedNode: {
@@ -82,7 +49,7 @@ export const STRUCTURE = [
   },
 
   {
-    position: [0, 0, 20],
+    position: [0, 0, 10],
     node: {
       size: [2, 2, 0.3],
     },
@@ -98,7 +65,7 @@ export const STRUCTURE = [
     color: "blue",
   },
   {
-    position: [0, 0, 30],
+    position: [0, 0, 20],
     node: {
       size: [4, 4, 0.3],
     },
@@ -106,8 +73,8 @@ export const STRUCTURE = [
       size: [8, 8, 0.3],
     },
     grid: {
-      xCount: 2,
-      yCount: 4,
+      xCount: 3,
+      yCount: 2,
       xInterval: 5,
       yInterval: 5,
     },

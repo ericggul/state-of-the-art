@@ -12,20 +12,21 @@ export default function Layer3({ newData, text }) {
 
   return (
     <S.Container>
-      <S.Tokens>{logProbs && logProbs.map((token, i) => <Token key={i} token={token.token} embedding={token.top_logprobs.map((el) => el.logprob.toFixed(2))} />)}</S.Tokens>
+      <S.Tokens>
+        {logProbs && logProbs.map((token, i) => <Token key={i} token={token.token} logprobs={token.top_logprobs} embedding={token.top_logprobs.map((el) => el.logprob.toFixed(2))} />)}
+      </S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding }) {
+function Token({ token, logprobs, embedding }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <p>{token}</p>
-      {embedding && (
+      {logprobs && (
         <>
-          <S.Vector ispos={"true"}>
-            <S.Inner>{embedding.join(" ")}</S.Inner>
-          </S.Vector>
+          <S.Vector ispos={"true"}>{logprobs.map((el) => el.token).join("\n")}</S.Vector>
+          <S.Vector ispos={""}>{logprobs.map((el) => el.logprob.toFixed(2)).join("\n")}</S.Vector>
           {/* <S.Vector ispos={""}>
             <S.Inner>{embedding.neg.join(" ")}</S.Inner>
           </S.Vector> */}
