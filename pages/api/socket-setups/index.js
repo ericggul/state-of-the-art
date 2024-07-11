@@ -24,12 +24,15 @@ export default function mobileSetup({ socket, io }) {
   });
 
   socket.on("mobile-training", (data) => {
-    // console.log("mobile training", data);
     socket.to("conductor").emit("new-mobile-training", data);
   });
 
   socket.on("conductor-propagation", (data) => {
-    // console.log("conductor propagation", data);
     socket.to(`layer-${data.layerIdx}`).emit("new-conductor-propagation", data);
+  });
+
+  socket.on("conductor-new-data", (data) => {
+    socket.to("screen").emit("new-conductor-data", data);
+    socket.to("mobile").emit("new-conductor-data", data);
   });
 }

@@ -20,21 +20,19 @@ export default function Screen({ layerIdx }) {
     handleNewMobile,
     handleNewLayerClicked,
     handleNewPropagation,
+    handleNewData,
   });
 
   function handleNewMobile(data) {
-    console.log("new mobile", data);
     setPageState("main");
   }
 
   function handleNewLayerClicked(data) {
-    console.log("new layer clicked", data);
     setPageState("main");
     setLayerExpanded(data.layerVal);
   }
 
   function handleNewPropagation(data) {
-    console.log(data);
     setPageState("main");
     setPropagations((arr) => [...arr, data]);
     setLatestPropagation(data);
@@ -46,6 +44,10 @@ export default function Screen({ layerIdx }) {
     }, 200);
 
     timeoutRef.current.push(timeoutId);
+  }
+
+  function handleNewData(data) {
+    console.log("new data", data);
   }
 
   useEffect(() => {

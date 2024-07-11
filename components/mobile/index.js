@@ -17,7 +17,12 @@ export default function Mobile() {
 
   const socket = useSocket({
     mobileId: mobileId.current,
+    handleNewData,
   });
+
+  function handleNewData(data) {
+    console.log("new data", data);
+  }
 
   const [layersExpanded, setLayersExpanded] = useState([]);
   const memorisedLayersRef = useRef(layersExpanded);

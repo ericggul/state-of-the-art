@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
-export default function useSocketScreen({ layerIdx, handleNewMobile, handleNewLayerClicked, handleNewPropagation }) {
+export default function useSocketScreen({ layerIdx, handleNewMobile, handleNewLayerClicked, handleNewPropagation, handleNewData = () => {} }) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
@@ -27,6 +27,7 @@ export default function useSocketScreen({ layerIdx, handleNewMobile, handleNewLa
       socket.current.on("new-mobile-init", handleNewMobile);
       socket.current.on("new-mobile-layer-clicked", handleNewLayerClicked);
       socket.current.on("new-conductor-propagation", handleNewPropagation);
+      socket.current.on("new-conductor-data", handleNewData);
     });
   };
 
