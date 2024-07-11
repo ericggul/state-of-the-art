@@ -5,7 +5,6 @@ import * as S from "./styles";
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
-import DeviceOrientationControls from "@/utils/comps/orientation/device-orientation-controls";
 import { useSpring, animated, Globals } from "@react-spring/three";
 import * as THREE from "three";
 import { Perf } from "r3f-perf";
@@ -17,7 +16,7 @@ import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
 export default function NN3D() {
-  const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(false));
+  const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(true));
 
   const [requestPermission, setReq] = useState(false);
   const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
@@ -26,7 +25,7 @@ export default function NN3D() {
     <S.Container>
       <Canvas
         camera={{
-          position: [40, 30, 50],
+          position: [-15, 0, 0],
           fov: 50,
           near: 0.1,
           far: 1000,
@@ -58,9 +57,6 @@ export default function NN3D() {
         ))}
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
-
-        <OrbitControls />
-        {supports && permission && <DeviceOrientationControls />}
       </Canvas>
 
       {supports && !requestPermission && <S.OrientationPermissionModal onClick={() => setReq(true)}>Ask for device orientation</S.OrientationPermissionModal>}
@@ -113,7 +109,7 @@ const Layer = (props) => {
 const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, 50, 50, 2]} />
+      <boxGeometry args={[...size, 50, 50, 10]} />
       <meshStandardMaterial
         color={color}
         roughness={0.2}

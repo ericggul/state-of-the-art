@@ -1,11 +1,11 @@
 export const STRUCTURE = [
   {
-    position: [0, 0, -20],
+    position: [0, 0, -40],
     node: {
-      size: [4, 4, 0.3],
+      size: [4, 4, 2],
     },
     unexpandedNode: {
-      size: [8, 8, 0.3],
+      size: [8, 8, 2],
     },
     grid: {
       xCount: 3,
@@ -16,12 +16,12 @@ export const STRUCTURE = [
     color: "white",
   },
   {
-    position: [0, 0, -10],
+    position: [0, 0, -20],
     node: {
-      size: [2, 2, 0.3],
+      size: [2, 2, 2],
     },
     unexpandedNode: {
-      size: [8, 8, 0.3],
+      size: [8, 8, 2],
     },
     grid: {
       xCount: 5,
@@ -34,10 +34,10 @@ export const STRUCTURE = [
   {
     position: [0, 0, 0],
     node: {
-      size: [4, 4, 0.3],
+      size: [4, 4, 2],
     },
     unexpandedNode: {
-      size: [8, 8, 0.3],
+      size: [8, 8, 2],
     },
     grid: {
       xCount: 3,
@@ -49,12 +49,12 @@ export const STRUCTURE = [
   },
 
   {
-    position: [0, 0, 10],
+    position: [0, 0, 20],
     node: {
-      size: [2, 2, 0.3],
+      size: [2, 2, 2],
     },
     unexpandedNode: {
-      size: [8, 8, 0.3],
+      size: [8, 8, 2],
     },
     grid: {
       xCount: 5,
@@ -65,12 +65,12 @@ export const STRUCTURE = [
     color: "white",
   },
   {
-    position: [0, 0, 20],
+    position: [0, 0, 40],
     node: {
-      size: [4, 4, 0.3],
+      size: [4, 4, 2],
     },
     unexpandedNode: {
-      size: [8, 8, 0.3],
+      size: [8, 8, 2],
     },
     grid: {
       xCount: 3,
