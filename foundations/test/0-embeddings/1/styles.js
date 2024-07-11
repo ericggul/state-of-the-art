@@ -16,11 +16,14 @@ export const Tokens = styled.div`
 export const Token = styled.span`
   margin: 0 0.1vw;
   font-size: 1vw;
-  ${({ startswithspace }) => startswithspace && "margin-left: 1vw;"}
   color: white;
   font-weight: bold;
   padding: 0.1vw 0.25vw;
+  ${({ startswithspace }) => startswithspace && "margin-left: 1vw;"}
   position: relative;
+
+  ${FlexCenterStyle}
+  flex-direction: column;
 `;
 
 export const Vector = styled.div`
@@ -35,7 +38,7 @@ export const Vector = styled.div`
 `;
 
 export const Inner = styled.div`
-  width: 2vw;
+  max-width: calc(min(2vw, 100%));
   text-align: center;
   position: relative;
 `;

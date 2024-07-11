@@ -46,8 +46,9 @@ export default function Screen({ layerIdx }) {
     timeoutRef.current.push(timeoutId);
   }
 
+  const [newData, setNewData] = useState({});
   function handleNewData(data) {
-    console.log("new data", data);
+    setNewData(data);
   }
 
   useEffect(() => {
@@ -59,8 +60,8 @@ export default function Screen({ layerIdx }) {
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} latestPropagation={latestPropagation} />}
-      {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layerExpanded={layerExpanded} latestPropagation={latestPropagation} newData={newData} />}
+      {pageState === "main" && propagations.length > 0 && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
     </>
   );
 }

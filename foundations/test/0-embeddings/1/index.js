@@ -55,7 +55,7 @@ export default function Layer0({ text }) {
 function Token({ token, embedding }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      {token}
+      <p>{token}</p>
       {embedding && (
         <>
           <S.Vector ispos={"true"}>

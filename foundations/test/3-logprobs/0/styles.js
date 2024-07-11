@@ -10,88 +10,46 @@ export const Container = styled.div`
 
 export const Tokens = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 export const Token = styled.span`
   margin: 0 0.1vw;
   font-size: 1vw;
-  ${({ startswithspace }) => startswithspace && "margin-left: 1vw;"}
-
   color: white;
   font-weight: bold;
   padding: 0.1vw 0.25vw;
+  ${({ startswithspace }) => startswithspace && "margin-left: 1vw;"}
   position: relative;
+
+  ${FlexCenterStyle}
+  flex-direction: column;
 `;
 
-// export const PosVector = styled.div`
-//   position: absolute;
-//   top: 2vw;
-//   width: 100%;
-//   color: white;
-//   font-size: 0.5vw;
-//   font-weight: 300;
-
-//   display: flex;
-//   justify-content: center;
-// `;
-
-// export const NegVector = styled.div`
-//   position: absolute;
-//   bottom: 2vw;
-//   width: 100%;
-//   color: white;
-//   font-size: 0.5vw;
-//   font-weight: 300;
-
-//   display: flex;
-//   justify-content: center;
-// `;
+export const Vector = styled.div`
+  position: absolute;
+  width: 100%;
+  color: white;
+  font-size: 0.5vw;
+  font-weight: 300;
+  ${({ ispos }) => (ispos ? `top: 2vw` : `bottom: 2vw`)};
+  display: flex;
+  justify-content: center;
+`;
 
 export const Inner = styled.div`
-  width: 2vw;
+  max-width: calc(min(2vw, 100%));
   text-align: center;
   position: relative;
 `;
 
 export const Overlay = styled.div`
-  top: 0;
   left: 0;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(0deg, #000 13.85%, #fff 100%);
-  z-index: 10;
+  width: 100vw;
+  height: calc(50vh - 1vw);
+  top: ${({ ispos }) => (ispos ? `calc(50vh + 1vw)` : "0")};
+  background: linear-gradient(${({ ispos }) => (ispos ? 0 : 180)}deg, #000 13.85%, #fff 100%);
   mix-blend-mode: darken;
   -webkit-mix-blend-mode: darken;
-`;
-
-export const PosVector = styled.div`
-  position: absolute;
-  top: 2vw;
-  width: 100%;
-  color: white;
-  font-size: 0.5vw;
-  font-weight: 300;
-
-  left: 0;
-  right: 0;
-  margin: auto;
-`;
-
-export const NegVector = styled.div`
-  position: absolute;
-  bottom: 2vw;
-  width: 100%;
-  color: white;
-  font-size: 0.5vw;
-  font-weight: 300;
-
-  left: 0;
-  right: 0;
-  margin: auto;
-`;
-
-export const Num = styled.div`
-  opacity: ${({ num }) => Math.abs(num) * 10};
-  text-align: center;
 `;
