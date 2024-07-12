@@ -21,29 +21,33 @@ export default function Layer0({ text }) {
 
   async function fetchEmbedding(text) {
     if (!text) return;
-    console.log(text, "24");
-    let res = await axios.post("/api/openai/embeddings", {
-      text,
-      dim: 256,
-    });
-    console.log(res, "29");
 
-    setEmbeddings((embd) => {
-      let copy = { ...embd };
-      let newRes = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
-      copy[text] = {
-        pos: newRes
-          .filter((a) => a > 0)
-          .sort((a, b) => b - a)
-          .slice(0, 50),
-        neg: newRes
-          .filter((a) => a < 0)
-          .sort((a, b) => a - b)
-          .slice(0, 50)
-          .reverse(),
-      };
-      return copy;
-    });
+    try {
+      let res = await axios.post("/api/openai/embeddings", {
+        text,
+        dim: 256,
+      });
+      console.log(res, "29");
+
+      setEmbeddings((embd) => {
+        let copy = { ...embd };
+        let newRes = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
+        copy[text] = {
+          pos: newRes
+            .filter((a) => a > 0)
+            .sort((a, b) => b - a)
+            .slice(0, 50),
+          neg: newRes
+            .filter((a) => a < 0)
+            .sort((a, b) => a - b)
+            .slice(0, 50)
+            .reverse(),
+        };
+        return copy;
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (

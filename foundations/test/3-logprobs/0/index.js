@@ -19,6 +19,12 @@ export default function Layer3({ newData, text }) {
   );
 }
 
+function logprobToPercentage(logprob) {
+  let probability = Math.exp(logprob);
+  let percentage = probability * 100;
+  return percentage;
+}
+
 function Token({ token, logprobs, embedding }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
@@ -26,7 +32,7 @@ function Token({ token, logprobs, embedding }) {
       {logprobs && (
         <>
           <S.Vector ispos={"true"}>{logprobs.map((el) => el.token).join("\n")}</S.Vector>
-          <S.Vector ispos={""}>{logprobs.map((el) => el.logprob.toFixed(2)).join("\n")}</S.Vector>
+          <S.Vector ispos={""}>{logprobs.map((el) => logprobToPercentage(el.logprob).toFixed(0) + "%").join("\n")}</S.Vector>
           {/* <S.Vector ispos={""}>
             <S.Inner>{embedding.neg.join(" ")}</S.Inner>
           </S.Vector> */}
