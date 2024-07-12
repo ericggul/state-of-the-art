@@ -16,16 +16,6 @@ export default function Main({ layerIdx, layersExpanded, latestPropagation, newD
   return (
     <S.Container>
       <FC3D2 layerIdx={layerIdx} layersExpanded={layersExpanded} />
-      {/* Main
-      <p
-        style={{
-          opacity: layerExpanded ? 1 : 0,
-        }}
-      >
-        This layer is a convolution layer.
-        <br />
-        This layer is currently expanded.
-      </p> */}
 
       {latestPropagation && latestPropagation.text && layerIdx != "3" && <Layer0 text={latestPropagation.text} />}
       {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 text={latestPropagation.text} newData={newData} />}

@@ -22,33 +22,38 @@ function logprobToPercentage(logprob) {
   return percentage;
 }
 
-function Token({ token, logprobs, embedding }) {
+function Token({ token, logprobs }) {
+  const transformedPercentage = useMemo(
+    () =>
+      logprobs
+        .reverse()
+
+        .map((el) => ({
+          ...el,
+          percentage: logprobToPercentage(el.logprob),
+        }))
+
+        //filter those with prob under 1
+        .filter((el) => el.percentage > 1),
+    [logprobs]
+  );
+
+  console.log(transformedPercentage);
+
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <p>{token}</p>
       {logprobs && (
         <>
-          <S.Vector ispos={"true"}>
-            <S.Inner>
-              {logprobs
-                .filter((_, i) => i % 2 === 0)
-                .map((el) => `${el.token} (${logprobToPercentage(el.logprob).toFixed(1)}%)`)
-                .join("\n")}
-            </S.Inner>
-          </S.Vector>
-          {/* <S.Vector ispos={""}>{logprobs.map((el) => logprobToPercentage(el.logprob).toFixed(0) + "%").join("\n")}</S.Vector> */}
-          <S.Vector ispos={""}>
-            <S.Inner>
-              {logprobs.map((el) => `${el.token} (${logprobToPercentage(el.logprob).toFixed(1)}%)`).join("\n")}
-              {/* {logprobs
-                .filter((_, i) => i % 2 === 1)
-                .map((el) => el.token)
-                .join("\n")} */}
-              {/* {logprobs
-                .reverse()
-                .map((el) => logprobToPercentage(el.logprob).toFixed(0) + "%")
-                .join("\n")} */}
-            </S.Inner>
+          <S.Vector>
+            <S.Graph>
+              {transformedPercentage.map((el, i) => (
+                <S.El key={i} percentage={el.percentage}>
+                  <p>{el.token}</p>
+                  <p>{el.percentage.toFixed(2)} %</p>
+                </S.El>
+              ))}
+            </S.Graph>
           </S.Vector>
         </>
       )}

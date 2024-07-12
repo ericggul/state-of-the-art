@@ -10,7 +10,13 @@ export const Container = styled.div`
 
 export const Tokens = styled.div`
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+
+  position: absolute;
+  bottom: 10vh;
+  width: 100%;
+  left: 0;
 `;
 
 export const Token = styled.span`
@@ -31,9 +37,9 @@ export const Vector = styled.div`
   position: absolute;
   width: 100%;
   color: white;
-  font-size: 0.5vw;
+  font-size: 0.7vw;
   font-weight: 300;
-  ${({ ispos }) => (ispos ? `top: 2vw` : `bottom: 2vw`)};
+  bottom: 10vh;
   display: flex;
   justify-content: center;
 
@@ -41,10 +47,29 @@ export const Vector = styled.div`
   text-align: center;
 `;
 
-export const Inner = styled.div`
-  max-width: 5vw;
+export const Graph = styled.div`
+  width: 3vw;
+  height: 70vh;
+  box-sizing: border-box;
   text-align: center;
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; // Align items at the bottom
+`;
+
+export const El = styled.div`
+  width: 100%;
+  height: ${({ percentage }) => percentage}%;
+
+  // border: 0.02vw solid white;
+  box-sizing: content-box;
+
+  ${FlexCenterStyle}
+  flex-direction: column;
+
+  text-align: center;
 `;
 
 export const Overlay = styled.div`
