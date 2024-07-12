@@ -39,7 +39,10 @@ function Token({ token, logprobs, embedding }) {
           {/* <S.Vector ispos={""}>{logprobs.map((el) => logprobToPercentage(el.logprob).toFixed(0) + "%").join("\n")}</S.Vector> */}
           <S.Vector ispos={""}>
             <S.Inner>
-              {logprobs.map((el) => `${el.token} (${logprobToPercentage(el.logprob).toFixed(1)}%)`).join("\n")}
+              {logprobs
+                .filter((_, i) => i % 2 === 1)
+                .map((el) => `${el.token} (${logprobToPercentage(el.logprob).toFixed(1)}%)`)
+                .join("\n")}
               {/* {logprobs
                 .filter((_, i) => i % 2 === 1)
                 .map((el) => el.token)

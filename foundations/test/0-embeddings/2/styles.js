@@ -10,13 +10,17 @@ export const Container = styled.div`
 
 export const Tokens = styled.div`
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+  position: absolute;
+  top: 10vh;
+  width: 100%;
+  left: 0;
 `;
 
 export const Token = styled.span`
   margin: 0 0.1vw;
   font-size: 1vw;
-  width: 5vw;
   color: white;
   font-weight: bold;
   padding: 0.1vw 0.25vw;
@@ -33,16 +37,13 @@ export const Vector = styled.div`
   color: white;
   font-size: 0.5vw;
   font-weight: 300;
-  ${({ ispos }) => (ispos ? `top: 2vw` : `bottom: 2vw`)};
+  ${({ ispos }) => (ispos ? `top: 10vh` : `bottom: 2vw`)};
   display: flex;
   justify-content: center;
-
-  white-space: pre-wrap;
-  text-align: center;
 `;
 
 export const Inner = styled.div`
-  max-width: 5vw;
+  max-width: calc(min(2vw, 100%));
   text-align: center;
   position: relative;
 `;

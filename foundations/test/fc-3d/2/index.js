@@ -39,7 +39,7 @@ export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true,
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
         {STRUCTURE.map((structureEl, i) => (
-          <Layer key={i} {...structureEl} expanded={layersExpanded[i]} />
+          <Layer key={i} isFocusLayer={layerIdx == i} {...structureEl} expanded={layersExpanded[i]} />
         ))}
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
@@ -82,7 +82,7 @@ const Layer = (props) => {
           <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
             {new Array(props.grid.yCount).fill(0).map((_, j) => (
               <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} color={props.color} key={j} opacity={smoothedExpanded} />
+                <Node {...props.node} isFocusLayer={props.isFocusLayer} wireframe={props.isFocusLayer ? 20 : 1} color={props.color} key={j} opacity={smoothedExpanded} />
               </animated.group>
             ))}
           </animated.group>
@@ -90,7 +90,14 @@ const Layer = (props) => {
 
       {smoothedExpanded < 1 && (
         <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
+          <Node
+            isFocusLayer={props.isFocusLayer}
+            wireframe={props.isFocusLayer ? 50 : 1}
+            {...props.unexpandedNode}
+            color={props.color}
+            position={[0, 0, 0]}
+            scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]}
+          />
         </>
       )}
     </group>
@@ -98,10 +105,10 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
+const Node = ({ position, size, color = "red", opacity = 0.4, scale, wireframe = 10, isFocusLayer }) => {
   return (
     <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, 30, 30, 8]} />
+      <boxGeometry args={[...size, wireframe, wireframe, Math.ceil(wireframe / 3)]} />
       <meshStandardMaterial
         color={color}
         roughness={0.2}
@@ -110,7 +117,7 @@ const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
         opacity={opacity}
         transparent={true}
         //wireframe
-        wireframe={true}
+        wireframe={isFocusLayer}
         wireframeLinewidth={3}
       />
     </mesh>
