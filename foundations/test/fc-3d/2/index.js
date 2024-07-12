@@ -16,9 +16,6 @@ import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
 export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
-  const [requestPermission, setReq] = useState(false);
-  const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
-
   return (
     <S.Container>
       <Canvas
@@ -47,8 +44,6 @@ export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true,
 
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
       </Canvas>
-
-      {supports && !requestPermission && <S.OrientationPermissionModal onClick={() => setReq(true)}>Ask for device orientation</S.OrientationPermissionModal>}
     </S.Container>
   );
 }
@@ -106,7 +101,7 @@ const Layer = (props) => {
 const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, 50, 50, 10]} />
+      <boxGeometry args={[...size, 30, 30, 8]} />
       <meshStandardMaterial
         color={color}
         roughness={0.2}

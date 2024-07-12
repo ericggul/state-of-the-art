@@ -40,6 +40,7 @@ export default function Screen({ layerIdx }) {
   }
 
   function handleNewPropagation(data) {
+    console.log("43", data);
     setPageState("main");
     setPropagations((arr) => [...arr, data]);
     setLatestPropagation(data);
@@ -68,7 +69,7 @@ export default function Screen({ layerIdx }) {
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
       {pageState === "main" && <Main layerIdx={layerIdx} layersExpanded={layersExpanded} latestPropagation={latestPropagation} newData={newData} />}
-      {pageState === "main" && propagations.length > 0 && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
+      {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
     </>
   );
 }

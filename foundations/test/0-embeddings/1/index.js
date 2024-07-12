@@ -7,6 +7,7 @@ import useTokenisation from "../useTokenisation";
 export default function Layer0({ text }) {
   const tokens = useTokenisation({ text: text || "" });
 
+  console.log("10 layer 0");
   const [embeddings, setEmbeddings] = useState({});
 
   useEffect(() => {
@@ -20,14 +21,16 @@ export default function Layer0({ text }) {
 
   async function fetchEmbedding(text) {
     if (!text) return;
+    console.log(text, "24");
     let res = await axios.post("/api/openai/embeddings", {
       text,
       dim: 256,
     });
+    console.log(res, "29");
 
     setEmbeddings((embd) => {
       let copy = { ...embd };
-      let newRes = res.data[0].embedding.map((el) => parseFloat(el.toFixed(2)));
+      let newRes = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
       copy[text] = {
         pos: newRes
           .filter((a) => a > 0)

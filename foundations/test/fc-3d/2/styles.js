@@ -6,17 +6,10 @@ export const Container = styled.div`
   ${FlexCenterStyle}
 
   background: #111;
+  z-index: 0;
 
   canvas {
     width: 100%;
     height: 100%;
   }
-`;
-
-export const OrientationPermissionModal = styled.div`
-  ${WholeContainer}
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  z-index: 10;
-  ${FlexCenterStyle}
 `;

@@ -3,7 +3,7 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 
 let TEST_TEXT = "안녕 클레오파트라, 세상에서 제일가는 포테이토칩!";
-TEST_TEXT = "Lorem Ipsum made me crazy and I am not sure why.";
+TEST_TEXT = "Is AI the darkness for the future of humanity?";
 
 export default function UI({ handleTrain }) {
   const [expanded, setExpanded] = useState(false);

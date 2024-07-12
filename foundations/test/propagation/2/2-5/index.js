@@ -48,7 +48,7 @@ export default function TextGrid({ isTesting = false, activated = false }) {
 
   useEffect(() => {
     async function fetchData() {
-      const imageData = await getImageData("/images/grid/test.png");
+      const imageData = await getImageData("/images/grid/test2.png");
       const processedResult = processImage(imageData, XLEN, YLEN);
       const blanks = [];
 
@@ -103,7 +103,13 @@ function SingleLine({ i, numbers, yInterval, testBlanks }) {
   }, [i, numbers, sliceIdx, testBlanks]);
 
   return (
-    <text x="0" y={i * yInterval}>
+    <text
+      x="0"
+      y={i * yInterval}
+      style={{
+        fill: `hsl(${200 + i * 1.5}, 100%, 90%)`,
+      }}
+    >
       {textEl}
     </text>
   );

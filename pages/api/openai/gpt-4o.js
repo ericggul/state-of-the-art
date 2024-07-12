@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       ],
       max_tokens: 30,
       logprobs: true,
-      top_logprobs: 5,
+      top_logprobs: 20,
       ...params,
     });
 
