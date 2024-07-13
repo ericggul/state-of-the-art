@@ -69,49 +69,42 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
-  const [showNumbers, setShowNumbers] = useState(true);
+  const [tokenIdx, setTokenIdx] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShowNumbers((b) => !b);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    if (tokens && tokens.length > 0) {
+      const interval = setInterval(() => {
+        setTokenIdx((i) => (i + 1) % tokens.length);
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [tokens]);
 
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} showNumbers={showNumbers} token={token} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} tokenIdx={tokenIdx} idx={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, showNumbers }) {
+function Token({ token, embedding, tokenIdx, idx }) {
   return (
-    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
-      >
-        {embedding && embedding.pos.join(" ")}
-      </S.Inner>
+    <S.Token
+      startswithspace={token.startsWith(" ") ? "true" : ""}
+      style={{
+        opacity: tokenIdx == idx ? 1 : 0.1,
+        transition: `opacity ${tokenIdx == idx ? 0.01 : 0.3}s`,
+      }}
+    >
+      <S.Inner>{embedding && embedding.pos.join(" ")}</S.Inner>
       <p
         style={{
           margin: "1vw 0",
-          // fontSize: "1vw",
-          opacity: showNumbers ? 1 : 0,
-          transition: "opacity 0.2s",
         }}
       >
         {token}
       </p>
-      <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
-      >
-        {embedding && embedding.neg.join(" ")}
-      </S.Inner>
+      <S.Inner>{embedding && embedding.neg.join(" ")}</S.Inner>
     </S.Token>
   );
 }

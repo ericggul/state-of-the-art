@@ -10,12 +10,33 @@ const TEXT_C = `The future is bright. The future is AI.`;
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export default function WholeLayer() {
+  const [bgSwap, setBgSwap] = useState(false);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setBgSwap((b) => !b);
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   return (
     <S.Bg>
       <LayerEl text={TEXT_A} style={{}} />
 
-      <S.Overlay ispos="true" />
-      <S.Overlay ispos="" />
+      {/* <S.Overlay ispos="true" />
+      <S.Overlay ispos="" /> */}
+      {/* <S.Bg
+        style={{
+          background: "white",
+          mixBlendMode: "difference",
+          width: "50vw",
+          height: "100vh",
+          position: "absolute",
+          top: "0",
+          left: "50vw",
+          opacity: bgSwap ? 1 : 0,
+        }}
+      />
       <S.Bg
         style={{
           background: "white",
@@ -24,7 +45,33 @@ export default function WholeLayer() {
           height: "100vh",
           position: "absolute",
           top: "0",
-          right: "0",
+          left: "0",
+          opacity: !bgSwap ? 1 : 0,
+        }}
+      /> */}
+
+      <S.Bg
+        style={{
+          background: "white",
+          mixBlendMode: "difference",
+          width: "100vw",
+          height: "50vh",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          opacity: bgSwap ? 1 : 0,
+        }}
+      />
+      <S.Bg
+        style={{
+          background: "white",
+          mixBlendMode: "difference",
+          width: "100vw",
+          height: "50vh",
+          position: "absolute",
+          top: "50vh",
+          left: "0",
+          opacity: !bgSwap ? 1 : 0,
         }}
       />
     </S.Bg>

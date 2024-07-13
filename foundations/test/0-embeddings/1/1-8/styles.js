@@ -4,8 +4,6 @@ import styled from "styled-components";
 export const Bg = styled.div`
   ${WholeContainer}
   background: black;
-
-  transition: all 0.2s;
 `;
 
 export const Container = styled.div`
@@ -22,7 +20,7 @@ export const Tokens = styled.div`
 
 export const Token = styled.div`
   font-size: 0.8vw;
-  font-weight: bold;
+  font-weight: 500;
   color: white;
   width: 4vw;
 
@@ -35,7 +33,7 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  color: #aaa;
+  // color: #aaa;
   transition: all 0.2s;
 `;
 
