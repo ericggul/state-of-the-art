@@ -13,6 +13,7 @@ const Embd15 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-5"));
 const Embd16 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-6"));
 const Embd17 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-7"));
 const Embd18 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-8"));
+const Embd19 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-9"));
 
 const Embd2 = dynamic(() => import("@/foundations/test/0-embeddings/2"));
 
@@ -33,6 +34,7 @@ export default function NNPage() {
       {idx == "1-6" && <Embd16 />}
       {idx == "1-7" && <Embd17 />}
       {idx == "1-8" && <Embd18 />}
+      {idx == "1-9" && <Embd19 />}
 
       {idx == "2" && <Embd2 text={DEFAULT_TEXT} />}
     </>
