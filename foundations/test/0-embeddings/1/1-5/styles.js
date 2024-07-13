@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const Bg = styled.div`
   ${WholeContainer}
   background: black;
+  font-family: Times New Roman;
 `;
 
 export const Container = styled.div`
@@ -22,7 +23,7 @@ export const Token = styled.div`
   font-size: 0.8vw;
   font-weight: 500;
   color: white;
-  width: 4vw;
+  width: 3.5vw;
 
   ${FlexCenterStyle}
   text-align: center;
@@ -33,7 +34,8 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  // color: #aaa;
+  color: #aaa;
+  transition: all 0.2s;
 `;
 
 export const Overlay = styled.div`

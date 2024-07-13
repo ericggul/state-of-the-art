@@ -3,7 +3,35 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import useTokenisation from "../../useTokenisation";
 
-export default function Layer0({ text }) {
+const TEXT_A = "Is AI the brightness for the future of humanity? Or is it the darkness?";
+const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
+const TEXT_C = `The future is bright. The future is AI.`;
+
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+export default function WholeLayer() {
+  return (
+    <S.Bg>
+      <LayerEl text={TEXT_A} style={{}} />
+
+      <S.Overlay ispos="true" />
+      <S.Overlay ispos="" />
+      <S.Bg
+        style={{
+          background: "white",
+          mixBlendMode: "difference",
+          width: "50vw",
+          height: "100vh",
+          position: "absolute",
+          top: "0",
+          right: "0",
+        }}
+      />
+    </S.Bg>
+  );
+}
+
+function LayerEl({ text, style = {} }) {
   const tokens = useTokenisation({ text: text || "" });
   const [embeddings, setEmbeddings] = useState({});
 
@@ -50,42 +78,37 @@ export default function Layer0({ text }) {
     }
   }
 
-  return (
-    <S.Bg>
-      {new Array(8).fill(0).map((_, i) => (
-        <SingleEl
-          key={i}
-          tokens={tokens}
-          embeddings={embeddings}
-          style={{
-            transform: `rotate(${i * 90}deg) scale(${1 + i * 0.1})`,
-            mixBlendMode: "difference",
-          }}
-        />
-      ))}
-
-      <S.Overlay ispos="true" />
-      <S.Overlay ispos="" />
-    </S.Bg>
-  );
+  return <SingleEl tokens={tokens} embeddings={embeddings} style={style} />;
 }
 
 function SingleEl({ tokens, embeddings, style }) {
+  const [showNumbers, setShowNumbers] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowNumbers((b) => !b);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} showNumbers={showNumbers} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding }) {
+function Token({ token, embedding, showNumbers }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <S.Inner>{embedding && embedding.pos.join(" ")}</S.Inner>
       <p
-        style={{
-          margin: "1vw 0",
-        }}
+        style={
+          {
+            // margin: "1vw 0",
+            // fontSize: "1vw",
+          }
+        }
       >
         {token}
       </p>

@@ -5,6 +5,7 @@ import useTokenisation from "../../useTokenisation";
 
 const TEXT_A = "Is AI the brightness for the future of humanity? Or is it the darkness?";
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
+const TEXT_C = `The future is bright. The future is AI.`;
 
 export default function WholeLayer() {
   return (
@@ -13,11 +14,15 @@ export default function WholeLayer() {
       <LayerEl
         text={TEXT_B}
         style={{
-          transform: "rotate(180deg)",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: "scale(1.1)",
+          mixBlendMode: "difference",
+        }}
+      />
+      <LayerEl
+        text={TEXT_C}
+        style={{
+          transform: "scale(1.2)",
+          mixBlendMode: "difference",
         }}
       />
       <S.Overlay ispos="true" />
@@ -73,7 +78,7 @@ function LayerEl({ text, style = {} }) {
     }
   }
 
-  return <SingleEl key={i} tokens={tokens} embeddings={embeddings} style={style} />;
+  return <SingleEl tokens={tokens} embeddings={embeddings} style={style} />;
 }
 
 function SingleEl({ tokens, embeddings, style }) {
@@ -91,6 +96,7 @@ function Token({ token, embedding }) {
       <p
         style={{
           margin: "1vw 0",
+          // fontSize: "1vw",
         }}
       >
         {token}
