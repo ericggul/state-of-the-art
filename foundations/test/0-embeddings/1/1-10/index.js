@@ -75,7 +75,7 @@ function SingleEl({ tokens, embeddings, style }) {
     if (tokens && tokens.length > 0) {
       const interval = setInterval(() => {
         setTokenIdx((i) => (i + 1) % tokens.length);
-      }, 100);
+      }, 1000);
       return () => clearInterval(interval);
     }
   }, [tokens]);
@@ -89,22 +89,32 @@ function SingleEl({ tokens, embeddings, style }) {
 
 function Token({ token, embedding, tokenIdx, idx }) {
   return (
-    <S.Token
-      startswithspace={token.startsWith(" ") ? "true" : ""}
-      style={{
-        opacity: tokenIdx == idx ? 1 : 0.1,
-        transition: `opacity ${tokenIdx == idx ? 0.01 : 0.3}s`,
-      }}
-    >
-      <S.Inner>{embedding && embedding.pos.join(" ")}</S.Inner>
+    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
+      <S.Inner
+        style={{
+          opacity: tokenIdx == idx ? 1 : 0.1,
+          transition: `opacity ${tokenIdx == idx ? 0.1 : 0.6}s`,
+        }}
+      >
+        {embedding && embedding.pos.join(" ")}
+      </S.Inner>
       <p
         style={{
           margin: "1vw 0",
+          opacity: tokenIdx == idx ? 1 : 0.1,
+          transition: `opacity ${tokenIdx == idx ? 0.01 : 0.3}s`,
         }}
       >
         {token}
       </p>
-      <S.Inner>{embedding && embedding.neg.join(" ")}</S.Inner>
+      <S.Inner
+        style={{
+          opacity: tokenIdx == idx ? 1 : 0.1,
+          transition: `opacity ${tokenIdx == idx ? 0.1 : 0.6}s`,
+        }}
+      >
+        {embedding && embedding.neg.join(" ")}
+      </S.Inner>
     </S.Token>
   );
 }

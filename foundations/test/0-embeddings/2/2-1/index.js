@@ -46,17 +46,7 @@ function LayerEl({ text, style = {} }) {
         const newEmbedding = res.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
         return {
           ...prevEmbeddings,
-          [text]: {
-            pos: newEmbedding
-              .filter((a) => a > 0)
-              .sort((a, b) => b - a)
-              .slice(0, 20),
-            neg: newEmbedding
-              .filter((a) => a < 0)
-              .sort((a, b) => a - b)
-              .slice(0, 20)
-              .reverse(),
-          },
+          [text]: newEmbedding.sort((a, b) => b - a).slice(0, 40),
         };
       });
     } catch (e) {
@@ -78,27 +68,18 @@ function SingleEl({ tokens, embeddings, style }) {
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 function Token({ token, embedding }) {
-  const [displayEmbeddings, setDisplayEmbeddings] = useState({
-    pos: [],
-    neg: [],
-  });
+  const [displayEmbeddings, setDisplayEmbeddings] = useState([]);
 
   useEffect(() => {
     if (embedding) {
-      setDisplayEmbeddings({
-        pos: embedding.pos,
-        neg: embedding.neg,
-      });
+      setDisplayEmbeddings(embedding);
     }
   }, [embedding]);
 
   useRandomInterval(
     () => {
       if (embedding) {
-        setDisplayEmbeddings((prev) => ({
-          pos: prev.pos.sort((a, b) => Math.random() - 0.5).map((el) => parseFloat(el.toFixed(getRandomInt(5, 5)))),
-          neg: prev.neg.sort((a, b) => Math.random() - 0.5).map((el) => parseFloat(el.toFixed(getRandomInt(5, 5)))),
-        }));
+        setDisplayEmbeddings((prev) => prev.sort((a, b) => Math.random() - 0.5).map((el) => parseFloat(el.toFixed(getRandomInt(5, 5)))));
       }
     },
     1,
@@ -107,7 +88,6 @@ function Token({ token, embedding }) {
 
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner>{displayEmbeddings && displayEmbeddings.pos.join(" ")}</S.Inner>
       <p
         style={{
           margin: "1vw 0",
@@ -118,7 +98,7 @@ function Token({ token, embedding }) {
       >
         {token}
       </p>
-      <S.Inner>{displayEmbeddings && displayEmbeddings.neg.join(" ")}</S.Inner>
+      <S.Inner>{displayEmbeddings && displayEmbeddings.join(" ")}</S.Inner>
     </S.Token>
   );
 }

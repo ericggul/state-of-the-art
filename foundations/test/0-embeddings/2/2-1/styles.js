@@ -11,8 +11,6 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   flex-direction: column;
   transform-origin: center;
-
-  text-shadow: 0 0 3px white, 0 0 1px white, 0 0 5px white, 0 0 10px white;
 `;
 
 export const Tokens = styled.div`
@@ -24,7 +22,7 @@ export const Token = styled.div`
   font-size: 0.8vw;
   font-weight: 500;
   color: white;
-  width: 4vw;
+  width: 4.5vw;
 
   ${FlexCenterStyle}
   text-align: center;
@@ -35,7 +33,11 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  // color: #aaa;
+
+  //red neon
+
+  color: hsl(0, 100%, 80%);
+  text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red, 0 0 20px red;
   transition: all 0.2s;
 `;
 
