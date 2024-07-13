@@ -11,13 +11,13 @@ export default function Layer0({ text }) {
   const [embeddings, setEmbeddings] = useState({});
 
   useEffect(() => {
-    //for those tokens which don't have embeddings, generate embedding
+    if (!tokens) return;
     tokens.forEach((token) => {
       if (!embeddings[token]) {
         fetchEmbedding(token);
       }
     });
-  }, [tokens, embeddings]);
+  }, [tokens]);
 
   async function fetchEmbedding(text) {
     if (!text) return;
