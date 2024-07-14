@@ -2,50 +2,35 @@ import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
 
-import useTokenisation from "../useTokenisation";
-
-export default function Layer0({ text }) {
-  const tokens = useTokenisation({ text: text || "" });
-
+export default function Layer0({ text, newEmbeddings = {} }) {
   const [embeddings, setEmbeddings] = useState({});
+  const [tokens, setTokens] = useState([]);
 
   useEffect(() => {
-    if (!tokens) return;
-    tokens.forEach((token) => {
-      if (!embeddings[token]) {
-        fetchEmbedding(token);
-      }
-    });
-  }, [tokens]);
+    if (!newEmbeddings || !newEmbeddings.embeddings || !newEmbeddings.tokens) return;
+    setTokens(newEmbeddings.tokens);
+    const formattedEmbeddings = Object.keys(newEmbeddings.embeddings).reduce((acc, key) => {
+      acc[key] = formatEmbeddings(newEmbeddings.embeddings[key]);
+      return acc;
+    }, {});
 
-  async function fetchEmbedding(text) {
-    if (!text) return;
+    setEmbeddings(formattedEmbeddings);
+  }, [newEmbeddings]);
 
-    try {
-      let res = await axios.post("/api/openai/embeddings", {
-        text,
-        dim: 256,
-      });
-
-      setEmbeddings((embd) => {
-        let copy = { ...embd };
-        let newRes = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
-        copy[text] = {
-          pos: newRes
-            .filter((a) => a > 0)
-            .sort((a, b) => b - a)
-            .slice(0, 50),
-          neg: newRes
-            .filter((a) => a < 0)
-            .sort((a, b) => a - b)
-            .slice(0, 50)
-            .reverse(),
-        };
-        return copy;
-      });
-    } catch (e) {
-      console.log(e);
-    }
+  function formatEmbeddings(embeddings) {
+    return {
+      pos: embeddings
+        .filter((a) => a > 0)
+        .sort((a, b) => b - a)
+        .slice(0, 50)
+        .map((el) => el.toFixed(3)),
+      neg: embeddings
+        .filter((a) => a < 0)
+        .sort((a, b) => a - b)
+        .slice(0, 50)
+        .reverse()
+        .map((el) => el.toFixed(3)),
+    };
   }
 
   return (

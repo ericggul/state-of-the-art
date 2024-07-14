@@ -93,6 +93,7 @@ async function getGptEmbeddings({ data, socket }) {
 
     socket.current.emit("conductor-new-embeddings", {
       embeddings: orderedEmbeddings,
+      tokens,
       mobileId: data.mobileId,
       propagationId: data.propagationId,
       text: data.text,

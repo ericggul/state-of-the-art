@@ -60,9 +60,9 @@ export default function Screen({ layerIdx }) {
     setNewResponse(data);
   }
 
-  const [embeddings, setEmbeddings] = useState([]);
+  const [newEmbeddings, setNewEmbeddings] = useState([]);
   function handleNewEmbeddings(data) {
-    console.log(data);
+    setNewEmbeddings(data);
   }
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function Screen({ layerIdx }) {
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layersExpanded={layersExpanded} latestPropagation={latestPropagation} newResponse={newResponse} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layersExpanded={layersExpanded} latestPropagation={latestPropagation} newEmbeddings={newEmbeddings} newResponse={newResponse} />}
       {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
     </>
   );
