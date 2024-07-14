@@ -85,14 +85,10 @@ async function getGptEmbeddings({ data, socket }) {
     // Execute all embedding requests in parallel
     await Promise.all(embeddingPromises);
 
-    // Order embeddings according to the order of tokens
-    const orderedEmbeddings = tokens.reduce((acc, token) => {
-      acc[token] = embeddings[token];
-      return acc;
-    }, {});
+    console.log(tokens);
 
     socket.current.emit("conductor-new-embeddings", {
-      embeddings: orderedEmbeddings,
+      embeddings,
       tokens,
       mobileId: data.mobileId,
       propagationId: data.propagationId,
