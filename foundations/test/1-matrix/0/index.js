@@ -15,33 +15,31 @@ function computeSimilarityMatrix(embeddings, tokens) {
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
 
-  // Compute similarity matrix using useMemo to memoize the computation
   const similarityMatrix = useMemo(() => computeSimilarityMatrix(embeddings, tokens), [embeddings, tokens]);
-
-  console.log(similarityMatrix);
 
   return (
     <S.Container>
-      <S.Table>
-        <thead>
-          <tr>
-            <th></th>
-            {tokens.map((token, i) => (
-              <th key={i}>{token}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {similarityMatrix.map((row, i) => (
-            <tr key={i}>
-              <th>{tokens[i]}</th>
-              {row.map((value, j) => (
-                <td key={j}>{value.toFixed(3)}</td>
-              ))}
-            </tr>
+      <S.TopRow>
+        <S.Token />
+        {tokens.map((token, i) => (
+          <S.Value key={i}>{token}</S.Value>
+        ))}
+      </S.TopRow>
+      {similarityMatrix.map((row, i) => (
+        <S.Row key={i}>
+          <S.Token>{tokens[i]}</S.Token>
+          {row.map((value, j) => (
+            <S.Value
+              key={j}
+              style={{
+                opacity: value,
+              }}
+            >
+              {value.toFixed(3)}
+            </S.Value>
           ))}
-        </tbody>
-      </S.Table>
+        </S.Row>
+      ))}
     </S.Container>
   );
 }

@@ -9,18 +9,30 @@ export const Container = styled.div`
 
   ${WholeContainer}
   ${FlexCenterStyle}
+
+  font-size: 1vw;
+  color: #fff;
 `;
 
-export const Table = styled.table`
-  border-collapse: collapse;
-  width: 100%;
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  th {
-    background-color: #f2f2f2;
-    text-align: left;
-  }
+export const Row = styled.div`
+  ${FlexCenterStyle}
+  flex-direction: row;
+  margin: 0.2vw 0;
+`;
+
+export const TopRow = styled.div`
+  ${FlexCenterStyle}
+  flex-direction: row;
+  margin: 0.2vw 0;
+  margin-bottom: 1vw;
+`;
+
+export const Token = styled.div`
+  width: 10vw;
+  text-align: center;
+`;
+
+export const Value = styled.div`
+  width: 5vw;
+  text-align: center;
 `;
