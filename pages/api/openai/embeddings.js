@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       model: "text-embedding-3-small",
       input: text,
       encoding_format: "float",
-      // num_dimensions: dim,
+      num_dimensions: dim,
     });
 
     res.status(200).json(embedding.data);

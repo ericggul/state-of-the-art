@@ -39,7 +39,6 @@ function LayerEl({ text, style = {} }) {
         text,
         dim: 256,
       });
-      console.log(res, "29");
 
       setEmbeddings((prevEmbeddings) => {
         const newEmbedding = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
@@ -98,9 +97,9 @@ function Token({ token, embedding, showNumbers }) {
       <p
         style={{
           margin: "1vw 0",
-          // fontSize: "1vw",
+          fontSize: "1vw",
           opacity: showNumbers ? 1 : 0,
-          transition: "opacity 0.2s",
+          transition: "opacity 0.4s",
         }}
       >
         {token}

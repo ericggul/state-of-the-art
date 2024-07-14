@@ -39,7 +39,6 @@ function LayerEl({ text, style = {} }) {
         text,
         dim: 256,
       });
-      console.log(res, "29");
 
       setEmbeddings((prevEmbeddings) => {
         const newEmbedding = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
@@ -74,8 +73,8 @@ function SingleEl({ tokens, embeddings, style }) {
   useEffect(() => {
     if (tokens && tokens.length > 0) {
       const interval = setInterval(() => {
-        setTokenIdx((i) => (i + 1) % tokens.length);
-      }, 100);
+        setTokenIdx((i) => (i > tokens.length + 5 ? -10 : i + 1));
+      }, 200);
       return () => clearInterval(interval);
     }
   }, [tokens]);
@@ -92,7 +91,7 @@ function Token({ token, embedding, tokenIdx, idx }) {
     <S.Token
       startswithspace={token.startsWith(" ") ? "true" : ""}
       style={{
-        opacity: tokenIdx == idx ? 1 : 0.1,
+        opacity: tokenIdx == idx || tokenIdx < 0 ? 1 : 0.1,
         transition: `opacity ${tokenIdx == idx ? 0.01 : 0.3}s`,
       }}
     >

@@ -7,7 +7,6 @@ import useTokenisation from "../useTokenisation";
 export default function Layer0({ text }) {
   const tokens = useTokenisation({ text: text || "" });
 
-  console.log("10 layer 0");
   const [embeddings, setEmbeddings] = useState({});
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export default function Layer0({ text }) {
         text,
         dim: 256,
       });
-      console.log(res, "29");
 
       setEmbeddings((embd) => {
         let copy = { ...embd };

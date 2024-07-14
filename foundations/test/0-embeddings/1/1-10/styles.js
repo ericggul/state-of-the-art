@@ -12,7 +12,7 @@ export const Container = styled.div`
   flex-direction: column;
   transform-origin: center;
 
-  text-shadow: 0 0 3px white, 0 0 1px white, 0 0 5px white, 0 0 10px white;
+  text-shadow: 0 0 3px white, 0 0 1px white;
 `;
 
 export const Tokens = styled.div`

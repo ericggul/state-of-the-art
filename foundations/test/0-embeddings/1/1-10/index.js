@@ -39,7 +39,6 @@ function LayerEl({ text, style = {} }) {
         text,
         dim: 256,
       });
-      console.log(res, "29");
 
       setEmbeddings((prevEmbeddings) => {
         const newEmbedding = res.data[0].embedding.map((el) => parseFloat(el.toFixed(3)));
@@ -69,12 +68,13 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
-  const [tokenIdx, setTokenIdx] = useState(0);
+  const [ignitedIndices, setIgnitedIndices] = useState([]);
+  const [ignitingRule, setIgnitingRule] = useState(0);
 
   useEffect(() => {
     if (tokens && tokens.length > 0) {
       const interval = setInterval(() => {
-        setTokenIdx((i) => (i + 1) % tokens.length);
+        setIgnitingRule((i) => (i + 1) % 10);
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -82,18 +82,18 @@ function SingleEl({ tokens, embeddings, style }) {
 
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} tokenIdx={tokenIdx} idx={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} ignited={i % ignitingRule === 0} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, tokenIdx, idx }) {
+function Token({ token, embedding, ignited }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <S.Inner
         style={{
-          opacity: tokenIdx == idx ? 1 : 0.1,
-          transition: `opacity ${tokenIdx == idx ? 0.1 : 0.6}s`,
+          opacity: ignited ? 1 : 0.1,
+          transition: `opacity ${ignited ? 0.1 : 0.6}s`,
         }}
       >
         {embedding && embedding.pos.join(" ")}
@@ -101,16 +101,16 @@ function Token({ token, embedding, tokenIdx, idx }) {
       <p
         style={{
           margin: "1vw 0",
-          opacity: tokenIdx == idx ? 1 : 0.1,
-          transition: `opacity ${tokenIdx == idx ? 0.01 : 0.3}s`,
+          opacity: ignited ? 1 : 0.1,
+          transition: `opacity ${ignited ? 0.01 : 0.3}s`,
         }}
       >
         {token}
       </p>
       <S.Inner
         style={{
-          opacity: tokenIdx == idx ? 1 : 0.1,
-          transition: `opacity ${tokenIdx == idx ? 0.1 : 0.6}s`,
+          opacity: ignited ? 1 : 0.1,
+          transition: `opacity ${ignited ? 0.1 : 0.6}s`,
         }}
       >
         {embedding && embedding.neg.join(" ")}

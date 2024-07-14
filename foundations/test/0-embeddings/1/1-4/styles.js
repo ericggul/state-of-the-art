@@ -22,7 +22,7 @@ export const Token = styled.div`
   font-size: 0.8vw;
   font-weight: 500;
   color: white;
-  width: 4vw;
+  width: 5vw;
 
   ${FlexCenterStyle}
   text-align: center;

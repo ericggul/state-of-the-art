@@ -22,10 +22,11 @@ export default function Conductor() {
       socket,
     });
 
-    await getGPT(data);
+    await getGptResponse(data);
+    await getGptEmbeddings(data);
   }
 
-  async function getGPT(data) {
+  async function getGptResponse(data) {
     const response = await axios.post("/api/openai/gpt-4o", {
       text: data.text,
       params: {
@@ -34,10 +35,24 @@ export default function Conductor() {
       },
     });
 
-    console.log(response.data.message.content);
-
+    console.log("gpt response", response.data);
     socket.current.emit("conductor-new-data", {
       generatedOutput: response.data,
+      mobileId: data.mobileId,
+      propagationId: data.propagationId,
+      text: data.text,
+    });
+  }
+
+  async function getGptEmbeddings(data) {
+    const response = await axios.post("/api/openai/embeddings", {
+      text: data.text,
+      dim: 256,
+    });
+    console.log("gpt embedding", response.data);
+
+    socket.current.emit("conductor-new-embeddings", {
+      embedding: response.data[0].embedding,
       mobileId: data.mobileId,
       propagationId: data.propagationId,
       text: data.text,
