@@ -25,8 +25,10 @@ export default function Screen({ layerIdx }) {
     layerIdx,
     handleNewMobile,
     handleNewLayerClicked,
+    //
     handleNewPropagation,
     handleNewResponse,
+    handleNewEmbeddings,
   });
 
   function handleNewMobile(data) {
@@ -56,6 +58,11 @@ export default function Screen({ layerIdx }) {
   const [newResponse, setNewResponse] = useState({});
   function handleNewResponse(data) {
     setNewResponse(data);
+  }
+
+  const [embeddings, setEmbeddings] = useState([]);
+  function handleNewEmbeddings(data) {
+    console.log(data);
   }
 
   useEffect(() => {

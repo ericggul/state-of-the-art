@@ -1,19 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
 import axios from "axios";
 import handlePropagation from "./propagation";
 import useSocket from "@/utils/socket/useSocketConductor";
 
 export default function Conductor() {
   const socket = useSocket({ handleNewMobile, handleNewTraining });
+  const timeoutRefs = useRef([]);
 
   function handleNewMobile(data) {
     console.log("new mobile", data);
   }
-
-  const timeoutRefs = useRef([]);
 
   async function handleNewTraining(data) {
     handlePropagation({
@@ -22,41 +20,10 @@ export default function Conductor() {
       socket,
     });
 
-    await getGptResponse(data);
-    await getGptEmbeddings(data);
-  }
+    if (!data.text) return;
 
-  async function getGptResponse(data) {
-    const response = await axios.post("/api/openai/gpt-4o", {
-      text: data.text,
-      params: {
-        frequency_penalty: parseFloat(data.params.frequency_penalty),
-        temperature: parseFloat(data.params.temperature),
-      },
-    });
-
-    console.log("gpt response", response.data);
-    socket.current.emit("conductor-new-response", {
-      generatedOutput: response.data,
-      mobileId: data.mobileId,
-      propagationId: data.propagationId,
-      text: data.text,
-    });
-  }
-
-  async function getGptEmbeddings(data) {
-    const response = await axios.post("/api/openai/embeddings", {
-      text: data.text,
-      dim: 256,
-    });
-    console.log("gpt embedding", response.data);
-
-    socket.current.emit("conductor-new-embeddings", {
-      embedding: response.data[0].embedding,
-      mobileId: data.mobileId,
-      propagationId: data.propagationId,
-      text: data.text,
-    });
+    await getGptResponse({ data, socket });
+    await getGptEmbeddings({ data, socket });
   }
 
   // Cleanup timeouts on unmount
@@ -67,4 +34,70 @@ export default function Conductor() {
   }, []);
 
   return null;
+}
+
+async function getGptResponse({ data, socket }) {
+  try {
+    const response = await axios.post("/api/openai/gpt-4o", {
+      text: data.text,
+      params: {
+        frequency_penalty: parseFloat(data.params.frequency_penalty),
+        temperature: parseFloat(data.params.temperature),
+      },
+    });
+
+    socket.current.emit("conductor-new-response", {
+      generatedOutput: response.data,
+      mobileId: data.mobileId,
+      propagationId: data.propagationId,
+      text: data.text,
+    });
+  } catch (e) {
+    console.log(e, "get gpt response error");
+  }
+}
+
+async function getGptEmbeddings({ data, socket }) {
+  try {
+    const text = data.text || "";
+
+    const res = await axios.post("/api/openai/tokenisation", { text });
+    const tokens = res.data.decodedArr;
+
+    let embeddings = {};
+    const uniqueTokens = new Set(tokens);
+
+    // Function to fetch embeddings for a token
+    const fetchEmbedding = async (token) => {
+      if (!embeddings[token]) {
+        const res = await axios.post("/api/openai/embeddings", {
+          text: token,
+          dim: 128,
+        });
+
+        embeddings[token] = res.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
+      }
+    };
+
+    // Create an array of promises for all unique tokens
+    const embeddingPromises = Array.from(uniqueTokens).map(fetchEmbedding);
+
+    // Execute all embedding requests in parallel
+    await Promise.all(embeddingPromises);
+
+    // Order embeddings according to the order of tokens
+    const orderedEmbeddings = tokens.reduce((acc, token) => {
+      acc[token] = embeddings[token];
+      return acc;
+    }, {});
+
+    socket.current.emit("conductor-new-embeddings", {
+      embeddings: orderedEmbeddings,
+      mobileId: data.mobileId,
+      propagationId: data.propagationId,
+      text: data.text,
+    });
+  } catch (e) {
+    console.log("embedding error", e);
+  }
 }
