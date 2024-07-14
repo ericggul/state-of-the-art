@@ -32,8 +32,12 @@ export default function mobileSetup({ socket, io }) {
     socket.to(`layer-${data.layerIdx}`).emit("new-conductor-propagation", data);
   });
 
-  socket.on("conductor-new-data", (data) => {
-    socket.to("screen").emit("new-conductor-data", data);
-    socket.to("mobile").emit("new-conductor-data", data);
+  socket.on("conductor-new-response", (data) => {
+    socket.to("screen").emit("new-conductor-response", data);
+    socket.to("mobile").emit("new-conductor-response", data);
+  });
+
+  socket.on("conductor-new-embeddings", (data) => {
+    socket.to("screen").emit("new-conductor-embeddings", data);
   });
 }

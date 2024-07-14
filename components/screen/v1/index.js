@@ -26,7 +26,7 @@ export default function Screen({ layerIdx }) {
     handleNewMobile,
     handleNewLayerClicked,
     handleNewPropagation,
-    handleNewData,
+    handleNewResponse,
   });
 
   function handleNewMobile(data) {
@@ -53,9 +53,9 @@ export default function Screen({ layerIdx }) {
     timeoutRef.current.push(timeoutId);
   }
 
-  const [newData, setNewData] = useState({});
-  function handleNewData(data) {
-    setNewData(data);
+  const [newResponse, setNewResponse] = useState({});
+  function handleNewResponse(data) {
+    setNewResponse(data);
   }
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Screen({ layerIdx }) {
   return (
     <>
       {pageState === "intro" && <Intro layerIdx={layerIdx} />}
-      {pageState === "main" && <Main layerIdx={layerIdx} layersExpanded={layersExpanded} latestPropagation={latestPropagation} newData={newData} />}
+      {pageState === "main" && <Main layerIdx={layerIdx} layersExpanded={layersExpanded} latestPropagation={latestPropagation} newResponse={newResponse} />}
       {pageState === "main" && <Propagation layerIdx={layerIdx} propagations={propagations} latestPropagation={latestPropagation} setPropagations={setPropagations} />}
     </>
   );

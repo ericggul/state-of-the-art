@@ -17,10 +17,10 @@ export default function Mobile() {
 
   const socket = useSocket({
     mobileId: mobileId.current,
-    handleNewData,
+    handleNewResponse,
   });
 
-  function handleNewData(data) {
+  function handleNewResponse(data) {
     console.log("new data", data);
   }
 

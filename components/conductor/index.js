@@ -36,7 +36,7 @@ export default function Conductor() {
     });
 
     console.log("gpt response", response.data);
-    socket.current.emit("conductor-new-data", {
+    socket.current.emit("conductor-new-response", {
       generatedOutput: response.data,
       mobileId: data.mobileId,
       propagationId: data.propagationId,

@@ -10,7 +10,7 @@ const Layer3 = dynamic(() => import("@/foundations/test/3-logprobs/2"));
 
 const FC3D2 = dynamic(() => import("@/foundations/test/fc-3d/2"));
 
-export default function Main({ layerIdx, layersExpanded, latestPropagation, newData }) {
+export default function Main({ layerIdx, layersExpanded, latestPropagation, newResponse }) {
   // useTone({ layerExpanded });
 
   return (
@@ -18,7 +18,7 @@ export default function Main({ layerIdx, layersExpanded, latestPropagation, newD
       <FC3D2 layerIdx={layerIdx} layersExpanded={layersExpanded} />
 
       {latestPropagation && latestPropagation.text && layerIdx != "3" && <Layer0 text={latestPropagation.text} />}
-      {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 text={latestPropagation.text} newData={newData} />}
+      {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 text={latestPropagation.text} newResponse={newResponse} />}
     </S.Container>
   );
 }
