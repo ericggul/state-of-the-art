@@ -12,6 +12,7 @@ export const Container = styled.div`
 
   font-size: 1vw;
   color: #fff;
+  background: black;
 `;
 
 export const Row = styled.div`

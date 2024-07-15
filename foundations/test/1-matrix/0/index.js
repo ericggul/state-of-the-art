@@ -15,31 +15,30 @@ function computeSimilarityMatrix(embeddings, tokens) {
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
 
-  const similarityMatrix = useMemo(() => computeSimilarityMatrix(embeddings, tokens), [embeddings, tokens]);
+  const similarityMatrix = useMemo(() => (embeddings && tokens ? computeSimilarityMatrix(embeddings, tokens) : []), [embeddings, tokens]);
 
   return (
     <S.Container>
       <S.TopRow>
         <S.Token />
-        {tokens.map((token, i) => (
-          <S.Value key={i}>{token}</S.Value>
-        ))}
+        {tokens && tokens.map((token, i) => <S.Value key={i}>{token}</S.Value>)}
       </S.TopRow>
-      {similarityMatrix.map((row, i) => (
-        <S.Row key={i}>
-          <S.Token>{tokens[i]}</S.Token>
-          {row.map((value, j) => (
-            <S.Value
-              key={j}
-              style={{
-                opacity: value,
-              }}
-            >
-              {value.toFixed(3)}
-            </S.Value>
-          ))}
-        </S.Row>
-      ))}
+      {embeddings &&
+        similarityMatrix.map((row, i) => (
+          <S.Row key={i}>
+            <S.Token>{tokens[i]}</S.Token>
+            {row.map((value, j) => (
+              <S.Value
+                key={j}
+                style={{
+                  opacity: value,
+                }}
+              >
+                {value.toFixed(3)}
+              </S.Value>
+            ))}
+          </S.Row>
+        ))}
     </S.Container>
   );
 }
