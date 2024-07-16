@@ -69,8 +69,6 @@ export default function Layer1({ newEmbeddings }) {
                 fill="none"
                 strokeWidth={similarityMatrix[i][j] ** 2 * 2}
                 opacity={j == targetWordIdx || i == targetWordIdx ? 1 : 0.1}
-
-                //end circular
               />
             ) : null
           )
