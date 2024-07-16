@@ -11,8 +11,12 @@ export default function Layer3({ newResponse }) {
     const topLogProbs = newResponse.logprobs.content;
 
     // Aggregate token log probabilities into word log probabilities
-    const wordLogProbs = tokens.map((token, idx) => {
-      const combinedLogProbs = topLogProbs.filter((logProb) => token.includes(logProb.token));
+    const wordLogProbs = tokens.map((token) => {
+      // Combine adjacent log probabilities to form words
+      const combinedLogProbs = topLogProbs.filter((logProb) => {
+        const decodedToken = decode(logProb.token);
+        return token.includes(decodedToken);
+      });
 
       console.log(combinedLogProbs);
 
@@ -98,4 +102,34 @@ function decode(encodedString) {
 function tokenizeKorean(text) {
   const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
   return text.match(regex) || [];
+}
+
+// New function to combine adjacent log probabilities to form words
+function combineLogProbs(logProbs) {
+  let combined = [];
+  let currentWord = "";
+  let currentLogProbs = [];
+
+  logProbs.forEach((logProb) => {
+    const decodedToken = decode(logProb.token);
+    if (currentWord && !currentWord.endsWith(decodedToken[0])) {
+      combined.push({
+        token: currentWord,
+        top_logprobs: currentLogProbs,
+      });
+      currentWord = "";
+      currentLogProbs = [];
+    }
+    currentWord += decodedToken;
+    currentLogProbs.push(...logProb.top_logprobs);
+  });
+
+  if (currentWord) {
+    combined.push({
+      token: currentWord,
+      top_logprobs: currentLogProbs,
+    });
+  }
+
+  return combined;
 }

@@ -48,6 +48,8 @@ async function getGptResponse({ data, socket }) {
       },
     });
 
+    console.log(response.data);
+
     socket.current.emit("conductor-new-response", {
       generatedOutput: response.data,
       mobileId: data.mobileId,
