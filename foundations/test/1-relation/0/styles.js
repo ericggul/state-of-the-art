@@ -20,7 +20,7 @@ export const MidRow = styled.div`
 `;
 
 export const Token = styled.div`
-  font-size: 0.8vw;
+  font-size: 1vw;
   font-weight: 500;
   color: white;
 
@@ -35,4 +35,10 @@ export const Token = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
+
+  path {
+    transition: 0.2s;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 `;
