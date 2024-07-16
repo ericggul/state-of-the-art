@@ -27,11 +27,23 @@ export default function Layer1({ newEmbeddings }) {
 
     // Get the coordinates
     const coords = tsne.getSolution();
-    setTsneCoords(coords);
+
+    // Normalize the coordinates
+    const xCoords = coords.map((coord) => coord[0]);
+    const yCoords = coords.map((coord) => coord[1]);
+
+    const xMin = Math.min(...xCoords);
+    const xMax = Math.max(...xCoords);
+    const yMin = Math.min(...yCoords);
+    const yMax = Math.max(...yCoords);
+
+    const normalizedCoords = coords.map(([x, y]) => [(x - xMin) / (xMax - xMin), (y - yMin) / (yMax - yMin)]);
+
+    setTsneCoords(normalizedCoords);
   }, [embeddings]);
 
   // Calculate position in SVG space
-  const calcSvgPos = (coord) => [(coord[0] + 1) * (windowWidth / 2), (coord[1] + 1) * (windowHeight / 2)];
+  const calcSvgPos = (coord) => [coord[0] * windowWidth * 0.5 + windowWidth * 0.25, coord[1] * windowHeight * 0.5 + windowHeight * 0.25];
 
   return (
     <S.Container>

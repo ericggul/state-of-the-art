@@ -10,4 +10,9 @@ export const Container = styled.div`
   font-size: 1vw;
   color: #fff;
   background: black;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
