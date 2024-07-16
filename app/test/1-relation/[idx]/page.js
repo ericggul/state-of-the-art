@@ -14,7 +14,7 @@ const Relation03 = dynamic(() => import("@/foundations/test/1-relation/0/0-3"));
 //1: D3
 const Relation1 = dynamic(() => import("@/foundations/test/1-relation/1"));
 
-export default function MatrixPage() {
+export default function RelationPage() {
   const { idx } = useParams();
 
   return (
