@@ -6,7 +6,7 @@ import useTone from "@/foundations/screen/Main/useTone";
 import dynamic from "next/dynamic";
 
 const Layer0 = dynamic(() => import("@/foundations/test/0-embeddings/2"));
-const Layer3 = dynamic(() => import("@/foundations/test/3-logprobs/2"));
+const Layer3 = dynamic(() => import("@/foundations/test/3-output/2"));
 
 const FC3D2 = dynamic(() => import("@/foundations/test/fc-3d/2"));
 

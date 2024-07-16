@@ -4,7 +4,8 @@ import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
 import useResize from "@/utils/hooks/useResize";
 
-export default function Layer3({ newResponse, text }) {
+export default function Layer3({ newResponse }) {
+  console.log(newResponse);
   const logProbs = useMemo(() => (newResponse.generatedOutput ? newResponse.generatedOutput.logprobs.content : []), [newResponse]);
 
   return (
