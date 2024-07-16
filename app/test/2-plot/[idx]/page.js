@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
-import { TEST_EMBEDDINGS } from "@/foundations/test/2-plot/constant";
+import { TEST_EMBEDDINGS } from "@/foundations/test/2-plot/constant-complex";
 
 //TSNE
 const Tsne0 = dynamic(() => import("@/foundations/test/2-plot/tsne/0"));
