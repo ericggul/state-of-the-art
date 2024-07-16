@@ -83,7 +83,7 @@ async function getGptEmbeddings({ data, socket }) {
     // Execute all embedding requests in parallel
     await Promise.all(embeddingPromises);
 
-    console.log(tokens);
+    console.log(tokens, embeddings);
 
     socket.current.emit("conductor-new-embeddings", {
       embeddings,

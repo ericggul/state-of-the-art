@@ -15,25 +15,24 @@ export const Container = styled.div`
   background: black;
 `;
 
-export const Row = styled.div`
+export const MidRow = styled.div`
   ${FlexCenterStyle}
-  flex-direction: row;
-  margin: 0.2vw 0;
-`;
-
-export const TopRow = styled.div`
-  ${FlexCenterStyle}
-  flex-direction: row;
-  margin: 0.2vw 0;
-  margin-bottom: 1vw;
 `;
 
 export const Token = styled.div`
-  width: 10vw;
+  font-size: 0.8vw;
+  font-weight: 500;
+  color: white;
+
+  ${FlexCenterStyle}
   text-align: center;
+  flex-direction: column;
+
+  position: absolute;
+
+  transform: translate(-50%, -50%);
 `;
 
-export const Value = styled.div`
-  width: 5vw;
-  text-align: center;
+export const Pic = styled.svg`
+  ${WholeContainer}
 `;
