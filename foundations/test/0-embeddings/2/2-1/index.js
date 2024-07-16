@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import useTokenisation from "../../useTokenisation";
+import useTokenisation from "../../../../../utils/hooks/useTokenisation";
 
 import useRandomInterval from "@/utils/hooks/useRandomInterval";
 

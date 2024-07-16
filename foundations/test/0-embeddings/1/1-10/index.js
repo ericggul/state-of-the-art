@@ -1,16 +1,15 @@
 import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import useTokenisation from "../../useTokenisation";
+import useTokenisation from "../../../../../utils/hooks/useTokenisation";
 
 const TEXT_A = "Is AI the brightness for the future of humanity? Or is it the darkness?";
-const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
-const TEXT_C = `The future is bright. The future is AI.`;
+const TEXT_KOREAN = "인공지능은 인류의 미래를 밝게 할 것인가? 아니면 어둡게 할 것인가?";
 
 export default function WholeLayer() {
   return (
     <S.Bg>
-      <LayerEl text={TEXT_A} style={{}} />
+      <LayerEl text={TEXT_KOREAN} style={{}} />
 
       <S.Overlay ispos="true" />
       <S.Overlay ispos="" />

@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { useState, useEffect, useMemo } from "react";
 import useResize from "@/utils/hooks/useResize";
-import useTokenisation from "../useTokenisation";
+import useTokenisation from "../../../../utils/hooks/useTokenisation";
 
 export default function Layer0({ text }) {
   const tokens = useTokenisation({ text: text || "" });

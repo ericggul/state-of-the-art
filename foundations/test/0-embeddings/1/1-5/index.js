@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import useTokenisation from "../../useTokenisation";
+import useTokenisation from "../../../../../utils/hooks/useTokenisation";
 
 const TEXT_A = "Is AI the brightness for the future of humanity? Or is it the darkness?";
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;

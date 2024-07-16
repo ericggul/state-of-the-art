@@ -2,7 +2,7 @@ import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
 
-import useTokenisation from "../useTokenisation";
+import useTokenisation from "../../../../utils/hooks/useTokenisation";
 
 export default function Layer0({ text }) {
   const tokens = useTokenisation({ text: text || "" });

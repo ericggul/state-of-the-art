@@ -5,6 +5,8 @@ import axios from "axios";
 import handlePropagation from "./propagation";
 import useSocket from "@/utils/socket/useSocketConductor";
 
+import { handleTokenisation } from "@/utils/hooks/useTokenisation";
+
 export default function Conductor() {
   const socket = useSocket({ handleNewMobile, handleNewTraining });
   const timeoutRefs = useRef([]);
@@ -60,7 +62,7 @@ async function getGptResponse({ data, socket }) {
 async function getGptEmbeddings({ data, socket }) {
   try {
     const text = data.text || "";
-    const tokens = text.match(/[\w]+|[.,!?]/g);
+    const tokens = handleTokenisation(text);
 
     let embeddings = {};
     const uniqueTokens = new Set(tokens);
@@ -97,10 +99,13 @@ async function getGptEmbeddings({ data, socket }) {
   }
 }
 
-async function getGptEmbeddingsComplex({ data, socket }) {
+//TEMPORARY: GENERATING ALL COMBINATIONS
+async function getGptEmbeddingsAllCombinations({ data, socket }) {
   try {
     const text = data.text || "";
-    const tokens = text.match(/[\w]+|[.,!?]/g);
+    const tokens = handleTokenisation(text);
+
+    console.log(text, tokens);
 
     //generate all possible combinations of adjacent tokens
     //for example, original text: I love you woogie.

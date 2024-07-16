@@ -5,11 +5,17 @@ import { useState, useEffect } from "react";
 export default function useTokenisation({ text }) {
   const [tokenisedArr, setTokenisedArr] = useState([]);
   useEffect(() => {
-    const arr = text.match(/[\w]+|[.,!?]/g);
-    setTokenisedArr(arr);
+    const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
+    const arr = text.match(regex);
+    setTokenisedArr(arr || []); // Ensure to set an empty array if no matches found
   }, [text]);
 
   return tokenisedArr;
+}
+
+export function handleTokenisation(text) {
+  const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
+  return text.match(regex) || [];
 }
 
 function useTokenisationOriginal({ text }) {
