@@ -20,7 +20,7 @@ export default function Main({ layerIdx, layersExpanded, latestPropagation, newR
 
       {latestPropagation && latestPropagation.text && layerIdx == "0" && <Layer0 text={latestPropagation.text} newEmbeddings={newEmbeddings} />}
       {latestPropagation && latestPropagation.text && layerIdx == "1" && <Layer1 newEmbeddings={newEmbeddings} />}
-      {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 text={latestPropagation.text} newResponse={newResponse} />}
+      {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 newResponse={newResponse.generatedOutput} />}
     </S.Container>
   );
 }
