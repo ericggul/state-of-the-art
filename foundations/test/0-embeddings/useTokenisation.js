@@ -5,6 +5,16 @@ import { useState, useEffect } from "react";
 export default function useTokenisation({ text }) {
   const [tokenisedArr, setTokenisedArr] = useState([]);
   useEffect(() => {
+    const arr = text.match(/[\w]+|[.,!?]/g);
+    setTokenisedArr(arr);
+  }, [text]);
+
+  return tokenisedArr;
+}
+
+function useTokenisationOriginal({ text }) {
+  const [tokenisedArr, setTokenisedArr] = useState([]);
+  useEffect(() => {
     handleTokenisation(text);
   }, [text]);
 

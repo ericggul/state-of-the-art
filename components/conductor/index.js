@@ -60,9 +60,7 @@ async function getGptResponse({ data, socket }) {
 async function getGptEmbeddings({ data, socket }) {
   try {
     const text = data.text || "";
-
-    const res = await axios.post("/api/openai/tokenisation", { text });
-    const tokens = res.data.decodedArr;
+    const tokens = text.match(/[\w]+|[.,!?]/g);
 
     let embeddings = {};
     const uniqueTokens = new Set(tokens);
