@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
 const Embd0 = dynamic(() => import("@/foundations/test/0-embeddings/0"));
+
+///CURRENTLY WORKING: 1
 const Embd1 = dynamic(() => import("@/foundations/test/0-embeddings/1"));
 const Embd11 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-1"));
 const Embd12 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-2"));

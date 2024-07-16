@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "../useComputeSimilarity";
+import useComputeSimilarity from "../../useComputeSimilarity";
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
@@ -28,8 +28,8 @@ export default function Layer1({ newEmbeddings }) {
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
     const sweepFlag = dir;
-    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * verticalInterval;
-    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * verticalInterval;
+    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * (x1 < x2 ? 1 : -1) * verticalInterval;
+    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * (x1 < x2 ? 1 : -1) * verticalInterval;
     return `M${x1} ${y1Adjusted} A${radius} ${radius * 0.6} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 
@@ -48,6 +48,17 @@ export default function Layer1({ newEmbeddings }) {
         </S.Token>
       ))}
       <S.Pic>
+        {tokens.map((token, i) => (
+          <path
+            key={`arc-${i}`}
+            d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(targetWordIdx)[0], wordPosCalc(targetWordIdx)[1], i % 2 === 0 ? 1 : 0)}
+            stroke="white"
+            fill="none"
+            strokeWidth={similarityMatrix[i][targetWordIdx] > 0.2 ? similarityMatrix[i][targetWordIdx] ** 2 * 4 : 0}
+            opacity={i == targetWordIdx ? 0 : 1}
+          />
+        ))}
+
         {tokens.map((token, i) =>
           tokens.map((targetToken, j) =>
             i < j ? (
@@ -56,7 +67,7 @@ export default function Layer1({ newEmbeddings }) {
                 d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)}
                 stroke="white"
                 fill="none"
-                strokeWidth={similarityMatrix[i][j] > 0.2 ? similarityMatrix[i][j] ** 2 * 4 : 0}
+                strokeWidth={similarityMatrix[i][j] ** 2 * 2}
                 opacity={j == targetWordIdx || i == targetWordIdx ? 1 : 0.1}
 
                 //end circular
