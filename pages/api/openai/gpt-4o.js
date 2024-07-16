@@ -5,6 +5,9 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  // Ensure UTF-8 encoding
+  req.setEncoding("utf8");
+
   const text = req.body.text;
   const params = req.body.params;
 

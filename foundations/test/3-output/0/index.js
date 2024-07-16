@@ -1,9 +1,9 @@
 import * as S from "./styles";
 import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
-import useResize from "@/utils/hooks/useResize";
 
 export default function Layer3({ newResponse }) {
+  console.log(newResponse);
   const logProbs = useMemo(() => {
     if (!newResponse) return [];
 
@@ -12,8 +12,28 @@ export default function Layer3({ newResponse }) {
 
     // Aggregate token log probabilities into word log probabilities
     const wordLogProbs = tokens.map((token, idx) => {
-      const logProbData = topLogProbs.find((logProb) => logProb.token === token);
-      return logProbData ? logProbData : { token, top_logprobs: [], logprob: null };
+      const combinedLogProbs = topLogProbs.filter((logProb) => token.includes(logProb.token));
+
+      console.log(combinedLogProbs);
+
+      const aggregatedLogProbs = combinedLogProbs.reduce((acc, curr) => {
+        curr.top_logprobs.forEach((el) => {
+          const existing = acc.find((log) => log.token === el.token);
+          if (existing) {
+            existing.logprob = Math.max(existing.logprob, el.logprob);
+          } else {
+            acc.push(el);
+          }
+        });
+        return acc;
+      }, []);
+
+      console.log(aggregatedLogProbs);
+
+      return {
+        token,
+        top_logprobs: aggregatedLogProbs,
+      };
     });
 
     return wordLogProbs;
@@ -39,24 +59,39 @@ function logprobToPercentage(logprob) {
 function Token({ token, logprobs, embedding }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <p>{token}</p>
+      <p>{decode(token)}</p>
       {logprobs && (
         <>
           <S.Vector ispos={"true"}>
             <S.Inner>
               {logprobs
                 .filter((_, i) => i % 2 === 0)
-                .map((el) => `${el.token} (${logprobToPercentage(el.logprob)}%)`)
+                .map((el) => `${decode(el.token)} (${logprobToPercentage(el.logprob)}%)`)
                 .join("\n")}
             </S.Inner>
           </S.Vector>
           <S.Vector ispos={""}>
-            <S.Inner>{logprobs.map((el) => `${el.token} (${logprobToPercentage(el.logprob)}%)`).join("\n")}</S.Inner>
+            <S.Inner>{logprobs.map((el) => `${decode(el.token)} (${logprobToPercentage(el.logprob)}%)`).join("\n")}</S.Inner>
           </S.Vector>
         </>
       )}
     </S.Token>
   );
+}
+
+// Function to decode UTF-8 encoded strings to Unicode characters
+function decode(encodedString) {
+  try {
+    const hexArray = encodedString.match(/\\x[0-9A-Fa-f]{2}/g);
+    if (hexArray) {
+      const decodedString = hexArray.map((hex) => String.fromCharCode(parseInt(hex.replace("\\x", ""), 16))).join("");
+      return decodedString;
+    }
+    return encodedString;
+  } catch (e) {
+    console.error("Failed to decode UTF-8 string", e);
+    return encodedString;
+  }
 }
 
 // Function to tokenize Korean text by words
