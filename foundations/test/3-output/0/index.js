@@ -3,7 +3,6 @@ import axios from "axios";
 import { useState, useEffect, useMemo } from "react";
 
 export default function Layer3({ newResponse }) {
-  console.log(newResponse);
   const logProbs = useMemo(() => {
     if (!newResponse) return [];
 
@@ -11,14 +10,13 @@ export default function Layer3({ newResponse }) {
     const topLogProbs = newResponse.logprobs.content;
 
     // Aggregate token log probabilities into word log probabilities
+
     const wordLogProbs = tokens.map((token) => {
       // Combine adjacent log probabilities to form words
       const combinedLogProbs = topLogProbs.filter((logProb) => {
-        const decodedToken = decode(logProb.token);
+        const decodedToken = decode(logProb.token).replace(/\s+/g, "");
         return token.includes(decodedToken);
       });
-
-      console.log(combinedLogProbs);
 
       const aggregatedLogProbs = combinedLogProbs.reduce((acc, curr) => {
         curr.top_logprobs.forEach((el) => {
@@ -31,8 +29,6 @@ export default function Layer3({ newResponse }) {
         });
         return acc;
       }, []);
-
-      console.log(aggregatedLogProbs);
 
       return {
         token,
@@ -57,28 +53,32 @@ export default function Layer3({ newResponse }) {
 function logprobToPercentage(logprob) {
   let probability = Math.exp(logprob);
   let percentage = probability * 100;
-  return percentage.toFixed(1);
+  return percentage;
 }
 
 function Token({ token, logprobs, embedding }) {
+  const [focusCandidateIdx, setFocusCandidateIdx] = useState(0);
+
+  const candidates = useMemo(
+    () =>
+      logprobs
+        .filter((el) => logprobToPercentage(el.logprob) > 1)
+        .map((el) => ({
+          token: el.token,
+          percentage: logprobToPercentage(el.logprob),
+        })),
+    [logprobs]
+  );
+
   return (
-    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <p>{decode(token)}</p>
-      {logprobs && (
-        <>
-          <S.Vector ispos={"true"}>
-            <S.Inner>
-              {logprobs
-                .filter((_, i) => i % 2 === 0)
-                .map((el) => `${decode(el.token)} (${logprobToPercentage(el.logprob)}%)`)
-                .join("\n")}
-            </S.Inner>
-          </S.Vector>
-          <S.Vector ispos={""}>
-            <S.Inner>{logprobs.map((el) => `${decode(el.token)} (${logprobToPercentage(el.logprob)}%)`).join("\n")}</S.Inner>
-          </S.Vector>
-        </>
-      )}
+    <S.Token>
+      <p>{token}</p>
+      {candidates &&
+        candidates.map((candidate, i) => (
+          <S.Candidate key={i} focus={i === focusCandidateIdx}>
+            <p>{candidate.token}</p>
+          </S.Candidate>
+        ))}
     </S.Token>
   );
 }

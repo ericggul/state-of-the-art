@@ -31,8 +31,6 @@ function LayerEl({ text, style = {} }) {
     });
   }, [tokens]);
 
-  console.log(tokens, embeddings);
-
   async function fetchEmbedding(text) {
     if (!text) return;
 
