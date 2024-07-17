@@ -25,5 +25,5 @@ export const Token = styled.span`
 `;
 
 export const Candidate = styled.div`
-  ${({ focus }) => (focus ? "opacity: 1" : "opacity: 0.1")};
+  ${({ isfocus }) => (isfocus ? "opacity: 1" : "opacity: 0.1")};
 `;

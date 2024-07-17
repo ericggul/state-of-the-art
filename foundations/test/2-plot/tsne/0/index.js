@@ -6,7 +6,6 @@ import tsnejs from "../tsne";
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
   const [tsneCoords, setTsneCoords] = useState([]);
-
   const [windowWidth, windowHeight] = useResize();
 
   // Calculate t-SNE coordinates
@@ -45,9 +44,30 @@ export default function Layer1({ newEmbeddings }) {
   // Calculate position in SVG space
   const calcSvgPos = (coord) => [coord[0] * windowWidth * 0.5 + windowWidth * 0.25, coord[1] * windowHeight * 0.5 + windowHeight * 0.25];
 
+  // Create Bezier path
+  const createBezierPath = (x1, y1, x2, y2) => {
+    const controlX1 = x1 + (x2 - x1) / 3;
+    const controlY1 = y1;
+    const controlX2 = x2 - (x2 - x1) / 3;
+    const controlY2 = y2;
+
+    return `M${x1},${y1} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2}`;
+  };
+
   return (
     <S.Container>
       <svg width={windowWidth} height={windowHeight}>
+        {/* Draw Bezier curves connecting the words */}
+        {tsneCoords.map((coord, idx) => {
+          if (idx < tsneCoords.length - 1) {
+            const [x1, y1] = calcSvgPos(coord);
+            const [x2, y2] = calcSvgPos(tsneCoords[idx + 1]);
+            return <path key={`curve-${idx}`} d={createBezierPath(x1, y1, x2, y2)} stroke="white" fill="none" strokeWidth="1" />;
+          }
+          return null;
+        })}
+
+        {/* Draw circles and texts for the words */}
         {tsneCoords.map((coord, idx) => {
           const [x, y] = calcSvgPos(coord);
           return (

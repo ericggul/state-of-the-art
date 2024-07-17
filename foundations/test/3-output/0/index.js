@@ -9,12 +9,41 @@ export default function Layer3({ newResponse }) {
     const tokens = tokenizeKorean(newResponse.message.content);
     const topLogProbs = newResponse.logprobs.content;
 
+    function combineSyllables(logProbs) {
+      const combined = [];
+      let i = 0;
+
+      console.log(logProbs);
+      while (i < logProbs.length) {
+        const currentToken = logProbs[i];
+
+        if (currentToken.token.startsWith("\\x")) {
+          console.log(i, currentToken, logProbs[i - 1]);
+          if (i > 0 && logProbs[i - 1].token.startsWith("\\x")) {
+            combined[combined.length - 1].push(i);
+          } else {
+            combined.push([i]);
+          }
+        } else {
+          combined.push([i]);
+        }
+
+        i++;
+      }
+
+      return combined;
+    }
+
+    const result = combineSyllables(topLogProbs);
+    console.log(result);
+
+    console.log(decode("\\xea\\xb2\\x83"));
     // Aggregate token log probabilities into word log probabilities
 
     const wordLogProbs = tokens.map((token) => {
       // Combine adjacent log probabilities to form words
       const combinedLogProbs = topLogProbs.filter((logProb) => {
-        const decodedToken = decode(logProb.token).replace(/\s+/g, "");
+        const decodedToken = decode2(logProb.token).replace(/\s+/g, "");
         return token.includes(decodedToken);
       });
 
@@ -38,6 +67,8 @@ export default function Layer3({ newResponse }) {
 
     return wordLogProbs;
   }, [newResponse]);
+
+  console.log(decode2("\\xea\\xb2\\x83"));
 
   return (
     <S.Container>
@@ -75,8 +106,8 @@ function Token({ token, logprobs, embedding }) {
       <p>{token}</p>
       {candidates &&
         candidates.map((candidate, i) => (
-          <S.Candidate key={i} focus={i === focusCandidateIdx}>
-            <p>{candidate.token}</p>
+          <S.Candidate key={i} isfocus={i === focusCandidateIdx ? "true" : undefined}>
+            <p>{decode(candidate.token)}</p>
           </S.Candidate>
         ))}
     </S.Token>
@@ -84,52 +115,40 @@ function Token({ token, logprobs, embedding }) {
 }
 
 // Function to decode UTF-8 encoded strings to Unicode characters
-function decode(encodedString) {
-  try {
-    const hexArray = encodedString.match(/\\x[0-9A-Fa-f]{2}/g);
-    if (hexArray) {
-      const decodedString = hexArray.map((hex) => String.fromCharCode(parseInt(hex.replace("\\x", ""), 16))).join("");
-      return decodedString;
-    }
-    return encodedString;
-  } catch (e) {
-    console.error("Failed to decode UTF-8 string", e);
-    return encodedString;
-  }
+function decode2(bytes) {
+  let decoder = new TextDecoder("utf-8");
+  let result = decoder.decode(new Uint8Array(bytes));
+  return result;
 }
+
+// Function to decode UTF-8 encoded strings to Unicode characters
+function decode(hexString) {
+  // Check if the string contains hexadecimal escape sequences
+  if (!hexString.includes("\\x")) {
+    return hexString;
+  }
+
+  // Remove the \x prefix
+  let hex = hexString.replace(/\\x/g, "");
+
+  // Split the hex string into pairs of characters
+  let hexPairs = hex.match(/.{1,2}/g);
+
+  // Convert hex pairs to a byte array
+  let bytes = new Uint8Array(hexPairs.map((pair) => parseInt(pair, 16)));
+
+  // Use TextDecoder to decode the byte array as UTF-8
+  let decoder = new TextDecoder("utf-8");
+  let result = decoder.decode(bytes);
+
+  return result;
+}
+
+// Test the function
+console.log(decode("\\xea\\xb2")); // This should print the corresponding character
 
 // Function to tokenize Korean text by words
 function tokenizeKorean(text) {
   const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
   return text.match(regex) || [];
-}
-
-// New function to combine adjacent log probabilities to form words
-function combineLogProbs(logProbs) {
-  let combined = [];
-  let currentWord = "";
-  let currentLogProbs = [];
-
-  logProbs.forEach((logProb) => {
-    const decodedToken = decode(logProb.token);
-    if (currentWord && !currentWord.endsWith(decodedToken[0])) {
-      combined.push({
-        token: currentWord,
-        top_logprobs: currentLogProbs,
-      });
-      currentWord = "";
-      currentLogProbs = [];
-    }
-    currentWord += decodedToken;
-    currentLogProbs.push(...logProb.top_logprobs);
-  });
-
-  if (currentWord) {
-    combined.push({
-      token: currentWord,
-      top_logprobs: currentLogProbs,
-    });
-  }
-
-  return combined;
 }
