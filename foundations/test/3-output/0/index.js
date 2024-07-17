@@ -2,6 +2,7 @@ import * as S from "./styles";
 
 import { useState, useEffect, useMemo } from "react";
 import useLogProbs from "./useLogProbs";
+import useRandomInterval from "@/utils/hooks/useRandomInterval";
 
 export default function Layer3({ newResponse }) {
   const logProbs = useLogProbs({ newResponse });
@@ -29,23 +30,48 @@ function Token({ token, logprobs, embedding }) {
   const candidates = useMemo(
     () =>
       logprobs
-        .filter((el) => logprobToPercentage(el.logprob) > 1)
-        .map((el) => ({
-          token: el.token,
-          percentage: logprobToPercentage(el.logprob),
-        })),
+        ? logprobs
+            .filter((el) => logprobToPercentage(el.logprob) > 0.01 && el.token !== token)
+            .map((el) => ({
+              token: el.token,
+              percentage: logprobToPercentage(el.logprob),
+            }))
+        : [],
     [logprobs]
   );
 
+  const splitNumber = useMemo(() => (candidates.length > 0 ? Math.floor(candidates.length / 2) : 0), [candidates]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFocusCandidateIdx((prev) => (prev + 1) % candidates.length);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [splitNumber]);
+
   return (
     <S.Token>
-      <p>{token}</p>
-      {candidates &&
-        candidates.map((candidate, i) => (
-          <S.Candidate key={i} isfocus={i === focusCandidateIdx ? "true" : "true"}>
-            <p>{candidate.token}</p>
-          </S.Candidate>
-        ))}
+      {candidates.slice(0, splitNumber).map((candidate, i) => (
+        <Candidate idx={i - splitNumber} token={candidate.token} key={i} />
+      ))}
+      <Candidate token={token} idx={0} />
+      {candidates.slice(splitNumber, candidates.length - 1).map((candidate, i) => (
+        <Candidate idx={i + 1} token={candidate.token} key={i} />
+      ))}
     </S.Token>
   );
+}
+
+function Candidate({ idx, token }) {
+  const [isfocus, setIsfocus] = useState(Math.random() < 0.5);
+
+  useRandomInterval(
+    () => {
+      setIsfocus((prev) => !prev);
+    },
+    1000,
+    1500
+  );
+
+  return <S.Candidate isfocus={idx == 0 || isfocus ? "true" : undefined}>{token}</S.Candidate>;
 }

@@ -26,4 +26,5 @@ export const Token = styled.span`
 
 export const Candidate = styled.div`
   ${({ isfocus }) => (isfocus ? "opacity: 1" : "opacity: 0.1")};
+  transition: all 0.3s;
 `;

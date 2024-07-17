@@ -6,17 +6,14 @@ export default function useLogProbs({ newResponse }) {
 
     const topLogProbs = newResponse.logprobs.content;
     const { tokens, combinedIndices } = combineSyllablesAndGenerateNewTokens(topLogProbs);
-    console.log(tokens);
 
     const wordLogProbs = combinedIndices.map((indices, idx) => {
       // Combine adjacent log probabilities to form words
       const combinedLogProbs = indices.map((index) => topLogProbs[index]);
-      console.log(combinedLogProbs);
 
       const aggregatedLogProbs = combinedLogProbs.reduce((acc, curr) => {
         curr.top_logprobs.forEach((el) => {
           const existing = acc.find((log) => log.token === el.token);
-          console.log(el, existing, curr);
           if (existing) {
             existing.logprob = Math.max(existing.logprob, el.logprob);
           } else {
@@ -72,7 +69,6 @@ function combineSyllablesAndGenerateNewTokens(logProbs) {
   const newTokens = combinedIndices.map((indices) => {
     const combinedToken = indices.map((index) => logProbs[index].token).join("");
     const hexMatches = combinedToken.match(/\\x([0-9A-Fa-f]{2})/g);
-    console.log(hexMatches, indices);
 
     if (hexMatches) {
       const utf8Bytes = new Uint8Array(hexMatches.map((hex) => parseInt(hex.replace("\\x", ""), 16)));
