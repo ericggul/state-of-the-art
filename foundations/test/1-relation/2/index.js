@@ -1,18 +1,19 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
-import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "../utils/useComputeSimilarity";
+import usePosCalc from "@/foundations/test/1-relation/utils/usePosCalc";
+import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
-export default function Layer1({ inputEmbeddings }) {
-  const { embeddings, tokens } = inputEmbeddings;
-  const similarityMatrix = useComputeSimilarity({ newEmbeddings: inputEmbeddings });
+export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
+  const crossSimilarityMatrix = useComputeCrossSimlarity({
+    newInputEmbeddings,
+    newOutputEmbeddings,
+  });
 
-  const [windowWidth, windowHeight] = useResize();
-  const wordLength = useMemo(() => tokens.length, [tokens]);
-  const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
-  const verticalInterval = useMemo(() => windowHeight * 0.02, [windowHeight]);
+  console.log(crossSimilarityMatrix);
 
-  const wordPosCalc = useCallback((idx) => [windowWidth / 2 - ((wordLength - 1) * wordInterval) / 2 + idx * wordInterval, windowHeight / 2], [wordInterval, wordLength]);
+  const { wordPosCalc, wordInterval, verticalInterval } = usePosCalc({ tokens: inputTokens });
 
   const [targetWordIdx, setTargetWordIdx] = useState(0);
 
@@ -35,7 +36,7 @@ export default function Layer1({ inputEmbeddings }) {
 
   return (
     <S.Container>
-      {tokens.map((token, i) => (
+      {inputTokens.map((token, i) => (
         <S.Token
           key={i}
           style={{
@@ -48,8 +49,8 @@ export default function Layer1({ inputEmbeddings }) {
         </S.Token>
       ))}
       <S.Pic>
-        {tokens.map((token, i) =>
-          tokens.map((targetToken, j) =>
+        {inputTokens.map((token, i) =>
+          inputTokens.map((targetToken, j) =>
             i < j ? (
               <path
                 key={`arc-${i}-${j}`}

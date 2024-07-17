@@ -31,7 +31,7 @@ export default function RelationPage() {
 
       {idx == "1" && <Relation1 newEmbeddings={TEST_EMBEDDINGS} />}
 
-      {idx == "2" && <Relation2 inputEmbeddings={INPUT_EMBEDDINGS} outputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2" && <Relation2 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }

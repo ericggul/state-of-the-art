@@ -18,3 +18,15 @@ export default function useComputeSimilarity({ newEmbeddings }) {
 
   return similarityMatrix;
 }
+
+export function useComputeCrossSimlarity({ newInputEmbeddings, newOutputEmbeddings }) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
+
+  const similarityMatrix = useMemo(() => {
+    const similarityMatrix = inputTokens.map((_, i) => outputTokens.map((_, j) => dotProduct(inputEmbeddings[inputTokens[i]], outputEmbeddings[outputTokens[j]])));
+    return similarityMatrix;
+  }, [inputEmbeddings, outputEmbeddings, inputTokens, outputTokens]);
+
+  return similarityMatrix;
+}
