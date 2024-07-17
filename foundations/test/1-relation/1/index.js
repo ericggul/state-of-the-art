@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import * as d3 from "d3";
 import * as S from "./styles";
 import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "../useComputeSimilarity";
+import useComputeSimilarity from "../utils/useComputeSimilarity";
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;

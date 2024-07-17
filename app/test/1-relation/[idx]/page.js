@@ -3,7 +3,9 @@
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
-import { TEST_EMBEDDINGS } from "@/foundations/test/1-relation/constant";
+import { TEST_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant";
+
+import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
 
 //0: SVG
 const Relation0 = dynamic(() => import("@/foundations/test/1-relation/0"));
@@ -13,6 +15,9 @@ const Relation03 = dynamic(() => import("@/foundations/test/1-relation/0/0-3"));
 
 //1: D3
 const Relation1 = dynamic(() => import("@/foundations/test/1-relation/1"));
+
+//2: Input-Output Structure
+const Relation2 = dynamic(() => import("@/foundations/test/1-relation/2"));
 
 export default function RelationPage() {
   const { idx } = useParams();
@@ -25,6 +30,8 @@ export default function RelationPage() {
       {idx == "0-3" && <Relation03 newEmbeddings={TEST_EMBEDDINGS} />}
 
       {idx == "1" && <Relation1 newEmbeddings={TEST_EMBEDDINGS} />}
+
+      {idx == "2" && <Relation2 inputEmbeddings={INPUT_EMBEDDINGS} outputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }
