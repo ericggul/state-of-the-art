@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
-import useComputeSimilarity, { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
+import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
@@ -11,29 +11,22 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     newOutputEmbeddings,
   });
 
-  const inputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newInputEmbeddings });
-  const outputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newOutputEmbeddings });
-
   const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalInterval: inputVerticalInterval } = usePosCalc({ tokens: inputTokens, type: "input" });
   const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalInterval: outputVerticalInterval } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
-    const controlX1 = x1 + (x2 - x1) / 2;
-    const controlY1 = y1 + inputVerticalInterval;
-    const controlX2 = x2 - (x2 - x1) / 2;
-    const controlY2 = y2 - outputVerticalInterval;
+    // const controlX1 = x1 + (x2 - x1) / 2;
+    // const controlY1 = y1 + inputVerticalInterval * 5;
+    // const controlX2 = x2;
+    // const controlY2 = y2 - outputVerticalInterval * 5;
+
+    const controlX1 = x1 + (x2 - x1) / 5;
+    const controlY1 = y1 + inputVerticalInterval * 10;
+    const controlX2 = x2;
+    const controlY2 = y2 - outputVerticalInterval * 10;
 
     return `M${x1},${y1 + inputVerticalInterval} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputVerticalInterval}`;
-  };
-
-  // Function to create an arc path between two points
-  const createArcPath = (x1, y1, x2, y2, dir = 1) => {
-    const radius = Math.abs(x2 - x1) / 2;
-    const sweepFlag = dir;
-    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
-    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
-    return `M${x1} ${y1Adjusted} A${radius} ${radius} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 
   return (
@@ -76,34 +69,6 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
               // opacity={j == targetWordIdx || i == targetWordIdx ? 1 : 0.1}
             />
           ))
-        )}
-
-        {inputTokens.map((token, i) =>
-          inputTokens.map((targetToken, j) =>
-            i < j ? (
-              <path
-                key={`arc-${i}-${j}`}
-                d={createArcPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], inputWordPosCalc(j)[0], inputWordPosCalc(j)[1], 0)}
-                stroke="white"
-                fill="none"
-                strokeWidth={inputSimilarityMatrix[i][j] > 0.2 ? inputSimilarityMatrix[i][j] ** 3 * 2 : 0}
-              />
-            ) : null
-          )
-        )}
-
-        {outputTokens.map((token, i) =>
-          outputTokens.map((targetToken, j) =>
-            i < j ? (
-              <path
-                key={`arc-${i}-${j}`}
-                d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 1)}
-                stroke="white"
-                fill="none"
-                strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 2 : 0}
-              />
-            ) : null
-          )
         )}
       </S.Pic>
     </S.Container>

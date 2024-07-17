@@ -19,6 +19,8 @@ const Relation1 = dynamic(() => import("@/foundations/test/1-relation/1"));
 //2: Input-Output Structure
 const Relation2 = dynamic(() => import("@/foundations/test/1-relation/2"));
 const Relation21 = dynamic(() => import("@/foundations/test/1-relation/2/2-1"));
+const Relation22 = dynamic(() => import("@/foundations/test/1-relation/2/2-2"));
+const Relation23 = dynamic(() => import("@/foundations/test/1-relation/2/2-3"));
 
 export default function RelationPage() {
   const { idx } = useParams();
@@ -34,6 +36,8 @@ export default function RelationPage() {
 
       {idx == "2" && <Relation2 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "2-1" && <Relation21 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2-2" && <Relation22 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2-3" && <Relation23 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }

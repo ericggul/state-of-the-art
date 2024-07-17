@@ -33,7 +33,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     const sweepFlag = dir;
     const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
     const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
-    return `M${x1} ${y1Adjusted} A${radius} ${radius} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
+    return `M${x1} ${y1Adjusted} A${radius} ${radius * 0.35} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 
   return (
@@ -83,10 +83,10 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             i < j ? (
               <path
                 key={`arc-${i}-${j}`}
-                d={createArcPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], inputWordPosCalc(j)[0], inputWordPosCalc(j)[1], 0)}
+                d={createArcPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], inputWordPosCalc(j)[0], inputWordPosCalc(j)[1], 1)}
                 stroke="white"
                 fill="none"
-                strokeWidth={inputSimilarityMatrix[i][j] > 0.2 ? inputSimilarityMatrix[i][j] ** 3 * 2 : 0}
+                strokeWidth={inputSimilarityMatrix[i][j] > 0.2 ? inputSimilarityMatrix[i][j] ** 3 * 4 : 0}
               />
             ) : null
           )
@@ -97,10 +97,10 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             i < j ? (
               <path
                 key={`arc-${i}-${j}`}
-                d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 1)}
+                d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 0)}
                 stroke="white"
                 fill="none"
-                strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 2 : 0}
+                strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 4 : 0}
               />
             ) : null
           )
