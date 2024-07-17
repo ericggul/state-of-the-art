@@ -6,16 +6,14 @@ export default function Layer3({ newResponse }) {
   const logProbs = useMemo(() => {
     if (!newResponse) return [];
 
-    const tokens = tokenizeKorean(newResponse.message.content);
     const topLogProbs = newResponse.logprobs.content;
-
-    const result = combineSyllablesAndGenerateNewTokens(topLogProbs);
-    console.log(result);
+    const { tokens, combinedIndices } = combineSyllablesAndGenerateNewTokens(topLogProbs);
+    console.log(tokens);
 
     const wordLogProbs = tokens.map((token) => {
       // Combine adjacent log probabilities to form words
       const combinedLogProbs = topLogProbs.filter((logProb) => {
-        const decodedToken = decode2(logProb.token).replace(/\s+/g, "");
+        const decodedToken = logProb.token.replace(/\s+/g, "");
         return token.includes(decodedToken);
       });
 
@@ -77,47 +75,11 @@ function Token({ token, logprobs, embedding }) {
       {candidates &&
         candidates.map((candidate, i) => (
           <S.Candidate key={i} isfocus={i === focusCandidateIdx ? "true" : undefined}>
-            <p>{decode(candidate.token)}</p>
+            <p>{candidate.token}</p>
           </S.Candidate>
         ))}
     </S.Token>
   );
-}
-
-// Function to decode UTF-8 encoded strings to Unicode characters
-function decode2(bytes) {
-  let decoder = new TextDecoder("utf-8");
-  let result = decoder.decode(new Uint8Array(bytes));
-  return result;
-}
-
-// Function to decode UTF-8 encoded strings to Unicode characters
-function decode(hexString) {
-  // Check if the string contains hexadecimal escape sequences
-  if (!hexString.includes("\\x")) {
-    return hexString;
-  }
-
-  // Remove the \x prefix
-  let hex = hexString.replace(/\\x/g, "");
-
-  // Split the hex string into pairs of characters
-  let hexPairs = hex.match(/.{1,2}/g);
-
-  // Convert hex pairs to a byte array
-  let bytes = new Uint8Array(hexPairs.map((pair) => parseInt(pair, 16)));
-
-  // Use TextDecoder to decode the byte array as UTF-8
-  let decoder = new TextDecoder("utf-8");
-  let result = decoder.decode(bytes);
-
-  return result;
-}
-
-// Function to tokenize Korean text by words
-function tokenizeKorean(text) {
-  const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
-  return text.match(regex) || [];
 }
 
 function combineSyllables(logProbs) {
@@ -144,12 +106,6 @@ function combineSyllables(logProbs) {
   return combined;
 }
 
-function decodeUnicodeEscapeSequences(hexString) {
-  return hexString.replace(/\\x([0-9A-Fa-f]{2})/g, (_, p1) => {
-    return String.fromCharCode(parseInt(p1, 16));
-  });
-}
-
 function utf8Decode(bytes) {
   const decoder = new TextDecoder("utf-8");
   return decoder.decode(bytes);
@@ -160,12 +116,14 @@ function combineSyllablesAndGenerateNewTokens(logProbs) {
   const newTokens = combinedIndices.map((indices) => {
     const combinedToken = indices.map((index) => logProbs[index].token).join("");
     const hexMatches = combinedToken.match(/\\x([0-9A-Fa-f]{2})/g);
+    console.log(hexMatches, indices);
+
     if (hexMatches) {
       const utf8Bytes = new Uint8Array(hexMatches.map((hex) => parseInt(hex.replace("\\x", ""), 16)));
       return utf8Decode(utf8Bytes);
     } else {
-      return decodeUnicodeEscapeSequences(combinedToken);
+      return combinedToken;
     }
   });
-  return newTokens;
+  return { tokens: newTokens, combinedIndices };
 }
