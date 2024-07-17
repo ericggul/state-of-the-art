@@ -9,36 +9,8 @@ export default function Layer3({ newResponse }) {
     const tokens = tokenizeKorean(newResponse.message.content);
     const topLogProbs = newResponse.logprobs.content;
 
-    function combineSyllables(logProbs) {
-      const combined = [];
-      let i = 0;
-
-      console.log(logProbs);
-      while (i < logProbs.length) {
-        const currentToken = logProbs[i];
-
-        if (currentToken.token.startsWith("\\x")) {
-          console.log(i, currentToken, logProbs[i - 1]);
-          if (i > 0 && logProbs[i - 1].token.startsWith("\\x")) {
-            combined[combined.length - 1].push(i);
-          } else {
-            combined.push([i]);
-          }
-        } else {
-          combined.push([i]);
-        }
-
-        i++;
-      }
-
-      return combined;
-    }
-
-    const result = combineSyllables(topLogProbs);
+    const result = combineSyllablesAndGenerateNewTokens(topLogProbs);
     console.log(result);
-
-    console.log(decode("\\xea\\xb2\\x83"));
-    // Aggregate token log probabilities into word log probabilities
 
     const wordLogProbs = tokens.map((token) => {
       // Combine adjacent log probabilities to form words
@@ -67,8 +39,6 @@ export default function Layer3({ newResponse }) {
 
     return wordLogProbs;
   }, [newResponse]);
-
-  console.log(decode2("\\xea\\xb2\\x83"));
 
   return (
     <S.Container>
@@ -144,11 +114,58 @@ function decode(hexString) {
   return result;
 }
 
-// Test the function
-console.log(decode("\\xea\\xb2")); // This should print the corresponding character
-
 // Function to tokenize Korean text by words
 function tokenizeKorean(text) {
   const regex = /[\p{L}\p{N}]+|[.,!?]/gu;
   return text.match(regex) || [];
+}
+
+function combineSyllables(logProbs) {
+  const combined = [];
+  let i = 0;
+
+  while (i < logProbs.length) {
+    const currentToken = logProbs[i];
+    const tokenStr = JSON.stringify(currentToken.token);
+
+    if (tokenStr.includes("\\x")) {
+      if (i > 0 && JSON.stringify(logProbs[i - 1].token).includes("\\x")) {
+        combined[combined.length - 1].push(i);
+      } else {
+        combined.push([i]);
+      }
+    } else {
+      combined.push([i]);
+    }
+
+    i++;
+  }
+
+  return combined;
+}
+
+function decodeUnicodeEscapeSequences(hexString) {
+  return hexString.replace(/\\x([0-9A-Fa-f]{2})/g, (_, p1) => {
+    return String.fromCharCode(parseInt(p1, 16));
+  });
+}
+
+function utf8Decode(bytes) {
+  const decoder = new TextDecoder("utf-8");
+  return decoder.decode(bytes);
+}
+
+function combineSyllablesAndGenerateNewTokens(logProbs) {
+  const combinedIndices = combineSyllables(logProbs);
+  const newTokens = combinedIndices.map((indices) => {
+    const combinedToken = indices.map((index) => logProbs[index].token).join("");
+    const hexMatches = combinedToken.match(/\\x([0-9A-Fa-f]{2})/g);
+    if (hexMatches) {
+      const utf8Bytes = new Uint8Array(hexMatches.map((hex) => parseInt(hex.replace("\\x", ""), 16)));
+      return utf8Decode(utf8Bytes);
+    } else {
+      return decodeUnicodeEscapeSequences(combinedToken);
+    }
+  });
+  return newTokens;
 }
