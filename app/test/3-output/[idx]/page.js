@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
-import { TEST_RESPONSE } from "@/foundations/test/3-output/constant-ko";
+import { TEST_RESPONSE } from "@/foundations/test/3-output/constant-en";
 
 //TSNE
 const Output0 = dynamic(() => import("@/foundations/test/3-output/0"));
