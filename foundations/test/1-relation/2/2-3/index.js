@@ -2,6 +2,7 @@ import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
+import { useTweaks } from "use-tweaks";
 
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
@@ -14,17 +15,23 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalInterval: inputVerticalInterval } = usePosCalc({ tokens: inputTokens, type: "input" });
   const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalInterval: outputVerticalInterval } = usePosCalc({ tokens: outputTokens, type: "output" });
 
+  // const { test } = useTweaks({
+  //   test: 2,
+  // });
+
+  const bezierParams = {
+    controlX1Factor: 0,
+    controlX2Factor: 1,
+    controlY1Factor: 10,
+    controlY2Factor: 5,
+  };
+
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
-    // const controlX1 = x1 + (x2 - x1) / 2;
-    // const controlY1 = y1 + inputVerticalInterval * 5;
-    // const controlX2 = x2;
-    // const controlY2 = y2 - outputVerticalInterval * 5;
-
-    const controlX1 = x1 + (x2 - x1) / 5;
-    const controlY1 = y1 + inputVerticalInterval * 10;
-    const controlX2 = x2;
-    const controlY2 = y2 - outputVerticalInterval * 10;
+    const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
+    const controlY1 = y1 + inputVerticalInterval * bezierParams.controlY1Factor;
+    const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
+    const controlY2 = y2 - outputVerticalInterval * bezierParams.controlY2Factor;
 
     return `M${x1},${y1 + inputVerticalInterval} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputVerticalInterval}`;
   };

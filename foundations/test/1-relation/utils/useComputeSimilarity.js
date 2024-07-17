@@ -30,3 +30,24 @@ export function useComputeCrossSimlarity({ newInputEmbeddings, newOutputEmbeddin
 
   return similarityMatrix;
 }
+
+export function useComputeMultiCrossSimlarity({ newMultiEmbeddings }) {
+  const embeddingsArr = useMemo(() => newMultiEmbeddings.map((embeddings) => embeddings.embeddings), [newMultiEmbeddings]);
+  const tokensArr = useMemo(() => newMultiEmbeddings.map((embeddings) => embeddings.tokens), [newMultiEmbeddings]);
+
+  const multiSimilarityMatrix = useMemo(() => {
+    const result = [];
+    for (let i = 0; i < embeddingsArr.length - 1; i++) {
+      const thisEl = i;
+      const nextEl = i + 1;
+
+      const similarityMatrix = tokensArr[thisEl].map((_, i) => tokensArr[nextEl].map((_, j) => dotProduct(embeddingsArr[thisEl][tokensArr[thisEl][i]], embeddingsArr[nextEl][tokensArr[nextEl][j]])));
+      result.push(similarityMatrix);
+    }
+    return result;
+  }, [embeddingsArr, tokensArr]);
+
+  console.log(multiSimilarityMatrix);
+
+  return multiSimilarityMatrix;
+}
