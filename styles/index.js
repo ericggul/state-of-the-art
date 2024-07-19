@@ -14,3 +14,10 @@ export const WholeContainer = css`
   width: ${({ theme }) => theme.windowWidth}px;
   height: ${({ theme }) => theme.windowHeight}px;
 `;
+
+export const BackgroundBlur = css`
+  ${WholeContainer}
+  background: rgba(0, 0, 0, .2);
+  backdrop-filter: blur(0.5vw);
+  -webkit-backdrop-filter: blur(0.5vw);
+`;

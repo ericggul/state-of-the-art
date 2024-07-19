@@ -5,7 +5,7 @@ import useTone from "@/foundations/screen/Main/useTone";
 
 import dynamic from "next/dynamic";
 
-const Layer0 = dynamic(() => import("@/foundations/test/0-embeddings/1"));
+const Layer0 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-6"));
 const Layer1 = dynamic(() => import("@/foundations/test/unused/1-matrix/0"));
 const Layer3 = dynamic(() => import("@/foundations/test/3-output/0"));
 

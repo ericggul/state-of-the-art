@@ -1,13 +1,14 @@
-import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { FlexCenterStyle, WholeContainer, BackgroundBlur } from "@/styles";
 import styled from "styled-components";
 
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
   // background: black;
-  background: rgba(0, 0, 0, .3);
-  backdrop-filter: blur(1.3vw);
-  -webkit-backdrop-filter: blur(1.3vw);
+
+
+${BackgroundBlur}
+
   flex-direction: column;
 `;
 

@@ -1,9 +1,8 @@
-import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { FlexCenterStyle, WholeContainer, BackgroundBlur } from "@/styles";
 import styled from "styled-components";
 
 export const Bg = styled.div`
-  ${WholeContainer}
-  background: black;
+  ${BackgroundBlur}
 `;
 
 export const Container = styled.div`

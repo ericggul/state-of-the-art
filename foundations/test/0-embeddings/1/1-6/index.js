@@ -9,13 +9,13 @@ const TEXT_A = `"Is AI the brightness for the future of humanity? Or is it the d
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
 const TEXT_C = `The future is bright. The future is AI.`;
 
-export default function WholeLayer() {
+export default function WholeLayer({text = TEXT_A}) {
   return (
     <S.Bg>
-      <LayerEl text={TEXT_A} style={{}} />
+      <LayerEl text={text} style={{}} />
 
-      <S.Overlay ispos="true" />
-      <S.Overlay ispos="" />
+      {/* <S.Overlay ispos="true" />
+      <S.Overlay ispos="" /> */}
     </S.Bg>
   );
 }
@@ -119,14 +119,14 @@ function Token({ token, embedding, showNumbers }) {
           opacity: showNumbers ? 0 : 1,
         }}
       >
-        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(4)).join(" ")}
+        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
       <p
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
           opacity: showNumbers ? 1 : 0,
-          // transition: "opacity 0.4s",
+          transition: "opacity 0.4s",
         }}
       >
         {token}
@@ -136,7 +136,7 @@ function Token({ token, embedding, showNumbers }) {
           opacity: showNumbers ? 0 : 1,
         }}
       >
-        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(4)).join(" ")}
+        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
     </S.Token>
   );
