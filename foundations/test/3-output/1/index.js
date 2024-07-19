@@ -1,53 +1,90 @@
 import * as S from "./styles";
-import { Fragment, useState, useEffect, useMemo } from "react";
+import { Fragment, useState, useEffect, useMemo, useCallback } from "react";
 import useLogProbs from "../utils/useLogProbsFiltered";
 import useRandomInterval from "@/utils/hooks/useRandomInterval";
 import usePosCalc from "./usePosCalc";
+
+function topLogProbsInclToken(logProb) {
+  return {
+    ...logProb,
+    top_logprobs: [{ token: logProb.token, percentage: 100 }, ...logProb.top_logprobs],
+  };
+}
 
 export default function Layer3({ newResponse }) {
   const logProbs = useLogProbs({ newResponse });
 
   const { wordPosCalc, wordInterval, verticalInterval } = usePosCalc({ logProbs, tokens: logProbs.map((el) => el.token) });
 
+  const [showTokens, setShowTokens] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowTokens((b) => !b);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <S.Container>
+      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} show={!showTokens} />
+      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} show={showTokens} />
+    </S.Container>
+  );
+}
+
+function SVGComp({ logProbs, wordPosCalc, show }) {
   // Function to create an arc path between two points
-  const createBezierPath = (x1, y1, x2, y2) => {
+
+  const createBezierPath = useCallback((x1, y1, x2, y2) => {
     const controlX1 = x1 + (x2 - x1) / 2;
     const controlY1 = y1;
     const controlX2 = x2 - (x2 - x1) / 2;
     const controlY2 = y2;
 
     return `M${x1},${y1} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2}`;
-  };
-
+  }, []);
   return (
-    <S.Container>
-      <S.Tokens>
-        {logProbs.map((token, i) => (
-          <Token xIdx={i} key={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
-        ))}
-      </S.Tokens>
+    <S.Pic
+      style={
+        {
+          // opacity: show ? 1 : 0,
+        }
+      }
+    >
+      {logProbs &&
+        logProbs.map((startLogProb, startIdx) =>
+          logProbs.map(
+            (endLogProb, endIdx) =>
+              startIdx !== endIdx &&
+              topLogProbsInclToken(startLogProb).top_logprobs.map((start, i) =>
+                topLogProbsInclToken(endLogProb).top_logprobs.map((end, j) => (
+                  <path
+                    key={`arc-${startIdx}-${endIdx}-${i}-${j}`}
+                    d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(endIdx, j - 1)[0], wordPosCalc(endIdx, j - 1)[1])}
+                    stroke="white"
+                    fill="none"
+                    opacity={0.05}
+                  />
+                ))
+              )
+          )
+        )}
+    </S.Pic>
+  );
+}
 
-      <S.Pic>
-        {logProbs &&
-          logProbs.map((startLogProb, startIdx) =>
-            logProbs.map(
-              (endLogProb, endIdx) =>
-                startIdx !== endIdx &&
-                startLogProb.top_logprobs.map((start, i) =>
-                  endLogProb.top_logprobs.map((end, j) => (
-                    <path
-                      key={`arc-${startIdx}-${endIdx}-${i}-${j}`}
-                      d={createBezierPath(wordPosCalc(startIdx, i)[0], wordPosCalc(startIdx, i)[1], wordPosCalc(endIdx, j)[0], wordPosCalc(endIdx, j)[1])}
-                      stroke="white"
-                      fill="none"
-                      opacity={0.05}
-                    />
-                  ))
-                )
-            )
-          )}
-      </S.Pic>
-    </S.Container>
+function Tokens({ logProbs, wordPosCalc, show }) {
+  return (
+    <S.Tokens
+      style={{
+        opacity: show ? 1 : 0,
+      }}
+    >
+      {logProbs.map((token, i) => (
+        <Token xIdx={i} key={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
+      ))}
+    </S.Tokens>
   );
 }
 
