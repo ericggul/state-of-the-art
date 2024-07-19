@@ -14,8 +14,8 @@ export default function WholeLayer() {
     <S.Bg>
       <LayerEl text={TEXT_A} style={{}} />
 
-      <S.Overlay ispos="true" />
-      <S.Overlay ispos="" />
+      {/* <S.Overlay ispos="true" />
+      <S.Overlay ispos="" /> */}
     </S.Bg>
   );
 }
@@ -68,23 +68,16 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
-  const [showNumbers, setShowNumbers] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowNumbers((b) => !b);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} showNumbers={showNumbers} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, showNumbers }) {
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+function Token({ token, embedding }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -103,8 +96,8 @@ function Token({ token, embedding, showNumbers }) {
     () => {
       if (embedding) {
         setDisplayEmbeddings((prev) => ({
-          pos: prev.pos.sort((a, b) => Math.random() - 0.5),
-          neg: prev.neg.sort((a, b) => Math.random() - 0.5),
+          pos: prev.pos.sort((a, b) => Math.random() - 0.5).map((el) => parseFloat(el.toFixed(getRandomInt(5, 5)))),
+          neg: prev.neg.sort((a, b) => Math.random() - 0.5).map((el) => parseFloat(el.toFixed(getRandomInt(5, 5)))),
         }));
       }
     },
@@ -114,30 +107,18 @@ function Token({ token, embedding, showNumbers }) {
 
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
-      >
-        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(4)).join(" ")}
-      </S.Inner>
+      <S.Inner>{displayEmbeddings && displayEmbeddings.pos.join(" ")}</S.Inner>
       <p
         style={{
           margin: "1vw 0",
-          fontSize: "1vw",
-          opacity: showNumbers ? 1 : 0,
-          // transition: "opacity 0.4s",
+          // fontSize: "1vw",
+          fontStyle: "italic",
+          fontFamily: "monospace",
         }}
       >
         {token}
       </p>
-      <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
-      >
-        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(4)).join(" ")}
-      </S.Inner>
+      <S.Inner>{displayEmbeddings && displayEmbeddings.neg.join(" ")}</S.Inner>
     </S.Token>
   );
 }

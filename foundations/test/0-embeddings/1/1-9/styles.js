@@ -23,7 +23,7 @@ export const Tokens = styled.div`
 export const Token = styled.div`
   font-size: 0.8vw;
   font-weight: 500;
-  color: white;
+
   width: 5vw;
 
   ${FlexCenterStyle}
@@ -37,10 +37,10 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  color: hsl(240, 100%, 40%);
   transition: all 0.2s;
 
   transition: all 0.5s;
+  color: blue;
 `;
 
 export const Overlay = styled.div`
