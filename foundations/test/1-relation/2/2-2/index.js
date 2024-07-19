@@ -14,25 +14,25 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const inputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newInputEmbeddings });
   const outputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newOutputEmbeddings });
 
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalInterval: inputVerticalInterval } = usePosCalc({ tokens: inputTokens, type: "input" });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalInterval: outputVerticalInterval } = usePosCalc({ tokens: outputTokens, type: "output" });
+  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalMargin: inputverticalMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
+  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalMargin: outputverticalMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
     const controlX1 = x1 + (x2 - x1) / 2;
-    const controlY1 = y1 + inputVerticalInterval;
+    const controlY1 = y1 + inputverticalMargin;
     const controlX2 = x2 - (x2 - x1) / 2;
-    const controlY2 = y2 - outputVerticalInterval;
+    const controlY2 = y2 - outputverticalMargin;
 
-    return `M${x1},${y1 + inputVerticalInterval} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputVerticalInterval}`;
+    return `M${x1},${y1 + inputverticalMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputverticalMargin}`;
   };
 
   // Function to create an arc path between two points
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
     const sweepFlag = dir;
-    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
-    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * inputVerticalInterval;
+    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * inputverticalMargin;
+    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * inputverticalMargin;
     return `M${x1} ${y1Adjusted} A${radius} ${radius * 0.35} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 

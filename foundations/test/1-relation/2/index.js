@@ -11,17 +11,17 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     newOutputEmbeddings,
   });
 
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalInterval: inputVerticalInterval } = usePosCalc({ tokens: inputTokens, type: "input" });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalInterval: outputVerticalInterval } = usePosCalc({ tokens: outputTokens, type: "output" });
+  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, verticalMargin: inputverticalMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
+  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, verticalMargin: outputverticalMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
     const controlX1 = x1 + (x2 - x1) / 2;
-    const controlY1 = y1 + inputVerticalInterval;
+    const controlY1 = y1 + inputverticalMargin;
     const controlX2 = x2 - (x2 - x1) / 2;
-    const controlY2 = y2 - outputVerticalInterval;
+    const controlY2 = y2 - outputverticalMargin;
 
-    return `M${x1},${y1 + inputVerticalInterval} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputVerticalInterval}`;
+    return `M${x1},${y1 + inputverticalMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputverticalMargin}`;
   };
 
   return (

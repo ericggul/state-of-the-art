@@ -8,7 +8,7 @@ export default function usePosCalc({ tokensArr }) {
     return tokensArr.map((tokens, idx) => {
       const wordLength = tokens.length;
       const wordInterval = Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength);
-      const verticalInterval = windowHeight * 0.02;
+      const verticalMargin = windowHeight * 0.02;
 
       const yLoc = 0.1 + (0.8 * idx) / (tokensArr.length - 1);
 
@@ -22,7 +22,7 @@ export default function usePosCalc({ tokensArr }) {
       return {
         wordPosCalc,
         wordInterval,
-        verticalInterval,
+        verticalMargin,
       };
     });
   }, [tokensArr, windowWidth, windowHeight]);
