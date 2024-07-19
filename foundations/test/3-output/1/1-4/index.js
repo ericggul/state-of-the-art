@@ -15,15 +15,24 @@ export default function Layer3({ newResponse }) {
 
   const { wordPosCalc, wordInterval, verticalInterval, xMargin } = usePosCalc({ logProbs, tokens: logProbs.map((el) => el.token) });
 
+  const [expandedIdx, setExpandedIdx] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setExpandedIdx((expandedIdx) => (expandedIdx + 1) % logProbs.length);
+    }, 500);
+    return () => clearInterval(interval);
+  }, [logProbs.length]);
+
   return (
     <S.Container>
-      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} show={true} xMargin={xMargin} />
-      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} show={true} />
+      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} xMargin={xMargin} expandedIdx={expandedIdx} />
+      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} expandedIdx={expandedIdx} />
     </S.Container>
   );
 }
 
-function SVGComp({ logProbs, wordPosCalc, show, xMargin }) {
+function SVGComp({ logProbs, wordPosCalc, xMargin, expandedIdx }) {
   // Function to create an arc path between two points
 
   const createBezierPath = useCallback(
@@ -33,7 +42,7 @@ function SVGComp({ logProbs, wordPosCalc, show, xMargin }) {
       const controlX2 = x2 - (x2 - x1) / 2;
       const controlY2 = y2;
 
-      return `M${x1 + xMargin},${y1} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2 - xMargin},${y2}`;
+      return `M${x1},${y1} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2}`;
     },
     [xMargin]
   );
@@ -50,7 +59,8 @@ function SVGComp({ logProbs, wordPosCalc, show, xMargin }) {
                   key={`arc-${startIdx}-${startIdx + 1}-${i}-${j}`}
                   d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(startIdx + 1, j - 1)[0], wordPosCalc(startIdx + 1, j - 1)[1])}
                   stroke={"blue"}
-                  strokeWidth={(start.percentage / 100 + end.percentage / 100) * 1}
+                  strokeWidth={1}
+                  opacity={(expandedIdx === startIdx && j === 0) || (expandedIdx == startIdx + 1) & (i === 0) ? 1 : 0.1}
                   fill="none"
                 />
               ))
@@ -60,21 +70,17 @@ function SVGComp({ logProbs, wordPosCalc, show, xMargin }) {
   );
 }
 
-function Tokens({ logProbs, wordPosCalc, show }) {
+function Tokens({ logProbs, wordPosCalc, expandedIdx }) {
   return (
-    <S.Tokens
-      style={{
-        opacity: show ? 1 : 0,
-      }}
-    >
+    <S.Tokens>
       {logProbs.map((token, i) => (
-        <Token xIdx={i} key={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
+        <Token xIdx={i} key={i} expanded={expandedIdx === i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
       ))}
     </S.Tokens>
   );
 }
 
-function Token({ xIdx, token, logprobs, wordPosCalc }) {
+function Token({ xIdx, token, logprobs, wordPosCalc, expanded }) {
   return (
     <Fragment>
       <S.Candidate
@@ -85,17 +91,24 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
       >
         {token}
       </S.Candidate>
-      {logprobs.map((target, yIdx) => (
-        <S.Candidate
-          style={{
-            left: wordPosCalc(xIdx, yIdx)[0],
-            top: wordPosCalc(xIdx, yIdx)[1],
-          }}
-          key={yIdx}
-        >
-          {target.token}
-        </S.Candidate>
-      ))}
+      <div
+        style={{
+          opacity: expanded ? 1 : 0.1,
+          transition: "all 0.5s",
+        }}
+      >
+        {logprobs.map((target, yIdx) => (
+          <S.Candidate
+            style={{
+              left: wordPosCalc(xIdx, yIdx)[0],
+              top: wordPosCalc(xIdx, yIdx)[1],
+            }}
+            key={yIdx}
+          >
+            {target.token}
+          </S.Candidate>
+        ))}
+      </div>
     </Fragment>
   );
 }

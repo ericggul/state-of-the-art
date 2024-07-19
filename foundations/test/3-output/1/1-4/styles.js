@@ -28,4 +28,8 @@ export const Candidate = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
+
+  path {
+    transition: 0.5s;
+  }
 `;
