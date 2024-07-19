@@ -1,7 +1,7 @@
 import * as S from "./styles";
 
 import { useState, useEffect, useMemo } from "react";
-import useLogProbs from "./useLogProbs";
+import useLogProbs from "../utils/useLogProbs";
 import useRandomInterval from "@/utils/hooks/useRandomInterval";
 
 export default function Layer3({ newResponse }) {

@@ -9,7 +9,7 @@ const TEXT_A = `"Is AI the brightness for the future of humanity? Or is it the d
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
 const TEXT_C = `The future is bright. The future is AI.`;
 
-export default function WholeLayer({text = TEXT_A}) {
+export default function WholeLayer({ text = TEXT_A }) {
   return (
     <S.Bg>
       <LayerEl text={text} style={{}} />
@@ -115,9 +115,11 @@ function Token({ token, embedding, showNumbers }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
+        style={
+          {
+            // opacity: showNumbers ? 0 : 1,
+          }
+        }
       >
         {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
@@ -132,9 +134,11 @@ function Token({ token, embedding, showNumbers }) {
         {token}
       </p>
       <S.Inner
-        style={{
-          opacity: showNumbers ? 0 : 1,
-        }}
+        style={
+          {
+            // opacity: showNumbers ? 0 : 1,
+          }
+        }
       >
         {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
