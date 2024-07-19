@@ -29,24 +29,17 @@ export default function useLogProbs({ newResponse }) {
           });
           return acc;
         }, [])
-        .filter((el) => logprobToPercentage(el.logprob) > 0.01 && el.token !== tokens[idx])
+        .filter((el) => logprobToPercentage(el.logprob) > 0.1 && el.token !== tokens[idx])
         .map((el) => ({
           token: el.token,
           percentage: logprobToPercentage(el.logprob),
         }));
-
-      console.log(aggregatedLogProbs, tokens[idx]);
 
       return {
         token: tokens[idx],
         top_logprobs: aggregatedLogProbs,
       };
     });
-    // .filter((el) => logprobToPercentage(el.logprob) > 0.01 && el.token !== token)
-    // .map((el) => ({
-    //   token: el.token,
-    //   percentage: logprobToPercentage(el.logprob),
-    // }));
 
     return wordLogProbs;
   }, [newResponse]);

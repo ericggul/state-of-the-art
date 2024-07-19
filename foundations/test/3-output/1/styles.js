@@ -17,19 +17,15 @@ export const Tokens = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Token = styled.span`
-  font-size: 1vw;
-  font-weight: 500;
-  color: white;
-  width: 7vw;
-
-  ${FlexCenterStyle}
-  text-align: center;
-  flex-direction: column;
-`;
-
 export const Candidate = styled.div`
   // ${({ isfocus }) => (isfocus ? "opacity: 1" : "opacity: 0.1")};
   // transition: all 0.3s;
+  font-size: 1vw;
   position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+`;
+
+export const Pic = styled.svg`
+  ${WholeContainer}
 `;

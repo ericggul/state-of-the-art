@@ -11,7 +11,7 @@ export default function Layer1({ newEmbeddings }) {
   const [windowWidth, windowHeight] = useResize();
   const wordLength = useMemo(() => tokens.length, [tokens]);
   const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
-  const verticalMargin = useMemo(() => windowHeight * 0.02, [windowHeight]);
+  const yMargin = useMemo(() => windowHeight * 0.02, [windowHeight]);
 
   const [targetWordIdx, setTargetWordIdx] = useState(0);
 
@@ -35,8 +35,8 @@ export default function Layer1({ newEmbeddings }) {
     const createArcPath = (x1, y1, x2, y2, dir = 1) => {
       const radius = Math.abs(x2 - x1) / 2;
       const sweepFlag = dir;
-      const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * verticalMargin;
-      const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * verticalMargin;
+      const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * yMargin;
+      const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * yMargin;
       return `M${x1} ${y1Adjusted} A${radius} ${radius * 0.6} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
     };
 
@@ -60,7 +60,7 @@ export default function Layer1({ newEmbeddings }) {
       const [x, y] = wordPosCalc(i);
       svg.append("text").attr("x", x).attr("y", y).attr("fill", "white").attr("text-anchor", "middle").attr("alignment-baseline", "middle").text(token);
     });
-  }, [tokens, similarityMatrix, windowWidth, windowHeight, wordInterval, verticalMargin, targetWordIdx]);
+  }, [tokens, similarityMatrix, windowWidth, windowHeight, wordInterval, yMargin, targetWordIdx]);
 
   return <svg ref={svgRef} width={windowWidth} height={windowHeight} />;
 }

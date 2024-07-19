@@ -5,7 +5,7 @@ export default function usePosCalc({ tokens, type = null }) {
   const [windowWidth, windowHeight] = useResize();
   const wordLength = useMemo(() => tokens.length, [tokens]);
   const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
-  const verticalMargin = useMemo(() => windowHeight * 0.03, [windowHeight]);
+  const yMargin = useMemo(() => windowHeight * 0.03, [windowHeight]);
 
   const wordPosCalc = useCallback(
     (idx) => {
@@ -26,6 +26,6 @@ export default function usePosCalc({ tokens, type = null }) {
   return {
     wordPosCalc,
     wordInterval,
-    verticalMargin,
+    yMargin,
   };
 }

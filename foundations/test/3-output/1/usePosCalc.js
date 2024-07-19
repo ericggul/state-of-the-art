@@ -4,10 +4,8 @@ import useResize from "@/utils/hooks/useResize";
 export default function usePosCalc({ tokens, logProbs }) {
   const [windowWidth, windowHeight] = useResize();
   const wordLength = useMemo(() => tokens.length, [tokens]);
-  const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
+  const wordInterval = useMemo(() => Math.min(0.07 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
   const verticalInterval = useMemo(() => windowHeight * 0.05, [windowHeight]);
-
-  console.log(logProbs);
 
   const wordPosCalc = useCallback(
     (xIdx, yIdx = -1) => {
@@ -18,7 +16,7 @@ export default function usePosCalc({ tokens, logProbs }) {
         const targetLength = logProbs[xIdx].top_logprobs.length;
         const splitNumber = targetLength > 0 ? Math.floor(targetLength / 2) : 0;
         const adjustedYIdx = yIdx < splitNumber ? yIdx : yIdx + 1;
-        yPos = windowHeight / 2 + (adjustedYIdx - targetLength / 2) * verticalInterval;
+        yPos = windowHeight / 2 + (adjustedYIdx - Math.ceil((targetLength - 1) / 2)) * verticalInterval;
       }
 
       return [xPos, yPos];
