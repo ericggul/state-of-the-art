@@ -3,7 +3,7 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
 import useComputeSimilarity from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
-import useIncrementalInterval from "@/utils/hooks/useIncrementalInterval";
+import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;

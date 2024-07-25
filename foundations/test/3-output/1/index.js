@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { Fragment, useState, useEffect, useMemo, useCallback } from "react";
 import useLogProbs from "../utils/useLogProbsFiltered";
-import useRandomInterval from "@/utils/hooks/useRandomInterval";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import usePosCalc from "./usePosCalc";
 
 function topLogProbsInclToken(logProb) {

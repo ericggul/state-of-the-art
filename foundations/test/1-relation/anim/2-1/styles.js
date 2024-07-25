@@ -37,7 +37,7 @@ export const Pic = styled.svg`
   ${WholeContainer}
 
   path {
-    transition: 0.1s;
+    // transition: 0.1s;
     stroke-linecap: round;
     stroke-linejoin: round;
   }

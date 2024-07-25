@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import useTokenisation from "../../../../../utils/hooks/useTokenisation";
 
-import useRandomInterval from "@/utils/hooks/useRandomInterval";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const TEXT_A = "Is AI the brightness for the future of humanity? Or is it the darkness?";
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;

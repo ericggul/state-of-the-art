@@ -18,7 +18,7 @@ export default function useIncrementalInterval(callback, minDelay, maxDelay) {
 
     if (isEnabled) {
       const handleTick = () => {
-        intervalCountRef.current += 1;
+        intervalCountRef.current *= 1.2;
         const nextTickAt = getRandom(minDelay, maxDelay) * intervalCountRef.current;
 
         timeoutId.current = setTimeout(() => {

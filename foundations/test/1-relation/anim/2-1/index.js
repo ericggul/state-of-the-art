@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity, { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
-import useIncrementalInterval from "@/utils/hooks/useIncrementalInterval";
+import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
 
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
