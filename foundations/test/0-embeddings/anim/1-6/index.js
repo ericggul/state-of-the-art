@@ -13,9 +13,6 @@ export default function WholeLayer({ text = TEXT_A }) {
   return (
     <S.Bg>
       <LayerEl text={text} style={{}} />
-
-      {/* <S.Overlay ispos="true" />
-      <S.Overlay ispos="" /> */}
     </S.Bg>
   );
 }
