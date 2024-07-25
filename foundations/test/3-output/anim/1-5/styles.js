@@ -28,4 +28,6 @@ export const Candidate = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
+
+  filter: drop-shadow(0 0 0.5vw blue);
 `;

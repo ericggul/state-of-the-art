@@ -16,8 +16,8 @@ export default function useOpacityInterval() {
     const maxDelay = 50;
 
     const handleTick = () => {
-      intervalCountRef.current *= 1.1;
-      opacityBoundRef.current += 0.023;
+      intervalCountRef.current *= 1.07;
+      opacityBoundRef.current += 0.018;
       const nextTickAt = getRandom(minDelay, maxDelay) * intervalCountRef.current;
 
       timeoutId.current = setTimeout(() => {

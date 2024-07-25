@@ -36,6 +36,8 @@ export const Token = styled.div`
 export const Pic = styled.svg`
   ${WholeContainer}
 
+  filter: drop-shadow(0 0 0.5vw blue);
+
   path {
     // transition: 0.1s;
     stroke-linecap: round;
