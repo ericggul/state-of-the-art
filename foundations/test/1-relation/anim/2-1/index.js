@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity, { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
-import useRandomInterval from "@/utils/hooks/useRandomInterval";
+import useIncrementalInterval from "@/utils/hooks/useIncrementalInterval";
 
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
@@ -39,7 +39,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   };
 
   const [opacity, setOpacity] = useState(1.0);
-  useRandomInterval(() => setOpacity((s) => 1 - s), 10, 200);
+  // useRandomInterval(() => setOpacity((s) => 1 - s), 10, 200);
 
   return (
     <S.Container>
@@ -105,7 +105,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
               <Path
                 key={`arc-${i}-${j}`}
                 d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 1)}
-                parentOpacity={1 - opacity}
+                parentOpacity={opacity}
                 strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 2 : 0}
               />
             ) : null
@@ -119,7 +119,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 const Path = React.memo(({ d, strokeWidth, parentOpacity = 1 }) => {
   const [opacity, setOpacity] = useState(1);
 
-  useRandomInterval(() => setOpacity((s) => 1 - s), 10, 1000);
+  useIncrementalInterval(() => setOpacity((s) => 1 - s), 50, 100);
 
   return <path d={d} stroke="white" fill="none" strokeWidth={strokeWidth} opacity={opacity * parentOpacity} />;
 });

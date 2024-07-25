@@ -3,6 +3,8 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
 import useComputeSimilarity from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
+import useIncrementalInterval from "@/utils/hooks/useIncrementalInterval";
+
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
@@ -59,31 +61,42 @@ export default function Layer1({ newEmbeddings }) {
         {tokens.map((token, i) =>
           tokens.map((targetToken, j) =>
             i < j ? (
-              <g key={`arc-group-${i}-${j}`}>
-                <path
-                  key={`arc-${i}-${j}`}
-                  d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)}
-                  stroke="white"
-                  fill="none"
-                  strokeWidth={similarityMatrix[i][j] > 0.2 ? similarityMatrix[i][j] ** 2 * 4 : 0}
-                />
-                {similarityMatrix[i][j] > 0.2 && (
-                  <text
-                    x={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[0]}
-                    y={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[1]}
-                    fill="white"
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fontSize={j === targetWordIdx || i === targetWordIdx ? "1vw" : "0.6vw"}
-                  >
-                    {similarityMatrix[i][j].toFixed(2)}
-                  </text>
-                )}
-              </g>
+              <SingleGroup i={i} j={j} createArcPath={createArcPath} wordPosCalc={wordPosCalc} similarityMatrix={similarityMatrix} calculateTextPoint={calculateTextPoint} key={`${i}-${j}`} />
             ) : null
           )
         )}
       </S.Pic>
     </S.Container>
+  );
+}
+
+function SingleGroup({ i, j, createArcPath, wordPosCalc, similarityMatrix, calculateTextPoint }) {
+  const [opacity, setOpacity] = useState(0.1);
+
+  useIncrementalInterval(() => setOpacity((s) => 1 - s), 5, 10);
+
+  return (
+    <g key={`arc-group-${i}-${j}`} opacity={opacity}>
+      <path
+        key={`arc-${i}-${j}`}
+        d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)}
+        stroke="white"
+        fill="none"
+        strokeWidth={similarityMatrix[i][j] > 0.2 ? similarityMatrix[i][j] ** 2 * 4 : 0}
+      />
+      {similarityMatrix[i][j] > 0.2 && (
+        <text
+          x={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[0]}
+          y={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[1]}
+          fill="white"
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          fontSize={"1vw"}
+          opacity={1 - opacity}
+        >
+          {similarityMatrix[i][j].toFixed(2)}
+        </text>
+      )}
+    </g>
   );
 }

@@ -36,14 +36,18 @@ export const Token = styled.div`
 export const Pic = styled.svg`
   ${WholeContainer}
 
+  g {
+    transition: 0.1s;
+  }
+
   path {
-    transition: 0.4s;
+    // transition: 0.4s;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
   text {
-    transition: 0.4s;
+    // transition: 0.4s;
     font-size: 0.7vw;
   }
 `;
