@@ -11,10 +11,10 @@ export default function useOpacityInterval() {
   // Set up the interval.
   useEffect(() => {
     const minDelay = 10;
-    const maxDelay = 200;
+    const maxDelay = 30;
 
     const handleTick = () => {
-      intervalCountRef.current *= 1.2;
+      intervalCountRef.current *= 1.15;
       const nextTickAt = getRandom(minDelay, maxDelay) * intervalCountRef.current;
 
       timeoutId.current = setTimeout(() => {

@@ -33,7 +33,6 @@ export const Inner = styled.div`
   text-align: center;
   position: relative;
   // color: #aaa;
-  transition: all 0.1s;
 `;
 
 export const Overlay = styled.div`

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import useTokenisation from "../../../../../utils/hooks/useTokenisation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
 
 const TEXT_A = `"Is AI the brightness for the future of humanity? Or is it the darkness?"`;
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
@@ -65,23 +66,14 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
-  const [showNumbers, setShowNumbers] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowNumbers((b) => !b);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} showNumbers={showNumbers} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, showNumbers }) {
+function Token({ token, embedding }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -95,6 +87,8 @@ function Token({ token, embedding, showNumbers }) {
       });
     }
   }, [embedding]);
+
+  const opacity = useOpacityInterval();
 
   useRandomInterval(
     () => {
@@ -112,11 +106,9 @@ function Token({ token, embedding, showNumbers }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
+        style={{
+          opacity,
+        }}
       >
         {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
@@ -124,18 +116,14 @@ function Token({ token, embedding, showNumbers }) {
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
-          opacity: showNumbers ? 1 : 0,
-          transition: "opacity 0.4s",
         }}
       >
         {token}
       </p>
       <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
+        style={{
+          opacity,
+        }}
       >
         {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
