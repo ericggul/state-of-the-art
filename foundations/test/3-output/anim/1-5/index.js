@@ -3,6 +3,8 @@ import { Fragment, useState, useEffect, useMemo, useCallback } from "react";
 import useLogProbs from "@/foundations/test/3-output/utils/useLogProbsFiltered";
 import usePosCalc from "./usePosCalc";
 
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
+
 function topLogProbsInclToken(logProb) {
   return {
     ...logProb,
@@ -27,10 +29,10 @@ function SVGComp({ logProbs, wordPosCalc, show }) {
   // Function to create an arc path between two points
 
   const createBezierPath = useCallback((x1, y1, x2, y2) => {
-    const controlX1 = x1 + (x2 - x1) / 2;
-    const controlY1 = y1;
-    const controlX2 = x2 - (x2 - x1) / 2;
-    const controlY2 = y2;
+    const controlX1 = x1 + (x2 - x1) * 0.3;
+    const controlY1 = y1 + (y2 - y1) * 0;
+    const controlX2 = x2 - (x2 - x1) * 0.3;
+    const controlY2 = y2 - (y2 - y1) * 0;
 
     return `M${x1},${y1} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2}`;
   }, []);
@@ -54,13 +56,14 @@ function SVGComp({ logProbs, wordPosCalc, show }) {
 }
 
 function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j }) {
+  const opacity = useOpacityInterval();
   return (
     <path
       key={`arc-${startIdx}-${endIdx}-${i}-${j}`}
       d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(endIdx, j - 1)[0], wordPosCalc(endIdx, j - 1)[1])}
       stroke="white"
       fill="none"
-      opacity={0.2}
+      opacity={opacity * 0.3}
     />
   );
 }
@@ -76,6 +79,8 @@ function Tokens({ logProbs, wordPosCalc }) {
 }
 
 function Token({ xIdx, token, logprobs, wordPosCalc }) {
+  const opacity = useOpacityInterval();
+
   return (
     <Fragment>
       <S.Candidate
@@ -86,17 +91,24 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
       >
         {token}
       </S.Candidate>
-      {logprobs.map((target, yIdx) => (
-        <S.Candidate
-          style={{
-            left: wordPosCalc(xIdx, yIdx)[0],
-            top: wordPosCalc(xIdx, yIdx)[1],
-          }}
-          key={yIdx}
-        >
-          {target.token}
-        </S.Candidate>
-      ))}
+      <div
+        style={{
+          opacity,
+        }}
+      >
+        {logprobs.map((target, yIdx) => (
+          <S.Candidate
+            style={{
+              left: wordPosCalc(xIdx, yIdx)[0],
+              top: wordPosCalc(xIdx, yIdx)[1],
+              opacity: 0.8,
+            }}
+            key={yIdx}
+          >
+            {target.token}
+          </S.Candidate>
+        ))}
+      </div>
     </Fragment>
   );
 }
