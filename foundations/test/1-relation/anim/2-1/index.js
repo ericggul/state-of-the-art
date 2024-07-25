@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity, { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
-import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
 
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
@@ -117,9 +117,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 }
 
 const Path = React.memo(({ d, strokeWidth, parentOpacity = 1 }) => {
-  const [opacity, setOpacity] = useState(1);
-
-  useIncrementalInterval(() => setOpacity((s) => 1 - s), 50, 100);
+  const opacity = useOpacityInterval();
 
   return <path d={d} stroke="white" fill="none" strokeWidth={strokeWidth} opacity={opacity * parentOpacity} />;
 });

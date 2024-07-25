@@ -4,6 +4,7 @@ import useResize from "@/utils/hooks/useResize";
 import useComputeSimilarity from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
 import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
@@ -71,9 +72,10 @@ export default function Layer1({ newEmbeddings }) {
 }
 
 function SingleGroup({ i, j, createArcPath, wordPosCalc, similarityMatrix, calculateTextPoint }) {
-  const [opacity, setOpacity] = useState(0.1);
+  // const [opacity, setOpacity] = useState(0.1);
+  // useIncrementalInterval(() => setOpacity((s) => 1 - s), 5, 10);
 
-  useIncrementalInterval(() => setOpacity((s) => 1 - s), 5, 10);
+  const opacity = useOpacityInterval();
 
   return (
     <g key={`arc-group-${i}-${j}`} opacity={opacity}>
