@@ -1,9 +1,8 @@
-import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { FlexCenterStyle, WholeContainer, BackgroundBlur } from "@/styles";
 import styled from "styled-components";
 
 export const Bg = styled.div`
-  ${WholeContainer}
-  background: black;
+  ${BackgroundBlur}
 `;
 
 export const Container = styled.div`
@@ -33,12 +32,8 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-
-  //red neon
-
-  color: hsl(0, 100%, 80%);
-  text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red, 0 0 20px red;
-  transition: all 0.2s;
+  // color: #aaa;
+  transition: all 0.1s;
 `;
 
 export const Overlay = styled.div`

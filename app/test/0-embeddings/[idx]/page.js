@@ -21,6 +21,9 @@ const Embd110 = dynamic(() => import("@/foundations/test/0-embeddings/1/1-10"));
 const Embd2 = dynamic(() => import("@/foundations/test/0-embeddings/2"));
 const Embd21 = dynamic(() => import("@/foundations/test/0-embeddings/2/2-1"));
 
+//ANIMS
+const EmbdAnim16 = dynamic(() => import("@/foundations/test/0-embeddings/anim/1-6"));
+
 const DEFAULT_TEXT = "Is AI the brightness for the future of humanity? Or is it the darkness?";
 
 export default function NNPage() {
@@ -43,6 +46,8 @@ export default function NNPage() {
 
       {idx == "2" && <Embd2 text={DEFAULT_TEXT} />}
       {idx == "2-1" && <Embd21 text={DEFAULT_TEXT} />}
+
+      {idx == "anim-1-6" && <EmbdAnim16 />}
     </>
   );
 }
