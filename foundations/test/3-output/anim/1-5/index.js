@@ -79,8 +79,6 @@ function Tokens({ logProbs, wordPosCalc }) {
 }
 
 function Token({ xIdx, token, logprobs, wordPosCalc }) {
-  const opacity = useOpacityInterval();
-
   return (
     <Fragment>
       <S.Candidate
@@ -91,11 +89,7 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
       >
         {token}
       </S.Candidate>
-      <div
-        style={{
-          opacity,
-        }}
-      >
+      <div>
         {logprobs.map((target, yIdx) => (
           <S.Candidate
             style={{

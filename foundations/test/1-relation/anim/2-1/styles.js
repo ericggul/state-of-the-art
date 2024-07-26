@@ -1,6 +1,12 @@
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 import styled from "styled-components";
 
+export const Wrapper = styled.div`
+  ${WholeContainer}
+  ${FlexCenterStyle}
+  background: white;
+`;
+
 export const Container = styled.div`
   display: flex;
   justify-content: center;

@@ -38,81 +38,88 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     return `M${x1} ${y1Adjusted} A${radius} ${radius} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 
-  const [opacity, setOpacity] = useState(1.0);
   // useRandomInterval(() => setOpacity((s) => 1 - s), 10, 200);
 
+  const opacity = useOpacityInterval();
+
   return (
-    <S.Container>
-      {inputTokens.map((token, i) => (
-        <S.Token
-          key={i}
-          style={{
-            left: inputWordPosCalc(i)[0],
-            top: inputWordPosCalc(i)[1],
-            width: inputWordInterval,
-          }}
-        >
-          {token}
-        </S.Token>
-      ))}
-
-      {outputTokens.map((token, i) => (
-        <S.Token
-          key={i}
-          style={{
-            left: outputWordPosCalc(i)[0],
-            top: outputWordPosCalc(i)[1],
-            width: outputWordInterval,
-            opacity,
-          }}
-        >
-          {token}
-        </S.Token>
-      ))}
-
-      <S.Pic
-        style={
-          {
-            // opacity,
-          }
-        }
+    <S.Wrapper>
+      <S.Container
+      // style={{
+      //   opacity,
+      // }}
       >
-        {inputTokens.map((token, i) =>
-          outputTokens.map((targetToken, j) => (
-            <Path
-              key={`arc-${i}-${j}`}
-              d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
-              parentOpacity={opacity}
-            />
-          ))
-        )}
+        {inputTokens.map((token, i) => (
+          <S.Token
+            key={i}
+            style={{
+              left: inputWordPosCalc(i)[0],
+              top: inputWordPosCalc(i)[1],
+              width: inputWordInterval,
+            }}
+          >
+            {token}
+          </S.Token>
+        ))}
 
-        {inputTokens.map((token, i) =>
-          inputTokens.map((targetToken, j) =>
-            i < j ? (
+        {outputTokens.map((token, i) => (
+          <S.Token
+            key={i}
+            style={{
+              left: outputWordPosCalc(i)[0],
+              top: outputWordPosCalc(i)[1],
+              width: outputWordInterval,
+              opacity,
+            }}
+          >
+            {token}
+          </S.Token>
+        ))}
+
+        <S.Pic
+          style={
+            {
+              // opacity,
+            }
+          }
+        >
+          {inputTokens.map((token, i) =>
+            outputTokens.map((targetToken, j) => (
               <Path
                 key={`arc-${i}-${j}`}
-                d={createArcPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], inputWordPosCalc(j)[0], inputWordPosCalc(j)[1], 0)}
-                strokeWidth={inputSimilarityMatrix[i][j] > 0.2 ? inputSimilarityMatrix[i][j] ** 3 * 2 : 0}
-              />
-            ) : null
-          )
-        )}
-        {outputTokens.map((token, i) =>
-          outputTokens.map((targetToken, j) =>
-            i < j ? (
-              <Path
-                key={`arc-${i}-${j}`}
-                d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 1)}
+                d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
+                strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
                 parentOpacity={opacity}
-                strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 2 : 0}
               />
-            ) : null
-          )
-        )}
-      </S.Pic>
-    </S.Container>
+            ))
+          )}
+
+          {inputTokens.map((token, i) =>
+            inputTokens.map((targetToken, j) =>
+              i < j ? (
+                <Path
+                  key={`arc-${i}-${j}`}
+                  d={createArcPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], inputWordPosCalc(j)[0], inputWordPosCalc(j)[1], 0)}
+                  strokeWidth={inputSimilarityMatrix[i][j] > 0.2 ? inputSimilarityMatrix[i][j] ** 3 * 2 : 0}
+                />
+              ) : null
+            )
+          )}
+          {outputTokens.map((token, i) =>
+            outputTokens.map((targetToken, j) =>
+              i < j ? (
+                <Path
+                  key={`arc-${i}-${j}`}
+                  d={createArcPath(outputWordPosCalc(i)[0], outputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1], 1)}
+                  parentOpacity={opacity}
+                  strokeWidth={outputSimilarityMatrix[i][j] > 0.2 ? outputSimilarityMatrix[i][j] ** 3 * 2 : 0}
+                />
+              ) : null
+            )
+          )}
+        </S.Pic>
+      </S.Container>
+    </S.Wrapper>
   );
 }
 
