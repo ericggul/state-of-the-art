@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 
-import setup from "./socket-setups";
+import setup from "./socket-setups/orientation";
 
-export default function SocketHandler(req, res) {
+export default function OrientationSocketHandler(req, res) {
   if (res.socket.server.io) {
     console.log("Socket already set up");
     res.end();

@@ -5,7 +5,7 @@ import * as S from "./styles";
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
-import DeviceOrientationControls from "@/utils/comps/orientation/device-orientation-controls";
+import DeviceOrientationControls from "@/utils/comps/orientation/device-orientation-controls-with-socket";
 import { useSpring, animated, Globals } from "@react-spring/three";
 import { Perf } from "r3f-perf";
 

@@ -18,7 +18,10 @@ export default function mobileSetup({ socket, io }) {
     socket.join("conductor");
   });
 
-  ///////////
+  ///////
+  ///////////mobile --> screen/conductor
+  ///////
+
   socket.on("mobile-layer-clicked", (data) => {
     socket.to(`screen`).emit("new-mobile-layer-clicked", data);
     // socket.to(`layer-${data.layerIdx}`).emit("new-mobile-layer-clicked", data);
@@ -27,6 +30,10 @@ export default function mobileSetup({ socket, io }) {
   socket.on("mobile-training", (data) => {
     socket.to("conductor").emit("new-mobile-training", data);
   });
+
+  ///////
+  ////conductor --> screens
+  ///////
 
   socket.on("conductor-propagation", (data) => {
     socket.to(`layer-${data.layerIdx}`).emit("new-conductor-propagation", data);
