@@ -12,7 +12,7 @@ export default function DeviceOrientationControls() {
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
-  const lookAtTargetRef = useRef(new THREE.Vector3());
+  const initialLengthRef = useRef(null);
 
   const orientationDetector = (e) => {
     setOrientation({
@@ -40,15 +40,16 @@ export default function DeviceOrientationControls() {
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
-    // const length = 50; // Adjust length as needed
-    const length = state.camera.position.length();
+    // Store the initial length on the first frame
+    if (initialLengthRef.current === null) {
+      initialLengthRef.current = state.camera.position.length();
+    }
+    const length = initialLengthRef.current;
+
     targetPositionRef.current.set(0, 0, length).applyQuaternion(quaternionRef.current);
 
     state.camera.position.lerp(targetPositionRef.current, 0.15);
     state.camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
-
-    // lookAtTargetRef.current.set(0, 0, -length).applyQuaternion(quaternionRef.current);
-    // state.camera.lookAt(lookAtTargetRef.current);
   });
 
   return null;

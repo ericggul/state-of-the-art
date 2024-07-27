@@ -7,7 +7,6 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
 import DeviceOrientationControls from "@/utils/comps/orientation/device-orientation-controls";
 import { useSpring, animated, Globals } from "@react-spring/three";
-import * as THREE from "three";
 import { Perf } from "r3f-perf";
 
 import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOrientationSupported";
