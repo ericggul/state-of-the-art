@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useRef, Suspense, useEffect } from "react";
+import { useMemo, useState, useRef, Suspense } from "react";
 import * as S from "./styles";
 
 import { Canvas } from "@react-three/fiber";
@@ -16,15 +16,11 @@ import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
-export default function FC3D({ onLayerChange = () => {} }) {
+export default function NN3D() {
   const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(false));
 
   const [requestPermission, setReq] = useState(false);
   const { supports, permission } = useDeviceOrientationSupported({ requestPermission });
-
-  useEffect(() => {
-    onLayerChange(layersExpanded);
-  }, [layersExpanded]);
 
   return (
     <S.Container>
@@ -50,7 +46,6 @@ export default function FC3D({ onLayerChange = () => {} }) {
           <Layer
             key={i}
             {...structureEl}
-            layerIdx={i}
             expanded={layersExpanded[i]}
             setExpanded={() => {
               setLayersExpanded((prev) => {
@@ -61,10 +56,13 @@ export default function FC3D({ onLayerChange = () => {} }) {
             }}
           />
         ))}
+
         <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+
         <OrbitControls />
         {supports && permission && <DeviceOrientationControls />}
       </Canvas>
+
       {supports && !requestPermission && <S.OrientationPermissionModal onClick={() => setReq(true)}>Ask for device orientation</S.OrientationPermissionModal>}
     </S.Container>
   );

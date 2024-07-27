@@ -8,8 +8,9 @@ import useSocket from "@/utils/socket/useSocketMobile";
 //uuid v4
 import { v4 as uuidv4 } from "uuid";
 
-///Test: FC-3d 0
-import FC3D0 from "@/foundations/mobile/fc-3d-test";
+//Test: FC-3d: version 2
+import FC3D2 from "@/foundations/mobile/fc-3d/2";
+
 import UI from "@/foundations/mobile/ui";
 
 export default function Mobile() {
@@ -29,16 +30,6 @@ export default function Mobile() {
 
   useEffect(() => {
     if (layersExpanded.length > 0 && socket && socket.current) {
-      //OLD VERSION
-      // const layerVal = layersExpanded.find((layer, idx) => layer !== memorisedLayersRef.current[idx]);
-      // const layerIdx = layersExpanded.findIndex((layer, idx) => layer !== memorisedLayersRef.current[idx]);
-
-      // socket.current.emit("mobile-layer-clicked", {
-      //   mobileId: mobileId.current,
-      //   layerIdx,
-      //   layerVal,
-      // });
-
       //NEW VERSION
       socket.current.emit("mobile-layer-clicked", {
         mobileId: mobileId.current,
@@ -97,7 +88,7 @@ export default function Mobile() {
 
   return (
     <S.Container>
-      <FC3D0 onLayerChange={setLayersExpanded} training={trainingIteration} />
+      <FC3D2 onLayerChange={setLayersExpanded} training={trainingIteration} />
       <UI handleTrain={handleTrain} />
     </S.Container>
   );

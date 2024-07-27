@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useRef, Suspense, useEffect } from "react";
+import { useMemo, useState, useRef, Suspense, useEffect, use } from "react";
 import * as S from "./styles";
 
 import { Canvas } from "@react-three/fiber";
@@ -11,12 +11,13 @@ import * as THREE from "three";
 import { Perf } from "r3f-perf";
 
 import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOrientationSupported";
+import useTraining from "./useTraining";
 
 import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 
 // Main component to render the neural network
-export default function FC3D({ onLayerChange = () => {} }) {
+export default function FC3D({ onLayerChange, training = false }) {
   const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(false));
 
   const [requestPermission, setReq] = useState(false);
@@ -25,6 +26,8 @@ export default function FC3D({ onLayerChange = () => {} }) {
   useEffect(() => {
     onLayerChange(layersExpanded);
   }, [layersExpanded]);
+
+  const layersTraining = useTraining({ training });
 
   return (
     <S.Container>
@@ -50,6 +53,7 @@ export default function FC3D({ onLayerChange = () => {} }) {
           <Layer
             key={i}
             {...structureEl}
+            training={layersTraining[i]}
             layerIdx={i}
             expanded={layersExpanded[i]}
             setExpanded={() => {
@@ -61,7 +65,7 @@ export default function FC3D({ onLayerChange = () => {} }) {
             }}
           />
         ))}
-        <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+        <Connections layersExpanded={layersExpanded} structure={STRUCTURE} />
         <OrbitControls />
         {supports && permission && <DeviceOrientationControls />}
       </Canvas>
@@ -73,6 +77,17 @@ export default function FC3D({ onLayerChange = () => {} }) {
 const Layer = (props) => {
   const { expanded, setExpanded } = props;
 
+  //TRAINING
+  const [localTraining, setLocalTraining] = useState("idle");
+
+  useEffect(() => {
+    setLocalTraining(props.training);
+    const timeout = setTimeout(() => {
+      setLocalTraining("idle");
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [props.training]);
+
   function handleClick(e) {
     e.stopPropagation();
     setExpanded();
@@ -82,12 +97,22 @@ const Layer = (props) => {
 
   useSpring({
     from: { smoothedExpanded: 0 },
-    to: { smoothedExpanded: expanded ? 1 : 0 },
+    to: { smoothedExpanded: localTraining == "idle" ? (expanded ? 1 : 0) : 1 - (expanded ? 1 : 0) },
     config: { mass: 1, tension: 120, friction: 13 },
     onChange: (value) => {
       setSmoothedExpanded(value.value.smoothedExpanded);
     },
   });
+
+  const color = useMemo(() => {
+    if (localTraining === "propagation") {
+      return "white";
+    } else if (localTraining === "back-propagation") {
+      return "white";
+    } else {
+      return props.color;
+    }
+  }, [localTraining]);
 
   return (
     <group position={props.position} onClick={handleClick}>
@@ -96,7 +121,7 @@ const Layer = (props) => {
           <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
             {new Array(props.grid.yCount).fill(0).map((_, j) => (
               <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} color={props.color} key={j} opacity={smoothedExpanded} />
+                <Node {...props.node} color={color} key={j} opacity={smoothedExpanded} />
               </animated.group>
             ))}
           </animated.group>
@@ -104,7 +129,7 @@ const Layer = (props) => {
 
       {smoothedExpanded < 1 && (
         <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
+          <Node {...props.unexpandedNode} color={color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
         </>
       )}
     </group>
@@ -112,7 +137,7 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
+const Node = ({ position, size, color, opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
       <boxGeometry args={[...size]} />

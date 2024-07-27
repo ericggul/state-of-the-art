@@ -2,7 +2,7 @@ import * as S from "./styles";
 import { QRCodeSVG } from "qrcode.react";
 import useResize from "utils/hooks/useResize";
 
-const URL = "https://ddp-ai-ccbec1406e0e.herokuapp.com/mobile";
+const URL = "https://ddp-ai-ccbec1406e0e.herokuapp.com/mobile?v=2";
 
 export default function Intro({ layerIdx }) {
   const [windowWidth, _] = useResize();
