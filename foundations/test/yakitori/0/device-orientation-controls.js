@@ -29,9 +29,9 @@ export default function DeviceOrientationControls() {
     const { alpha, beta, gamma } = orientationRef.current;
 
     // Convert degrees to radians for Three.js
-    const alphaRad = THREE.MathUtils.degToRad(alpha);
-    const betaRad = THREE.MathUtils.degToRad(beta);
-    const gammaRad = THREE.MathUtils.degToRad(gamma);
+    const alphaRad = THREE.MathUtils.degToRad(-alpha);
+    const betaRad = THREE.MathUtils.degToRad(-beta);
+    const gammaRad = THREE.MathUtils.degToRad(-gamma);
 
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
@@ -44,7 +44,7 @@ export default function DeviceOrientationControls() {
 
     targetPositionRef.current.set(0, 0, length).applyQuaternion(quaternionRef.current);
 
-    state.camera.position.lerp(targetPositionRef.current, 0.15);
+    state.camera.position.lerp(targetPositionRef.current, 0.1);
     state.camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
   });
 

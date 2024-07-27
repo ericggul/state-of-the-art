@@ -18,7 +18,7 @@ export default function useSocketScreenOrientation({ handleNewMobileOrientation 
   }, []);
 
   const socketInitializer = async () => {
-    await fetch("/api/socket-orientation");
+    await fetch("/api/socket");
     socket.current = io();
 
     socket.current.on("connect", () => {
