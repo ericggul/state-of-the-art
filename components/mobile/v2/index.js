@@ -57,7 +57,7 @@ export default function Mobile() {
 
   return (
     <S.Container>
-      <FC3D2 onLayerChange={setLayersExpanded} training={trainingIteration} />
+      <FC3D2 onLayerChange={setLayersExpanded} training={trainingIteration} mobileId={mobileId} />
       <UI handleTrain={handleTrain} />
     </S.Container>
   );

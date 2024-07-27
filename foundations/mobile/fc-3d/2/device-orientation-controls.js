@@ -2,7 +2,11 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useState, useRef } from "react";
 
-export default function DeviceOrientationControls() {
+import useSocket from "utils/socket/orientation/useSocketMobile";
+
+export default function DeviceOrientationControls({ mobileId }) {
+  const socket = useSocket({ mobileId });
+
   const [orientation, setOrientation] = useState({
     alpha: 0,
     beta: 0,
@@ -20,6 +24,17 @@ export default function DeviceOrientationControls() {
       beta: e.beta || 0,
       gamma: e.gamma || 0,
     });
+
+    if (socket && socket.current) {
+      socket.current.emit("mobile-orientation-changed", {
+        mobileId,
+        orientation: {
+          alpha: e.alpha || 0,
+          beta: e.beta || 0,
+          gamma: e.gamma || 0,
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -33,9 +48,9 @@ export default function DeviceOrientationControls() {
     const { alpha, beta, gamma } = orientation;
 
     // Convert degrees to radians for Three.js
-    const alphaRad = THREE.MathUtils.degToRad(-alpha);
-    const betaRad = THREE.MathUtils.degToRad(-beta);
-    const gammaRad = THREE.MathUtils.degToRad(-gamma);
+    const alphaRad = THREE.MathUtils.degToRad(alpha);
+    const betaRad = THREE.MathUtils.degToRad(beta);
+    const gammaRad = THREE.MathUtils.degToRad(gamma);
 
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);

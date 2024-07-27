@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 
 import setup from "./socket-setups";
+import orientationSetup from "./socket-setups/orientation";
 
 export default function SocketHandler(req, res) {
   if (res.socket.server.io) {
@@ -14,6 +15,7 @@ export default function SocketHandler(req, res) {
 
   io.on("connection", (socket) => {
     setup({ socket, io });
+    orientationSetup({ socket, io });
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");

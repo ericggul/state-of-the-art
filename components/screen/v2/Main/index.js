@@ -13,14 +13,14 @@ const Layer1 = dynamic(() => import("@/foundations/test/1-relation/anim/0-2"));
 const Layer2 = dynamic(() => import("@/foundations/test/1-relation/anim/2-1"));
 const Layer3 = dynamic(() => import("@/foundations/test/3-output/anim/1-5"));
 
-const FC3D2 = dynamic(() => import("@/foundations/test/fc-3d/2"));
+const Yakitori = dynamic(() => import("@/foundations/test/yakitori/0"));
 
 export default function Main({ layerIdx, layersExpanded, latestPropagation, newResponse, newEmbeddings }) {
   // useTone({ layerExpanded });
 
   return (
     <S.Container>
-      <FC3D2 layerIdx={layerIdx} layersExpanded={layersExpanded} />
+      <Yakitori layerIdx={layerIdx} layersExpanded={layersExpanded} />
 
       {latestPropagation && latestPropagation.text && layerIdx == "0" && <Layer0 text={latestPropagation.text} newEmbeddings={newEmbeddings} />}
       {latestPropagation && latestPropagation.text && layerIdx == "1" && <Layer1 newEmbeddings={TEST_EMBEDDINGS} />}
