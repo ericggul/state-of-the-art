@@ -4,6 +4,19 @@ import { useEffect, useState, useRef } from "react";
 
 import useSocket from "utils/socket/orientation/useSocketMobile";
 
+const throttle = (func, limit) => {
+  let inThrottle;
+  return function () {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
+
 export default function DeviceOrientationControls({ mobileId }) {
   const socket = useSocket({ mobileId });
 
@@ -19,30 +32,29 @@ export default function DeviceOrientationControls({ mobileId }) {
   const initialLengthRef = useRef(null);
 
   const orientationDetector = (e) => {
-    setOrientation({
+    const newOrientation = {
       alpha: e.alpha || 0,
       beta: e.beta || 0,
       gamma: e.gamma || 0,
-    });
+    };
+    setOrientation(newOrientation);
 
     if (socket && socket.current) {
       socket.current.emit("mobile-orientation-changed", {
         mobileId,
-        orientation: {
-          alpha: e.alpha || 0,
-          beta: e.beta || 0,
-          gamma: e.gamma || 0,
-        },
+        orientation: newOrientation,
       });
     }
   };
 
+  const throttledOrientationDetector = throttle(orientationDetector, 100);
+
   useEffect(() => {
-    window.addEventListener("deviceorientation", orientationDetector);
+    window.addEventListener("deviceorientation", throttledOrientationDetector);
     return () => {
-      window.removeEventListener("deviceorientation", orientationDetector);
+      window.removeEventListener("deviceorientation", throttledOrientationDetector);
     };
-  }, []);
+  }, [throttledOrientationDetector]);
 
   useFrame((state) => {
     const { alpha, beta, gamma } = orientation;
