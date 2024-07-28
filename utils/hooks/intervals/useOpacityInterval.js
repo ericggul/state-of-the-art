@@ -10,19 +10,19 @@ export default function useOpacityInterval() {
 
   const opacityBoundRef = useRef(0);
 
+  const minDelay = 10;
+  const maxDelay = 40;
+
   // Set up the interval.
   useEffect(() => {
-    const minDelay = 10;
-    const maxDelay = 50;
-
     const handleTick = () => {
-      intervalCountRef.current *= 1.07;
-      opacityBoundRef.current += 0.018;
+      intervalCountRef.current *= 1.05;
+      opacityBoundRef.current += 0.008;
       const nextTickAt = getRandom(minDelay, maxDelay) * intervalCountRef.current;
 
       timeoutId.current = setTimeout(() => {
         const opacityBound = opacityBoundRef.current;
-        setOpacity((o) => Math.max(Math.random(), opacityBound));
+        setOpacity((o) => Math.max(1 - o, opacityBound));
         handleTick();
       }, nextTickAt);
     };
@@ -30,7 +30,7 @@ export default function useOpacityInterval() {
     handleTick();
 
     return () => timeoutId.current && clearTimeout(timeoutId.current);
-  }, []);
+  }, [minDelay, maxDelay]);
 
   return opacity;
 }

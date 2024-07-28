@@ -57,13 +57,15 @@ function SVGComp({ logProbs, wordPosCalc, show }) {
 
 function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j }) {
   const opacity = useOpacityInterval();
+
   return (
     <path
       key={`arc-${startIdx}-${endIdx}-${i}-${j}`}
       d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(endIdx, j - 1)[0], wordPosCalc(endIdx, j - 1)[1])}
       stroke="white"
       fill="none"
-      opacity={opacity * 0.3}
+      strokeWidth={0.5 * opacity}
+      opacity={opacity * 0.5}
     />
   );
 }

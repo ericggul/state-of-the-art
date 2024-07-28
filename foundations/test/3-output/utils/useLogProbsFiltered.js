@@ -29,6 +29,7 @@ export default function useLogProbs({ newResponse }) {
           });
           return acc;
         }, [])
+        //.filter((el) => logprobToPercentage(el.logprob) > 0.1 && el.token !== tokens[idx])
         .filter((el) => logprobToPercentage(el.logprob) > 0.1 && el.token !== tokens[idx])
         .map((el) => ({
           token: el.token,

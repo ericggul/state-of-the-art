@@ -76,13 +76,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
           </S.Token>
         ))}
 
-        <S.Pic
-          style={
-            {
-              // opacity,
-            }
-          }
-        >
+        <S.Pic>
           {inputTokens.map((token, i) =>
             outputTokens.map((targetToken, j) => (
               <Path

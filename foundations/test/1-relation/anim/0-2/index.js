@@ -94,7 +94,7 @@ function SingleGroup({ i, j, createArcPath, wordPosCalc, similarityMatrix, calcu
           textAnchor="middle"
           alignmentBaseline="middle"
           fontSize={"1vw"}
-          opacity={1 - opacity}
+          // opacity={1 - opacity}
         >
           {similarityMatrix[i][j].toFixed(2)}
         </text>
