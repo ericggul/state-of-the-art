@@ -44,7 +44,7 @@ export default function DeviceOrientationControls() {
 
     targetPositionRef.current.set(0, 0, length).applyQuaternion(quaternionRef.current);
 
-    state.camera.position.lerp(targetPositionRef.current, 0.1);
+    state.camera.position.lerp(targetPositionRef.current, 0.14);
     state.camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
   });
 

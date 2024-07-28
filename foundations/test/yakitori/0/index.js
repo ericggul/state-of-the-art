@@ -3,7 +3,7 @@
 import { useMemo, useState, useRef, Suspense } from "react";
 import * as S from "./styles";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
 import DeviceOrientationControls from "./device-orientation-controls";
 import { useSpring, animated, Globals } from "@react-spring/three";
@@ -13,20 +13,23 @@ import { Perf } from "r3f-perf";
 import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 
+const INTERVAL = 20;
+
 // Main component to render the neural network
-export default function Yakitori() {
-  const [layersExpanded, setLayersExpanded] = useState(new Array(STRUCTURE.length).fill(false));
+export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
+  const editedExpanded = useMemo(() => layersExpanded.map((_, i) => (i == layerIdx ? layersExpanded[i] : false)), [layerIdx, layersExpanded]);
 
   return (
     <S.Container>
       <Canvas
         camera={{
-          position: [40, 30, 50],
+          position: [-60, 0, STRUCTURE[parseFloat(layerIdx)].position[2]],
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
       >
+        <CameraLookAt layerIdx={layerIdx} />
         <Perf position="top-left" />
 
         <Suspense fallback={null}>
@@ -37,27 +40,46 @@ export default function Yakitori() {
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {STRUCTURE.map((structureEl, i) => (
-          <Layer
-            key={i}
-            {...structureEl}
-            expanded={layersExpanded[i]}
-            setExpanded={() => {
-              setLayersExpanded((prev) => {
-                const newExpanded = [...prev];
-                newExpanded[i] = !prev[i];
-                return newExpanded;
-              });
-            }}
-          />
+        {new Array(9).fill(0).map((_, x) => (
+          <SingleLayer key={x} position={[INTERVAL * (x - 4), 0, 0]} layersExpanded={editedExpanded} />
         ))}
-
-        <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
 
         <OrbitControls />
         <DeviceOrientationControls />
       </Canvas>
     </S.Container>
+  );
+}
+
+function CameraLookAt({ layerIdx }) {
+  useFrame((state) => {
+    state.camera.lookAt(0, 0, STRUCTURE[parseFloat(layerIdx)].position[2]);
+  });
+
+  return null;
+}
+
+function SingleLayer(props) {
+  return (
+    <group {...props}>
+      {STRUCTURE.map((structureEl, i) => (
+        <Layer
+          key={i}
+          {...structureEl}
+          expanded={props.layersExpanded[i]}
+          setExpanded={() => {}}
+          // setExpanded={() => {
+          //   setLayersExpanded((prev) => {
+          //     const newExpanded = [...prev];
+          //     newExpanded[i] = !prev[i];
+          //     return newExpanded;
+          //   });
+          // }}
+        />
+      ))}
+
+      <Connections layersExpanded={props.layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+    </group>
   );
 }
 
