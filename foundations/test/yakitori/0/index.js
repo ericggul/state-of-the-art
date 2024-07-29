@@ -23,7 +23,7 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
     <S.Container>
       <Canvas
         camera={{
-          position: [-60, 0, STRUCTURE[parseFloat(layerIdx)].position[2]],
+          position: [-60, 0, STRUCTURE[layerIdx].position[2]],
           fov: 50,
           near: 0.1,
           far: 1000,
@@ -45,15 +45,16 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
         ))}
 
         <OrbitControls />
-        <DeviceOrientationControls />
+        <DeviceOrientationControls layerIdx={layerIdx} />
       </Canvas>
     </S.Container>
   );
 }
 
 function CameraLookAt({ layerIdx }) {
+  console.log(STRUCTURE[parseFloat(layerIdx)], STRUCTURE[layerIdx]);
   useFrame((state) => {
-    state.camera.lookAt(0, 0, STRUCTURE[parseFloat(layerIdx)].position[2]);
+    state.camera.lookAt(0, 0, STRUCTURE[layerIdx].position[2]);
   });
 
   return null;
@@ -63,19 +64,7 @@ function SingleLayer(props) {
   return (
     <group {...props}>
       {STRUCTURE.map((structureEl, i) => (
-        <Layer
-          key={i}
-          {...structureEl}
-          expanded={props.layersExpanded[i]}
-          setExpanded={() => {}}
-          // setExpanded={() => {
-          //   setLayersExpanded((prev) => {
-          //     const newExpanded = [...prev];
-          //     newExpanded[i] = !prev[i];
-          //     return newExpanded;
-          //   });
-          // }}
-        />
+        <Layer key={i} {...structureEl} expanded={props.layersExpanded[i]} setExpanded={() => {}} />
       ))}
 
       <Connections layersExpanded={props.layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />

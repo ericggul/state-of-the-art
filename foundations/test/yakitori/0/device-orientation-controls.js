@@ -4,7 +4,9 @@ import useSocket from "utils/socket/orientation/useSocketScreen";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 
-export default function DeviceOrientationControls() {
+import { STRUCTURE } from "./structure";
+
+export default function DeviceOrientationControls({ layerIdx }) {
   const socket = useSocket({ handleNewMobileOrientation });
   const orientationRef = useRef({
     alpha: 0,
@@ -43,9 +45,13 @@ export default function DeviceOrientationControls() {
     const length = initialLengthRef.current;
 
     targetPositionRef.current.set(0, 0, length).applyQuaternion(quaternionRef.current);
+    console.log(targetPositionRef.current);
 
-    state.camera.position.lerp(targetPositionRef.current, 0.14);
-    state.camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
+    // move the camera  STRUCTURE[layerIdx].position[2] towards z-axis
+    targetPositionRef.current.z += STRUCTURE[layerIdx].position[2];
+
+    state.camera.position.lerp(targetPositionRef.current, 0.12);
+    state.camera.lookAt(0, 0, STRUCTURE[layerIdx].position[2]); // Ensure camera is always looking at the origin
   });
 
   return null;
