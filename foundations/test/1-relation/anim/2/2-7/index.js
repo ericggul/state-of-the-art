@@ -29,10 +29,10 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   useRandomInterval(
     () => {
       setBezierParams({
-        controlX1Factor: getRandom(-0.5, 1.5),
-        controlX2Factor: getRandom(-0.5, 1.5),
-        controlY1Factor: getRandom(-8, 28),
-        controlY2Factor: getRandom(-8, 28),
+        controlX1Factor: getRandom(-1, 2),
+        controlX2Factor: getRandom(-1, 2),
+        controlY1Factor: getRandom(-15, 35),
+        controlY2Factor: getRandom(-15, 35),
       });
     },
     5,
@@ -43,7 +43,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 
   const createBezierPath = (x1, y1, x2, y2) => {
     const follow = Math.random() < 0.5;
-    const followVal = (val, scale = 1) => (Math.random() < 0.5 ? val : scale - val);
+    const followVal = (val, scale = 1) => val;
 
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
     const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
@@ -69,16 +69,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
       ))}
 
       {outputTokens.map((token, i) => (
-        <S.Token
-          key={i}
-          style={{
-            left: outputWordPosCalc(i)[0],
-            top: outputWordPosCalc(i)[1],
-            width: outputWordInterval,
-          }}
-        >
-          {token}
-        </S.Token>
+        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
       ))}
 
       <S.Pic
@@ -99,5 +90,35 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
         )}
       </S.Pic>
     </S.Container>
+  );
+}
+
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
+  const [displayToken, setDisplayToken] = useState(token);
+
+  useRandomInterval(
+    () =>
+      setDisplayToken((given) => {
+        // If the given token is not the current token, return the current token
+        if (given !== token) return token;
+
+        // Otherwise, generate a random string of 0s and 1s of the same length as the token
+        let randomString = Array.from({ length: token.length }, () => Math.round(Math.random())).join("");
+        return randomString;
+      }),
+    10,
+    1000
+  );
+
+  return (
+    <S.Token
+      style={{
+        left: outputWordPosCalc(i)[0],
+        top: outputWordPosCalc(i)[1],
+        width: outputWordInterval,
+      }}
+    >
+      {displayToken}
+    </S.Token>
   );
 }
