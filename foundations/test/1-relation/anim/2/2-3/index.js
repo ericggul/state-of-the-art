@@ -41,7 +41,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
     const follow = Math.random() < 0.5;
-    const followVal = (val, scale = 1) => (follow ? val : scale - val);
+    const followVal = (val, scale = 1) => (Math.random() < 0.5 ? val : scale - val);
 
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
     const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);

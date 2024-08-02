@@ -38,7 +38,6 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   );
 
   const [opacity, setOpacity] = useState(1);
-  useRandomInterval(() => setOpacity((o) => 1 - o), 20, 100);
 
   const createBezierPath = (x1, y1, x2, y2) => {
     const follow = Math.random() < 0.5;
