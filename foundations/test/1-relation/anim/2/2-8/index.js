@@ -26,6 +26,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
 
+  const [isBlack, setIsBlack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
 
@@ -33,6 +34,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
       setYRange((r) => 12 - r);
+      setIsBlack((b) => !b);
     }, 500);
 
     return () => clearInterval(interval);
@@ -66,7 +68,12 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   };
 
   return (
-    <S.Container>
+    <S.Container
+      style={{
+        background: isBlack ? "black" : "white",
+        color: isBlack ? "white" : "black",
+      }}
+    >
       {inputTokens.map((token, i) => (
         <S.Token
           key={i}
@@ -94,7 +101,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             <path
               key={`arc-${i}-${j}`}
               d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              stroke="white"
+              stroke={isBlack ? "white" : "black"}
               fill="none"
               strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
             />

@@ -29,8 +29,8 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   useRandomInterval(
     () => {
       setBezierParams({
-        controlX1Factor: getRandom(-1, 2),
-        controlX2Factor: getRandom(-1, 2),
+        controlX1Factor: getRandom(-0.5, 1.5),
+        controlX2Factor: getRandom(-0.5, 1.5),
         controlY1Factor: getRandom(-15, 35),
         controlY2Factor: getRandom(-15, 35),
       });

@@ -22,7 +22,6 @@ export const MidRow = styled.div`
 export const Token = styled.div`
   font-size: 1vw;
   font-weight: 500;
-  color: white;
 
   ${FlexCenterStyle}
   text-align: center;

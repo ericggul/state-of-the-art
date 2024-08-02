@@ -40,6 +40,7 @@ const RelationAnim24 = dynamic(() => import("@/foundations/test/1-relation/anim/
 const RelationAnim25 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-5"));
 const RelationAnim26 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-6"));
 const RelationAnim27 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-7"));
+const RelationAnim28 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-8"));
 
 export default function RelationPage() {
   const { idx } = useParams();
@@ -74,6 +75,7 @@ export default function RelationPage() {
       {idx == "anim-2-5" && <RelationAnim25 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "anim-2-6" && <RelationAnim26 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "anim-2-7" && <RelationAnim27 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "anim-2-8" && <RelationAnim28 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }
