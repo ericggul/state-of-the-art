@@ -65,14 +65,24 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
+  const [targetWordIdx, setTargetWordIdx] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTargetWordIdx((prev) => (prev + 1) % tokens.length);
+    }, 400);
+
+    return () => clearInterval(interval);
+  }, [tokens.length]);
+
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} isTarget={targetWordIdx === i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding }) {
+function Token({ token, embedding, isTarget }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -89,7 +99,7 @@ function Token({ token, embedding }) {
 
   useRandomInterval(
     () => {
-      if (embedding) {
+      if (embedding && isTarget) {
         setDisplayEmbeddings((prev) => ({
           pos: prev.pos.sort((a, b) => Math.random() - 0.5),
           neg: prev.neg.sort((a, b) => Math.random() - 0.5),
@@ -102,7 +112,13 @@ function Token({ token, embedding }) {
 
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner style={{}}>{displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}</S.Inner>
+      <S.Inner
+        style={{
+          opacity: isTarget ? 1 : 0.2,
+        }}
+      >
+        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
+      </S.Inner>
       <p
         style={{
           margin: "1vw 0",
@@ -111,7 +127,13 @@ function Token({ token, embedding }) {
       >
         {token}
       </p>
-      <S.Inner style={{}}>{displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}</S.Inner>
+      <S.Inner
+        style={{
+          opacity: isTarget ? 1 : 0.2,
+        }}
+      >
+        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
+      </S.Inner>
     </S.Token>
   );
 }

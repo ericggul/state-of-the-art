@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "../../utils/useComputeSimilarity";
+import useComputeSimilarity from "foundations/test/1-relation/utils/useComputeSimilarity";
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;

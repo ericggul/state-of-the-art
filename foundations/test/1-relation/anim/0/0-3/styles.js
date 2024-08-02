@@ -1,15 +1,32 @@
-import { FlexCenterStyle, WholeContainer, BackgroundBlur } from "@/styles";
+import { FlexCenterStyle, WholeContainer } from "@/styles";
 import styled from "styled-components";
 
-export const Bg = styled.div`
-  ${BackgroundBlur}
-`;
-
 export const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
   ${WholeContainer}
   ${FlexCenterStyle}
-  flex-direction: column;
-  transform-origin: center;
+
+  font-size: 1vw;
+  color: #fff;
+  background: black;
+`;
+
+export const MidRow = styled.div`
+  ${FlexCenterStyle}
+`;
+
+export const Pic = styled.svg`
+  ${WholeContainer}
+
+  path {
+    transition: 0.4s linear;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 `;
 
 export const Tokens = styled.div`
@@ -34,5 +51,6 @@ export const Inner = styled.div`
   position: relative;
   // color: #aaa;
 
-  transition: 0.4s linear;
+  // transition: 0.2s linear;
+  transition-delay: 0.2s;
 `;
