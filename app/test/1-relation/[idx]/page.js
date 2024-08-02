@@ -29,6 +29,7 @@ const Relation23 = dynamic(() => import("@/foundations/test/1-relation/2/2-3"));
 const Relation3 = dynamic(() => import("@/foundations/test/1-relation/3"));
 
 //ANIMS
+const RelationAnim01 = dynamic(() => import("@/foundations/test/1-relation/anim/0-1"));
 const RelationAnim02 = dynamic(() => import("@/foundations/test/1-relation/anim/0-2"));
 const RelationAnim21 = dynamic(() => import("@/foundations/test/1-relation/anim/2-1"));
 
@@ -54,6 +55,7 @@ export default function RelationPage() {
 
       {idx == "3" && <Relation3 newMultiEmbeddings={MULTI_LAYERS_EMBEDDINGS} />}
 
+      {idx == "anim-0-1" && <RelationAnim01 newEmbeddings={TEST_EMBEDDINGS} />}
       {idx == "anim-0-2" && <RelationAnim02 newEmbeddings={TEST_EMBEDDINGS} />}
       {idx == "anim-2-1" && <RelationAnim21 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>

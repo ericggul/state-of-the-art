@@ -67,24 +67,34 @@ function LayerEl({ text, style = {} }) {
   return <SingleEl tokens={tokens} embeddings={embeddings} style={style} />;
 }
 
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 function SingleEl({ tokens, embeddings, style }) {
-  const [showNumbers, setShowNumbers] = useState(true);
+  const [animState, setAnimState] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setShowNumbers((b) => !b);
-    }, 1000);
+      setAnimState(getRandomInt(0, 7));
+    }, 100);
     return () => clearInterval(interval);
   }, []);
 
+  useRandomInterval(() => setAnimState(getRandomInt(0, 7)), 30, 200);
+
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} showNumbers={showNumbers} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} animState={animState} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, showNumbers }) {
+function animStateConverter(animState, targetDigit) {
+  const binary = animState.toString(2);
+  const binaryThreeDigits = binary.padStart(3, "0");
+  return binaryThreeDigits[targetDigit];
+}
+
+function Token({ token, embedding, animState }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -101,7 +111,7 @@ function Token({ token, embedding, showNumbers }) {
 
   useRandomInterval(
     () => {
-      if (embedding && !showNumbers) {
+      if (embedding) {
         setDisplayEmbeddings((prev) => ({
           pos: prev.pos.sort((a, b) => Math.random() - 0.5),
           neg: prev.neg.sort((a, b) => Math.random() - 0.5),
@@ -115,11 +125,9 @@ function Token({ token, embedding, showNumbers }) {
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
       <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
+        style={{
+          opacity: animStateConverter(animState, 0) == "1" ? 1 : 0.2,
+        }}
       >
         {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
@@ -127,18 +135,15 @@ function Token({ token, embedding, showNumbers }) {
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
-          opacity: showNumbers ? 1 : 0,
-          // transition: "opacity 0.4s",
+          opacity: animStateConverter(animState, 1) == "1" ? 1 : 0.2,
         }}
       >
         {token}
       </p>
       <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
+        style={{
+          opacity: animStateConverter(animState, 2) == "1" ? 1 : 0.2,
+        }}
       >
         {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>

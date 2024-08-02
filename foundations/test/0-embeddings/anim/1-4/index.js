@@ -13,9 +13,6 @@ export default function WholeLayer({ text = TEXT_A }) {
   return (
     <S.Bg>
       <LayerEl text={text} style={{}} />
-
-      {/* <S.Overlay ispos="true" />
-      <S.Overlay ispos="" /> */}
     </S.Bg>
   );
 }
@@ -68,23 +65,14 @@ function LayerEl({ text, style = {} }) {
 }
 
 function SingleEl({ tokens, embeddings, style }) {
-  const [showNumbers, setShowNumbers] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowNumbers((b) => !b);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <S.Container style={{ ...style }}>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} showNumbers={showNumbers} embedding={embeddings[token]} />)}</S.Tokens>
+      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
     </S.Container>
   );
 }
 
-function Token({ token, embedding, showNumbers }) {
+function Token({ token, embedding }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -101,7 +89,7 @@ function Token({ token, embedding, showNumbers }) {
 
   useRandomInterval(
     () => {
-      if (embedding && !showNumbers) {
+      if (embedding) {
         setDisplayEmbeddings((prev) => ({
           pos: prev.pos.sort((a, b) => Math.random() - 0.5),
           neg: prev.neg.sort((a, b) => Math.random() - 0.5),
@@ -114,34 +102,16 @@ function Token({ token, embedding, showNumbers }) {
 
   return (
     <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
-      >
-        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
-      </S.Inner>
+      <S.Inner style={{}}>{displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}</S.Inner>
       <p
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
-          opacity: showNumbers ? 1 : 0,
-          // transition: "opacity 0.4s",
         }}
       >
         {token}
       </p>
-      <S.Inner
-        style={
-          {
-            // opacity: showNumbers ? 0 : 1,
-          }
-        }
-      >
-        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
-      </S.Inner>
+      <S.Inner style={{}}>{displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}</S.Inner>
     </S.Token>
   );
 }

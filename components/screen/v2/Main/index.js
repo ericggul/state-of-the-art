@@ -8,8 +8,8 @@ import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/
 
 import dynamic from "next/dynamic";
 
-const Layer0 = dynamic(() => import("@/foundations/test/0-embeddings/anim/1-6"));
-const Layer1 = dynamic(() => import("@/foundations/test/1-relation/anim/0-2"));
+const Layer0 = dynamic(() => import("@/foundations/test/0-embeddings/anim/1-1"));
+const Layer1 = dynamic(() => import("@/foundations/test/1-relation/anim/0-1"));
 const Layer2 = dynamic(() => import("@/foundations/test/1-relation/anim/2-1"));
 const Layer3 = dynamic(() => import("@/foundations/test/3-output/anim/1-5"));
 
