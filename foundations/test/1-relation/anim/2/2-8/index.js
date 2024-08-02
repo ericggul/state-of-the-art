@@ -33,7 +33,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
-      setYRange((r) => 12 - r);
+      setYRange((r) => 18 - r);
       setIsBlack((b) => !b);
     }, 500);
 
