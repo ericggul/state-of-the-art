@@ -3,6 +3,15 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+
+const BEZIER_DEFAULT = {
+  controlX1Factor: 0,
+  controlX2Factor: 1,
+  controlY1Factor: 10,
+  controlY2Factor: 5,
+};
+
 export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
@@ -14,23 +23,30 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
   const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
-  // const { test } = useTweaks({
-  //   test: 2,
-  // });
+  const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
 
-  const bezierParams = {
-    controlX1Factor: 0,
-    controlX2Factor: 1,
-    controlY1Factor: 10,
-    controlY2Factor: 5,
-  };
+  useRandomInterval(
+    () => {
+      setBezierParams({
+        controlX1Factor: Math.random(),
+        controlX2Factor: Math.random(),
+        controlY1Factor: Math.random() * 20,
+        controlY2Factor: Math.random() * 20,
+      });
+    },
+    50,
+    200
+  );
 
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
-    const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
-    const controlY1 = y1 + inputyMargin * bezierParams.controlY1Factor;
-    const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
-    const controlY2 = y2 - outputyMargin * bezierParams.controlY2Factor;
+    const follow = Math.random() < 0.5;
+    const followVal = (val, scale = 1) => (follow ? val : scale - val);
+
+    const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
+    const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
+    const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
+    const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
 
     return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
   };
