@@ -10,7 +10,7 @@ const TEXT_A = `"Is AI the brightness for the future of humanity? Or is it the d
 const TEXT_B = `No one knows what the future holds. But we can make sure it's bright.`;
 const TEXT_C = `The future is bright. The future is AI.`;
 
-export default function WholeLayer({ text = TEXT_A }) {
+export default function WholeLayer({ text = TEXT_B }) {
   return (
     <S.Bg>
       <LayerEl text={text} style={{}} />
@@ -44,17 +44,7 @@ function LayerEl({ text, style = {} }) {
         const newEmbedding = res.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
         return {
           ...prevEmbeddings,
-          [text]: {
-            pos: newEmbedding
-              .filter((a) => a > 0)
-              .sort((a, b) => b - a)
-              .slice(0, 20),
-            neg: newEmbedding
-              .filter((a) => a < 0)
-              .sort((a, b) => a - b)
-              .slice(0, 20)
-              .reverse(),
-          },
+          [text]: newEmbedding,
         };
       });
     } catch (e) {
@@ -73,18 +63,15 @@ function SingleEl({ tokens, embeddings, style }) {
   );
 }
 
-function Token({ token, embedding }) {
-  const [displayEmbeddings, setDisplayEmbeddings] = useState({
-    pos: [],
-    neg: [],
-  });
+const getRandomInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
+function Token({ token, embedding }) {
+  const [displayEmbeddings, setDisplayEmbeddings] = useState([]);
+
+  console.log(embedding, displayEmbeddings);
   useEffect(() => {
     if (embedding) {
-      setDisplayEmbeddings({
-        pos: embedding.pos,
-        neg: embedding.neg,
-      });
+      setDisplayEmbeddings(embedding.slice(0, 20));
     }
   }, [embedding]);
 
@@ -95,10 +82,7 @@ function Token({ token, embedding }) {
   useRandomInterval(
     () => {
       if (embedding) {
-        setDisplayEmbeddings((prev) => ({
-          pos: prev.pos.sort((a, b) => Math.random() - 0.5),
-          neg: prev.neg.sort((a, b) => Math.random() - 0.5),
-        }));
+        setDisplayEmbeddings((prev) => prev.sort((a, b) => Math.random() - 0.5));
       }
     },
     1,
@@ -112,7 +96,7 @@ function Token({ token, embedding }) {
           opacity,
         }}
       >
-        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
+        {displayEmbeddings && displayEmbeddings.map((el) => el.toFixed(getRandomInt(3, 6))).join(" ")}
       </S.Inner>
       <p
         style={{
@@ -128,7 +112,7 @@ function Token({ token, embedding }) {
           opacity,
         }}
       >
-        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
+        {displayEmbeddings && displayEmbeddings.map((el) => el.toFixed(getRandomInt(3, 6))).join(" ")}
       </S.Inner>
     </S.Token>
   );
