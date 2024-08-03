@@ -23,9 +23,6 @@ export default function Layer1({ newEmbeddings }) {
   const [radialIdx, setRadialIdx] = useState(0.6);
   useRandomInterval(() => setRadialIdx(getRandom(0.2, 1.0)), 1, 20);
 
-  const [opacity, setOpacity] = useState(0.6);
-  useRandomInterval(() => setOpacity(getRandom(0.2, 1.0)), 10, 100);
-
   return (
     <S.Container>
       {tokens.map((token, i) => (
@@ -44,16 +41,7 @@ export default function Layer1({ newEmbeddings }) {
         {tokens.map((token, i) =>
           tokens.map((targetToken, j) =>
             i < j ? (
-              <SingleGroup
-                i={i}
-                j={j}
-                yMargin={yMargin}
-                radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx}
-                opacity={Math.random() < 0.5 ? opacity : 1 - opacity}
-                wordPosCalc={wordPosCalc}
-                similarityMatrix={similarityMatrix}
-                key={`${i}-${j}`}
-              />
+              <SingleGroup i={i} j={j} yMargin={yMargin} radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx} wordPosCalc={wordPosCalc} similarityMatrix={similarityMatrix} key={`${i}-${j}`} />
             ) : null
           )
         )}
@@ -62,7 +50,7 @@ export default function Layer1({ newEmbeddings }) {
   );
 }
 
-function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, opacity }) {
+function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx }) {
   // Function to create an arc path between two points
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
@@ -91,8 +79,7 @@ function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, 
         d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], dir)}
         stroke="white"
         fill="none"
-        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 2 * 1.4 + 0.2 : 0}
-        opacity={opacity}
+        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 3 + 0.2 : 0}
       />
     </g>
   );

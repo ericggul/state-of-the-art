@@ -20,14 +20,27 @@ export default function Layer1({ newEmbeddings }) {
 
   const wordPosCalc = useCallback((idx) => [windowWidth / 2 - ((wordLength - 1) * wordInterval) / 2 + idx * wordInterval, windowHeight / 2], [wordInterval, wordLength]);
 
-  const [radialIdx, setRadialIdx] = useState(0.6);
-  useRandomInterval(() => setRadialIdx(getRandom(0.2, 1.0)), 1, 20);
+  const [isBlack, setIsBlack] = useState(true);
 
-  const [opacity, setOpacity] = useState(0.6);
-  useRandomInterval(() => setOpacity(getRandom(0.2, 1.0)), 10, 100);
+  const [radialIdx, setRadialIdx] = useState(0.6);
+  useRandomInterval(() => !isBlack && setRadialIdx(getRandom(0.2, 1.4)), 1, 10);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsBlack((b) => !b);
+      setRadialIdx((i) => (i !== 0.6 ? 0.6 : getRandom(0.2, 1.4)));
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <S.Container>
+    <S.Container
+      style={{
+        background: isBlack ? "black" : "white",
+        color: isBlack ? "white" : "black",
+      }}
+    >
       {tokens.map((token, i) => (
         <S.Token
           key={i}
@@ -49,7 +62,7 @@ export default function Layer1({ newEmbeddings }) {
                 j={j}
                 yMargin={yMargin}
                 radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx}
-                opacity={Math.random() < 0.5 ? opacity : 1 - opacity}
+                isBlack={isBlack}
                 wordPosCalc={wordPosCalc}
                 similarityMatrix={similarityMatrix}
                 key={`${i}-${j}`}
@@ -62,7 +75,7 @@ export default function Layer1({ newEmbeddings }) {
   );
 }
 
-function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, opacity }) {
+function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, isBlack }) {
   // Function to create an arc path between two points
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
@@ -72,27 +85,17 @@ function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, 
     return `M${x1} ${y1Adjusted} A${radius} ${radius * radialIdx} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
   };
 
-  // Function to calculate the midpoint of the arc
-  const calculateTextPoint = (x1, y1, x2, y2, dir = 1) => {
-    const midX = (x1 + x2) / 2;
-    const radius = Math.abs(x2 - x1) / 2;
-    const midY = (y1 + y2) / 2 + (dir === 1 ? -1 : 1) * (radius * radialIdx + yMargin * 1.5);
-    return [midX, midY];
-  };
-
   const [dir, setDir] = useState(Math.random() < 0.5 ? 1 : 0);
-
-  useRandomInterval(() => setDir(Math.random() < 0.5 ? 1 : 0), 10, 1000);
+  useRandomInterval(() => !isBlack && setDir(Math.random() < 0.5 ? 1 : 0), 10, 1000);
 
   return (
     <g key={`arc-group-${i}-${j}`}>
       <path
         key={`arc-${i}-${j}`}
         d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], dir)}
-        stroke="white"
+        stroke={isBlack ? "white" : "black"}
         fill="none"
-        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 2 * 1.4 + 0.2 : 0}
-        opacity={opacity}
+        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 3 * 2.0 + 0.2 : 0}
       />
     </g>
   );
