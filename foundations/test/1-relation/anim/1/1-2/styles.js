@@ -19,31 +19,38 @@ export const MidRow = styled.div`
   ${FlexCenterStyle}
 `;
 
-export const Token = styled.div`
-  font-size: 1vw;
-  font-weight: 500;
-  color: white;
-
-  ${FlexCenterStyle}
-  text-align: center;
-  flex-direction: column;
-
-  position: absolute;
-
-  transform: translate(-50%, -50%);
-`;
-
 export const Pic = styled.svg`
   ${WholeContainer}
 
   path {
-    // transition: 0.4s;
+    transition: 0.4s linear;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+`;
 
-  text {
-    // transition: 0.4s;
-    font-size: 0.7vw;
-  }
+export const Tokens = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const Token = styled.div`
+  font-size: 0.8vw;
+  font-weight: 500;
+  color: white;
+  width: 5vw;
+
+  ${FlexCenterStyle}
+  text-align: center;
+  flex-direction: column;
+`;
+
+export const Inner = styled.div`
+  width: 100%;
+  text-align: center;
+  position: relative;
+  // color: #aaa;
+
+  // transition: 0.2s linear;
+  transition-delay: 0.2s;
 `;

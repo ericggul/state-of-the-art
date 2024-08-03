@@ -68,7 +68,6 @@ const getRandomInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 function Token({ token, embedding }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState([]);
 
-  console.log(embedding, displayEmbeddings);
   useEffect(() => {
     if (embedding) {
       setDisplayEmbeddings(embedding.slice(0, 20));

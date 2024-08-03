@@ -36,16 +36,9 @@ export const Token = styled.div`
 export const Pic = styled.svg`
   ${WholeContainer}
 
-  filter: drop-shadow(0 0 0.5vw blue) drop-shadow(0 0 0.8vw blue);
-
   path {
-    // transition: 0.4s;
+    transition: 0.4s linear;
     stroke-linecap: round;
     stroke-linejoin: round;
-  }
-
-  text {
-    // transition: 0.4s;
-    font-size: 0.7vw;
   }
 `;

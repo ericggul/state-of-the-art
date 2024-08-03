@@ -1,9 +1,13 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "foundations/test/1-relation/utils/useComputeSimilarity";
+import useComputeSimilarity from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 
+import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+
+const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 export default function Layer1({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
@@ -16,51 +20,28 @@ export default function Layer1({ newEmbeddings }) {
 
   const wordPosCalc = useCallback((idx) => [windowWidth / 2 - ((wordLength - 1) * wordInterval) / 2 + idx * wordInterval, windowHeight / 2], [wordInterval, wordLength]);
 
-  const [targetWordIdx, setTargetWordIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTargetWordIdx((prev) => (prev + 1) % wordLength);
-    }, 400);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Function to create an arc path between two points
-  const createArcPath = (x1, y1, x2, y2, dir = 1) => {
-    const radius = Math.abs(x2 - x1) / 2;
-    const sweepFlag = dir;
-    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * (x1 < x2 ? 1 : -1) * yMargin;
-    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * (x1 < x2 ? 1 : -1) * yMargin;
-    return `M${x1} ${y1Adjusted} A${radius} ${radius * 0.6} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
-  };
+  const [radialIdx, setRadialIdx] = useState(0.6);
+  useRandomInterval(() => setRadialIdx(getRandom(0.4, 0.8)), 1, 10);
 
   return (
     <S.Container>
-      <S.Tokens>{tokens && tokens.map((token, i) => <Token key={i} isTarget={targetWordIdx === i} token={token} embedding={embeddings[token]} />)}</S.Tokens>
+      {tokens.map((token, i) => (
+        <S.Token
+          key={i}
+          style={{
+            left: wordPosCalc(i)[0],
+            top: wordPosCalc(i)[1],
+            width: wordInterval,
+          }}
+        >
+          {token}
+        </S.Token>
+      ))}
       <S.Pic>
-        {tokens.map((token, i) => (
-          <path
-            key={`arc-${i}`}
-            d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(targetWordIdx)[0], wordPosCalc(targetWordIdx)[1], i % 2 === 0 ? 1 : 0)}
-            stroke="white"
-            fill="none"
-            strokeWidth={similarityMatrix[i][targetWordIdx] > 0.2 ? similarityMatrix[i][targetWordIdx] ** 2 * 4 : 0}
-            opacity={i == targetWordIdx ? 0 : 1}
-          />
-        ))}
-
         {tokens.map((token, i) =>
           tokens.map((targetToken, j) =>
             i < j ? (
-              <path
-                key={`arc-${i}-${j}`}
-                d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)}
-                stroke="white"
-                fill="none"
-                strokeWidth={similarityMatrix[i][j] ** 2 * 2}
-                opacity={j == targetWordIdx || i == targetWordIdx ? 1 : 0.1}
-              />
+              <SingleGroup i={i} j={j} yMargin={yMargin} radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx} wordPosCalc={wordPosCalc} similarityMatrix={similarityMatrix} key={`${i}-${j}`} />
             ) : null
           )
         )}
@@ -69,58 +50,46 @@ export default function Layer1({ newEmbeddings }) {
   );
 }
 
-function Token({ token, embedding, isTarget }) {
-  const [displayEmbeddings, setDisplayEmbeddings] = useState({
-    pos: [],
-    neg: [],
-  });
+function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx }) {
+  // Function to create an arc path between two points
+  const createArcPath = (x1, y1, x2, y2, dir = 1) => {
+    const radius = Math.abs(x2 - x1) / 2;
+    const sweepFlag = dir;
+    const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * yMargin;
+    const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * yMargin;
+    return `M${x1} ${y1Adjusted} A${radius} ${radius * radialIdx} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
+  };
 
-  useEffect(() => {
-    if (embedding) {
-      setDisplayEmbeddings({
-        pos: embedding.filter((el) => el > 0).slice(0, 25),
-        neg: embedding.filter((el) => el < 0).slice(0, 25),
-      });
-    }
-  }, [embedding]);
-
-  useRandomInterval(
-    () => {
-      if (embedding) {
-        setDisplayEmbeddings((prev) => ({
-          pos: prev.pos.sort((a, b) => Math.random() - 0.5),
-          neg: prev.neg.sort((a, b) => Math.random() - 0.5),
-        }));
-      }
-    },
-    1,
-    50
-  );
+  // Function to calculate the midpoint of the arc
+  const calculateTextPoint = (x1, y1, x2, y2, dir = 1) => {
+    const midX = (x1 + x2) / 2;
+    const radius = Math.abs(x2 - x1) / 2;
+    const midY = (y1 + y2) / 2 + (dir === 1 ? -1 : 1) * (radius * radialIdx + yMargin * 1.5);
+    return [midX, midY];
+  };
 
   return (
-    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
-      <S.Inner
-        style={{
-          opacity: isTarget ? 1 : 0.1,
-        }}
-      >
-        {displayEmbeddings && displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
-      </S.Inner>
-      <p
-        style={{
-          margin: "1vw 0",
-          fontSize: "1vw",
-        }}
-      >
-        {token}
-      </p>
-      <S.Inner
-        style={{
-          opacity: isTarget ? 1 : 0.1,
-        }}
-      >
-        {displayEmbeddings && displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
-      </S.Inner>
-    </S.Token>
+    <g key={`arc-group-${i}-${j}`}>
+      <path
+        key={`arc-${i}-${j}`}
+        d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)}
+        stroke="white"
+        fill="none"
+        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 3 + 0.2 : 0}
+      />
+      {similarityMatrix[i][j] > 0.2 && (
+        <text
+          x={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[0]}
+          y={calculateTextPoint(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], j % 2 === 0 ? 1 : 0)[1]}
+          fill="white"
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          fontSize={"1vw"}
+          opacity={0}
+        >
+          {similarityMatrix[i][j].toFixed(2)}
+        </text>
+      )}
+    </g>
   );
 }
