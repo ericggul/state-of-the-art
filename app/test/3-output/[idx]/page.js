@@ -16,6 +16,7 @@ const Output15 = dynamic(() => import("@/foundations/test/3-output/1/1-5"));
 
 const OutputAnim11 = dynamic(() => import("@/foundations/test/3-output/anim/1-1"));
 const OutputAnim12 = dynamic(() => import("@/foundations/test/3-output/anim/1-2"));
+const OutputAnim13 = dynamic(() => import("@/foundations/test/3-output/anim/1-3"));
 
 export default function TsnePage() {
   const { idx } = useParams();
@@ -32,6 +33,7 @@ export default function TsnePage() {
 
       {idx == "anim-1-1" && <OutputAnim11 newResponse={TEST_RESPONSE} />}
       {idx == "anim-1-2" && <OutputAnim12 newResponse={TEST_RESPONSE} />}
+      {idx == "anim-1-3" && <OutputAnim13 newResponse={TEST_RESPONSE} />}
     </>
   );
 }

@@ -33,8 +33,8 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
         controlY2Factor: Math.random() * 20,
       });
     },
-    10,
-    140
+    1,
+    80
   );
 
   const [opacity, setOpacity] = useState(1);
