@@ -6,7 +6,7 @@ function logprobToPercentage(logprob) {
   return percentage;
 }
 
-export default function useLogProbs({ newResponse }) {
+export default function useLogProbs({ newResponse, filter = 0.1 }) {
   const logProbs = useMemo(() => {
     if (!newResponse) return [];
 
@@ -29,8 +29,8 @@ export default function useLogProbs({ newResponse }) {
           });
           return acc;
         }, [])
-        //.filter((el) => logprobToPercentage(el.logprob) > 0.1 && el.token !== tokens[idx])
-        .filter((el) => logprobToPercentage(el.logprob) > 0.1 && el.token !== tokens[idx])
+
+        .filter((el) => logprobToPercentage(el.logprob) > filter && el.token !== tokens[idx])
         .map((el) => ({
           token: el.token,
           percentage: logprobToPercentage(el.logprob),
@@ -43,7 +43,7 @@ export default function useLogProbs({ newResponse }) {
     });
 
     return wordLogProbs;
-  }, [newResponse]);
+  }, [newResponse, filter]);
 
   return logProbs;
 }

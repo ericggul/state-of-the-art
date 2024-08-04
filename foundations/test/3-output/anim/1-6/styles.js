@@ -1,0 +1,29 @@
+import { FlexCenterStyle, WholeContainer, BackgroundBlur } from "@/styles";
+import styled from "styled-components";
+
+export const Container = styled.div`
+  ${WholeContainer}
+  ${FlexCenterStyle}
+  // background: black;
+
+
+${BackgroundBlur}
+
+  flex-direction: column;
+`;
+
+export const Tokens = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const Candidate = styled.div`
+  font-size: 1vw;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+`;
+
+export const Pic = styled.svg`
+  ${WholeContainer}
+`;
