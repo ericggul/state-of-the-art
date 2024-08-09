@@ -16,8 +16,8 @@ import { STRUCTURE } from "./structure";
 const INTERVAL = 20;
 
 // Main component to render the neural network
-export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
-  const editedExpanded = useMemo(() => layersExpanded.map((_, i) => (i == layerIdx ? layersExpanded[i] : false)), [layerIdx, layersExpanded]);
+export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
+  const editedExpanded = useMemo(() => new Array(17).fill(0).map((_, i) => (i % 4 == layerIdx ? layersExpanded[i % 4] : false)), [layerIdx, layersExpanded]);
 
   return (
     <S.Container>
@@ -40,19 +40,18 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {new Array(9).fill(0).map((_, x) => (
-          <SingleLayer key={x} position={[INTERVAL * (x - 4), 0, 0]} layersExpanded={editedExpanded} />
+        {new Array(31).fill(0).map((_, x) => (
+          <SingleLayer key={x} position={[INTERVAL * (x - 15), 0, 0]} layersExpanded={editedExpanded} />
         ))}
 
         <OrbitControls />
-        <DeviceOrientationControls layerIdx={layerIdx} />
+        {enableDeviceControls && <DeviceOrientationControls layerIdx={layerIdx} />}
       </Canvas>
     </S.Container>
   );
 }
 
 function CameraLookAt({ layerIdx }) {
-  console.log(STRUCTURE[parseFloat(layerIdx)], STRUCTURE[layerIdx]);
   useFrame((state) => {
     state.camera.lookAt(0, 0, STRUCTURE[layerIdx].position[2]);
   });

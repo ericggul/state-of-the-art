@@ -8,5 +8,5 @@ const Yakitori0 = dynamic(() => import("@/foundations/test/yakitori/0"));
 export default function FCPage() {
   const { idx } = useParams();
 
-  return <>{idx === "0" && <Yakitori0 />}</>;
+  return <>{idx === "0" && <Yakitori0 enableDeviceControls={false} />}</>;
 }
