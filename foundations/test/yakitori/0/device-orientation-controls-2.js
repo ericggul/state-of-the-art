@@ -51,6 +51,7 @@ export default function DeviceOrientationControls({ layerIdx }) {
 
   useFrame((state) => {
     const { alpha, beta, gamma } = orientationRef.current;
+    console.log("54");
 
     // Smooth the orientation data using linear interpolation
     smoothOrientationRef.current.alpha = lerp(smoothOrientationRef.current.alpha, alpha, 0.1);

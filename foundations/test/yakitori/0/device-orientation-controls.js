@@ -40,6 +40,7 @@ export default function DeviceOrientationControls({ layerIdx }) {
 
     const { alpha, beta, gamma } = orientationRef.current;
 
+    console.log("43");
     // Map alpha to pitch (frequency)
     const frequency = mapRange(alpha, 0, 360, 200, 1000);
     synth.frequency.setValueAtTime(frequency, Tone.now());
