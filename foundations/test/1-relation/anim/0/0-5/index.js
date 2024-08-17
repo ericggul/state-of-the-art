@@ -29,7 +29,7 @@ export default function Layer1({ newEmbeddings }) {
     const interval = setInterval(() => {
       setIsBlack((b) => !b);
       setRadialIdx((i) => (i !== 0.6 ? 0.6 : getRandom(0.2, 1.4)));
-    }, 500);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
