@@ -13,6 +13,7 @@ const Relation01 = dynamic(() => import("@/foundations/test/1-relation/0/0-1"));
 const Relation02 = dynamic(() => import("@/foundations/test/1-relation/0/0-2"));
 const Relation021 = dynamic(() => import("@/foundations/test/1-relation/0/0-2/0-2-1"));
 const Relation03 = dynamic(() => import("@/foundations/test/1-relation/0/0-3"));
+const Relation04 = dynamic(() => import("@/foundations/test/1-relation/0/0-4"));
 
 //1: D3
 const Relation1 = dynamic(() => import("@/foundations/test/1-relation/1"));
@@ -24,6 +25,7 @@ const Relation211 = dynamic(() => import("@/foundations/test/1-relation/2/2-1/2-
 
 const Relation22 = dynamic(() => import("@/foundations/test/1-relation/2/2-2"));
 const Relation23 = dynamic(() => import("@/foundations/test/1-relation/2/2-3"));
+const Relation24 = dynamic(() => import("@/foundations/test/1-relation/2/2-4"));
 
 //3: Multi Layer Embeddings Structure
 const Relation3 = dynamic(() => import("@/foundations/test/1-relation/3"));
@@ -57,6 +59,7 @@ export default function RelationPage() {
       {idx == "0-2" && <Relation02 newEmbeddings={TEST_EMBEDDINGS} />}
       {idx == "0-2-1" && <Relation021 newEmbeddings={TEST_EMBEDDINGS} />}
       {idx == "0-3" && <Relation03 newEmbeddings={TEST_EMBEDDINGS} />}
+      {idx == "0-4" && <Relation04 newEmbeddings={TEST_EMBEDDINGS} />}
 
       {idx == "1" && <Relation1 newEmbeddings={TEST_EMBEDDINGS} />}
 
@@ -66,6 +69,7 @@ export default function RelationPage() {
 
       {idx == "2-2" && <Relation22 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "2-3" && <Relation23 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2-4" && <Relation24 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
 
       {idx == "3" && <Relation3 newMultiEmbeddings={MULTI_LAYERS_EMBEDDINGS} />}
 
