@@ -31,7 +31,7 @@ export const Token = styled.div`
   position: absolute;
 
   transform: translate(-50%, -50%);
-  transition: all 0.05s;
+  transition: all 0.1s;
 `;
 
 export const Pic = styled.svg`

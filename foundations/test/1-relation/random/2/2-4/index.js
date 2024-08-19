@@ -21,20 +21,19 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     newOutputEmbeddings,
   });
 
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
-
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
   const [isBlack, setIsBlack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
       setYRange((r) => 18 - r);
       setIsBlack((b) => !b);
-    }, 500);
+      setIsAnimating((animating) => !animating); // Toggle animation
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -51,6 +50,9 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     5,
     50
   );
+
+  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input", isAnimating });
+  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output", isAnimating });
 
   const createBezierPath = (x1, y1, x2, y2) => {
     const followVal = (val, scale = 1) => val;
@@ -77,6 +79,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             left: inputWordPosCalc(i)[0],
             top: inputWordPosCalc(i)[1],
             width: inputWordInterval,
+            color: isBlack ? "white" : "black", // Dynamic text color
           }}
         >
           {token}
@@ -84,7 +87,14 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
+        <SingleOutputToken
+          key={i}
+          i={i}
+          outputWordInterval={outputWordInterval}
+          outputWordPosCalc={outputWordPosCalc}
+          token={token}
+          isBlack={isBlack} // Pass isBlack to control text color
+        />
       ))}
 
       <S.Pic>
@@ -104,32 +114,17 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
-  const [displayToken, setDisplayToken] = useState(token);
-
-  useRandomInterval(
-    () =>
-      setDisplayToken((given) => {
-        // If the given token is not the current token, return the current token
-        if (given !== token) return token;
-
-        // Otherwise, generate a random string of 0s and 1s of the same length as the token
-        let randomString = Array.from({ length: token.length }, () => Math.round(Math.random())).join("");
-        return randomString;
-      }),
-    10,
-    1000
-  );
-
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isBlack }) {
   return (
     <S.Token
       style={{
         left: outputWordPosCalc(i)[0],
         top: outputWordPosCalc(i)[1],
         width: outputWordInterval,
+        color: isBlack ? "white" : "black", // Dynamic text color
       }}
     >
-      {displayToken}
+      {token}
     </S.Token>
   );
 }
