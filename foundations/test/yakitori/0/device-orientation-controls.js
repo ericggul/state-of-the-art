@@ -25,9 +25,14 @@ export default function DeviceOrientationControls({ layerIdx }) {
   const initialLengthRef = useRef(null);
 
   const synth = useMemo(() => {
+    //Osc
+    //AM
+    //PWM
+
     const osc = new Tone.Oscillator({
       type: "sine",
-      frequency: 440, // A4
+      // frequency: 440, // A4
+      frequency: 440,
       volume: -10,
     }).toDestination();
 

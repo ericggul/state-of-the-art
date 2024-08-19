@@ -49,6 +49,16 @@ const RelationAnim26 = dynamic(() => import("@/foundations/test/1-relation/anim/
 const RelationAnim27 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-7"));
 const RelationAnim28 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-8"));
 
+//RANDOM
+const RelationRandom01 = dynamic(() => import("@/foundations/test/1-relation/random/0/0-1"));
+const RelationRandom02 = dynamic(() => import("@/foundations/test/1-relation/random/0/0-2"));
+const RelationRandom03 = dynamic(() => import("@/foundations/test/1-relation/random/0/0-3"));
+
+const RelationRandom21 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-1"));
+const RelationRandom22 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-2"));
+const RelationRandom23 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-3"));
+const RelationRandom24 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-4"));
+
 export default function RelationPage() {
   const { idx } = useParams();
 
@@ -90,6 +100,15 @@ export default function RelationPage() {
       {idx == "anim-2-6" && <RelationAnim26 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "anim-2-7" && <RelationAnim27 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "anim-2-8" && <RelationAnim28 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+
+      {idx == "random-0-1" && <RelationRandom01 newEmbeddings={TEST_EMBEDDINGS} />}
+      {idx == "random-0-2" && <RelationRandom02 newEmbeddings={TEST_EMBEDDINGS} />}
+      {idx == "random-0-3" && <RelationRandom03 newEmbeddings={TEST_EMBEDDINGS} />}
+
+      {idx == "random-2-1" && <RelationRandom21 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "random-2-2" && <RelationRandom22 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "random-2-3" && <RelationRandom23 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "random-2-4" && <RelationRandom24 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }
