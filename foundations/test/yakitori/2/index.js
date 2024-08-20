@@ -15,11 +15,11 @@ import { generateStructure } from "./structure";
 
 const INTERVAL = 25;
 
-const X_LEN = 9;
-const Y_LEN = 9;
+const X_LEN = 20;
+const Y_LEN = 3;
 
 // Main component to render the neural network
-export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
+export default function Yakitori({ layerIdx = 4, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
   const structure = useMemo(() => generateStructure(X_LEN), []); // Generate the structure dynamically
 
   const editedExpanded = useMemo(() => new Array(X_LEN).fill(0).map((_, i) => Math.random() < 0.5), [layerIdx, layersExpanded]);
@@ -44,10 +44,20 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
         <pointLight position={[10, 10, 10]} />
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
-
-        {new Array(Y_LEN).fill(0).map((_, x) => (
-          <SingleLayer key={x} position={[INTERVAL * (x - (Y_LEN - 1) / 2), 0, 0]} layersExpanded={editedExpanded} structure={structure} />
-        ))}
+        {new Array(Y_LEN).fill(0).map((_, y) =>
+          new Array(Y_LEN).fill(0).map((_, z) => (
+            <SingleLayer
+              key={`${y}-${z}`}
+              position={[
+                INTERVAL * (y - (Y_LEN - 1) / 2), // Y-axis position
+                INTERVAL * (z - (Y_LEN - 1) / 2), // Z-axis position
+                0, // X-axis remains the same
+              ]}
+              layersExpanded={editedExpanded}
+              structure={structure}
+            />
+          ))
+        )}
 
         <OrbitControls />
         {enableDeviceControls && <DeviceOrientationControls layerIdx={layerIdx} />}
@@ -121,7 +131,7 @@ const Node = ({ position, size, color, opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
       <boxGeometry args={[...size]} />
-      <meshStandardMaterial color={color} roughness={0.2} metalness={0.99} opacity={opacity} transparent={true} />
+      <meshStandardMaterial color={color} roughness={0.2} metalness={1} opacity={opacity} transparent={true} />
     </mesh>
   );
 };

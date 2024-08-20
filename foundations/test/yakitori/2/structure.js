@@ -9,8 +9,8 @@ export const generateStructure = (layerCount = 17) => {
 
   for (let i = 0; i < layerCount; i++) {
     const positionZ = 10 * (i - (layerCount - 1) / 2);
-    const gridXCount = getRandomInt(2, 5);
-    const gridYCount = getRandomInt(2, 5);
+    const gridXCount = getRandomInt(2, 4);
+    const gridYCount = getRandomInt(2, 4);
     const xInterval = getRandom(5, 5);
     const yInterval = getRandom(5, 5);
 
