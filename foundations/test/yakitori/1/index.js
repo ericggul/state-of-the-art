@@ -1,34 +1,37 @@
+// index.js
 "use client";
 
-import { useMemo, useState, useRef, Suspense } from "react";
+import { useMemo, useState, Suspense } from "react";
 import * as S from "./styles";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
+import { OrbitControls, Environment, Stars } from "@react-three/drei";
 import DeviceOrientationControls from "@/foundations/test/yakitori/utils/device-orientation-controls";
-import { useSpring, animated, Globals } from "@react-spring/three";
+import { useSpring, animated } from "@react-spring/three";
 import { Perf } from "r3f-perf";
 
 import Connections from "./connections";
-import { STRUCTURE } from "./structure";
+import { generateStructure } from "./structure";
 
 const INTERVAL = 20;
 
 // Main component to render the neural network
 export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
-  const editedExpanded = useMemo(() => new Array(17).fill(0).map((_, i) => (i % 4 == layerIdx ? layersExpanded[i % 4] : false)), [layerIdx, layersExpanded]);
+  const structure = useMemo(() => generateStructure(17), []); // Generate the structure dynamically
+
+  const editedExpanded = useMemo(() => new Array(17).fill(0).map((_, i) => true), [layerIdx, layersExpanded]);
 
   return (
     <S.Container>
       <Canvas
         camera={{
-          position: [-60, 0, STRUCTURE[layerIdx].position[2]],
+          position: [-60, 0, structure[layerIdx].position[2]],
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
       >
-        <CameraLookAt layerIdx={layerIdx} />
+        <CameraLookAt layerIdx={layerIdx} structure={structure} />
         <Perf position="top-left" />
 
         <Suspense fallback={null}>
@@ -39,32 +42,33 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {new Array(31).fill(0).map((_, x) => (
-          <SingleLayer key={x} position={[INTERVAL * (x - 15), 0, 0]} layersExpanded={editedExpanded} />
+        {new Array(15).fill(0).map((_, x) => (
+          <SingleLayer key={x} position={[INTERVAL * (x - 7), 0, 0]} layersExpanded={editedExpanded} structure={structure} />
         ))}
 
         <OrbitControls />
         {enableDeviceControls && <DeviceOrientationControls layerIdx={layerIdx} />}
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade={true} />
       </Canvas>
     </S.Container>
   );
 }
 
-function CameraLookAt({ layerIdx }) {
+function CameraLookAt({ layerIdx, structure }) {
   useFrame((state) => {
-    state.camera.lookAt(0, 0, STRUCTURE[layerIdx].position[2]);
+    state.camera.lookAt(0, 0, structure[layerIdx].position[2]);
   });
 
   return null;
 }
 
-function SingleLayer(props) {
+function SingleLayer({ structure, ...props }) {
   return (
     <group {...props}>
-      {STRUCTURE.map((structureEl, i) => (
+      {structure.map((structureEl, i) => (
         <Layer key={i} {...structureEl} expanded={props.layersExpanded[i]} setExpanded={() => {}} />
       ))}
-      <Connections layersExpanded={props.layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+      <Connections layersExpanded={props.layersExpanded} structure={structure} />
     </group>
   );
 }
@@ -110,19 +114,11 @@ const Layer = (props) => {
   );
 };
 
-// Component to render each node as a box
 const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
       <boxGeometry args={[...size]} />
-      <meshStandardMaterial
-        color={color}
-        roughness={0.2}
-        metalness={0.9}
-        //opacity
-        opacity={opacity}
-        transparent={true}
-      />
+      <meshStandardMaterial color={color} roughness={0.2} metalness={0.99} opacity={opacity} transparent={true} />
     </mesh>
   );
 };

@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import * as Tone from "tone";
 import useSocket from "utils/socket/orientation/useSocketScreen";
 
-import { STRUCTURE } from "./structure";
+import { STRUCTURE } from "../0/structure";
 
 function mapRange(value, inMin, inMax, outMin, outMax) {
   return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
