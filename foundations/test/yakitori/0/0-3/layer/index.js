@@ -3,11 +3,12 @@ import { useMemo, useState, useEffect, Suspense } from "react";
 import { OrbitControls, Environment, Stars } from "@react-three/drei";
 import { useSpring, animated } from "@react-spring/three";
 
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
-
-import Connections from "./connections";
 import { generateStructure } from "./structure";
-import { X_LEN } from "./index";
+
+import Node from "./node";
+import Connections from "./connections";
+
+const X_LEN = 15;
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
@@ -39,7 +40,7 @@ export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   return (
     <group {...props}>
       {localStructure.map((structureEl, i) => (
-        <Layer key={i} {...structureEl} expanded={layersExpanded[i]} setExpanded={() => {}} />
+        <Layer key={i} idx={i} {...structureEl} expanded={layersExpanded[i]} setExpanded={() => {}} />
       ))}
       <Connections layersExpanded={layersExpanded} structure={localStructure} />
     </group>
@@ -72,7 +73,7 @@ const Layer = (props) => {
           <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
             {new Array(props.grid.yCount).fill(0).map((_, j) => (
               <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} color={"blue"} key={j} opacity={smoothedExpanded} />
+                <Node {...props.node} color={`hsl(240, 100%, 50%)`} key={j} opacity={smoothedExpanded} />
               </animated.group>
             ))}
           </animated.group>
@@ -84,14 +85,5 @@ const Layer = (props) => {
         </>
       )}
     </group>
-  );
-};
-
-const Node = ({ position, size, color, opacity = 0.3, scale }) => {
-  return (
-    <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size]} />
-      <meshStandardMaterial color={color} roughness={0.5} metalness={0.8} opacity={opacity} transparent={true} />
-    </mesh>
   );
 };
