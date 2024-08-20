@@ -1,11 +1,6 @@
-import { useMemo, useState, useEffect, Suspense } from "react";
-
-import { OrbitControls, Environment, Stars } from "@react-three/drei";
-import { useSpring, animated } from "@react-spring/three";
-
+import React, { useMemo, useState, useEffect } from "react";
+import { Instances, Instance } from "@react-three/drei";
 import { generateStructure } from "./structure";
-
-import Node from "./node";
 import Connections from "./connections";
 
 const X_LEN = 15;
@@ -13,7 +8,7 @@ const X_LEN = 15;
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
 export default function SingleLayer({ yIdx, layerIdx, ...props }) {
-  const localStructure = useMemo(() => generateStructure(X_LEN), [yIdx]); // Generate the structure dynamically
+  const localStructure = useMemo(() => generateStructure(X_LEN), [yIdx]);
 
   const propInterval = useMemo(() => getRandom(200, 1000), []);
 
@@ -29,61 +24,35 @@ export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   const [layersExpanded, setLayersExpanded] = useState(() => new Array(X_LEN).fill(0).map((_, i) => false));
 
   useEffect(() => {
-    setLayersExpanded((prev) =>
-      prev.map((_, i) => {
-        //if i and expanded layer idx is difference under 2
-        return Math.abs(i - expandedLayerIdx) < 2;
-      })
-    );
+    setLayersExpanded((prev) => prev.map((_, i) => Math.abs(i - expandedLayerIdx) < 2));
   }, [expandedLayerIdx]);
 
   return (
     <group {...props}>
-      {localStructure.map((structureEl, i) => (
-        <Layer key={i} idx={i} {...structureEl} expanded={layersExpanded[i]} setExpanded={() => {}} />
-      ))}
+      <Instances limit={X_LEN * X_LEN}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshPhysicalMaterial transmission={1} roughness={0} thickness={3} envMapIntensity={4} transparent={true} />
+        {localStructure.map((structureEl, i) => (
+          <Layer key={i} idx={i} {...structureEl} expanded={layersExpanded[i]} />
+        ))}
+      </Instances>
       <Connections layersExpanded={layersExpanded} structure={localStructure} />
     </group>
   );
 }
 
-const Layer = (props) => {
-  const { expanded, setExpanded } = props;
-
-  function handleClick(e) {
-    e.stopPropagation();
-    setExpanded();
-  }
-
-  const [smoothedExpanded, setSmoothedExpanded] = useState(0);
-
-  useSpring({
-    from: { smoothedExpanded: 0 },
-    to: { smoothedExpanded: expanded ? 1 : 0 },
-    config: { mass: 1, tension: 120, friction: 13 },
-    onChange: (value) => {
-      setSmoothedExpanded(value.value.smoothedExpanded);
-    },
-  });
-
+const Layer = ({ expanded, grid, position }) => {
   return (
-    <group position={props.position} onClick={handleClick}>
-      {smoothedExpanded > 0 &&
-        new Array(props.grid.xCount).fill(0).map((_, i) => (
-          <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
-            {new Array(props.grid.yCount).fill(0).map((_, j) => (
-              <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} color={`hsl(240, 100%, 50%)`} key={j} opacity={smoothedExpanded} />
-              </animated.group>
-            ))}
-          </animated.group>
-        ))}
-
-      {smoothedExpanded < 1 && (
-        <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
-        </>
-      )}
+    <group position={position}>
+      {new Array(grid.xCount).fill(0).map((_, i) => (
+        <group key={i} position={[grid.xInterval * i - ((grid.xCount - 1) * grid.xInterval) / 2, 0, 0]}>
+          {new Array(grid.yCount).fill(0).map((_, j) => (
+            <group key={j} position={[0, grid.yInterval * j - ((grid.yCount - 1) * grid.yInterval) / 2, 0]}>
+              <Instance position={[0, 0, 0]} scale={expanded ? [1, 1, 1] : [0.2, 0.2, 0.2]} color="hsl(240, 100%, 50%)" />
+            </group>
+          ))}
+        </group>
+      ))}
     </group>
   );
 };
