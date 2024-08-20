@@ -15,7 +15,7 @@ import { generateStructure } from "./structure";
 
 const INTERVAL = 25;
 
-export const X_LEN = 15;
+export const X_LEN = 10;
 const Y_LEN = 3;
 
 // Main component to render the neural network
