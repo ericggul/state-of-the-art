@@ -1,14 +1,18 @@
 // utils/generateStructure.js
+
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+const getRandom = (min, max) => Math.random() * (max - min) + min;
+
 export const generateStructure = (layerCount = 17) => {
   const structure = [];
   const colorVariations = ["hsl(240, 100%, 50%)", "blue"];
 
   for (let i = 0; i < layerCount; i++) {
-    const positionZ = 40 - i * 10; // Example: start at 40 and decrease by 10 for each layer
-    const gridXCount = i % 2 === 0 ? 3 : 5;
-    const gridYCount = i % 2 === 0 ? 2 : 5;
-    const xInterval = i % 2 === 0 ? 5 : 3;
-    const yInterval = i % 2 === 0 ? 5 : 3;
+    const positionZ = 10 * (i - (layerCount - 1) / 2);
+    const gridXCount = getRandomInt(2, 5);
+    const gridYCount = getRandomInt(2, 5);
+    const xInterval = getRandom(3, 5);
+    const yInterval = getRandom(3, 5);
 
     structure.push({
       position: [0, 0, positionZ],

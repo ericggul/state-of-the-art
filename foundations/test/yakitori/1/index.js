@@ -15,11 +15,14 @@ import { generateStructure } from "./structure";
 
 const INTERVAL = 20;
 
+const X_LEN = 9;
+const Y_LEN = 9;
+
 // Main component to render the neural network
 export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
-  const structure = useMemo(() => generateStructure(17), []); // Generate the structure dynamically
+  const structure = useMemo(() => generateStructure(X_LEN), []); // Generate the structure dynamically
 
-  const editedExpanded = useMemo(() => new Array(17).fill(0).map((_, i) => true), [layerIdx, layersExpanded]);
+  const editedExpanded = useMemo(() => new Array(X_LEN).fill(0).map((_, i) => true), [layerIdx, layersExpanded]);
 
   return (
     <S.Container>
@@ -42,8 +45,8 @@ export default function Yakitori({ layerIdx = 2, layersExpanded = [true, true, t
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {new Array(15).fill(0).map((_, x) => (
-          <SingleLayer key={x} position={[INTERVAL * (x - 7), 0, 0]} layersExpanded={editedExpanded} structure={structure} />
+        {new Array(Y_LEN).fill(0).map((_, x) => (
+          <SingleLayer key={x} position={[INTERVAL * (x - (Y_LEN - 1) / 2), 0, 0]} layersExpanded={editedExpanded} structure={structure} />
         ))}
 
         <OrbitControls />
@@ -114,7 +117,7 @@ const Layer = (props) => {
   );
 };
 
-const Node = ({ position, size, color = "red", opacity = 0.4, scale }) => {
+const Node = ({ position, size, color, opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
       <boxGeometry args={[...size]} />

@@ -1,23 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import * as THREE from "three";
 
 // Connections component
 export default function Connections({ layersExpanded, structure }) {
-  const [connectionsExpanded, setConnectionsExpanded] = useState(() => Array(structure.length - 1).fill({ from: false, to: false }));
-
-  useEffect(() => {
-    setConnectionsExpanded(
-      layersExpanded.slice(0, -1).map((layer, i) => ({
-        from: layer,
-        to: layersExpanded[i + 1],
-      }))
-    );
+  const connectionsExpanded = useMemo(() => {
+    return layersExpanded.slice(0, -1).map((layer, i) => ({
+      from: layer,
+      to: layersExpanded[i + 1],
+    }));
   }, [layersExpanded]);
 
   return (
     <>
-      {connectionsExpanded.map((expanded, i) => (
-        <SingleConnection layerFrom={structure[i]} layerTo={structure[i + 1]} key={i} expanded={expanded} />
+      {structure.slice(0, -1).map((_, i) => (
+        <SingleConnection key={i} layerFrom={structure[i]} layerTo={structure[i + 1]} expanded={connectionsExpanded[i]} />
       ))}
     </>
   );
@@ -68,16 +64,15 @@ function SingleConnection({ layerFrom, layerTo, expanded }) {
   );
 }
 
-// Memoized SingleLine component
 const SingleLine = React.memo(({ from, to }) => {
-  const start = new THREE.Vector3().fromArray(from);
-  const end = new THREE.Vector3().fromArray(to);
-  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
-
   const geometry = useMemo(() => {
+    const start = new THREE.Vector3().fromArray(from);
+    const end = new THREE.Vector3().fromArray(to);
+    const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+
     const points = [start, mid, end];
     return new THREE.BufferGeometry().setFromPoints(points);
-  }, [start, mid, end]);
+  }, [from, to]);
 
   return (
     <line geometry={geometry}>
