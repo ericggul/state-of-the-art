@@ -30,7 +30,7 @@ export default function Connections({ layersExpanded, structure }) {
               const toXPos = toXInterval * toI - ((toXCount - 1) * toXInterval) / 2 + layerTo.position[0];
               const toYPos = toYInterval * toJ - ((toYCount - 1) * toYInterval) / 2 + layerTo.position[1];
 
-              if (Math.random() < 0.3) {
+              if (Math.random() < 0.5) {
                 tempConnections.push({
                   from: new THREE.Vector3(fromXPos, fromYPos, layerFrom.position[2]),
                   to: new THREE.Vector3(toXPos, toYPos, layerTo.position[2]),

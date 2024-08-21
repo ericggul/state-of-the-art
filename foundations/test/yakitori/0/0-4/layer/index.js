@@ -10,7 +10,7 @@ const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   const localStructure = useMemo(() => generateStructure(X_LEN), [yIdx]);
 
-  const propInterval = useMemo(() => getRandom(200, 1000), []);
+  const propInterval = useMemo(() => getRandom(100, 500), []);
 
   const [expandedLayerIdx, setExpandedLayerIdx] = useState(0);
 
@@ -30,7 +30,7 @@ export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   return (
     <group {...props}>
       <Instances limit={X_LEN * X_LEN}>
-        <boxGeometry args={[1, 1, 1]} />
+        <boxGeometry args={[3, 3, 1]} />
         <meshPhysicalMaterial transmission={1} roughness={0} thickness={3} envMapIntensity={4} transparent={true} />
         {localStructure.map((structureEl, i) => (
           <Layer key={i} idx={i} {...structureEl} expanded={layersExpanded[i]} />

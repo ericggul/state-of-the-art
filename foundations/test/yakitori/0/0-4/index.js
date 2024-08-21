@@ -13,7 +13,8 @@ import { Perf } from "r3f-perf";
 import SingleLayer from "./layer";
 
 const INTERVAL = 25;
-const Y_LEN = 11;
+const Y_LEN = 4;
+const Z_LEN = 3;
 
 // Main component to render the neural network
 export default function Yakitori({ layerIdx = 4, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
@@ -40,18 +41,21 @@ export default function Yakitori({ layerIdx = 4, layersExpanded = [true, true, t
         <directionalLight position={[0, 10, 10]} intensity={1} />
         <directionalLight position={[10, 0, 10]} intensity={1} />
 
-        {new Array(Y_LEN).fill(0).map((_, y) => (
-          <SingleLayer
-            key={`${y}}`}
-            position={[
-              INTERVAL * (y - (Y_LEN - 1) / 2), // Y-axis position
-              0,
-              0, // X-axis remains the same
-            ]}
-            yIdx={y}
-            layerIdx={layerIdx}
-          />
-        ))}
+        {new Array(Y_LEN).fill(0).map((_, y) =>
+          new Array(Z_LEN).fill(0).map((_, z) => (
+            <SingleLayer
+              key={`${y}-${z}`}
+              position={[
+                INTERVAL * (y - (Y_LEN - 1) / 2), // Y-axis position
+                INTERVAL * (z - (Z_LEN - 1) / 2), // Z-axis position
+                0, // X-axis remains the same
+              ]}
+              yIdx={y}
+              zIdx={z}
+              layerIdx={layerIdx}
+            />
+          ))
+        )}
 
         <OrbitControls autoRotate />
         {enableDeviceControls && <DeviceOrientationControls layerIdx={layerIdx} />}
