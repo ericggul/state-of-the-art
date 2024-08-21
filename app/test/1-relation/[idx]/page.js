@@ -58,6 +58,8 @@ const RelationRandom21 = dynamic(() => import("@/foundations/test/1-relation/ran
 const RelationRandom22 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-2"));
 const RelationRandom23 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-3"));
 const RelationRandom24 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-4"));
+const RelationRandom25 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-5"));
+const RelationRandom26 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-6"));
 
 export default function RelationPage() {
   const { idx } = useParams();
@@ -109,6 +111,8 @@ export default function RelationPage() {
       {idx == "random-2-2" && <RelationRandom22 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "random-2-3" && <RelationRandom23 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
       {idx == "random-2-4" && <RelationRandom24 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "random-2-5" && <RelationRandom25 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "random-2-6" && <RelationRandom26 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }
