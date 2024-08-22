@@ -13,7 +13,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlack }) {
+export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -46,8 +46,26 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
     50
   );
 
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input", isAnimating });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output", isAnimating });
+  const {
+    wordPosCalc: inputWordPosCalc,
+    wordInterval: inputWordInterval,
+    yMargin: inputyMargin,
+  } = usePosCalc({
+    tokens: inputTokens,
+    type: "input",
+    isAnimating,
+    range,
+  });
+  const {
+    wordPosCalc: outputWordPosCalc,
+    wordInterval: outputWordInterval,
+    yMargin: outputyMargin,
+  } = usePosCalc({
+    tokens: outputTokens,
+    type: "output",
+    isAnimating,
+    range,
+  });
 
   const createBezierPath = (x1, y1, x2, y2) => {
     const followVal = (val, scale = 1) => val;
@@ -63,8 +81,8 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
   return (
     <S.Container
       style={{
-        // background: isBlack ? "black" : "white",
         color: isBlack ? "white" : "black",
+        opacity: visible ? 1 : 0,
       }}
     >
       {inputTokens.map((token, i) => (

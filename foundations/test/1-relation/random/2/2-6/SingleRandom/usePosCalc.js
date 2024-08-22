@@ -3,7 +3,7 @@ import useResize from "@/utils/hooks/useResize";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
-export default function usePosCalc({ tokens, type = null, isAnimating }) {
+export default function usePosCalc({ tokens, type = null, isAnimating, range }) {
   const [windowWidth, windowHeight] = useResize();
   const wordLength = useMemo(() => tokens.length, [tokens]);
   const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
@@ -15,8 +15,8 @@ export default function usePosCalc({ tokens, type = null, isAnimating }) {
   // Function to generate completely random positions across the entire window
   const generatePositions = () => {
     return tokens.map(() => ({
-      x: getRandom(0.2, 0.8) * windowWidth,
-      y: getRandom(0.1, 0.9) * windowHeight,
+      x: getRandom(range.x[0], range.x[1]) * windowWidth,
+      y: getRandom(range.y[0], range.y[1]) * windowHeight,
     }));
   };
 
