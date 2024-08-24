@@ -10,13 +10,13 @@ const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   const localStructure = useMemo(() => generateStructure(X_LEN), [yIdx]);
 
-  const propInterval = useMemo(() => getRandom(100, 500), []);
+  const propInterval = useMemo(() => getRandom(50, 200), []);
 
   const [expandedLayerIdx, setExpandedLayerIdx] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setExpandedLayerIdx((i) => (i + 1) % X_LEN);
+      setExpandedLayerIdx((i) => (i + 1) % (X_LEN * 2));
     }, propInterval);
     return () => clearInterval(interval);
   }, []);

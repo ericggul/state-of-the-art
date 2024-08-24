@@ -13,7 +13,7 @@ import { Perf } from "r3f-perf";
 import SingleLayer from "./layer";
 
 const INTERVAL = 25;
-const Y_LEN = 4;
+const Y_LEN = 3;
 const Z_LEN = 3;
 
 // Main component to render the neural network
