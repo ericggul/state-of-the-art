@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import { useMemo, useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
@@ -13,7 +13,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
+export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -21,24 +21,17 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     newOutputEmbeddings,
   });
 
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
-
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-
-  const [isBlack, setIsBlack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setXRange((r) => 1.5 - r);
-      setYRange((r) => 18 - r);
-      setIsBlack((b) => !b);
-    }, 3000);
+    setXRange((r) => 1.5 - r);
+    setYRange((r) => 18 - r);
 
-    return () => clearInterval(interval);
-  }, []);
+    setIsAnimating((animating) => !animating); // Toggle animation
+  }, [isBlack]);
 
   useRandomInterval(
     () => {
@@ -53,10 +46,28 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     50
   );
 
-  const [opacity, setOpacity] = useState(1);
+  const {
+    wordPosCalc: inputWordPosCalc,
+    wordInterval: inputWordInterval,
+    yMargin: inputyMargin,
+  } = usePosCalc({
+    tokens: inputTokens,
+    type: "input",
+    isAnimating,
+    range,
+  });
+  const {
+    wordPosCalc: outputWordPosCalc,
+    wordInterval: outputWordInterval,
+    yMargin: outputyMargin,
+  } = usePosCalc({
+    tokens: outputTokens,
+    type: "output",
+    isAnimating,
+    range,
+  });
 
   const createBezierPath = (x1, y1, x2, y2) => {
-    const follow = Math.random() < 0.5;
     const followVal = (val, scale = 1) => val;
 
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
@@ -70,8 +81,8 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   return (
     <S.Container
       style={{
-        background: isBlack ? "black" : "white",
         color: isBlack ? "white" : "black",
+        opacity: visible ? 1 : 0,
       }}
     >
       {inputTokens.map((token, i) => (
@@ -81,6 +92,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             left: inputWordPosCalc(i)[0],
             top: inputWordPosCalc(i)[1],
             width: inputWordInterval,
+            color: isBlack ? "white" : "black", // Dynamic text color
           }}
         >
           {token}
@@ -88,14 +100,17 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
+        <SingleOutputToken
+          key={i}
+          i={i}
+          outputWordInterval={outputWordInterval}
+          outputWordPosCalc={outputWordPosCalc}
+          token={token}
+          isBlack={isBlack} // Pass isBlack to control text color
+        />
       ))}
 
-      <S.Pic
-        style={{
-          opacity,
-        }}
-      >
+      <S.Pic>
         {inputTokens.map((token, i) =>
           outputTokens.map((targetToken, j) => (
             <path
@@ -112,32 +127,17 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
-  const [displayToken, setDisplayToken] = useState(token);
-
-  useRandomInterval(
-    () =>
-      setDisplayToken((given) => {
-        // If the given token is not the current token, return the current token
-        if (given !== token) return token;
-
-        // Otherwise, generate a random string of 0s and 1s of the same length as the token
-        let randomString = Array.from({ length: token.length }, () => Math.round(Math.random())).join("");
-        return randomString;
-      }),
-    10,
-    1000
-  );
-
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isBlack }) {
   return (
     <S.Token
       style={{
         left: outputWordPosCalc(i)[0],
         top: outputWordPosCalc(i)[1],
         width: outputWordInterval,
+        color: isBlack ? "white" : "black", // Dynamic text color
       }}
     >
-      {displayToken}
+      {token}
     </S.Token>
   );
 }

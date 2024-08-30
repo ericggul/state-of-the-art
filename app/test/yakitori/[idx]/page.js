@@ -8,6 +8,7 @@ const Yakitori1 = dynamic(() => import("@/foundations/test/yakitori/0/0-1"));
 const Yakitori2 = dynamic(() => import("@/foundations/test/yakitori/0/0-2"));
 const Yakitori3 = dynamic(() => import("@/foundations/test/yakitori/0/0-3"));
 const Yakitori4 = dynamic(() => import("@/foundations/test/yakitori/0/0-4"));
+const Yakitori5 = dynamic(() => import("@/foundations/test/yakitori/0/0-5"));
 
 export default function FCPage() {
   const { idx } = useParams();

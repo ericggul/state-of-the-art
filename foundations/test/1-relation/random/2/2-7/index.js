@@ -12,11 +12,35 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   const [isBlack, setIsBlack] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsBlack((b) => !b);
-    }, 4000);
+    //event listener mouse down-up
+    document.addEventListener("mousedown", function () {
+      setIsBlack(true);
+    });
+    document.addEventListener("mouseup", function () {
+      setIsBlack(false);
+    });
+    //key
+    document.addEventListener("keydown", function (e) {
+      setIsBlack(true);
+    });
+    document.addEventListener("keyup", function (e) {
+      setIsBlack(false);
+    });
 
-    return () => clearInterval(interval);
+    return () => {
+      document.removeEventListener("mousedown", function () {
+        setIsBlack(true);
+      });
+      document.removeEventListener("mouseup", function () {
+        setIsBlack(false);
+      });
+      document.removeEventListener("keydown", function (e) {
+        setIsBlack(true);
+      });
+      document.removeEventListener("keyup", function (e) {
+        setIsBlack(false);
+      });
+    };
   }, []);
 
   return (
