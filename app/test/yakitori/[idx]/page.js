@@ -20,6 +20,7 @@ export default function FCPage() {
       {idx === "0-2" && <Yakitori2 enableDeviceControls={false} />}
       {idx === "0-3" && <Yakitori3 enableDeviceControls={false} />}
       {idx === "0-4" && <Yakitori4 enableDeviceControls={false} />}
+      {idx === "0-5" && <Yakitori5 enableDeviceControls={false} />}
     </>
   );
 }

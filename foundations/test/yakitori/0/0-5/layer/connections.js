@@ -56,7 +56,17 @@ export default function Connections({ layersExpanded, structure }) {
 
 const SingleLine = React.memo(({ from, to }) => {
   const geometry = useMemo(() => {
-    const points = [from, new THREE.Vector3().lerpVectors(from, to, 0.5), to];
+    // Create a middle point that's offset in the Z direction to create a curve
+    const midPoint = new THREE.Vector3().lerpVectors(from, to, 0.5);
+    midPoint.z += 10; // Adjust this value to control the amount of curvature
+
+    // Create a curve passing through the 'from', 'midPoint', and 'to'
+    const curve = new THREE.CatmullRomCurve3([from, midPoint, to]);
+
+    // Generate points along the curve
+    const points = curve.getPoints(50); // Increase the number of points for a smoother curve
+
+    // Create a geometry from these points
     const bufferGeometry = new THREE.BufferGeometry().setFromPoints(points);
     return bufferGeometry;
   }, [from, to]);

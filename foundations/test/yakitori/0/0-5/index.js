@@ -16,6 +16,8 @@ const INTERVAL = 25;
 const Y_LEN = 3;
 const Z_LEN = 3;
 
+const getRandom = (min, max) => Math.random() * (max - min) + min;
+
 // Main component to render the neural network
 export default function Yakitori({ layerIdx = 4, layersExpanded = [true, true, true, true, true], enableDeviceControls = true }) {
   const focalZPos = useMemo(() => 0, []);

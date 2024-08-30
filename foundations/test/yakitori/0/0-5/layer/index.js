@@ -30,7 +30,7 @@ export default function SingleLayer({ yIdx, layerIdx, ...props }) {
   return (
     <group {...props}>
       <Instances limit={X_LEN * X_LEN}>
-        <boxGeometry args={[3, 3, 1]} />
+        <boxGeometry args={[10, 10, 10]} />
         <meshPhysicalMaterial transmission={1} roughness={0} thickness={3} envMapIntensity={4} transparent={true} />
         {localStructure.map((structureEl, i) => (
           <Layer key={i} idx={i} {...structureEl} expanded={layersExpanded[i]} />
