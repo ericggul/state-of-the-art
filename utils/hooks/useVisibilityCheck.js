@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 
-export default function useVisibilityCheck({ socket, mobileId, isTrackingVisibility = true } = {}) {
+export default function useVisibilityCheck({
+  socket,
+  mobileId,
+
+  requestVisibilityCheck,
+  setRequestVisibilityCheck,
+  isTrackingVisibility = true,
+} = {}) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -38,13 +45,19 @@ export default function useVisibilityCheck({ socket, mobileId, isTrackingVisibil
   useEffect(() => {
     if (!socket || !socket.current) return;
 
+    if (requestVisibilityCheck) {
+      console.log("46");
+      setRequestVisibilityCheck(false);
+      return;
+    }
+
     try {
-      console.log("firing 42");
+      console.log("firing 52");
       socket.current.emit("on-off-visibility-change", { isVisible, mobileId });
     } catch (e) {
       console.log(e);
     }
-  }, [isVisible]);
+  }, [isVisible, requestVisibilityCheck]);
 
   return isVisible;
 }

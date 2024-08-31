@@ -5,6 +5,11 @@ export default function mobileJockeySetup({ socket, io }) {
     socket.join("on-off-mobile");
     socket.join(`on-off-mobile-${data.mobileId}`);
     socket.to("on-off-screen").emit("new-on-off-mobile-connect", data);
+
+    // socket.to("on-off-screen").emit("new-on-off-visibility-change", {
+    //   mobileId: data.mobileId,
+    //   isVisible: true,
+    // });
   });
 
   socket.on("on-off-mobile-disconnect", (data) => {

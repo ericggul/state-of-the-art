@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 //IMPORTANT: This logic presents the device unload logic, when user is about to leave the site
 
-export default function useSocketInit({ mobileId }) {
+export default function useSocketInit({ mobileId, requestVisibilityCheckFromSocketInit }) {
   const socket = useRef(null);
 
   useEffect(() => {
@@ -12,6 +12,8 @@ export default function useSocketInit({ mobileId }) {
       socket.current = io();
 
       socket.current.on("connect", () => {
+        console.log("15");
+        requestVisibilityCheckFromSocketInit(true);
         socket.current.emit("on-off-mobile-init", { mobileId });
       });
     };
