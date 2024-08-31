@@ -19,4 +19,9 @@ export default function mobileJockeySetup({ socket, io }) {
     socket.join("on-off");
     socket.join("on-off-screen");
   });
+
+  socket.on("on-off-visibility-change", (data) => {
+    console.log("on-off-visibility-change");
+    socket.to("on-off-screen").emit("new-on-off-visibility-change", data);
+  });
 }

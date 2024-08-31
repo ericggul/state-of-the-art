@@ -6,6 +6,7 @@ export default function El() {
   const socket = useSocket({
     handleNewMobileConnect,
     handleNewMobileDisconnect,
+    handleNewVisibilityChange,
   });
 
   function handleNewMobileConnect(data) {
@@ -14,6 +15,10 @@ export default function El() {
 
   function handleNewMobileDisconnect(data) {
     console.log("new mobile disconnected", data);
+  }
+
+  function handleNewVisibilityChange(data) {
+    console.log("new visibility change", data);
   }
 
   return <S.Container></S.Container>;

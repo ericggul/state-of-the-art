@@ -12,7 +12,7 @@ export default function El() {
 
   const socket = useSocket({ mobileId });
 
-  const isTabVisible = useVisibilityCheck();
+  const isTabVisible = useVisibilityCheck({ socket, mobileId });
   console.log("is tab visible", isTabVisible);
 
   return <S.Container></S.Container>;

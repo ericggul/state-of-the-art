@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 
-export default function useVisibilityCheck({ isTrackingVisibility = true } = {}) {
-  const [isTabVisible, setIsTabVisible] = useState(!document.hidden && document.hasFocus());
+export default function useVisibilityCheck({ socket, mobileId, isTrackingVisibility = true } = {}) {
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     if (!isTrackingVisibility) return;
 
     const handleVisibilityChange = () => {
-      console.log("10 visibility change", document.hidden, document.hasFocus(), !document.hidden && document.hasFocus());
-      setIsTabVisible(!document.hidden && document.hasFocus());
+      // console.log("10 visibility change", document.hidden, document.hasFocus(), !document.hidden && document.hasFocus());
+      // setIsVisible(!document.hidden && document.hasFocus());
     };
 
     const handleFocus = () => {
       console.log("14 focus");
-      setIsTabVisible(true);
+      setIsVisible(true);
     };
 
     const handleBlur = () => {
       console.log("20 blur");
-      setIsTabVisible(false);
+      setIsVisible(false);
     };
 
     // Add event listeners
@@ -34,5 +34,17 @@ export default function useVisibilityCheck({ isTrackingVisibility = true } = {})
     };
   }, [isTrackingVisibility]);
 
-  return isTabVisible;
+  //socket operation
+  useEffect(() => {
+    if (!socket || !socket.current) return;
+
+    try {
+      console.log("firing 42");
+      socket.current.emit("on-off-visibility-change", { isVisible, mobileId });
+    } catch (e) {
+      console.log(e);
+    }
+  }, [isVisible]);
+
+  return isVisible;
 }
