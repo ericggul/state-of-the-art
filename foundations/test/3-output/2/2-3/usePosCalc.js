@@ -7,7 +7,7 @@ export default function usePosCalc({ tokens, logProbs }) {
   const wordInterval = useMemo(() => (windowWidth * 0.9) / wordLength, [windowWidth, wordLength]);
   const verticalInterval = useMemo(() => windowHeight * 0.04, [windowHeight]);
 
-  const xMargin = useMemo(() => wordInterval * 0.03, [wordInterval]);
+  const xMargin = useMemo(() => -wordInterval * 0.02, [wordInterval]);
 
   const wordPosCalc = useCallback(
     (xIdx, yIdx = -1) => {
@@ -16,7 +16,9 @@ export default function usePosCalc({ tokens, logProbs }) {
 
       if (yIdx !== -1) {
         const targetLength = logProbs[xIdx].top_logprobs.length;
-        yPos = windowHeight / 2 + (yIdx - Math.ceil((targetLength - 1) / 2)) * verticalInterval;
+        const splitNumber = targetLength > 0 ? Math.floor(targetLength / 2) : 0;
+        const adjustedYIdx = yIdx < splitNumber ? yIdx : yIdx + 1;
+        yPos = windowHeight / 2 + (adjustedYIdx - Math.ceil((targetLength - 1) / 2)) * verticalInterval;
       }
 
       return [xPos, yPos];

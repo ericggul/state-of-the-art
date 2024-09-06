@@ -38,10 +38,9 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
       setShow(Math.floor(Math.random() * logprobs.length));
     },
     5,
-    300
+    200
   );
 
-  console.log(logprobs);
   return (
     <Fragment>
       <S.Candidate
@@ -50,7 +49,7 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
           top: wordPosCalc(xIdx, -1)[1],
         }}
       >
-        {logprobs[show].token}
+        {logprobs[show].token} | {logprobs[show].percentage.toFixed(2) + "%"}
       </S.Candidate>
 
       {logprobs
@@ -62,11 +61,11 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
             style={{
               left: wordPosCalc(xIdx, yIdx)[0],
               top: wordPosCalc(xIdx, yIdx)[1],
-              opacity: 0.5 - Math.abs(yIdx - logprobs.length / 2) * 0.07,
+              opacity: 0.5 - Math.abs(yIdx - logprobs.length / 2) * 0.05,
             }}
             key={yIdx}
           >
-            {target.token}
+            {target.token} | {target.percentage.toFixed(2) + "%"}
           </S.Candidate>
         ))}
     </Fragment>

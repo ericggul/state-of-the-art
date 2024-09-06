@@ -2,28 +2,24 @@ import * as S from "./styles";
 import { Fragment, useState, useEffect, useMemo, useCallback } from "react";
 import useLogProbs from "@/foundations/test/3-output/utils/useLogProbsFiltered2";
 import usePosCalc from "./usePosCalc";
-
-function topLogProbsInclToken(logProb) {
-  return {
-    ...logProb,
-    top_logprobs: [{ token: logProb.token, percentage: 100 }, ...logProb.top_logprobs],
-  };
-}
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 export default function Layer3({ newResponse }) {
-  const logProbs = useLogProbs({ newResponse });
-  console.log(logProbs);
+  const logProbs = useLogProbs({ newResponse, filter: 0.02 });
 
   const { wordPosCalc, wordInterval, verticalInterval, xMargin } = usePosCalc({ logProbs, tokens: logProbs.map((el) => el.token) });
 
+  const [showWords, setShowWords] = useState(new Array(logProbs.length).fill(""));
+
   return (
     <S.Container>
-      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} show={true} />
+      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} show={true} setShowWords={setShowWords} />
+      <S.Sentence>{showWords.join(" ")}</S.Sentence>
     </S.Container>
   );
 }
 
-function Tokens({ logProbs, wordPosCalc, show }) {
+function Tokens({ logProbs, wordPosCalc, show, setShowWords }) {
   return (
     <S.Tokens
       style={{
@@ -31,29 +27,57 @@ function Tokens({ logProbs, wordPosCalc, show }) {
       }}
     >
       {logProbs.map((token, i) => (
-        <Token xIdx={i} key={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
+        <Token xIdx={i} key={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} setShowWords={setShowWords} />
       ))}
     </S.Tokens>
   );
 }
 
-function Token({ xIdx, token, logprobs, wordPosCalc }) {
-  console.log(logprobs);
+function Token({ xIdx, token, logprobs, wordPosCalc, setShowWords }) {
+  const [show, setShow] = useState(0);
+
+  useRandomInterval(
+    () => {
+      const target = Math.floor(Math.random() * logprobs.length);
+      setShow(target);
+      setShowWords((prev) => {
+        const newWords = [...prev];
+        newWords[xIdx] = logprobs[target].token;
+        return newWords;
+      });
+    },
+    5,
+    400
+  );
 
   return (
     <Fragment>
-      {logprobs.map((target, yIdx) => (
-        <S.Candidate
-          style={{
-            left: wordPosCalc(xIdx, yIdx)[0],
-            top: wordPosCalc(xIdx, yIdx)[1],
-            opacity: (10 * target.percentage) / 100 + 0.1,
-          }}
-          key={yIdx}
-        >
-          {target.token}
-        </S.Candidate>
-      ))}
+      <S.Candidate
+        style={{
+          left: wordPosCalc(xIdx, -1)[0],
+          top: wordPosCalc(xIdx, -1)[1],
+        }}
+      >
+        {logprobs[show].token} | {logprobs[show].percentage.toFixed(2) + "%"}
+      </S.Candidate>
+
+      {logprobs
+        .filter((_, idx) => idx !== show)
+        //random order
+        .sort(() => Math.random() - 0.5)
+        .map((target, yIdx) => (
+          <S.Candidate
+            style={{
+              left: wordPosCalc(xIdx, yIdx)[0],
+              top: wordPosCalc(xIdx, yIdx)[1],
+              // opacity: target.percentage / 100 + 0.2,
+              opacity: 0.5 - Math.abs(yIdx - logprobs.length / 2) * 0.05,
+            }}
+            key={yIdx}
+          >
+            {target.token} | {target.percentage.toFixed(2) + "%"}
+          </S.Candidate>
+        ))}
     </Fragment>
   );
 }

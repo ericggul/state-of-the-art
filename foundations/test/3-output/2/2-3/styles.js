@@ -6,8 +6,8 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   // background: black;
 
-
-${BackgroundBlur}
+  font-family: Ubuntu;
+  ${BackgroundBlur}
 
   flex-direction: column;
 `;
@@ -26,4 +26,11 @@ export const Candidate = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
+`;
+
+export const Sentence = styled.div`
+  font-size: 3vw;
+  text-align: center;
+  mix-blend-mode: difference;
+  bottom: 3vw;
 `;
