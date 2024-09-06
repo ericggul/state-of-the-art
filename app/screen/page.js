@@ -24,9 +24,9 @@ function Screen() {
 
   useEffect(() => {
     if (layerIdx !== null) {
-      document.title = `Screen ${layerIdx} | DDP AI`;
+      document.title = `Screen ${layerIdx} | `;
     } else {
-      document.title = "Screen | DDP AI";
+      document.title = "Screen | ";
     }
   }, [layerIdx]);
 

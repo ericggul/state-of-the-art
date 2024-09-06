@@ -46,7 +46,6 @@ export default function useVisibilityCheck({
     if (!socket || !socket.current) return;
 
     if (requestVisibilityCheck) {
-      console.log("46");
       setRequestVisibilityCheck(false);
       return;
     }

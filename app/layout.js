@@ -4,13 +4,13 @@ import StyledComponentsRegistry from "@/lib/registry";
 import { Fira_Code, Fira_Mono, Fira_Sans } from "next/font/google";
 
 export const metadata = {
-  title: "DDP AI Exhibition",
-  description: "DDP AI Solo Exhibition | Yiyun Kang",
+  title: "KAIST Museum Opening Exhibition",
+  description: "KAIST Museum",
   openGraph: {
     type: "website",
     locale: "en_UK",
     // url: "portfolio-jyc.org",
-    siteName: "DDP AI Exhibition",
+    siteName: "KAIST Museum Opening Exhibition",
   },
   robots: {
     index: true,

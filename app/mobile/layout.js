@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Mobile | DDP AI",
+  title: "Mobile | ",
   robots: {
     index: true,
     follow: true,

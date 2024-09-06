@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Screen | DDP AI",
+  title: "Screen | ",
   viewport: {
     width: "device-width",
     initialScale: 1,

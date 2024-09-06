@@ -10,6 +10,7 @@ export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
 
+  font-family: Ubuntu;
 
   font-size: 1vw;
   color: #fff;
