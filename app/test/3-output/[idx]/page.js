@@ -7,6 +7,7 @@ import { TEST_RESPONSE } from "@/foundations/test/3-output/utils/constant-en";
 
 //TSNE
 const Output0 = dynamic(() => import("@/foundations/test/3-output/0"));
+
 const Output1 = dynamic(() => import("@/foundations/test/3-output/1"));
 const Output11 = dynamic(() => import("@/foundations/test/3-output/1/1-1"));
 const Output12 = dynamic(() => import("@/foundations/test/3-output/1/1-2"));
@@ -14,6 +15,7 @@ const Output13 = dynamic(() => import("@/foundations/test/3-output/1/1-3"));
 const Output14 = dynamic(() => import("@/foundations/test/3-output/1/1-4"));
 const Output15 = dynamic(() => import("@/foundations/test/3-output/1/1-5"));
 const Output21 = dynamic(() => import("@/foundations/test/3-output/2/2-1"));
+const Output22 = dynamic(() => import("@/foundations/test/3-output/2/2-2"));
 
 const OutputAnim11 = dynamic(() => import("@/foundations/test/3-output/anim/1-1"));
 const OutputAnim12 = dynamic(() => import("@/foundations/test/3-output/anim/1-2"));
@@ -35,6 +37,7 @@ export default function TsnePage() {
       {idx == "1-4" && <Output14 newResponse={TEST_RESPONSE} />}
       {idx == "1-5" && <Output15 newResponse={TEST_RESPONSE} />}
       {idx == "2-1" && <Output21 newResponse={TEST_RESPONSE} />}
+      {idx == "2-2" && <Output22 newResponse={TEST_RESPONSE} />}
 
       {idx == "anim-1-1" && <OutputAnim11 newResponse={TEST_RESPONSE} />}
       {idx == "anim-1-2" && <OutputAnim12 newResponse={TEST_RESPONSE} />}

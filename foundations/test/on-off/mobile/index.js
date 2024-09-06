@@ -8,6 +8,9 @@ import useSocket from "@/utils/socket/on-off/useSocketMobile";
 import useVisibilityCheck from "@/utils/hooks/useVisibilityCheck";
 
 export default function El() {
+  ////TO DO
+  //to implement: React-use?
+
   const mobileId = useMemo(() => uuidv4(), []);
 
   const [requestVisibilityCheck, setRequestVisibilityCheck] = useState(false);
