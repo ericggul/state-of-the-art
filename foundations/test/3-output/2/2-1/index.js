@@ -47,7 +47,7 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
           style={{
             left: wordPosCalc(xIdx, yIdx)[0],
             top: wordPosCalc(xIdx, yIdx)[1],
-            // opacity: (10 * target.percentage) / 100 + 0.1,
+            opacity: (10 * target.percentage) / 100 + 0.1,
           }}
           key={yIdx}
         >
