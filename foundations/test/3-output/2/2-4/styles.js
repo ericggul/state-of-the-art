@@ -29,7 +29,10 @@ export const Pic = styled.svg`
 `;
 
 export const Sentence = styled.div`
-  font-size: 3vw;
+  font-size: 2vw;
   text-align: center;
   mix-blend-mode: difference;
+  // bottom: 3vw;
+
+  position: absolute;
 `;
