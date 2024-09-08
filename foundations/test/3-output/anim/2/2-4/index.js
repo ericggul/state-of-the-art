@@ -23,7 +23,7 @@ const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function Layer3({ newResponse }) {
   const logProbs = useLogProbs({
     newResponse,
-    filter: 1.0,
+    filter: 1.5,
   });
   const { wordPosCalc, wordInterval, verticalInterval } = usePosCalc({ logProbs, tokens: logProbs.map((el) => el.token) });
 
@@ -33,14 +33,14 @@ export default function Layer3({ newResponse }) {
   useRandomInterval(
     () => {
       setBezierParams({
-        controlX1Factor: getRandom(-0.5, 1.5),
-        controlX2Factor: getRandom(-0.5, 1.5),
+        controlX1Factor: getRandom(-1, 2),
+        controlX2Factor: getRandom(-1, 2),
         controlY1Factor: getRandom(-5, 5),
         controlY2Factor: getRandom(-5, 5),
       });
     },
     5,
-    50
+    100
   );
 
   return (
@@ -53,11 +53,9 @@ export default function Layer3({ newResponse }) {
 
 function SVGComp({ logProbs, wordPosCalc, bezierParams }) {
   // Function to create an animated arc path between two points
-
   const createBezierPath = useCallback(
     (x1, y1, x2, y2) => {
-      console.log(y1 + y2);
-      const params = Math.round(Math.abs(y1) + Math.abs(y2)) % 2 === 0 ? bezierParams : BEZIER_DEFAULT;
+      const params = Math.random() < 1.0 ? bezierParams : BEZIER_DEFAULT;
       const controlX1 = x1 + (x2 - x1) * params.controlX1Factor;
       const controlY1 = y1 + (y2 - y1) * params.controlY1Factor;
       const controlX2 = x2 - (x2 - x1) * params.controlX2Factor;
@@ -93,7 +91,7 @@ function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j }) {
       d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(endIdx, j - 1)[0], wordPosCalc(endIdx, j - 1)[1])}
       stroke="white"
       fill="none"
-      opacity={0.2}
+      opacity={0.15}
     />
   );
 }
