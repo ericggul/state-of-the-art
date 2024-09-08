@@ -19,13 +19,15 @@ const Output22 = dynamic(() => import("@/foundations/test/3-output/2/2-2"));
 const Output23 = dynamic(() => import("@/foundations/test/3-output/2/2-3"));
 const Output24 = dynamic(() => import("@/foundations/test/3-output/2/2-4"));
 const Output25 = dynamic(() => import("@/foundations/test/3-output/2/2-5"));
+const Output31 = dynamic(() => import("@/foundations/test/3-output/3/3-1"));
+const Output32 = dynamic(() => import("@/foundations/test/3-output/3/3-2"));
 
-const OutputAnim11 = dynamic(() => import("@/foundations/test/3-output/anim/1-1"));
-const OutputAnim12 = dynamic(() => import("@/foundations/test/3-output/anim/1-2"));
-const OutputAnim13 = dynamic(() => import("@/foundations/test/3-output/anim/1-3"));
-const OutputAnim14 = dynamic(() => import("@/foundations/test/3-output/anim/1-4"));
-const OutputAnim15 = dynamic(() => import("@/foundations/test/3-output/anim/1-5"));
-const OutputAnim16 = dynamic(() => import("@/foundations/test/3-output/anim/1-6"));
+const OutputAnim11 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-1"));
+const OutputAnim12 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-2"));
+const OutputAnim13 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-3"));
+const OutputAnim14 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-4"));
+const OutputAnim15 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-5"));
+const OutputAnim16 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-6"));
 
 const OutputRandom21 = dynamic(() => import("@/foundations/test/3-output/random/2-1"));
 
@@ -46,6 +48,8 @@ export default function TsnePage() {
       {idx == "2-3" && <Output23 newResponse={TEST_RESPONSE} />}
       {idx == "2-4" && <Output24 newResponse={TEST_RESPONSE} />}
       {idx == "2-5" && <Output25 newResponse={TEST_RESPONSE} />}
+      {idx == "3-1" && <Output31 newResponse={TEST_RESPONSE} />}
+      {idx == "3-2" && <Output32 newResponse={TEST_RESPONSE} />}
 
       {idx == "anim-1-1" && <OutputAnim11 newResponse={TEST_RESPONSE} />}
       {idx == "anim-1-2" && <OutputAnim12 newResponse={TEST_RESPONSE} />}
