@@ -6,8 +6,7 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   // background: black;
 
-
-${BackgroundBlur}
+  ${BackgroundBlur}
 
   flex-direction: column;
 `;
@@ -20,7 +19,7 @@ export const Tokens = styled.div`
 export const Candidate = styled.div`
   // ${({ isfocus }) => (isfocus ? "opacity: 1" : "opacity: 0.1")};
   // transition: all 0.3s;
-  font-size: 0.8vw;
+  font-size: 1vw;
   position: absolute;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -28,4 +27,8 @@ export const Candidate = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
+
+  path {
+    // transition: all 0.3s;
+  }
 `;

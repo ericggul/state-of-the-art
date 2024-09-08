@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import { Fragment, useState, useEffect, useMemo, useCallback } from "react";
-import useLogProbs from "@/foundations/test/3-output/utils/useLogProbs";
+import useLogProbs from "@/foundations/test/3-output/utils/useLogProbsFiltered";
 import usePosCalc from "./usePosCalc";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval"; // Assuming you have this hook
 
@@ -33,12 +33,12 @@ export default function Layer3({ newResponse }) {
       setBezierParams({
         controlX1Factor: getRandom(-2, 3),
         controlX2Factor: getRandom(-2, 3),
-        controlY1Factor: getRandom(-5, 5),
-        controlY2Factor: getRandom(-5, 5),
+        controlY1Factor: getRandom(-3, 3),
+        controlY2Factor: getRandom(-3, 3),
       });
     },
     5,
-    10
+    100
   );
 
   return (
@@ -85,7 +85,7 @@ function SVGComp({ logProbs, wordPosCalc, bezierParams, xMargin }) {
                       )}
                       stroke="white"
                       fill="none"
-                      opacity={0.3}
+                      strokeWidth={(start.percentage + end.percentage) / 400}
                     />
                   )
               )
@@ -129,7 +129,7 @@ function Token({ xIdx, token, logprobs, wordPosCalc }) {
           }}
           key={yIdx}
         >
-          {target.token}
+          {target.token + "|" + target.percentage.toFixed(2) + "%"}
         </S.Candidate>
       ))}
     </Fragment>
