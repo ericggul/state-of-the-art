@@ -9,6 +9,14 @@ export const Container = styled.div`
   ${BackgroundBlur}
 
   flex-direction: column;
+
+  background: ${({ isBlack }) => (isBlack ? "black" : "white")};
+  svg {
+    stroke: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
+  div {
+    color: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
 `;
 
 export const Tokens = styled.div`

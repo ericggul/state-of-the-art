@@ -74,12 +74,8 @@ export default function Layer3({ newResponse }) {
   }, [isBlack]);
 
   return (
-    <S.Container
-      style={{
-        background: isBlack ? "black" : "white",
-      }}
-    >
-      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} isBlack={isBlack} />
+    <S.Container isBlack={isBlack}>
+      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
       <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} isBlack={isBlack} />
     </S.Container>
   );
@@ -92,7 +88,7 @@ function topLogProbsInclToken(logProb) {
   };
 }
 
-const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParams, isBlack }) {
+const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParams }) {
   const createBezierPath = useCallback(
     (x1, y1, x2, y2) => {
       const params = Math.random() < 1.0 ? bezierParams : BEZIER_DEFAULT;
@@ -119,7 +115,7 @@ const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParam
                       endIdx,
                       i,
                       j,
-                      strokeWidth: 0.7,
+                      strokeWidth: 0.5,
                     }
                 )
               )
@@ -132,47 +128,39 @@ const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParam
   return (
     <S.Pic>
       {paths.map((pathProps, idx) => (
-        <SinglePath key={idx} {...pathProps} wordPosCalc={wordPosCalc} createBezierPath={createBezierPath} isBlack={isBlack} />
+        <SinglePath key={idx} {...pathProps} wordPosCalc={wordPosCalc} createBezierPath={createBezierPath} />
       ))}
     </S.Pic>
   );
 });
 
-const SinglePath = React.memo(function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j, strokeWidth, isBlack }) {
+const SinglePath = React.memo(function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j, strokeWidth }) {
   const d = createBezierPath(...wordPosCalc(startIdx, i - 1), ...wordPosCalc(endIdx, j - 1));
 
-  return <path d={d} stroke={isBlack ? "white" : "black"} fill="none" opacity={0.5} strokeWidth={strokeWidth} />;
+  return <path d={d} fill="none" opacity={0.5} strokeWidth={strokeWidth} />;
 });
 
-const Tokens = React.memo(function Tokens({ logProbs, wordPosCalc, isBlack }) {
+const Tokens = React.memo(function Tokens({ logProbs, wordPosCalc }) {
   return (
     <S.Tokens>
       {logProbs.map((token, i) => (
-        <Token key={i} xIdx={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} isBlack={isBlack} />
+        <Token key={i} xIdx={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
       ))}
     </S.Tokens>
   );
 });
 
-const Token = React.memo(function Token({ xIdx, token, logprobs, wordPosCalc, isBlack }) {
+const Token = React.memo(function Token({ xIdx, token, logprobs, wordPosCalc }) {
   return (
     <>
-      <S.Candidate
-        style={{
-          left: wordPosCalc(xIdx, -1)[0],
-          top: wordPosCalc(xIdx, -1)[1],
-          color: isBlack ? "white" : "black",
-        }}
-      >
-        {token}
-      </S.Candidate>
+      <S.Candidate style={{ left: wordPosCalc(xIdx, -1)[0], top: wordPosCalc(xIdx, -1)[1] }}>{token}</S.Candidate>
       {logprobs.map((target, yIdx) => (
         <S.Candidate
           key={yIdx}
           style={{
             left: wordPosCalc(xIdx, yIdx)[0],
             top: wordPosCalc(xIdx, yIdx)[1],
-            color: isBlack ? "white" : "black",
+
             opacity: 0.5,
           }}
         >
