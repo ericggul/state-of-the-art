@@ -12,7 +12,7 @@ function topLogProbsInclToken(logProb) {
 }
 
 export default function Layer3({ newResponse }) {
-  const logProbs = useLogProbs({ newResponse });
+  const logProbs = useLogProbs({ newResponse, filter: 0.3 });
 
   const { wordPosCalc, wordInterval, verticalInterval } = usePosCalc({ logProbs, tokens: logProbs.map((el) => el.token) });
 

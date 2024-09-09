@@ -40,7 +40,7 @@ export default function Layer3({ newResponse }) {
       });
     },
     5,
-    100
+    150
   );
 
   return (
@@ -91,7 +91,7 @@ function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j }) {
       d={createBezierPath(wordPosCalc(startIdx, i - 1)[0], wordPosCalc(startIdx, i - 1)[1], wordPosCalc(endIdx, j - 1)[0], wordPosCalc(endIdx, j - 1)[1])}
       stroke="white"
       fill="none"
-      opacity={0.2}
+      opacity={0.3}
     />
   );
 }
