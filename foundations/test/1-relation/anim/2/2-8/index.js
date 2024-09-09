@@ -21,25 +21,28 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     newOutputEmbeddings,
   });
 
+  // Calculate positions for both input and output tokens
   const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
   const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-
   const [isBlack, setIsBlack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
+  const [opacity, setOpacity] = useState(1); // Correctly defining the opacity state
 
+  // Toggle background color, bezier params, and opacity every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
       setYRange((r) => 18 - r);
       setIsBlack((b) => !b);
+      setOpacity((o) => (o === 1 ? 0.5 : 1)); // Toggle opacity between 1 and 0.5
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
 
+  // Randomly update bezier parameters at a set interval
   useRandomInterval(
     () => {
       setBezierParams({
@@ -53,19 +56,51 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     50
   );
 
-  const [opacity, setOpacity] = useState(1);
+  // Memoize bezier path generation for performance
+  const createBezierPath = useCallback(
+    (x1, y1, x2, y2) => {
+      const followVal = (val) => val;
 
-  const createBezierPath = (x1, y1, x2, y2) => {
-    const follow = Math.random() < 0.5;
-    const followVal = (val, scale = 1) => val;
+      const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
+      const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
+      const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
+      const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
 
-    const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
-    const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
-    const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
-    const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
+      return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
+    },
+    [bezierParams, inputyMargin, outputyMargin]
+  );
 
-    return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
-  };
+  // Memoize input tokens rendering to prevent unnecessary re-renders
+  const renderedInputTokens = useMemo(() => {
+    return inputTokens.map((token, i) => (
+      <S.Token
+        key={i}
+        style={{
+          left: inputWordPosCalc(i)[0],
+          top: inputWordPosCalc(i)[1],
+          width: inputWordInterval,
+        }}
+      >
+        {token}
+      </S.Token>
+    ));
+  }, [inputTokens, inputWordPosCalc, inputWordInterval]);
+
+  // Memoize paths generation to prevent recalculating on every render
+  const renderedPaths = useMemo(() => {
+    return inputTokens.map((token, i) =>
+      outputTokens.map((targetToken, j) => (
+        <path
+          key={`arc-${i}-${j}`}
+          d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
+          stroke={isBlack ? "white" : "black"}
+          fill="none"
+          strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
+        />
+      ))
+    );
+  }, [inputTokens, outputTokens, inputWordPosCalc, outputWordPosCalc, createBezierPath, crossSimilarityMatrix, isBlack]);
 
   return (
     <S.Container
@@ -74,18 +109,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
         color: isBlack ? "white" : "black",
       }}
     >
-      {inputTokens.map((token, i) => (
-        <S.Token
-          key={i}
-          style={{
-            left: inputWordPosCalc(i)[0],
-            top: inputWordPosCalc(i)[1],
-            width: inputWordInterval,
-          }}
-        >
-          {token}
-        </S.Token>
-      ))}
+      {renderedInputTokens}
 
       {outputTokens.map((token, i) => (
         <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
@@ -93,20 +117,10 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 
       <S.Pic
         style={{
-          opacity,
+          opacity, // Apply the correct opacity value
         }}
       >
-        {inputTokens.map((token, i) =>
-          outputTokens.map((targetToken, j) => (
-            <path
-              key={`arc-${i}-${j}`}
-              d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              stroke={isBlack ? "white" : "black"}
-              fill="none"
-              strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
-            />
-          ))
-        )}
+        {renderedPaths}
       </S.Pic>
     </S.Container>
   );
@@ -115,14 +129,13 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
 function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
   const [displayToken, setDisplayToken] = useState(token);
 
+  // Randomly update display token with 0s and 1s at random intervals
   useRandomInterval(
     () =>
       setDisplayToken((given) => {
-        // If the given token is not the current token, return the current token
         if (given !== token) return token;
 
-        // Otherwise, generate a random string of 0s and 1s of the same length as the token
-        let randomString = Array.from({ length: token.length }, () => Math.round(Math.random())).join("");
+        const randomString = Array.from({ length: token.length }, () => Math.round(Math.random())).join("");
         return randomString;
       }),
     10,
