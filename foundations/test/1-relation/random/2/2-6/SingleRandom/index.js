@@ -13,7 +13,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
+export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -29,8 +29,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
   useEffect(() => {
     setXRange((r) => 1.5 - r);
     setYRange((r) => 18 - r);
-
-    setIsAnimating((animating) => !animating); // Toggle animation
+    setIsAnimating((animating) => !animating); // Toggle animation when isBlack changes
   }, [isBlack]);
 
   useRandomInterval(
@@ -56,6 +55,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
     isAnimating,
     range,
   });
+
   const {
     wordPosCalc: outputWordPosCalc,
     wordInterval: outputWordInterval,
@@ -68,13 +68,11 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
   });
 
   const createBezierPath = (x1, y1, x2, y2) => {
-    const followVal = (val, scale = 1) => val;
-
+    const followVal = (val) => val;
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
     const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
     const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
     const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
-
     return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
   };
 
@@ -82,7 +80,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
     <S.Container
       style={{
         color: isBlack ? "white" : "black",
-        opacity: visible ? 1 : 0,
+        opacity: visible ? 1 : 0, // Control visibility based on the `visible` prop
       }}
     >
       {inputTokens.map((token, i) => (
@@ -100,14 +98,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken
-          key={i}
-          i={i}
-          outputWordInterval={outputWordInterval}
-          outputWordPosCalc={outputWordPosCalc}
-          token={token}
-          isBlack={isBlack} // Pass isBlack to control text color
-        />
+        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} isBlack={isBlack} />
       ))}
 
       <S.Pic>
