@@ -32,6 +32,7 @@ const OutputAnim21 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-
 const OutputAnim22 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-2"));
 const OutputAnim23 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-3"));
 const OutputAnim24 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-4"));
+const OutputAnim25 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-5"));
 
 const OutputRandom21 = dynamic(() => import("@/foundations/test/3-output/random/2-1"));
 
@@ -66,6 +67,7 @@ export default function TsnePage() {
       {idx == "anim-2-2" && <OutputAnim22 newResponse={TEST_RESPONSE} />}
       {idx == "anim-2-3" && <OutputAnim23 newResponse={TEST_RESPONSE} />}
       {idx == "anim-2-4" && <OutputAnim24 newResponse={TEST_RESPONSE} />}
+      {idx == "anim-2-5" && <OutputAnim25 newResponse={TEST_RESPONSE} />}
 
       {idx == "random-2-1" && <OutputRandom21 newResponse={TEST_RESPONSE} />}
     </>
