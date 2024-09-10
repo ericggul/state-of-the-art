@@ -74,9 +74,9 @@ export default function Layer3({ newResponse }) {
   }, [isBlack]);
 
   return (
-    <S.Container isBlack={isBlack}>
+    <S.Container isBlack={!isBlack}>
       <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
-      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} isBlack={isBlack} />
+      <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} />
     </S.Container>
   );
 }

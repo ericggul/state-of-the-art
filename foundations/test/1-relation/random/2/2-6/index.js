@@ -8,7 +8,7 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setIsBlack((prev) => !prev);
-    }, 4000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
