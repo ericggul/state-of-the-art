@@ -68,18 +68,24 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
   });
 
   const createBezierPath = (x1, y1, x2, y2) => {
+    // Fallback for undefined or NaN values
+    if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
+      return "";
+    }
+
     const followVal = (val) => val;
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
     const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
     const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
     const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
+
     return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
   };
 
   return (
     <S.Container
+      isBlack={isBlack}
       style={{
-        color: isBlack ? "white" : "black",
         opacity: visible ? 1 : 0, // Control visibility based on the `visible` prop
       }}
     >
@@ -90,7 +96,6 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
             left: inputWordPosCalc(i)[0],
             top: inputWordPosCalc(i)[1],
             width: inputWordInterval,
-            color: isBlack ? "white" : "black", // Dynamic text color
           }}
         >
           {token}
@@ -98,7 +103,7 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} isBlack={isBlack} />
+        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
       ))}
 
       <S.Pic>
@@ -107,7 +112,6 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
             <path
               key={`arc-${i}-${j}`}
               d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              stroke={isBlack ? "white" : "black"}
               fill="none"
               strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
             />
@@ -118,14 +122,13 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isBlack }) {
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
   return (
     <S.Token
       style={{
         left: outputWordPosCalc(i)[0],
         top: outputWordPosCalc(i)[1],
         width: outputWordInterval,
-        color: isBlack ? "white" : "black", // Dynamic text color
       }}
     >
       {token}

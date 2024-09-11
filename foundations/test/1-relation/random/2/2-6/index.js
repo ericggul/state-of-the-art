@@ -2,6 +2,8 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
+import useAudio from "./useAudio";
+
 export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   const [isBlack, setIsBlack] = useState(false);
 
@@ -12,6 +14,8 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
 
     return () => clearInterval(interval);
   }, []);
+
+  useAudio({ isBlack });
 
   return (
     <S.Container

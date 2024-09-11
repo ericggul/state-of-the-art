@@ -13,6 +13,14 @@ export const Container = styled.div`
   font-size: 1vw;
   color: #fff;
   background: transparent !important;
+
+  background: ${({ isBlack }) => (isBlack ? "black" : "white")};
+  svg {
+    stroke: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
+  div {
+    color: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
 `;
 
 export const MidRow = styled.div`
