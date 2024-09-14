@@ -1,3 +1,5 @@
+// index.js
+
 import * as S from "./styles";
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import useLogProbs from "./useLogProbs";
@@ -38,12 +40,6 @@ export default function Layer3({ newResponse }) {
   const timeRef = useRef(0);
   const animationFrameRef = useRef(null);
 
-  const { wordPosCalc, wordInterval, verticalInterval } = usePosCalc({
-    logProbs,
-    tokens: logProbs.map((el) => el.token),
-    isAnimating: isBlack,
-  });
-
   useEffect(() => {
     const interval = setInterval(() => setIsBlack((prev) => !prev), 2000);
     return () => clearInterval(interval);
@@ -75,6 +71,12 @@ export default function Layer3({ newResponse }) {
     }
   }, [isBlack]);
 
+  const { wordPosCalc } = usePosCalc({
+    tokens: logProbs.map((el) => el.token),
+    logProbs,
+    isAnimating: isBlack,
+  });
+
   return (
     <S.Container isBlack={!isBlack}>
       <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
@@ -100,22 +102,27 @@ const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParam
   const paths = useMemo(() => {
     return logProbs
       .flatMap((startLogProb, startIdx) =>
-        logProbs.flatMap((endLogProb, endIdx) =>
-          startIdx !== endIdx
-            ? startLogProb.top_logprobs.flatMap((start, i) =>
-                endLogProb.top_logprobs.map(
-                  (end, j) =>
-                    (i === 0 || j === 0) && {
-                      startIdx,
-                      endIdx,
-                      i,
-                      j,
-                      strokeWidth: 0.3,
-                    }
-                )
-              )
-            : []
-        )
+        logProbs.flatMap((endLogProb, endIdx) => {
+          if (startIdx === endIdx) {
+            return [];
+          }
+
+          const startTopLogProbs = startLogProb.top_logprobs.length > 0 ? startLogProb.top_logprobs : [{ token: startLogProb.token, percentage: 100 }];
+          const endTopLogProbs = endLogProb.top_logprobs.length > 0 ? endLogProb.top_logprobs : [{ token: endLogProb.token, percentage: 100 }];
+
+          return startTopLogProbs.flatMap((start, i) =>
+            endTopLogProbs.map(
+              (end, j) =>
+                (i === 0 || j === 0) && {
+                  startIdx,
+                  endIdx,
+                  i,
+                  j,
+                  strokeWidth: 0.3,
+                }
+            )
+          );
+        })
       )
       .filter(Boolean);
   }, [logProbs]);
@@ -154,7 +161,7 @@ const Token = React.memo(function Token({ xIdx, token, logprobs, wordPosCalc }) 
           style={{
             left: wordPosCalc(xIdx, yIdx)[0],
             top: wordPosCalc(xIdx, yIdx)[1],
-            opacity: 0.5,
+            // opacity: 0.5,
           }}
         >
           <p>{target.token}</p>
