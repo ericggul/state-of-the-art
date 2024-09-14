@@ -4,16 +4,18 @@ import SingleRandom from "./SingleRandom";
 
 import useAudio from "./useAudio";
 
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+
 export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   const [isBlack, setIsBlack] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+  useRandomInterval(
+    () => {
       setIsBlack((prev) => !prev);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
+    },
+    2000,
+    7000
+  );
 
   useAudio({ isBlack });
 
