@@ -35,7 +35,7 @@ const OutputAnim24 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-
 const OutputAnim25 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-5"));
 const OutputAnim26 = dynamic(() => import("@/foundations/test/3-output/anim/2/2-6"));
 
-const OutputRandom21 = dynamic(() => import("@/foundations/test/3-output/random/2-1"));
+const OutputRandom21 = dynamic(() => import("@/foundations/test/3-output/random/2/2-1"));
 
 export default function TsnePage() {
   const { idx } = useParams();

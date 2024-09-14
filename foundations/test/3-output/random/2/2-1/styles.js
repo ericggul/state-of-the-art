@@ -6,10 +6,17 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   // background: black;
 
-  font-family: Ubuntu;
   ${BackgroundBlur}
 
   flex-direction: column;
+
+  background: ${({ isBlack }) => (isBlack ? "black" : "white")};
+  svg {
+    stroke: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
+  div {
+    color: ${({ isBlack }) => (isBlack ? "white" : "black")};
+  }
 `;
 
 export const Tokens = styled.div`
@@ -18,6 +25,8 @@ export const Tokens = styled.div`
 `;
 
 export const Candidate = styled.div`
+  // ${({ isfocus }) => (isfocus ? "opacity: 1" : "opacity: 0.1")};
+  // transition: all 0.3s;
   font-size: 1vw;
   position: absolute;
   transform: translate(-50%, -50%);
@@ -26,10 +35,8 @@ export const Candidate = styled.div`
 
 export const Pic = styled.svg`
   ${WholeContainer}
-`;
 
-export const Sentence = styled.div`
-  font-size: 3vw;
-  text-align: center;
-  mix-blend-mode: difference;
+  path {
+    // transition: all 0.3s;
+  }
 `;
