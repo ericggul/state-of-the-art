@@ -27,12 +27,6 @@ export default function usePosCalc({ tokens, logProbs, isAnimating }) {
   useEffect(() => {
     if (isAnimating) {
       setTokenPositions(generatePositions());
-
-      const intervalId = setInterval(() => {
-        setTokenPositions(generatePositions());
-      }, 1000); // Adjust as needed
-
-      return () => clearInterval(intervalId);
     } else {
       // Optionally set positions when not animating
       // setTokenPositions(generatePositions());

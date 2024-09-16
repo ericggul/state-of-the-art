@@ -51,7 +51,9 @@ export default function Layer3({ newResponse }) {
       timeRef.current = time;
 
       const x1 = getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
+      const x2 = getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX2Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
       const y1 = getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
+      const y2 = getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY2Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
 
       setBezierParams((prevParams) => ({
         controlX1Factor: x1,
