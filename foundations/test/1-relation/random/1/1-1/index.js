@@ -2,7 +2,6 @@ import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity, { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const BEZIER_DEFAULT = {
   controlX1Factor: 0,
@@ -11,9 +10,7 @@ const BEZIER_DEFAULT = {
   controlY2Factor: 5,
 };
 
-const getRandom = (a, b) => Math.random() * (b - a) + a;
-
-export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible }) {
+export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -24,49 +21,20 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isblac
   const inputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newInputEmbeddings });
   const outputSimilarityMatrix = useComputeSimilarity({ newEmbeddings: newOutputEmbeddings });
 
-  const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [xRange, setXRange] = useState(0);
-  const [yRange, setYRange] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    setXRange((r) => 1.5 - r);
-    setYRange((r) => 18 - r);
-    setIsAnimating((animating) => !animating); // Toggle animation when isblack changes
-  }, [isblack]);
-
-  useRandomInterval(
-    () => {
-      setBezierParams({
-        controlX1Factor: getRandom(0 - xRange, 0 + xRange),
-        controlX2Factor: getRandom(0.7 - xRange, 0.7 + xRange),
-        controlY1Factor: getRandom(10 - yRange, 10 + yRange),
-        controlY2Factor: getRandom(10 - yRange, 10 + yRange),
-      });
-    },
-    5,
-    50
-  );
-
-  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input", isAnimating, range });
-  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output", isAnimating, range });
+  const { wordPosCalc: inputWordPosCalc, wordInterval: inputWordInterval, yMargin: inputyMargin } = usePosCalc({ tokens: inputTokens, type: "input" });
+  const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   // Function to create a smoother cubic Bezier curve path between two points
   const createBezierPath = (x1, y1, x2, y2) => {
-    // Fallback for undefined or NaN values
-    if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
-      return "";
-    }
-
-    const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
-    const controlY1 = y1 + inputyMargin * bezierParams.controlY1Factor;
-    const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
-    const controlY2 = y2 - outputyMargin * bezierParams.controlY2Factor;
+    const controlX1 = x1 + (x2 - x1) / 2;
+    const controlY1 = y1 + inputyMargin;
+    const controlX2 = x2 - (x2 - x1) / 2;
+    const controlY2 = y2 - outputyMargin;
 
     return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
   };
 
-  // Function to create an arc path between two points
+  // // Function to create an arc path between two points
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
     const sweepFlag = dir;
@@ -76,12 +44,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isblac
   };
 
   return (
-    <S.Container
-      isblack={isblack && "true"}
-      style={{
-        opacity: visible ? 1 : 0, // Control visibility based on the `visible` prop
-      }}
-    >
+    <S.Container>
       {inputTokens.map((token, i) => (
         <S.Token
           key={i}
@@ -117,6 +80,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isblac
               stroke="white"
               fill="none"
               strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
+              // opacity={j == targetWordIdx || i == targetWordIdx ? 1 : 0.1}
             />
           ))
         )}
