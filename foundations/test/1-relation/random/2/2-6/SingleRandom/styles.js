@@ -14,12 +14,12 @@ export const Container = styled.div`
   color: #fff;
   background: transparent !important;
 
-  background: ${({ isBlack }) => (isBlack ? "black" : "white")};
+  background: ${({ isblack }) => (isblack ? "black" : "white")};
   svg {
-    stroke: ${({ isBlack }) => (isBlack ? "white" : "black")};
+    stroke: ${({ isblack }) => (isblack ? "white" : "black")};
   }
   div {
-    color: ${({ isBlack }) => (isBlack ? "white" : "black")};
+    color: ${({ isblack }) => (isblack ? "white" : "black")};
   }
 `;
 

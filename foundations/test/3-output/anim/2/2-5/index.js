@@ -44,11 +44,11 @@ export default function Layer3({ newResponse }) {
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
   const timeRef = useRef(0);
 
-  const [isBlack, setIsBlack] = useState(false);
+  const [isblack, setIsblack] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsBlack((prev) => !prev);
+      setIsblack((prev) => !prev);
     }, 2000);
 
     return () => clearInterval(interval);
@@ -68,19 +68,19 @@ export default function Layer3({ newResponse }) {
         controlY2Factor: getCyclicalValue(time, -4, 4, CYCLE_DURATIONS.controlY2Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR),
       });
 
-      if (isBlack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
+      if (isblack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
     };
 
-    if (isBlack) {
+    if (isblack) {
       animationFrameRef.current = requestAnimationFrame(updateBezierParams);
       return () => cancelAnimationFrame(animationFrameRef.current);
     } else {
       cancelAnimationFrame(animationFrameRef.current);
     }
-  }, [isBlack]);
+  }, [isblack]);
 
   return (
-    <S.Container isBlack={!isBlack}>
+    <S.Container isblack={!isblack && "true"}>
       <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
       <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} />
     </S.Container>

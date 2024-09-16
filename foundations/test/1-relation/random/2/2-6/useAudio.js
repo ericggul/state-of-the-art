@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function useAudio({ isBlack }) {
+export default function useAudio({ isblack }) {
   const audioRef = useRef(null);
 
   // Load the audio file when the component mounts
@@ -19,12 +19,12 @@ export default function useAudio({ isBlack }) {
     };
   }, []);
 
-  // Play or pause the audio based on the `isBlack` state
+  // Play or pause the audio based on the `isblack` state
   useEffect(() => {
     const audio = audioRef.current;
     audio.loop = true;
     if (audio) {
-      if (isBlack) {
+      if (isblack) {
         audio.play();
       } else {
         audio.pause();
@@ -37,5 +37,5 @@ export default function useAudio({ isBlack }) {
         audio.pause();
       }
     };
-  }, [isBlack]);
+  }, [isblack]);
 }

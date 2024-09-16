@@ -26,7 +26,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   const { wordPosCalc: outputWordPosCalc, wordInterval: outputWordInterval, yMargin: outputyMargin } = usePosCalc({ tokens: outputTokens, type: "output" });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [isBlack, setIsBlack] = useState(true);
+  const [isblack, setIsblack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
   const [opacity, setOpacity] = useState(1); // Correctly defining the opacity state
@@ -36,7 +36,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
       setYRange((r) => 18 - r);
-      setIsBlack((b) => !b);
+      setIsblack((b) => !b);
       setOpacity((o) => (o === 1 ? 0.5 : 1)); // Toggle opacity between 1 and 0.5
     }, 3000);
     return () => clearInterval(interval);
@@ -94,19 +94,19 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
         <path
           key={`arc-${i}-${j}`}
           d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-          stroke={isBlack ? "white" : "black"}
+          stroke={isblack ? "white" : "black"}
           fill="none"
           strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
         />
       ))
     );
-  }, [inputTokens, outputTokens, inputWordPosCalc, outputWordPosCalc, createBezierPath, crossSimilarityMatrix, isBlack]);
+  }, [inputTokens, outputTokens, inputWordPosCalc, outputWordPosCalc, createBezierPath, crossSimilarityMatrix, isblack]);
 
   return (
     <S.Container
       style={{
-        background: isBlack ? "black" : "white",
-        color: isBlack ? "white" : "black",
+        background: isblack ? "black" : "white",
+        color: isblack ? "white" : "black",
       }}
     >
       {renderedInputTokens}

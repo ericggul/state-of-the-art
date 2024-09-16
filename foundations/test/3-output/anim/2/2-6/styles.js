@@ -10,12 +10,12 @@ export const Container = styled.div`
 
   flex-direction: column;
 
-  background: ${({ isBlack }) => (isBlack ? "black" : "white")};
+  background: ${({ isblack }) => (isblack ? "black" : "white")};
   svg {
-    stroke: ${({ isBlack }) => (isBlack ? "white" : "black")};
+    stroke: ${({ isblack }) => (isblack ? "white" : "black")};
   }
   div {
-    color: ${({ isBlack }) => (isBlack ? "white" : "black")};
+    color: ${({ isblack }) => (isblack ? "white" : "black")};
   }
 `;
 

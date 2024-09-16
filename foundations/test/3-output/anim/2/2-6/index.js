@@ -36,12 +36,12 @@ export default function Layer3({ newResponse }) {
   });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [isBlack, setIsBlack] = useState(false);
+  const [isblack, setIsblack] = useState(false);
   const timeRef = useRef(0);
   const animationFrameRef = useRef(null);
 
   useEffect(() => {
-    const interval = setInterval(() => setIsBlack((prev) => !prev), 2000);
+    const interval = setInterval(() => setIsblack((prev) => !prev), 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -60,16 +60,16 @@ export default function Layer3({ newResponse }) {
         controlY2Factor: y1,
       }));
 
-      if (isBlack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
+      if (isblack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
     };
 
-    if (isBlack) {
+    if (isblack) {
       animationFrameRef.current = requestAnimationFrame(updateBezierParams);
       return () => cancelAnimationFrame(animationFrameRef.current);
     } else {
       cancelAnimationFrame(animationFrameRef.current);
     }
-  }, [isBlack]);
+  }, [isblack]);
 
   const { wordPosCalc } = usePosCalc({
     tokens: logProbs.map((el) => el.token),
@@ -77,7 +77,7 @@ export default function Layer3({ newResponse }) {
   });
 
   return (
-    <S.Container isBlack={!isBlack}>
+    <S.Container isblack={!isblack && "true"}>
       <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
       <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} />
     </S.Container>

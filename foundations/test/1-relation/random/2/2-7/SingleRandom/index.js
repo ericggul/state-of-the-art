@@ -13,7 +13,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
+export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -31,7 +31,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
     setYRange((r) => 18 - r);
 
     setIsAnimating((animating) => !animating); // Toggle animation
-  }, [isBlack]);
+  }, [isblack]);
 
   useRandomInterval(
     () => {
@@ -81,7 +81,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
   return (
     <S.Container
       style={{
-        color: isBlack ? "white" : "black",
+        color: isblack ? "white" : "black",
         opacity: visible ? 1 : 0,
       }}
     >
@@ -92,7 +92,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
             left: inputWordPosCalc(i)[0],
             top: inputWordPosCalc(i)[1],
             width: inputWordInterval,
-            color: isBlack ? "white" : "black", // Dynamic text color
+            color: isblack ? "white" : "black", // Dynamic text color
           }}
         >
           {token}
@@ -100,14 +100,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken
-          key={i}
-          i={i}
-          outputWordInterval={outputWordInterval}
-          outputWordPosCalc={outputWordPosCalc}
-          token={token}
-          isBlack={isBlack} // Pass isBlack to control text color
-        />
+        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} isblack={isblack} />
       ))}
 
       <S.Pic>
@@ -116,7 +109,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
             <path
               key={`arc-${i}-${j}`}
               d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              stroke={isBlack ? "white" : "black"}
+              stroke={isblack ? "white" : "black"}
               fill="none"
               strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
             />
@@ -127,14 +120,14 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings, isBlac
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isBlack }) {
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isblack }) {
   return (
     <S.Token
       style={{
         left: outputWordPosCalc(i)[0],
         top: outputWordPosCalc(i)[1],
         width: outputWordInterval,
-        color: isBlack ? "white" : "black", // Dynamic text color
+        color: isblack ? "white" : "black", // Dynamic text color
       }}
     >
       {token}

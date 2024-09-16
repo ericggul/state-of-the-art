@@ -22,7 +22,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [isBlack, setIsBlack] = useState(true);
+  const [isblack, setIsblack] = useState(true);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -31,7 +31,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
     const interval = setInterval(() => {
       setXRange((r) => 1.5 - r);
       setYRange((r) => 18 - r);
-      setIsBlack((b) => !b);
+      setIsblack((b) => !b);
       setIsAnimating((animating) => !animating); // Toggle animation
     }, 1000);
 
@@ -68,8 +68,8 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   return (
     <S.Container
       style={{
-        background: isBlack ? "black" : "white",
-        color: isBlack ? "white" : "black",
+        background: isblack ? "black" : "white",
+        color: isblack ? "white" : "black",
       }}
     >
       {inputTokens.map((token, i) => (
@@ -79,7 +79,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             left: inputWordPosCalc(i)[0],
             top: inputWordPosCalc(i)[1],
             width: inputWordInterval,
-            color: isBlack ? "white" : "black", // Dynamic text color
+            color: isblack ? "white" : "black", // Dynamic text color
           }}
         >
           {token}
@@ -93,7 +93,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
           outputWordInterval={outputWordInterval}
           outputWordPosCalc={outputWordPosCalc}
           token={token}
-          isBlack={isBlack} // Pass isBlack to control text color
+          isblack={isblack} // Pass isblack to control text color
         />
       ))}
 
@@ -103,7 +103,7 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
             <path
               key={`arc-${i}-${j}`}
               d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
-              stroke={isBlack ? "white" : "black"}
+              stroke={isblack ? "white" : "black"}
               fill="none"
               strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
             />
@@ -114,14 +114,14 @@ export default function Layer1({ newInputEmbeddings, newOutputEmbeddings }) {
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isBlack }) {
+function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token, isblack }) {
   return (
     <S.Token
       style={{
         left: outputWordPosCalc(i)[0],
         top: outputWordPosCalc(i)[1],
         width: outputWordInterval,
-        color: isBlack ? "white" : "black", // Dynamic text color
+        color: isblack ? "white" : "black", // Dynamic text color
       }}
     >
       {token}

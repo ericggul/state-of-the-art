@@ -7,28 +7,28 @@ import useAudio from "./useAudio";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
-  const [isBlack, setIsBlack] = useState(false);
+  const [isblack, setIsblack] = useState(false);
 
   useRandomInterval(
     () => {
-      setIsBlack((prev) => !prev);
+      setIsblack((prev) => !prev);
     },
     2000,
     7000
   );
 
-  useAudio({ isBlack });
+  useAudio({ isblack });
 
   return (
     <S.Container
       style={{
-        background: isBlack ? "black" : "white",
+        background: isblack ? "black" : "white",
       }}
     >
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isBlack={isBlack} range={{ x: [0, 1], y: [0, 1] }} visible={isBlack} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isBlack={isBlack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isBlack={isBlack} range={{ x: [0.2, 0.8], y: [0.2, 0.8] }} visible={isBlack} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isBlack={isBlack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isBlack} />
+      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack} />
+      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} />
+      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.2, 0.8], y: [0.2, 0.8] }} visible={isblack} />
+      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isblack} />
     </S.Container>
   );
 }

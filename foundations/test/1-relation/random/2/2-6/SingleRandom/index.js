@@ -13,7 +13,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isBlack, range, visible }) {
+export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible }) {
   const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -29,8 +29,8 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
   useEffect(() => {
     setXRange((r) => 1.5 - r);
     setYRange((r) => 18 - r);
-    setIsAnimating((animating) => !animating); // Toggle animation when isBlack changes
-  }, [isBlack]);
+    setIsAnimating((animating) => !animating); // Toggle animation when isblack changes
+  }, [isblack]);
 
   useRandomInterval(
     () => {
@@ -84,7 +84,7 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
 
   return (
     <S.Container
-      isBlack={isBlack}
+      isblack={isblack && "true"}
       style={{
         opacity: visible ? 1 : 0, // Control visibility based on the `visible` prop
       }}

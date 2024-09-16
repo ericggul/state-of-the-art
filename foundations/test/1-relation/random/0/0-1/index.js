@@ -33,14 +33,14 @@ export default function Layer1({ newEmbeddings }) {
     [windowWidth, wordInterval, wordLength, windowHeight, randomOffsets]
   );
 
-  const [isBlack, setIsBlack] = useState(true);
+  const [isblack, setIsblack] = useState(true);
 
   const [radialIdx, setRadialIdx] = useState(0.6);
-  useRandomInterval(() => !isBlack && setRadialIdx(getRandom(0.2, 1.4)), 1, 10);
+  useRandomInterval(() => !isblack && setRadialIdx(getRandom(0.2, 1.4)), 1, 10);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsBlack((b) => !b);
+      setIsblack((b) => !b);
       setRadialIdx((i) => (i !== 0.6 ? 0.6 : getRandom(0.2, 1.4)));
     }, 2000);
 
@@ -50,8 +50,8 @@ export default function Layer1({ newEmbeddings }) {
   return (
     <S.Container
       style={{
-        background: isBlack ? "black" : "white",
-        color: isBlack ? "white" : "black",
+        background: isblack ? "black" : "white",
+        color: isblack ? "white" : "black",
       }}
     >
       {tokens.map((token, i) => (
@@ -75,7 +75,7 @@ export default function Layer1({ newEmbeddings }) {
                 j={j}
                 yMargin={yMargin}
                 radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx}
-                isBlack={isBlack}
+                isblack={isblack}
                 wordPosCalc={wordPosCalc}
                 similarityMatrix={similarityMatrix}
                 key={`${i}-${j}`}
@@ -88,7 +88,7 @@ export default function Layer1({ newEmbeddings }) {
   );
 }
 
-function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, isBlack }) {
+function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, isblack }) {
   // Function to create an arc path between two points
   const createArcPath = (x1, y1, x2, y2, dir = 1) => {
     const radius = Math.abs(x2 - x1) / 2;
@@ -99,14 +99,14 @@ function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, 
   };
 
   const [dir, setDir] = useState(Math.random() < 0.5 ? 1 : 0);
-  useRandomInterval(() => !isBlack && setDir(Math.random() < 0.5 ? 1 : 0), 10, 1000);
+  useRandomInterval(() => !isblack && setDir(Math.random() < 0.5 ? 1 : 0), 10, 1000);
 
   return (
     <g key={`arc-group-${i}-${j}`}>
       <path
         key={`arc-${i}-${j}`}
         d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], dir)}
-        stroke={isBlack ? "white" : "black"}
+        stroke={isblack ? "white" : "black"}
         fill="none"
         strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 3 * 2.0 + 0.2 : 0}
       />
