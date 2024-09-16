@@ -9,8 +9,8 @@ export default function usePosCalc({ tokens, logProbs, isAnimating }) {
 
   const generatePositions = () => {
     return tokens.map((token, idx) => {
-      const x = getRandom(0, 1.0) * windowWidth;
-      const y = getRandom(0.4, 0.6) * windowHeight;
+      const x = getRandom(0.3, 0.7) * windowWidth;
+      const y = getRandom(0.3, 0.7) * windowHeight;
 
       const subPositions = logProbs[idx].top_logprobs.map(() => ({
         x: x + getRandom(-10, 10),

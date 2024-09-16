@@ -50,16 +50,16 @@ export default function Layer3({ newResponse }) {
       const time = Date.now();
       timeRef.current = time;
 
-      const x1 = getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
-      const x2 = getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX2Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
-      const y1 = getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
-      const y2 = getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY2Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
+      const x1 = getRandom(-4, 5);
+      const x2 = getRandom(-4, 5);
+      const y1 = getRandom(-7, 7);
+      const y2 = getRandom(-7, 7);
 
       setBezierParams((prevParams) => ({
         controlX1Factor: x1,
-        controlX2Factor: 1 - x1,
+        controlX2Factor: x2,
         controlY1Factor: y1,
-        controlY2Factor: y1,
+        controlY2Factor: y2,
       }));
 
       if (isblack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);

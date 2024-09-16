@@ -59,7 +59,7 @@ export default function Layer3({ newResponse }) {
         controlX1Factor: x1,
         controlX2Factor: 1 - x1,
         controlY1Factor: y1,
-        controlY2Factor: y1,
+        controlY2Factor: y2,
       }));
 
       if (isblack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
