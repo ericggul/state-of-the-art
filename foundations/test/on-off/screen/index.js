@@ -6,7 +6,7 @@ import useSocket from "@/utils/socket/on-off/useSocketScreen";
 import dynamic from "next/dynamic";
 import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
 
-const Yakitori4 = dynamic(() => import("@/foundations/test/yakitori/0/0-4"));
+const Yakitori4 = dynamic(() => import("@/foundations/test-frontend/yakitori/0/0-4"));
 const Random26 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-6"));
 
 export default function El() {

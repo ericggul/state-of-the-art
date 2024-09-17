@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import useResize from "@/utils/hooks/useResize";
 import * as Tone from "tone";
 
-import GridTest from "@/foundations/test/propagation/2/2-4";
+import GridTest from "@/foundations/test/3-output/propagation/2/2-4";
 
 export default function Propagation({ propagations, setPropagations, latestPropagation, layerIdx }) {
   const storedPropagationsRef = useRef([]);

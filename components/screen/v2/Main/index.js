@@ -13,7 +13,7 @@ const Layer1 = dynamic(() => import("@/foundations/test/1-relation/anim/0/0-1"))
 const Layer2 = dynamic(() => import("@/foundations/test/1-relation/anim/2/2-1"));
 const Layer3 = dynamic(() => import("@/foundations/test/3-output/anim/1/1-1"));
 
-const Yakitori = dynamic(() => import("@/foundations/test/yakitori/0"));
+const Yakitori = dynamic(() => import("@/foundations/test-frontend/yakitori/0"));
 
 export default function Main({ layerIdx, layersExpanded, latestPropagation, newResponse, newEmbeddings }) {
   // useTone({ layerExpanded });

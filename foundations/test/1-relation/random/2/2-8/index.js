@@ -7,7 +7,7 @@ import SingleRandom from "./SingleRandom";
 
 import dynamic from "next/dynamic";
 
-const Yakitori4 = dynamic(() => import("@/foundations/test/yakitori/0/0-4"));
+const Yakitori4 = dynamic(() => import("@/foundations/test-frontend/yakitori/0/0-4"));
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
