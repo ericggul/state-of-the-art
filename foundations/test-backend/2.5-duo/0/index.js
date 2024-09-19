@@ -3,11 +3,21 @@ import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
 import useAudio from "./useAudio";
+import useConversation from "./useConversation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   const [isblack, setIsblack] = useState(false);
+
+  const [conversations, setConversations] = useState([]);
+  const [inputEmbeddings, setInputEmbeddings] = useState([]);
+  const [outputEmbeddings, setOutputEmbeddings] = useState([]);
+
+  useConversation({
+    conversations,
+    setConversations,
+  });
 
   useRandomInterval(
     () => {

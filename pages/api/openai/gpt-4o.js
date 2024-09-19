@@ -11,6 +11,7 @@ export default async function handler(req, res) {
   const text = req.body.text;
   const params = req.body.params;
 
+  console.log("15", text);
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
