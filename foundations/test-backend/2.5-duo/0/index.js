@@ -11,21 +11,24 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
   const [isblack, setIsblack] = useState(false);
 
   const [conversations, setConversations] = useState([]);
-  const [inputEmbeddings, setInputEmbeddings] = useState([]);
-  const [outputEmbeddings, setOutputEmbeddings] = useState([]);
+  const [embeddings, setEmbeddings] = useState([]);
 
   useConversation({
     conversations,
     setConversations,
+    setEmbeddings,
+    setIsblack,
   });
 
-  useRandomInterval(
-    () => {
-      setIsblack((prev) => !prev);
-    },
-    2000,
-    7000
-  );
+  console.log(conversations, embeddings);
+
+  // useRandomInterval(
+  //   () => {
+  //     setIsblack((prev) => !prev);
+  //   },
+  //   2000,
+  //   7000
+  // );
 
   useAudio({ isblack });
 
