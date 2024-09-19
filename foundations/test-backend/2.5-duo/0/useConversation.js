@@ -31,7 +31,6 @@ export default function useConversation({ conversations, setConversations, setEm
         throw new Error("No response data or message content");
       }
 
-      console.log(response.data);
       setConversations((prev) => [...prev, response.data]);
 
       // Extract tokens from response
@@ -51,8 +50,6 @@ export default function useConversation({ conversations, setConversations, setEm
     setGetNewText(true);
   }
 
-  console.log(conversations);
-
   async function fetchEmbedding({ tokens }) {
     if (!tokens || tokens.length === 0) return;
 
@@ -69,7 +66,6 @@ export default function useConversation({ conversations, setConversations, setEm
         tokens,
       };
 
-      console.log("Embeddings Result:", result);
       setEmbeddings((ebd) => [...ebd, result]);
       setIsblack(false);
 
@@ -107,7 +103,6 @@ export default function useConversation({ conversations, setConversations, setEm
           const embedding = response.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
           embeddingsCache.current[token] = embedding;
           embeddings[token] = embedding;
-          console.log(embeddings);
         });
 
         await Promise.all(promises);
@@ -130,8 +125,6 @@ export default function useConversation({ conversations, setConversations, setEm
           embeddings[token] = embeddingsCache.current[token];
         }
       }
-
-      console.log(embeddings);
       return embeddings;
     } catch (e) {
       console.error("Failed to fetch embeddings for tokens:", e);

@@ -7,8 +7,10 @@ import useConversation from "./useConversation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
-  const [isblack, setIsblack] = useState(false);
+import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
+
+export default function Wrapper() {
+  const [isblack, setIsblack] = useState(true);
 
   const [conversations, setConversations] = useState([]);
   const [embeddings, setEmbeddings] = useState([]);
@@ -20,15 +22,18 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
     setIsblack,
   });
 
-  console.log(conversations, embeddings);
+  const [inputEmbeddings, setInputEmbeddings] = useState(INPUT_EMBEDDINGS);
+  const [outputEmbeddings, setOutputEmbeddings] = useState(OUTPUT_EMBEDDINGS);
 
-  // useRandomInterval(
-  //   () => {
-  //     setIsblack((prev) => !prev);
-  //   },
-  //   2000,
-  //   7000
-  // );
+  useEffect(() => {
+    if (!isblack) {
+      //input: 2nd last element
+      const inputEmbeddings = embeddings[embeddings.length - 2] || INPUT_EMBEDDINGS;
+      const outputEmbeddings = embeddings[embeddings.length - 1] || OUTPUT_EMBEDDINGS;
+      setInputEmbeddings(inputEmbeddings);
+      setOutputEmbeddings(outputEmbeddings);
+    }
+  }, [isblack, embeddings]);
 
   useAudio({ isblack });
 
@@ -38,10 +43,10 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
         background: isblack ? "black" : "white",
       }}
     >
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.2, 0.8], y: [0.2, 0.8] }} visible={isblack} />
-      <SingleRandom newInputEmbeddings={newInputEmbeddings} newOutputEmbeddings={newOutputEmbeddings} isblack={isblack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isblack} />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack} />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.2, 0.8], y: [0.2, 0.8] }} visible={isblack} />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isblack} />
     </S.Container>
   );
 }
