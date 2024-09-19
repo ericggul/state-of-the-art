@@ -9,6 +9,7 @@ import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/
 
 const Embeddings00 = dynamic(() => import("@/foundations/test-backend/0-embeddings/0"));
 const Embeddings250 = dynamic(() => import("@/foundations/test-backend/2.5-duo/0"));
+const Embeddings25Store = dynamic(() => import("@/foundations/test-backend/2.5-duo/store"));
 
 export default function RelationPage() {
   const { idx } = useParams();
@@ -18,6 +19,7 @@ export default function RelationPage() {
       {idx == "0-0" && <Embeddings00 newEmbeddings={TEST_EMBEDDINGS} />}
 
       {idx == "2.5-0" && <Embeddings250 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2.5-" && <Embeddings25Store newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
     </>
   );
 }
