@@ -2,7 +2,6 @@
 "use client";
 
 import { useMemo, useState, Suspense } from "react";
-import * as S from "./styles";
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, Stars } from "@react-three/drei";

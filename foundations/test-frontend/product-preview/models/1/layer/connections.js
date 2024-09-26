@@ -43,12 +43,10 @@ function SingleConnection({ layerFrom, layerTo, expanded }) {
             const toXPos = toXInterval * toI - ((toXCount - 1) * toXInterval) / 2 + layerTo.position[0];
             const toYPos = toYInterval * toJ - ((toYCount - 1) * toYInterval) / 2 + layerTo.position[1];
 
-            if (Math.random() < 0.3) {
-              temp.push({
-                from: [fromXPos, fromYPos, layerFrom.position[2]],
-                to: [toXPos, toYPos, layerTo.position[2]],
-              });
-            }
+            temp.push({
+              from: [fromXPos, fromYPos, layerFrom.position[2]],
+              to: [toXPos, toYPos, layerTo.position[2]],
+            });
           }
         }
       }

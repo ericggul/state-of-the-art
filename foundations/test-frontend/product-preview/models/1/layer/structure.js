@@ -5,7 +5,7 @@ const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 export const generateStructure = (layerCount = 17) => {
   const structure = [];
-  const colorVariations = ["blue"];
+  const colorVariations = ["hsl(240, 100%, 50%)", "blue"];
 
   for (let i = 0; i < layerCount; i++) {
     const positionZ = 10 * (i - (layerCount - 1) / 2);
