@@ -1,11 +1,9 @@
-"use client";
-
-import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, Instances, Instance } from "@react-three/drei";
 import { useSpring, animated } from "@react-spring/three";
 import { useState, useMemo, Suspense } from "react";
 import { Perf } from "r3f-perf";
+import { EffectComposer, Bloom } from "@react-three/postprocessing"; // Import Bloom
 
 // AlexNet structure definition
 const STRUCTURE = [
@@ -34,50 +32,53 @@ const COLORS = [
 // Main component to render the neural network
 export default function NN3D() {
   return (
-    <S.Container>
-      <Canvas
-        camera={{
-          position: [40, 30, 50],
-          fov: 50,
-          near: 0.1,
-          far: 5000,
-        }}
-      >
-        <Perf position="top-left" />
-        <Suspense fallback={null}>
-          <Environment preset="warehouse" />
-        </Suspense>
-        <pointLight position={[10, 10, 10]} />
-        <directionalLight position={[0, 10, 10]} intensity={2} />
-        <directionalLight position={[10, 0, 10]} intensity={2} />
-        <ambientLight intensity={0.5} />
+    <Canvas
+      camera={{
+        position: [40, 30, 50],
+        fov: 50,
+        near: 0.1,
+        far: 5000,
+      }}
+    >
+      <Perf position="top-left" />
+      <Suspense fallback={null}>
+        <Environment preset="warehouse" />
+      </Suspense>
+      <pointLight position={[10, 10, 10]} />
+      <directionalLight position={[0, 10, 10]} intensity={2} />
+      <directionalLight position={[10, 0, 10]} intensity={2} />
+      <ambientLight intensity={0.5} />
 
-        {STRUCTURE.map(({ dimensions, type, zSpan }, i) => (
-          <Layer
-            key={i}
-            position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 60]}
-            unexpandedNode={{
-              size: [dimensions[0], dimensions[1], dimensions[2] * 0.1],
-              wireframeDivision: 1,
-            }}
-            node={{
-              size: [dimensions[0] * 0.5, dimensions[1] * 0.5, 1],
-              wireframeDivision: 1,
-            }}
-            grid={{
-              xCount: zSpan[0],
-              yCount: zSpan[1],
-              xInterval: dimensions[0] * 0.55,
-              yInterval: dimensions[1] * 0.55,
-            }}
-            type={type}
-            color={COLORS.find((c) => c.type === type)?.color || "white"}
-          />
-        ))}
+      {STRUCTURE.map(({ dimensions, type, zSpan }, i) => (
+        <Layer
+          key={i}
+          position={[0, 0, (i - (STRUCTURE.length - 1) / 2) * 60]}
+          unexpandedNode={{
+            size: [dimensions[0], dimensions[1], dimensions[2] * 0.1],
+            wireframeDivision: 1,
+          }}
+          node={{
+            size: [dimensions[0] * 0.5, dimensions[1] * 0.5, 1],
+            wireframeDivision: 1,
+          }}
+          grid={{
+            xCount: zSpan[0],
+            yCount: zSpan[1],
+            xInterval: dimensions[0] * 0.55,
+            yInterval: dimensions[1] * 0.55,
+          }}
+          type={type}
+          color={COLORS.find((c) => c.type === type)?.color || "white"}
+        />
+      ))}
 
-        <OrbitControls />
-      </Canvas>
-    </S.Container>
+      <OrbitControls />
+
+      {/* Add Bloom postprocessing effect */}
+      <EffectComposer>
+        <Bloom intensity={3} luminanceThreshold={0.4} luminanceSmoothing={0.9} />
+      </EffectComposer>
+    </Canvas>
   );
 }
 
@@ -141,21 +142,5 @@ const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, node, smoothedEx
         <Instance key={i} position={position} />
       ))}
     </Instances>
-  );
-};
-
-// Component to render connections between nodes
-const Connection = ({ from, to }) => {
-  const start = new THREE.Vector3(...from);
-  const end = new THREE.Vector3(...to);
-  const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
-
-  const ref = useMemo(() => new THREE.BufferGeometry(), [start, end]);
-  ref.setFromPoints([start, mid, end]);
-
-  return (
-    <line geometry={ref}>
-      <lineBasicMaterial color={"white"} linewidth={2} linecap="round" linejoin="round" />
-    </line>
   );
 };

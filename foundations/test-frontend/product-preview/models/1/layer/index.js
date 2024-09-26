@@ -90,7 +90,15 @@ const Node = ({ position, size, color, opacity = 0.4, scale }) => {
   return (
     <mesh position={position} scale={scale}>
       <boxGeometry args={[...size]} />
-      <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} opacity={opacity} transparent={true} />
+      <meshStandardMaterial
+        color={color}
+        roughness={0.2}
+        metalness={0.9}
+        opacity={opacity}
+        transparent={true}
+        depthWrite={false} // Ensure no depth issues
+        depthTest={false}
+      />
     </mesh>
   );
 };
