@@ -51,7 +51,7 @@ export default function useConversation({ conversations, setConversations, setEm
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 1500));
     hasFetchedText.current = false;
     setGetNewText(true);
   }

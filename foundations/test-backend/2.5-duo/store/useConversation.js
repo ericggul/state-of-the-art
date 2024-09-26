@@ -19,6 +19,7 @@ export default function useConversation({ conversations, setConversations, setEm
   }, [getNewText]);
 
   async function fetchText(conversations) {
+    console.log(conversations, conversations.map((el) => el.message.content).join(" "));
     try {
       const text =
         conversations.length < 6
@@ -51,7 +52,7 @@ export default function useConversation({ conversations, setConversations, setEm
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 3000));
     hasFetchedText.current = false;
     setGetNewText(true);
   }
