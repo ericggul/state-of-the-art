@@ -12,8 +12,8 @@ import { Perf } from "r3f-perf";
 
 import SingleLayer from "./layer";
 
-const INTERVAL = 25;
-const Y_LEN = 7;
+const INTERVAL = 20;
+const Y_LEN = 5;
 
 // Main component to render the neural network
 export default function ProductPreview({ enableDeviceControls = true }) {
@@ -22,14 +22,14 @@ export default function ProductPreview({ enableDeviceControls = true }) {
   return (
     <Canvas
       camera={{
-        position: [-60, 0, focalZPos],
+        position: [120, 60, 80],
         fov: 50,
         near: 0.1,
         far: 1000,
       }}
     >
       <CameraLookAt focalZPos={focalZPos} />
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
 
       <Suspense fallback={null}>
         <Environment preset="city" />

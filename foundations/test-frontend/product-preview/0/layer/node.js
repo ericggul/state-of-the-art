@@ -41,8 +41,10 @@ const Node = ({ position, size, scale, opacity = 0.5 }) => {
     () => (
       <gradientMaterial
         attach="material"
-        transparent={true} // Enable transparency
-        opacity={opacity} // Pass the opacity to the shader
+        transparent={true}
+        opacity={opacity}
+        depthWrite={false} // Ensure no depth issues
+        depthTest={false}
       />
     ),
     [opacity]

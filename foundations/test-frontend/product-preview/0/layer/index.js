@@ -81,7 +81,12 @@ const Layer = (props) => {
 
       {smoothedExpanded < 1 && (
         <>
-          <Node {...props.unexpandedNode} color={props.color} position={[0, 0, 0]} scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]} />
+          <Node
+            {...props.unexpandedNode}
+            color={props.color}
+            position={[0, 0, 0]}
+            scale={[Math.max(0.01, 1 - smoothedExpanded), Math.max(0.01, 1 - smoothedExpanded), Math.max(0.01, 1 - smoothedExpanded)]}
+          />
         </>
       )}
     </group>
