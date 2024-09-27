@@ -1,7 +1,7 @@
 import Script from "next/script";
 import StyledComponentsRegistry from "@/lib/registry";
 
-import { Fira_Code, Fira_Mono, Fira_Sans } from "next/font/google";
+import { Fira_Code, Fira_Mono, Fira_Sans, Cardo } from "next/font/google";
 
 export const metadata = {
   title: "KAIST Museum Opening Exhibition",
@@ -51,10 +51,19 @@ export const firaSans = Fira_Sans({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
+export const cardo = Cardo({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--cardo",
+  //400, 700 & italic
+  weight: ["400", "700"],
+  style: ["italic"],
+});
+
 export default function RootLayout({ children }) {
   return (
     <>
-      <html lang="en" className={`${firaCode.variable} ${firaMono.variable} ${firaSans.variable}`}>
+      <html lang="en" className={`${firaCode.variable} ${firaMono.variable} ${firaSans.variable} ${cardo.variable}`}>
         <body suppressHydrationWarning={true}>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </body>

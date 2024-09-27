@@ -8,6 +8,7 @@ import { OrbitControls, Environment, Stars } from "@react-three/drei";
 import DeviceOrientationControls from "@/foundations/test-frontend/yakitori/0/utils/device-orientation-controls";
 
 import { Perf } from "r3f-perf";
+import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 
 import SingleLayer from "./layer";
 
@@ -54,6 +55,8 @@ export default function ProductPreview({ enableDeviceControls = true }) {
       // autoRotate
       />
       {enableDeviceControls && <DeviceOrientationControls />}
+
+      {/* Add Bloom postprocessing effect */}
     </Canvas>
   );
 }

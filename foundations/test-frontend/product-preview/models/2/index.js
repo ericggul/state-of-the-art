@@ -40,7 +40,7 @@ export default function NN3D() {
         far: 5000,
       }}
     >
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
       <Suspense fallback={null}>
         <Environment preset="warehouse" />
       </Suspense>

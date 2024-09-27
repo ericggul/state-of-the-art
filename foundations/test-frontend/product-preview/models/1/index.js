@@ -31,7 +31,7 @@ export default function Yakitori({ enableDeviceControls = true }) {
       }}
     >
       <CameraLookAt structure={structure} />
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
 
       <Suspense fallback={null}>
         <Environment preset="city" />
