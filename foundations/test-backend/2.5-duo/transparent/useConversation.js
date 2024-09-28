@@ -19,7 +19,6 @@ export default function useConversation({ conversations, setConversations, setEm
   }, [getNewText]);
 
   async function fetchText(conversations) {
-    console.log(conversations, conversations.map((el) => el.message.content).join(" "));
     try {
       const text =
         conversations.length < 6
