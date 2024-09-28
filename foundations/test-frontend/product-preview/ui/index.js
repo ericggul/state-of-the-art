@@ -10,7 +10,7 @@ import { TEST_MODELS } from "./constant";
 
 // Main component to render the neural network
 export default function ProductPreview({ enableDeviceControls = true }) {
-  const [modelIdx, setModelIdx] = useState(0);
+  const [modelIdx, setModelIdx] = useState(1);
 
   return (
     <S.Container>
@@ -28,7 +28,7 @@ function UI({ data }) {
       <S.BottomLeft>
         <S.Title>{data.name.header + " "}</S.Title>
         <S.TitleRight>
-          {data.name.fullName && <S.TRTop>{data.name.fullName}</S.TRTop>}
+          <S.TRTop>{data.name.fullName || " "}</S.TRTop>
           <S.TRBottom>{`v${data.version}`}</S.TRBottom>
         </S.TitleRight>
       </S.BottomLeft>
@@ -36,7 +36,7 @@ function UI({ data }) {
         <S.Row>{data.year}</S.Row>
         <S.Row>{data.createdFrom}</S.Row>
         <S.Row>
-          {data.citation} <p>Citation</p>
+          {data.citation} <span>Citations</span>
         </S.Row>
         <S.Row>
           <p>{data.description}</p>

@@ -11,7 +11,7 @@ export const TEST_MODELS = [
   },
   {
     name: {
-      header: "VGGNet",
+      header: "VGG",
       fullName: "Visual Geometry Group Network",
     },
     version: "2.0",
