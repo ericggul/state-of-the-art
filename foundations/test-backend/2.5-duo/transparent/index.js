@@ -37,6 +37,15 @@ export default function Wrapper() {
 
   useAudio({ isblack });
 
+  useEffect(() => {
+    document.body.style.background = "transparent";
+
+    // Clean up the style on component unmount
+    return () => {
+      document.body.style.background = "";
+    };
+  }, []);
+
   return (
     <S.Container
       style={{

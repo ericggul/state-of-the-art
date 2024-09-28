@@ -10,7 +10,6 @@ export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
 
-
   font-size: 1vw;
   color: #fff;
 
