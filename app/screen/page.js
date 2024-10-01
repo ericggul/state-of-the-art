@@ -1,19 +1,23 @@
+"use client";
+
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-const Mobile = dynamic(() => import("@/components/frontend/mobile"));
+const Frontend = dynamic(() => import("@/components/frontend/screen"));
+const Backend = dynamic(() => import("@/components/backend/screen"));
 
-export default function MobileWrapper() {
+export default function ScreenWrapper() {
   return (
     <Suspense>
-      <Mobile />
+      <Screen />
     </Suspense>
   );
 }
 
-function Mobile() {
+function Screen() {
   return (
     <>
-      <Mobile />
+      <Frontend />
     </>
   );
 }
