@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
   const { messages, iteration } = req.body;
 
   // Define the system message to maintain context and tone

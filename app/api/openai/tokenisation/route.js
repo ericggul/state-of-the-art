@@ -1,10 +1,11 @@
-import { get_encoding, encoding_for_model } from "tiktoken";
+import { encoding_for_model } from "tiktoken";
 
-export default function handler(req, res) {
+export async function POST(req) {
   // const encoding = get_encoding("cl100k_base");
   const encoding = encoding_for_model("gpt-4-0125-preview");
+  const { text } = await req.json();
   // const encoding = get_encoding("gpt4");
-  const tokens = encoding.encode(req.body.text);
+  const tokens = encoding.encode(text);
 
   let decodedArr = [];
   tokens.forEach((token) => {
@@ -14,5 +15,5 @@ export default function handler(req, res) {
 
   encoding.free();
 
-  res.status(200).json({ decodedArr });
+  return Response.json({ decodedArr });
 }
