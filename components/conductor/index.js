@@ -40,7 +40,7 @@ export default function Conductor() {
 
 async function getGptResponse({ data, socket }) {
   try {
-    const response = await axios.post("/api/openai/gpt-4o", {
+    const response = await axios.post("/api/openai/gpt-4o-poem", {
       text: data.text,
       params: {
         frequency_penalty: parseFloat(data.params.frequency_penalty),

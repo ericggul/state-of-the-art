@@ -19,6 +19,7 @@
     "d3-force": "^3.0.0",
     "d3-force-boundary": "^0.0.3",
     "leva": "^0.9.35",
+    "microsoft-cognitiveservices-speech-sdk": "^1.40.0",
     "next": "14.2.4",
     "next-transpile-modules": "^10.0.1",
     "openai": "^4.52.4",
@@ -37,7 +38,8 @@
     "tone": "^15.0.4",
     "tweakpane": "^4.0.4",
     "umap-js": "^1.4.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "typescript": "5.5.2"

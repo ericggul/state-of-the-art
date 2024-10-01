@@ -30,7 +30,7 @@ export default function useConversation({ conversations, setConversations, setEm
               .slice(-6);
       setGetNewText(false);
 
-      const response = await axios.post("/api/openai/gpt-4o", {
+      const response = await axios.post("/api/openai/gpt-4o-poem", {
         text,
       });
 
