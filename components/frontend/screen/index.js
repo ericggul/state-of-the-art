@@ -5,7 +5,7 @@ import * as S from "./styles";
 import Avatar from "./avatar";
 import Architecture from "./architecture";
 
-export default function ScreenBackend() {
+export default function ScreenFrontend() {
   return (
     <>
       <S.Container>
