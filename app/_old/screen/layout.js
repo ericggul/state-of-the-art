@@ -1,5 +1,9 @@
 export const metadata = {
-  title: "Mobile | ",
+  title: "Screen | ",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+  },
   robots: {
     index: true,
     follow: true,

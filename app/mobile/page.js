@@ -1,12 +1,7 @@
-"use client";
-
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-import { Suspense, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-
-const Mobile0 = dynamic(() => import("@/components/mobile/v0"));
-const Mobile2 = dynamic(() => import("@/components/mobile/v2"));
+const MobileEl = dynamic(() => import("@/components/frontend/mobile"));
 
 export default function MobileWrapper() {
   return (
@@ -17,13 +12,9 @@ export default function MobileWrapper() {
 }
 
 function Mobile() {
-  const searchParams = useSearchParams();
-  const versionIdx = searchParams.get("v") || 0;
-
   return (
     <>
-      {versionIdx === "0" && <Mobile0 />}
-      {versionIdx === "2" && <Mobile2 />}
+      <MobileEl />
     </>
   );
 }

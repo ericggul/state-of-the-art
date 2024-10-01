@@ -1,39 +1,19 @@
-"use client";
+import dynamic from "next/dynamic";
 
-import ScreenEl from "@/components/screen";
-import Conductor from "@/components/conductor";
+const Mobile = dynamic(() => import("@/components/frontend/mobile"));
 
-import { Suspense, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-
-export default function ScreenWrapper() {
+export default function MobileWrapper() {
   return (
     <Suspense>
-      <Screen />
+      <Mobile />
     </Suspense>
   );
 }
 
-function Screen() {
-  const searchParams = useSearchParams();
-
-  const layerIdx = searchParams.get("layerIdx");
-  const versionIdx = searchParams.get("v") || 0;
-
-  const isConductor = useMemo(() => layerIdx == "0", [layerIdx]);
-
-  useEffect(() => {
-    if (layerIdx !== null) {
-      document.title = `Screen ${layerIdx} | `;
-    } else {
-      document.title = "Screen | ";
-    }
-  }, [layerIdx]);
-
+function Mobile() {
   return (
     <>
-      <ScreenEl layerIdx={layerIdx} versionIdx={versionIdx} />
-      {isConductor && <Conductor />}
+      <Mobile />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { LAYER_NUMBER, TRAINING_INTERVAL } from "@/components/conductor/propagation";
+import { LAYER_NUMBER, TRAINING_INTERVAL } from "@/components/old/conductor/propagation";
 
 import { useState, useEffect, useRef } from "react";
 
