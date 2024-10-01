@@ -2,10 +2,9 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { PassThrough } from "stream";
 
 export async function GET(req) {
-  // WARNING: Do not expose your keys
-  // WARNING: If you host publicly your project, add an authentication layer to limit the consumption of Azure resources
+  console.log(req);
 
-  const speechConfig = sdk.SpeechConfig.fromSubscription(process.env["SPEECH_KEY"], process.env["SPEECH_REGION"]);
+  const speechConfig = sdk.SpeechConfig.fromSubscription(process.env["AZURE_SPEECH_KEY"], process.env["AZURE_SPEECH_REGION"]);
 
   // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
   const teacher = req.nextUrl.searchParams.get("teacher") || "Nanami";
