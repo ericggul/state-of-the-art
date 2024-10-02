@@ -115,6 +115,7 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
         style={{
           opacity: isblack ? 0 : 1,
           transition: "opacity 0.5s",
+          transitionDelay: ".1s",
         }}
       >
         {inputTokens.map((token, i) => (

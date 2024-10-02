@@ -33,7 +33,6 @@ export default function Wrapper() {
       const outputEmbeddings = embeddings[embeddings.length - 1] || OUTPUT_EMBEDDINGS;
       setInputEmbeddings(inputEmbeddings);
       setOutputEmbeddings(outputEmbeddings);
-      console.log(inputEmbeddings, outputEmbeddings);
       setLength(inputEmbeddings.tokens.length + outputEmbeddings.tokens.length);
     }
   }, [isblack, embeddings]);
@@ -46,6 +45,14 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 12}
+        timeUnit={1}
+      />
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}

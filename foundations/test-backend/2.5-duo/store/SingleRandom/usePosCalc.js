@@ -16,7 +16,7 @@ export default function usePosCalc({ tokens, isAnimating, range, timeUnit, type 
 
   const [tokenPositions, setTokenPositions] = useState([]);
 
-  // Memoized position generator
+  // Memoized position generatorx
   const generatePositions = useCallback(() => {
     return tokens.map(() => ({
       x: getRandom(range.x[0], range.x[1]) * windowWidth,

@@ -24,6 +24,7 @@ export default function Wrapper() {
 
   const [inputEmbeddings, setInputEmbeddings] = useState(INPUT_EMBEDDINGS);
   const [outputEmbeddings, setOutputEmbeddings] = useState(OUTPUT_EMBEDDINGS);
+  const [length, setLength] = useState(10);
 
   useEffect(() => {
     if (!isblack) {
@@ -32,6 +33,7 @@ export default function Wrapper() {
       const outputEmbeddings = embeddings[embeddings.length - 1] || OUTPUT_EMBEDDINGS;
       setInputEmbeddings(inputEmbeddings);
       setOutputEmbeddings(outputEmbeddings);
+      setLength(inputEmbeddings.tokens.length + outputEmbeddings.tokens.length);
     }
   }, [isblack, embeddings]);
 
@@ -40,7 +42,6 @@ export default function Wrapper() {
   useEffect(() => {
     document.body.style.background = "transparent";
 
-    // Clean up the style on component unmount
     return () => {
       document.body.style.background = "";
     };
@@ -49,15 +50,35 @@ export default function Wrapper() {
   return (
     <S.Container
       style={{
-        // background: isblack ? "black" : "white",
         background: "transparent",
       }}
     >
-      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.2, 0.8], y: [0.2, 0.8] }} visible={isblack} timeUnit={1.5} />
-      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack} timeUnit={1} />
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 15}
+        timeUnit={1}
+      />
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 20}
+        timeUnit={1}
+      />
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 28}
+        timeUnit={1}
+      />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack && length <= 38} timeUnit={1} />
       <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} timeUnit={1} />
-
-      {/* <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isblack} /> */}
     </S.Container>
   );
 }
