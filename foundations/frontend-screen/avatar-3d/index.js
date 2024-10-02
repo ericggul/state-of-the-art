@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Model from "./model";
-import Background from "./background2";
+import Background from "./background/index2";
 
 export default function ThreeEl() {
   return (
