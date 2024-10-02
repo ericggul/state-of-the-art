@@ -17,7 +17,6 @@ export default function El() {
   const socket = useSocket({ mobileId, requestVisibilityCheckFromSocketInit: setRequestVisibilityCheck });
 
   const isTabVisible = useVisibilityCheck({ socket, mobileId, requestVisibilityCheck, setRequestVisibilityCheck });
-  console.log("is tab visible", isTabVisible);
 
   return <S.Container></S.Container>;
 }

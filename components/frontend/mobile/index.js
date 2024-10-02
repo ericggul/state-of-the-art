@@ -2,6 +2,8 @@
 
 import * as S from "./styles";
 
+import { DUMMY_CONVERSATION } from "./constant";
+
 export default function Mobile() {
   return (
     <>
