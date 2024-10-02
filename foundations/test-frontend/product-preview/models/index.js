@@ -11,7 +11,7 @@ export default function Model() {
 
   return (
     <>
-      {idx === "0" && <Model0 enableDeviceControls={false} />}
+      {(idx === "0" || !idx) && <Model0 enableDeviceControls={false} />}
       {idx === "1" && <Model1 enableDeviceControls={false} />}
       {idx === "2" && <Model2 enableDeviceControls={false} />}
     </>

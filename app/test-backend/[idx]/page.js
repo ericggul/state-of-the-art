@@ -19,9 +19,9 @@ export default function RelationPage() {
     <>
       {idx == "0-0" && <Embeddings00 newEmbeddings={TEST_EMBEDDINGS} />}
 
-      {idx == "2.5-0" && <Embeddings250 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
-      {idx == "2.5-" && <Embeddings25Store newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
-      {idx == "2.5-transparent" && <Embeddings25Transparent newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />}
+      {idx == "2.5-0" && <Embeddings250 />}
+      {idx == "2.5-" && <Embeddings25Store />}
+      {idx == "2.5-transparent" && <Embeddings25Transparent />}
     </>
   );
 }

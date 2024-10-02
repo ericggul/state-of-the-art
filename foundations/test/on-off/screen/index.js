@@ -9,6 +9,9 @@ import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/
 const Yakitori4 = dynamic(() => import("@/foundations/test-frontend/yakitori/0/0-4"));
 const Random26 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-6"));
 
+const Preview = dynamic(() => import("@/foundations/test-frontend/product-preview/ui"));
+const Embeddings250 = dynamic(() => import("@/foundations/test-backend/2.5-duo/0"));
+
 export default function El() {
   const socket = useSocket({
     handleNewMobileConnect,
@@ -38,14 +41,14 @@ export default function El() {
           opacity: visible ? 1 : 0,
         }}
       >
-        <Yakitori4 enableDeviceControls={false} />
+        <Preview />
       </S.Container>
       <S.Container
         style={{
           opacity: !visible ? 1 : 0,
         }}
       >
-        <Random26 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />
+        <Embeddings250 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />
       </S.Container>
     </>
   );
