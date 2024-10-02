@@ -6,8 +6,6 @@ export async function POST(req) {
 
   const speechConfig = sdk.SpeechConfig.fromSubscription(process.env["AZURE_SPEECH_KEY"], process.env["AZURE_SPEECH_REGION"]);
 
-  console.log(speechConfig);
-
   // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
   speechConfig.speechSynthesisVoiceName = `en-GB-SoniaNeural`;
 

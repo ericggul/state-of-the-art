@@ -8,7 +8,7 @@ import useViseme from "./utils/useViseme";
 
 import { VISME_TO_MORPHTARGET_MAP } from "./utils/constant";
 
-const AVATAR_URL = "/3d/avatars/avatar-1.glb";
+const AVATAR_URL = "/3d/avatars/avatar-2.glb";
 const ANIMATIONS_URL = "/3d/avatars/animations-2.glb";
 
 const ANIMATION_FADE_TIME = 0.5;
@@ -87,7 +87,6 @@ export default function Model(props) {
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
-        console.log(child.morphTargetDictionary, target);
         const index = child.morphTargetDictionary[target];
         if (index === undefined || child.morphTargetInfluences[index] === undefined) {
           return;
