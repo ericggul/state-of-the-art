@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Mobile | ",
+  title: "Screen | Frontend Backend",
   robots: {
     index: true,
     follow: true,

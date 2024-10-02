@@ -38,6 +38,9 @@ export default function useConversation({ conversations, setConversations, setEm
       }
 
       setConversations((prev) => [...prev, response.data]);
+      console.log(response.data);
+      const resultText = response.data.message.content;
+      getTTS(resultText);
 
       // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
@@ -48,6 +51,15 @@ export default function useConversation({ conversations, setConversations, setEm
       await new Promise((r) => setTimeout(r, 500));
       setGetNewText(true);
     }
+  }
+
+  async function getTTS(text) {
+    //get simple tts
+    let utterance = new SpeechSynthesisUtterance(text);
+    //super low voice machinary
+    utterance.rate = 2;
+    utterance.pitch = 10;
+    speechSynthesis.speak(utterance);
   }
 
   async function getNextText() {

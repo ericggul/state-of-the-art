@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const DUMMY_TEXT = `Splendid! Onto our next masterpiece then, the Multi-Layer Perceptron (MLP). Imagine this as a sophisticated expansion on the humble perceptron, akin to an intricate Baroque sculpture emerging from a simple stone. Introduced in the 1980s, the MLP consists of multiple layers of neurons—input, hidden, and output layers—each interconnected with weighted synapses.
+
+This architecture facilitated the learning of more complex patterns and features through what we call backpropagation—a method for training these deep networks by minimizing errors between predicted and actual outcomes. It's a seminal work of art that paved the way for more profound and intricate structures.
+
+Shall we proceed to the exquisite piece known as the Convolutional Neural Network (CNN), often revered for its prowess in visual artistry, or do you have any questions about the MLP?`;
+
 export default function useViseme() {
   const [tempMessage, setTempMessage] = useState({});
 
@@ -9,7 +15,7 @@ export default function useViseme() {
   }, []);
 
   async function getViseme() {
-    const text = "HELLO WORLD My name is John Doe and I am a software engineer. I hate you so much that I wanna kill you.";
+    const text = DUMMY_TEXT;
 
     const audioRes = await axios.post("/api/azure-tts", { text }, { responseType: "blob" });
 
