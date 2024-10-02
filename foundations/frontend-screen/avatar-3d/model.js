@@ -7,6 +7,30 @@ import axios from "axios";
 
 import { TEST } from "./test";
 
+const VISME_TO_MORPHTARGET_MAP = {
+  0: "viseme_sil", // Silence
+  1: "viseme_aa", // æ, ə, ʌ
+  2: "viseme_aa", // ɑ
+  3: "viseme_O", // ɔ
+  4: "viseme_E", // ɛ, ʊ
+  5: "viseme_RR", // ɝ
+  6: "viseme_I", // j, i, ɪ
+  7: "viseme_U", // w, u
+  8: "viseme_O", // o
+  9: "viseme_O", // aʊ
+  10: "viseme_O", // ɔɪ
+  11: "viseme_aa", // aɪ
+  12: "viseme_E", // h
+  13: "viseme_RR", // ɹ
+  14: "viseme_kk", // l
+  15: "viseme_SS", // s, z
+  16: "viseme_CH", // ʃ, tʃ, dʒ, ʒ
+  17: "viseme_TH", // ð
+  18: "viseme_FF", // f, v
+  19: "viseme_DD", // d, t, n, θ
+  20: "viseme_kk", // k, g, ŋ
+  21: "viseme_PP", // p, b, m
+};
 const AVATAR_URL = "/3d/avatars/avatar-1.glb";
 const ANIMATIONS_URL = "/3d/avatars/animations-2.glb";
 
@@ -22,7 +46,7 @@ export default function Model(props) {
   }, []);
 
   async function getViseme() {
-    const text = "HELLO WORLD My name is John Doe and I am a software engineer";
+    const text = "HELLO WORLD My name is John Doe and I am a software engineer. I hate you so much that I wanna kill you.";
 
     const audioRes = await axios.post("/api/azure-tts", { text }, { responseType: "blob" });
 
@@ -60,10 +84,9 @@ export default function Model(props) {
   }, [scene]);
 
   const { animations } = useGLTF(ANIMATIONS_URL);
-  console.log(animations);
 
   const { actions, mixer } = useAnimations(animations, group);
-  const [animation, setAnimation] = useState("Talking2");
+  const [animation, setAnimation] = useState("Talking4");
 
   useFrame(({ camera }) => {
     // Smile
@@ -76,11 +99,20 @@ export default function Model(props) {
       lerpMorphTarget(i, 0, 0.1); // reset morph targets
     }
 
+    const appliedMorphTargets = [];
+
     if (tempMessage && tempMessage.visemes && tempMessage.audioPlayer) {
+      const currentTime = tempMessage.audioPlayer.currentTime * 1000;
+
       for (let i = tempMessage.visemes.length - 1; i >= 0; i--) {
-        const viseme = tempMessage.visemes[i];
-        if (tempMessage.audioPlayer.currentTime * 1000 >= viseme[0]) {
-          lerpMorphTarget(viseme[1], 1, 0.2);
+        const [visemeTime, visemeId] = tempMessage.visemes[i];
+
+        if (currentTime >= visemeTime) {
+          const targetMorph = VISME_TO_MORPHTARGET_MAP[visemeId];
+          if (targetMorph) {
+            appliedMorphTargets.push(targetMorph);
+            lerpMorphTarget(targetMorph, 1, 0.2);
+          }
           break;
         }
       }
@@ -88,6 +120,14 @@ export default function Model(props) {
         setAnimation((animation) => (animation === "Talking" ? "Talking2" : "Talking")); // Could load more type of animations and randomization here
       }
     }
+
+    //for all the other stuffs set lerpmorphtarget to 0
+    Object.values(VISME_TO_MORPHTARGET_MAP).forEach((value) => {
+      if (appliedMorphTargets.includes(value)) {
+        return;
+      }
+      lerpMorphTarget(value, 0, 0.1);
+    });
   });
 
   //lerph morph target
@@ -95,7 +135,6 @@ export default function Model(props) {
     scene.traverse((child) => {
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
         const index = child.morphTargetDictionary[target];
-
         if (index === undefined || child.morphTargetInfluences[index] === undefined) {
           return;
         }

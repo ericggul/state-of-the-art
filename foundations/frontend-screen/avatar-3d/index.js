@@ -17,10 +17,10 @@ export default function ThreeEl() {
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
-        <ambientLight intensity={3} color="#4169E1" />
+        <ambientLight intensity={3} color="white" />
         <pointLight position={[0, 0, 20]} intensity={3} color="white" />
         <pointLight position={[0, 0, -20]} intensity={3} color="white" />
-        <Model position={[0, -2, 0]} scale={[2, 2, 2]} />
+        <Model position={[0, -3, 0]} scale={[2, 2, 2]} />
         {/* <Background /> */}
         <OrbitControls />
       </Canvas>
