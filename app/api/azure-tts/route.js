@@ -1,29 +1,25 @@
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { PassThrough } from "stream";
 
-export async function GET(req) {
-  console.log(req);
+export async function POST(req) {
+  const { text } = await req.json();
 
   const speechConfig = sdk.SpeechConfig.fromSubscription(process.env["AZURE_SPEECH_KEY"], process.env["AZURE_SPEECH_REGION"]);
 
+  console.log(speechConfig);
+
   // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
-  const teacher = req.nextUrl.searchParams.get("teacher") || "Nanami";
-  speechConfig.speechSynthesisVoiceName = `ja-JP-${teacher}Neural`;
+  speechConfig.speechSynthesisVoiceName = `en-GB-SoniaNeural`;
 
   const speechSynthesizer = new sdk.SpeechSynthesizer(speechConfig);
   const visemes = [];
   speechSynthesizer.visemeReceived = function (s, e) {
-    // console.log(
-    //   "(Viseme), Audio offset: " +
-    //     e.audioOffset / 10000 +
-    //     "ms. Viseme ID: " +
-    //     e.visemeId
-    // );
     visemes.push([e.audioOffset / 10000, e.visemeId]);
   };
+
   const audioStream = await new Promise((resolve, reject) => {
     speechSynthesizer.speakTextAsync(
-      req.nextUrl.searchParams.get("text") || "I'm excited to try text to speech",
+      text,
       (result) => {
         const { audioData } = result;
 
@@ -41,6 +37,7 @@ export async function GET(req) {
       }
     );
   });
+
   const response = new Response(audioStream, {
     headers: {
       "Content-Type": "audio/mpeg",
