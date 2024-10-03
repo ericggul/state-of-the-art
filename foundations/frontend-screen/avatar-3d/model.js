@@ -8,7 +8,7 @@ import useViseme from "./utils/useViseme";
 
 import { VISME_TO_MORPHTARGET_MAP } from "./utils/constant";
 
-const AVATAR_URL = "/3d/avatars/avatar-2.glb";
+const AVATAR_URL = "/3d/avatars/avatar-1.glb";
 const ANIMATIONS_URL = "/3d/avatars/animations-2.glb";
 
 const ANIMATION_FADE_TIME = 0.5;

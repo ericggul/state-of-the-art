@@ -22,12 +22,12 @@ const STRUCTURE = [
 ];
 
 const COLORS = {
-  input: "hsl(240, 100%, 40%)",
-  positional: "hsl(240, 100%, 50%)",
-  attention: "hsl(240, 100%, 60%)",
-  norm: "hsl(240, 100%, 40%)",
-  ffn: "hsl(240, 100%, 50%)",
-  output: "hsl(240, 100%, 60%)",
+  input: "hsl(180, 100%, 40%)",
+  positional: "hsl(180, 100%, 50%)",
+  attention: "hsl(180, 100%, 60%)",
+  norm: "hsl(180, 100%, 40%)",
+  ffn: "hsl(180, 100%, 50%)",
+  output: "hsl(180, 100%, 60%)",
 };
 
 export default function Transformer3D() {
@@ -107,7 +107,8 @@ const Layer = (props) => {
         <div
           style={{
             color: "white",
-            backgroundColor: "rgba(0,0,0,0.7)",
+            backgroundColor: "rgba(0,0,0,0.1)",
+
             padding: "5px",
             borderRadius: "3px",
             fontSize: "12px",
