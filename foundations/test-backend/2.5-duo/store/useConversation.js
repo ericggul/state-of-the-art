@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 
-const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
+const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
   const [isFetching, setIsFetching] = useState(true);
@@ -27,7 +27,7 @@ export default function useConversation({ conversations, setConversations, setEm
 
         console.log("Fetching text:", text);
 
-        const response = await axios.post("/api/openai/gpt-4o-mini", {
+        const response = await axios.post("/api/openai/gpt-4o-poem", {
           text,
         });
 

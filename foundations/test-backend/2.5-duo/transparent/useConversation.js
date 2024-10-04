@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-
-const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
+const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
   const [getNewText, setGetNewText] = useState(true);
