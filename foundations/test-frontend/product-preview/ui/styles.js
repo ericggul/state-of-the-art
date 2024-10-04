@@ -90,3 +90,14 @@ export const BottomRight = styled.div`
 `;
 
 export const Row = styled.div``;
+
+export const TopReverse = styled.div`
+  ${FlexCenterStyle}
+  ${WholeContainer}
+  z-index: 1;
+  background: linear-gradient(black, pink);
+  mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
+
+  pointer-events: none;
+`;

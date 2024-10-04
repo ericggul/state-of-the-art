@@ -1,17 +1,22 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
-  const [isFetching, setIsFetching] = useState(true);
   const embeddingsCache = useRef({});
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    let isMounted = true;
+    isMountedRef.current = true;
+
+    function startFetching() {
+      fetchAndProcessConversation();
+    }
 
     async function fetchAndProcessConversation() {
-      if (!isMounted) return;
+      if (!isMountedRef.current) return;
+
       setIsblack(true);
 
       try {
@@ -35,47 +40,44 @@ export default function useConversation({ conversations, setConversations, setEm
           throw new Error("No response data or message content");
         }
 
-        if (!isMounted) return;
+        if (!isMountedRef.current) return;
 
         setConversations((prev) => [...prev, response.data]);
         const tokens = response.data.logprobs.content.map((el) => el.token);
 
         // Await the embeddings to ensure proper sequencing
-        await fetchEmbedding({ tokens, isMounted });
+        await fetchEmbedding({ tokens });
 
-        if (!isMounted) return;
+        if (!isMountedRef.current) return;
 
         setIsblack(false);
 
         // Wait before fetching the next text
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        if (!isMounted) return;
-
-        setIsFetching(true);
+        setTimeout(() => {
+          if (isMountedRef.current) {
+            fetchAndProcessConversation();
+          }
+        }, 1500);
       } catch (e) {
         console.error(e, "Error fetching conversation");
 
         // Retry after a delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        if (!isMounted) return;
-
-        setIsFetching(true);
+        setTimeout(() => {
+          if (isMountedRef.current) {
+            fetchAndProcessConversation();
+          }
+        }, 500);
       }
     }
 
-    if (isFetching) {
-      setIsFetching(false);
-      fetchAndProcessConversation();
-    }
+    startFetching();
 
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
-  }, [isFetching, conversations]);
+  }, [conversations]); // Note: Only depends on conversations
 
-  async function fetchEmbedding({ tokens, isMounted }) {
+  async function fetchEmbedding({ tokens }) {
     if (!tokens || tokens.length === 0) return;
 
     try {
@@ -83,9 +85,9 @@ export default function useConversation({ conversations, setConversations, setEm
       const uniqueTokens = [...new Set(tokens)];
 
       // Fetch embeddings for unique tokens
-      const embeddings = await getEmbeddingsForTokens(uniqueTokens, isMounted);
+      const embeddings = await getEmbeddingsForTokens(uniqueTokens);
 
-      if (!isMounted) return;
+      if (!isMountedRef.current) return;
 
       // Build the result object
       const result = {
@@ -99,7 +101,7 @@ export default function useConversation({ conversations, setConversations, setEm
     }
   }
 
-  async function getEmbeddingsForTokens(tokens, isMounted) {
+  async function getEmbeddingsForTokens(tokens) {
     const embeddings = {};
     const tokensToFetch = tokens.filter((token) => !embeddingsCache.current[token]);
 
@@ -125,13 +127,13 @@ export default function useConversation({ conversations, setConversations, setEm
           embeddings[token] = embedding;
         } catch (e) {
           console.error(`Error fetching embedding for token "${token}":`, e);
-          // Optionally, you can implement a retry mechanism here
+          // Optionally, implement a retry mechanism here
         }
       });
 
       await Promise.all(promises);
 
-      if (!isMounted) return;
+      if (!isMountedRef.current) return;
     }
 
     // Add cached embeddings to the result

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const DUMMY_TEXT = `Ah, "wet"—an intriguing choice of word, seemingly simple yet pregnant with myriad nuances and layers of meaning. Allow me to elucidate the connection between this elemental concept and the profound undercurrents of neural network architectures.
+const DUMMY_TEXT = `Stable Diffusion—where art meets algorithm. At its core, it's a neural network that paints with light and language, transforming text prompts into striking visual dreams. It evolves images iteratively, naturally, powered by latent spaces that unlock infinite artistic potential. Decentralized creativity in the digital agora!
 `;
 
 export default function useViseme() {

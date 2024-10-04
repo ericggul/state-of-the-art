@@ -27,14 +27,23 @@ export default function Wrapper() {
   const [length, setLength] = useState(10);
 
   useEffect(() => {
-    if (!isblack && embeddings.length > 0) {
-      const lastIndex = embeddings.length - 1;
-      const inputData = lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
-      const outputData = embeddings[lastIndex];
+    if (!isblack) {
+      let inputEmbeddingsData = INPUT_EMBEDDINGS;
+      let outputEmbeddingsData = OUTPUT_EMBEDDINGS;
 
-      setInputEmbeddings(inputData);
-      setOutputEmbeddings(outputData);
-      setLength(inputData.tokens.length + outputData.tokens.length);
+      if (embeddings.length >= 2) {
+        // Use the last two embeddings
+        inputEmbeddingsData = embeddings[embeddings.length - 2];
+        outputEmbeddingsData = embeddings[embeddings.length - 1];
+      } else if (embeddings.length === 1) {
+        // Only one embedding available
+        inputEmbeddingsData = INPUT_EMBEDDINGS;
+        outputEmbeddingsData = embeddings[0];
+      }
+
+      setInputEmbeddings(inputEmbeddingsData);
+      setOutputEmbeddings(outputEmbeddingsData);
+      setLength(inputEmbeddingsData.tokens.length + outputEmbeddingsData.tokens.length);
     }
   }, [isblack, embeddings]);
 
@@ -46,14 +55,6 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
-      <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
-        visible={isblack && length <= 12}
-        timeUnit={1}
-      />
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 
-const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
+const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
   const [getNewText, setGetNewText] = useState(true);
@@ -21,15 +21,18 @@ export default function useConversation({ conversations, setConversations, setEm
   async function fetchText(conversations) {
     try {
       const text =
-        conversations.length < 6
+        conversations.length < 10
           ? INITIAL_TEXT + conversations.map((el) => el.message.content).join(" ")
           : conversations
               .map((el) => el.message.content)
-              .join(" ")
-              .slice(-6);
+              .slice(-10)
+              .join(" ");
+
       setGetNewText(false);
 
-      const response = await axios.post("/api/openai/gpt-4o-poem", {
+      console.log(text);
+
+      const response = await axios.post("/api/openai/gpt-4o-mini", {
         text,
       });
 
@@ -38,9 +41,8 @@ export default function useConversation({ conversations, setConversations, setEm
       }
 
       setConversations((prev) => [...prev, response.data]);
-      console.log(response.data);
       const resultText = response.data.message.content;
-      getTTS(resultText);
+      // getTTS(resultText);
 
       // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
@@ -51,15 +53,6 @@ export default function useConversation({ conversations, setConversations, setEm
       await new Promise((r) => setTimeout(r, 500));
       setGetNewText(true);
     }
-  }
-
-  async function getTTS(text) {
-    //get simple tts
-    let utterance = new SpeechSynthesisUtterance(text);
-    //super low voice machinary
-    utterance.rate = 2;
-    utterance.pitch = 10;
-    speechSynthesis.speak(utterance);
   }
 
   async function getNextText() {
@@ -103,7 +96,7 @@ export default function useConversation({ conversations, setConversations, setEm
       const tokensToFetch = tokens.filter((token) => !embeddingsCache.current[token]);
 
       // Limit the number of concurrent requests to prevent rate limiting
-      const CONCURRENT_REQUESTS_LIMIT = 8;
+      const CONCURRENT_REQUESTS_LIMIT = 10;
 
       // Function to process tokens in batches
       const processBatch = async (batch) => {

@@ -25,8 +25,9 @@ export default function useConversation({ conversations, setConversations, setEm
           ? INITIAL_TEXT + conversations.map((el) => el.message.content).join(" ")
           : conversations
               .map((el) => el.message.content)
-              .join(" ")
-              .slice(-6);
+              .slice(-6)
+              .join(" ");
+
       setGetNewText(false);
 
       const response = await axios.post("/api/openai/gpt-4o-poem", {
