@@ -5,8 +5,6 @@ import { useParams } from "next/navigation";
 
 import { TEST_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant";
 
-import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
-
 const Embeddings00 = dynamic(() => import("@/foundations/test-backend/0-embeddings/0"));
 const Embeddings250 = dynamic(() => import("@/foundations/test-backend/2.5-duo/0"));
 const Embeddings25Glich = dynamic(() => import("@/foundations/test-backend/2.5-duo/glitch"));
