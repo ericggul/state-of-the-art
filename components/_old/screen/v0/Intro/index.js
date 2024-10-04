@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import { QRCodeSVG } from "qrcode.react";
-import useResize from "@utils/hooks/useResize";
+import useResize from "@/utils/hooks/useResize";
 
 const URL = "https://ddp-ai-ccbec1406e0e.herokuapp.com/mobile?v=0";
 

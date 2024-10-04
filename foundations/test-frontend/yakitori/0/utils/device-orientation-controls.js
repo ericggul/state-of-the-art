@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import * as Tone from "tone";
-import useSocket from "@utils/socket/orientation/useSocketScreen";
+import useSocket from "@/utils/socket/orientation/useSocketScreen";
 
 import { STRUCTURE } from "../structure";
 
