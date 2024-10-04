@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "foundations/test/1-relation/utils/useComputeSimilarity";
+import useComputeSimilarity from "@foundations/test/1-relation/utils/useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 export default function Layer1({ newEmbeddings }) {

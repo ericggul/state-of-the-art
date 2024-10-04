@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useState, useRef } from "react";
 
-import useSocket from "utils/socket/orientation/useSocketMobile";
+import useSocket from "@utils/socket/orientation/useSocketMobile";
 
 const throttle = (func, limit) => {
   let inThrottle;
