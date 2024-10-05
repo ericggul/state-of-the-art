@@ -65,7 +65,7 @@ export default function DALLE2Visualization() {
       }}
     >
       <Suspense fallback={null}>
-        <Environment preset="warehouse" />
+        <Environment preset="apartment" />
       </Suspense>
       <pointLight position={[0, 200, 0]} intensity={1} />
       <directionalLight position={[0, 150, 100]} intensity={1} />

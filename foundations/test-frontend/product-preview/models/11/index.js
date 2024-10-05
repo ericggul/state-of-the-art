@@ -37,10 +37,19 @@ const STRUCTURE = [
   { name: `Output Image/Video`, type: "output", stack: "decoder" },
 ];
 
-// Uniform color scheme with hue 240
+// // Uniform color scheme with Judd-inspired color tones
 const COLORS = {
-  default: "hsl(240, 100%, 50%)",
+  outer: "#7d7d7d", // Metallic gray for the outer parts, evoking industrial material
+  inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+  highlight: "#333333", // Darker metallic/industrial feel for borders or edges
 };
+
+// Uniform color scheme with Judd-inspired color tones
+// const COLORS = {
+//   outer: "hsl(240, 100%, 40%)", // Metallic gray for the outer parts, evoking industrial material
+//   inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+//   highlight: "hsl(240, 100%, 40%)", // Darker metallic/industrial feel for borders or edges
+// };
 
 export default function VideoGenModelVisualization() {
   const encoderLayers = STRUCTURE.filter((layer) => layer.stack === "encoder");
@@ -52,7 +61,7 @@ export default function VideoGenModelVisualization() {
     <Canvas
       camera={{
         position: [0, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 0.5, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 1.2],
-        fov: 50,
+        fov: 45,
         near: 0.1,
         far: 5000,
       }}
@@ -67,13 +76,13 @@ export default function VideoGenModelVisualization() {
       {/* Encoder (TAE) Stack */}
       {encoderLayers.map((layer, i) => {
         const y = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-        return <Layer key={`encoder-${i}`} position={[-50, y, 0]} layer={layer} color={COLORS.default} index={i} />;
+        return <Layer key={`encoder-${i}`} position={[-50, y, 0]} layer={layer} color={COLORS.outer} />;
       })}
 
       {/* Decoder (TAE) Stack */}
       {decoderLayers.map((layer, i) => {
         const y = i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-        return <Layer key={`decoder-${i}`} position={[50, y, 0]} layer={layer} color={COLORS.default} index={i} />;
+        return <Layer key={`decoder-${i}`} position={[50, y, 0]} layer={layer} color={COLORS.outer} />;
       })}
 
       <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />
@@ -103,7 +112,7 @@ const Layer = ({ position, layer, color }) => {
 };
 
 const Sublayer = ({ position, sublayer, color }) => {
-  const size = [20, 8, 8];
+  const size = [20, 8, 8]; // Size for sublayers
   const gridConfig = {
     attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
     ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
@@ -121,7 +130,8 @@ const Sublayer = ({ position, sublayer, color }) => {
         xInterval={grid.xInterval}
         yInterval={grid.yInterval}
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
-        color={color}
+        color={COLORS.inner} // Apply Judd-inspired color for inner parts
+        highlightColor={COLORS.highlight} // Add highlight/darker edges for contrast
       />
     </group>
   );
@@ -131,12 +141,12 @@ const Node = ({ size, color }) => {
   return (
     <mesh>
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} roughness={0.3} metalness={0.5} opacity={0.6} transparent={true} />
+      <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
     </mesh>
   );
 };
 
-const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color }) => {
+const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color, highlightColor }) => {
   const positions = useMemo(() => {
     const temp = [];
     for (let i = 0; i < xCount; i++) {
@@ -151,10 +161,12 @@ const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color 
     <group rotation={[Math.PI / 2, 0, 0]}>
       <Instances limit={xCount * yCount}>
         <boxGeometry args={nodeSize} />
-        <meshStandardMaterial color={color} roughness={0.3} metalness={0.5} opacity={1} transparent={true} />
+        <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
         {positions.map((position, i) => (
           <Instance key={i} position={position} />
         ))}
+        {/* Add a darker highlight layer to enhance depth */}
+        <meshStandardMaterial color={highlightColor} metalness={0.9} roughness={0.1} />
       </Instances>
     </group>
   );

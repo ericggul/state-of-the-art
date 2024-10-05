@@ -16,7 +16,7 @@ export default function ProductPreview({ enableDeviceControls = true }) {
     <S.Container>
       <ModelEl enableDeviceControls={enableDeviceControls} />
       <Leva />
-      <UI data={TEST_MODELS[modelIdx]} />
+      {/* <UI data={TEST_MODELS[modelIdx]} /> */}
       {/* <S.TopReverse /> */}
     </S.Container>
   );

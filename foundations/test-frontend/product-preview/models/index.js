@@ -16,8 +16,9 @@ const Model7 = dynamic(() => import("@/foundations/test-frontend/product-preview
 const Model8 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/8"));
 //bert
 const Model9 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/9"));
-//DCGAN
+//Meta Video Gen
 const Model10 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10"));
+const Model11 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/11"));
 
 export default function Model() {
   const { idx } = useParams();
@@ -35,6 +36,7 @@ export default function Model() {
       {idx === "8" && <Model8 enableDeviceControls={false} />}
       {idx === "9" && <Model9 enableDeviceControls={false} />}
       {idx === "10" && <Model10 enableDeviceControls={false} />}
+      {idx === "11" && <Model11 enableDeviceControls={false} />}
     </>
   );
 }
