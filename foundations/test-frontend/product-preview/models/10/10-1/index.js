@@ -44,6 +44,12 @@ const COLORS = {
   highlight: "#333333", // Darker metallic/industrial feel for borders or edges
 };
 
+// const COLORS = {
+//   outer: "#5c7094", // A grayish-blue metallic color for the outer parts
+//   inner: "hsl(220, 100%, 50%)", // Cooler bold blue for the inner parts
+//   highlight: "#4a5a6e", // Dark bluish-gray for edges or highlights
+// };
+
 // Uniform color scheme with Judd-inspired color tones
 // const COLORS = {
 //   outer: "hsl(240, 100%, 40%)", // Metallic gray for the outer parts, evoking industrial material
