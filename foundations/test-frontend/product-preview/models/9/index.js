@@ -2,29 +2,24 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, Instances, Instance } from "@react-three/drei";
 import { useMemo, Suspense } from "react";
 
-// Number of encoder layers for BERT (adjustable, simplified to 12 layers)
+// BERT architecture uses 12 encoder layers (simplified)
 const NUM_ENCODER_LAYERS = 12;
 
 // BERT structure definition (encoder-only transformer)
 const STRUCTURE = [];
 
-// Generate Embedding layers
-STRUCTURE.push(
-  // Token Embeddings
-  { name: `Token Embeddings`, type: "input", stack: "encoder" },
-  // Positional Embeddings
-  { name: `Positional Embeddings`, type: "positional", stack: "encoder" }
-);
+// Define Embedding layers for BERT
+STRUCTURE.push({ name: `Token Embeddings`, type: "input", stack: "encoder" }, { name: `Positional Embeddings`, type: "positional", stack: "encoder" });
 
-// Generate Encoder blocks (Transformer-based architecture)
+// Add encoder blocks with balanced focus on both attention and feed-forward for BERT's bidirectional nature
 for (let i = 1; i <= NUM_ENCODER_LAYERS; i++) {
   STRUCTURE.push({
     name: `Encoder Layer ${i}`,
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
-      { name: `Self-Attention ${i}`, type: "attention", dimensions: [768, 12, 12] },
-      { name: `Feed Forward ${i}`, type: "ffn", dimensions: [3072, 12, 1] },
+      { name: `Self-Attention ${i}`, type: "attention", dimensions: [768, 12, 12] }, // Attention used for bidirectional learning
+      { name: `Feed Forward ${i}`, type: "ffn", dimensions: [3072, 12, 1] }, // Feed-forward layers are equally important
     ],
   });
 }
@@ -32,15 +27,17 @@ for (let i = 1; i <= NUM_ENCODER_LAYERS; i++) {
 // Final output layer
 STRUCTURE.push({ name: "Final Projection", type: "output", stack: "encoder" });
 
-// Uniform color scheme with hue 240
+// Define a green color scheme to reflect BERT's bidirectional flow
 const COLORS = {
-  default: "hsl(240, 100%, 50%)",
+  attention: "hsl(240, 100%, 50%)", // Green for attention layers
+  ffn: "hsl(240, 100%, 50%)", // Lighter green for feed-forward layers
+  default: "hsl(240, 100%, 70%)",
 };
 
 export default function BERTVisualization() {
   const encoderLayers = STRUCTURE.filter((layer) => layer.stack === "encoder");
 
-  const layerHeight = 10; // Vertical spacing between layers
+  const layerHeight = 10;
 
   return (
     <Canvas
@@ -61,7 +58,7 @@ export default function BERTVisualization() {
       {/* Encoder Stack */}
       {encoderLayers.map((layer, i) => {
         const y = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-        return <Layer key={`encoder-${i}`} position={[0, y, 0]} layer={layer} color={COLORS.default} index={i} />;
+        return <Layer key={`encoder-${i}`} position={[0, y, 0]} layer={layer} color={COLORS[layer.type] || COLORS.default} index={i} />;
       })}
 
       <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />
@@ -70,10 +67,9 @@ export default function BERTVisualization() {
 }
 
 const Layer = ({ position, layer, color }) => {
-  const size = [30, 10, 10]; // Base size for layers
-  const gap = 10; // Gap between sublayers
+  const size = [30, 10, 10];
+  const gap = 10;
 
-  // For layers that have sublayers (encoder_layer)
   if (layer.sublayers) {
     return (
       <group position={position}>
@@ -84,7 +80,6 @@ const Layer = ({ position, layer, color }) => {
     );
   }
 
-  // For layers without sublayers
   return (
     <group position={position}>
       <Node size={size} color={color} />
@@ -93,9 +88,9 @@ const Layer = ({ position, layer, color }) => {
 };
 
 const Sublayer = ({ position, sublayer, color }) => {
-  const size = [20, 8, 8]; // Size for sublayers
+  const size = [20, 8, 8];
   const gridConfig = {
-    attention: { xCount: 12, yCount: 12, xInterval: 3, yInterval: 3 },
+    attention: { xCount: 12, yCount: 12, xInterval: 3, yInterval: 3 }, // Balanced grid for attention
     ffn: { xCount: 24, yCount: 4, xInterval: 2, yInterval: 5 },
   };
 

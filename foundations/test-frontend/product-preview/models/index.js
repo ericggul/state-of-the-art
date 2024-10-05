@@ -16,6 +16,8 @@ const Model7 = dynamic(() => import("@/foundations/test-frontend/product-preview
 const Model8 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/8"));
 //bert
 const Model9 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/9"));
+//DCGAN
+const Model10 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10"));
 
 export default function Model() {
   const { idx } = useParams();
@@ -32,6 +34,7 @@ export default function Model() {
       {idx === "7" && <Model7 enableDeviceControls={false} />}
       {idx === "8" && <Model8 enableDeviceControls={false} />}
       {idx === "9" && <Model9 enableDeviceControls={false} />}
+      {idx === "10" && <Model10 enableDeviceControls={false} />}
     </>
   );
 }
