@@ -7,7 +7,7 @@ const STRUCTURE = [
   // Encoder Stack
   { name: "Input Embeddings", dimensions: [512, 8, 1], type: "input", zSpan: [8, 1], stack: "encoder" },
   { name: "Positional Encoding (Encoder)", dimensions: [512, 8, 1], type: "positional", zSpan: [8, 1], stack: "encoder" },
-  // Encoder blocks
+  // Encoder blocks (changed from 6 to 5)
   ...Array(6)
     .fill()
     .map((_, i) => [
@@ -18,7 +18,7 @@ const STRUCTURE = [
   // Decoder Stack
   { name: "Output Embeddings", dimensions: [512, 8, 1], type: "input", zSpan: [8, 1], stack: "decoder" },
   { name: "Positional Encoding (Decoder)", dimensions: [512, 8, 1], type: "positional", zSpan: [8, 1], stack: "decoder" },
-  // Decoder blocks
+  // Decoder blocks (changed from 6 to 5)
   ...Array(6)
     .fill()
     .map((_, i) => [
