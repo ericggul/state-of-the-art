@@ -5,10 +5,11 @@ import { Suspense, useMemo } from "react";
 // Constants defining the structure
 const NUM_ENCODER_LAYERS = 6; // Number of encoder layers
 const NUM_DECODER_LAYERS = 6; // Number of decoder layers
-const NUM_ENCODER_DECODER_PAIRS = 5; // Number of encoder-decoder pairs
-const STACK_SPACING_X = 80; // Horizontal spacing between encoder-decoder pairs
-const STACK_SPACING_Z = 100; // Vertical spacing along Z-axis (height between encoder and decoder)
+const NUM_ENCODER_STACKS = 5; // Number of encoder stacks
+const NUM_DECODER_STACKS = 5; // Number of decoder stacks
+const STACK_SPACING = 80; // Horizontal spacing between stacks
 
+// Structure definition (simplified)
 const STRUCTURE = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -41,8 +42,8 @@ const STRUCTURE = [
 
 // Keeping the subtle blue palette
 const COLORS = {
-  outer: "hsl(230, 70%, 50%)", // Main blue color for outer layers
-  inner: "hsl(235, 60%, 40%)", // Slightly darker blue for inner parts
+  outer: "hsl(230, 70%, 20%)", // Main blue color for outer layers
+  inner: "hsl(230, 80%, 40%)", // Slightly darker blue for inner parts
   plane: "hsl(240, 60%, 20%)", // Dark blue for the plane to maintain harmony
 };
 
@@ -51,11 +52,13 @@ export default function VideoGenModelVisualization() {
   const decoderLayers = STRUCTURE.filter((layer) => layer.stack === "decoder");
 
   const layerHeight = 13; // Vertical spacing between layers
+  const stackHeight = (encoderLayers.length + decoderLayers.length) * layerHeight; // Total height for one stack
 
   return (
     <Canvas
+      shadows // Enable shadow rendering
       camera={{
-        position: [0, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 0.5, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 1.2],
+        position: [0, stackHeight * 0.5, stackHeight * 1.2],
         fov: 50,
         near: 0.1,
         far: 5000,
@@ -64,37 +67,41 @@ export default function VideoGenModelVisualization() {
       <Suspense fallback={null}>
         <Environment preset="apartment" />
       </Suspense>
-      <pointLight position={[0, 200, 0]} intensity={1} />
-      <directionalLight position={[0, 150, 100]} intensity={1} />
+      <pointLight position={[0, 200, 0]} intensity={1} castShadow /> {/* Casting shadow */}
+      <directionalLight
+        position={[0, 150, 100]}
+        intensity={1}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+        shadow-camera-far={500}
+        shadow-camera-left={-200}
+        shadow-camera-right={200}
+        shadow-camera-top={200}
+        shadow-camera-bottom={-200}
+      />
       <ambientLight intensity={0.5} />
-
       {/* Plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -100, 0]} receiveShadow>
         <planeGeometry args={[500, 500]} />
         <meshStandardMaterial color={COLORS.plane} roughness={0.6} metalness={0.2} />
       </mesh>
-
-      {/* Encoder-Decoder Pairs spread along X-axis and stacked along Z-axis */}
-      {Array.from({ length: NUM_ENCODER_DECODER_PAIRS }, (_, pairIndex) => {
-        const x = pairIndex * STACK_SPACING_X - ((NUM_ENCODER_DECODER_PAIRS - 1) * STACK_SPACING_X) / 2;
-
-        return (
-          <>
-            {/* Encoder Stack */}
-            {encoderLayers.map((layer, i) => {
-              const z = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-              return <Layer key={`encoder-${pairIndex}-${i}`} position={[x, 0, z]} layer={layer} color={COLORS.outer} />;
-            })}
-
-            {/* Decoder Stack (directly below the encoder in Z-axis) */}
-            {decoderLayers.map((layer, i) => {
-              const z = STACK_SPACING_Z + i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-              return <Layer key={`decoder-${pairIndex}-${i}`} position={[x, 0, z]} layer={layer} color={COLORS.outer} />;
-            })}
-          </>
-        );
-      })}
-
+      {/* 5 Encoder Stacks spread along X-axis */}
+      {Array.from({ length: NUM_ENCODER_STACKS }, (_, stackIndex) =>
+        encoderLayers.map((layer, i) => {
+          const y = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
+          const x = stackIndex * STACK_SPACING - ((NUM_ENCODER_STACKS - 1) * STACK_SPACING) / 2;
+          return <Layer key={`encoder-${stackIndex}-${i}`} position={[x, y, -30]} layer={layer} color={COLORS.outer} />;
+        })
+      )}
+      {/* 5 Decoder Stacks spread along X-axis, shifted in Y-axis */}
+      {Array.from({ length: NUM_DECODER_STACKS }, (_, stackIndex) =>
+        decoderLayers.map((layer, i) => {
+          const y = i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
+          const x = stackIndex * STACK_SPACING - ((NUM_DECODER_STACKS - 1) * STACK_SPACING) / 2;
+          return <Layer key={`decoder-${stackIndex}-${i}`} position={[x, y, 30]} layer={layer} color={COLORS.outer} />;
+        })
+      )}
       <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />
     </Canvas>
   );
@@ -148,9 +155,11 @@ const Sublayer = ({ position, sublayer, color }) => {
 
 const Node = ({ size, color }) => {
   return (
-    <mesh>
+    <mesh castShadow receiveShadow>
+      {" "}
+      {/* Enable shadow casting */}
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} metalness={0.9} roughness={0.4} /> {/* Subtle material tweaks */}
+      <meshStandardMaterial color={color} metalness={0.9} roughness={0.4} />
     </mesh>
   );
 };
@@ -172,7 +181,7 @@ const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color 
         <boxGeometry args={nodeSize} />
         <meshStandardMaterial color={color} metalness={1.0} roughness={0.3} />
         {positions.map((position, i) => (
-          <Instance key={i} position={position} />
+          <Instance key={i} position={position} castShadow receiveShadow />
         ))}
       </Instances>
     </group>
