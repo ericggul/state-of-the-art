@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import getTTS from "@/foundations/test-backend/utils/getTTS";
 
-const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
+const INITIAL_TEXT = `User 18 just left the website.`;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
   const [getNewText, setGetNewText] = useState(true);
@@ -26,7 +26,7 @@ export default function useConversation({ conversations, setConversations, setEm
           ? INITIAL_TEXT + conversations.map((el) => el.message.content).join(" ")
           : conversations
               .map((el) => el.message.content)
-              .slice(-10)
+              .slice(-1)
               .join(" ");
 
       setGetNewText(false);
