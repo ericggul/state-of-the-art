@@ -5,8 +5,10 @@ import { Suspense, useMemo } from "react";
 // Constants defining the structure
 const NUM_ENCODER_LAYERS = 6; // Number of encoder layers
 const NUM_DECODER_LAYERS = 6; // Number of decoder layers
+const NUM_ENCODER_DECODER_PAIRS = 10; // Number of encoder-decoder pairs
+const STACK_SPACING_X = 60; // Horizontal spacing between encoder-decoder pairs
+const STACK_SPACING_Z = 100; // Vertical spacing along Z-axis (height between encoder and decoder)
 
-// Structure definition (simplified)
 const STRUCTURE = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -66,22 +68,25 @@ export default function VideoGenModelVisualization() {
       <directionalLight position={[0, 150, 100]} intensity={1} />
       <ambientLight intensity={0.5} />
 
-      {/* Plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -100, 0]} receiveShadow>
-        <planeGeometry args={[500, 500]} />
-        <meshStandardMaterial color={COLORS.plane} roughness={0.6} metalness={0.2} />
-      </mesh>
+      {/* Encoder-Decoder Pairs spread along X-axis and stacked along Z-axis */}
+      {Array.from({ length: NUM_ENCODER_DECODER_PAIRS }, (_, pairIndex) => {
+        const x = pairIndex * STACK_SPACING_X - ((NUM_ENCODER_DECODER_PAIRS - 1) * STACK_SPACING_X) / 2;
 
-      {/* Encoder (TAE) Stack */}
-      {encoderLayers.map((layer, i) => {
-        const y = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-        return <Layer key={`encoder-${i}`} position={[-50, y, 0]} layer={layer} color={COLORS.outer} />;
-      })}
+        return (
+          <>
+            {/* Encoder Stack */}
+            {encoderLayers.map((layer, i) => {
+              const z = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
+              return <Layer key={`encoder-${pairIndex}-${i}`} position={[x, 0, z]} layer={layer} color={COLORS.outer} />;
+            })}
 
-      {/* Decoder (TAE) Stack */}
-      {decoderLayers.map((layer, i) => {
-        const y = i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
-        return <Layer key={`decoder-${i}`} position={[50, y, 0]} layer={layer} color={COLORS.outer} />;
+            {/* Decoder Stack (directly below the encoder in Z-axis) */}
+            {decoderLayers.map((layer, i) => {
+              const z = STACK_SPACING_Z + i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
+              return <Layer key={`decoder-${pairIndex}-${i}`} position={[x, 0, z]} layer={layer} color={COLORS.outer} />;
+            })}
+          </>
+        );
       })}
 
       <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />

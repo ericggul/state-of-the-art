@@ -39,10 +39,14 @@ const STRUCTURE = [
 
 // Seagram Building-inspired colors
 const COLORS = {
-  outer: "#1b1b1b", // Darker bronze-like metallic tone
+  outer: "#7d7d7d", // Darker bronze-like metallic tone
   inner: "#1b1b1b", // Dark reflective window-like material
-  windowGlow: "#1b1b1b", // Subtle yellowish light for window glow
+  windowGlow: "hsl(240, 10%, 20%)", // Subtle yellowish light for window glow
 };
+
+// outer: "#7d7d7d", // Metallic gray for the outer parts, evoking industrial material
+// inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+// highlight: "#333333", // Darker metallic/industrial feel for borders or edges
 
 export default function SeagramBuildingVisualization() {
   const encoderLayers = STRUCTURE.filter((layer) => layer.stack === "encoder");
@@ -150,7 +154,7 @@ const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize }) => {
       <Instances limit={xCount * yCount}>
         <boxGeometry args={nodeSize} />
         {/* Window-like material with a soft glow */}
-        <meshStandardMaterial color={COLORS.windowGlow} emissive={COLORS.windowGlow} emissiveIntensity={0.5} />
+        <meshStandardMaterial color={COLORS.windowGlow} emissive={COLORS.windowGlow} emissiveIntensity={0.5} wireframe />
         {positions.map((position, i) => (
           <Instance key={i} position={position} />
         ))}

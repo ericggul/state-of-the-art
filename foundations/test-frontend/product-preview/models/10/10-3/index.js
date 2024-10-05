@@ -15,8 +15,16 @@ const STRUCTURE = [
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
-      { name: `Self-Attention ${i + 1}`, type: "attention", dimensions: [6144, 48, 48] },
-      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 48, 1] },
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [6144, 48, 48],
+      },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 48, 1],
+      },
     ],
   })),
   { name: `Cross Attention (Text Embeddings)`, type: "cross_attention", stack: "encoder" },
@@ -29,19 +37,27 @@ const STRUCTURE = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
-      { name: `Diffusion Step ${i + 1}`, type: "diffusion", dimensions: [128, 8, 8] },
-      { name: `Upsample Step ${i + 1}`, type: "upsample", dimensions: [64, 8, 8] },
+      {
+        name: `Diffusion Step ${i + 1}`,
+        type: "diffusion",
+        dimensions: [128, 8, 8],
+      },
+      {
+        name: `Upsample Step ${i + 1}`,
+        type: "upsample",
+        dimensions: [64, 8, 8],
+      },
     ],
   })),
   { name: `TAE Decoder`, type: "decoder", stack: "decoder" },
   { name: `Output Image/Video`, type: "output", stack: "decoder" },
 ];
 
-// Keeping the subtle blue palette
+// Uniform color scheme with Judd-inspired color tones
 const COLORS = {
-  outer: "hsl(230, 70%, 50%)", // Main blue color for outer layers
-  inner: "hsl(235, 60%, 40%)", // Slightly darker blue for inner parts
-  plane: "hsl(240, 60%, 20%)", // Dark blue for the plane to maintain harmony
+  outer: "#7d7d7d", // Metallic gray for the outer parts, evoking industrial material
+  inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+  highlight: "#333333", // Darker metallic/industrial feel for borders or edges
 };
 
 export default function VideoGenModelVisualization() {
@@ -52,38 +68,36 @@ export default function VideoGenModelVisualization() {
 
   return (
     <Canvas
+      shadows // Enable shadows
       camera={{
         position: [0, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 0.5, (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 1.2],
-        fov: 50,
+        fov: 45,
         near: 0.1,
         far: 5000,
       }}
     >
       <Suspense fallback={null}>
-        <Environment preset="apartment" />
+        <Environment preset="apartment" background={false} intensity={0.2} />
       </Suspense>
-      <pointLight position={[0, 200, 0]} intensity={1} />
-      <directionalLight position={[0, 150, 100]} intensity={1} />
-      <ambientLight intensity={0.5} />
-
-      {/* Plane */}
+      {/* Lighting setup for casting shadows */}
+      <directionalLight position={[10, 50, 10]} intensity={1.2} castShadow />
+      <ambientLight intensity={0.05} />
+      <spotLight position={[0, 150, 50]} intensity={1.5} angle={0.3} penumbra={0.5} castShadow shadow-bias={-0.001} />
+      {/* Dark reflective plane at the bottom, acting as a gallery floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -100, 0]} receiveShadow>
         <planeGeometry args={[500, 500]} />
-        <meshStandardMaterial color={COLORS.plane} roughness={0.6} metalness={0.2} />
+        <meshStandardMaterial color="#000000" roughness={0.5} metalness={0.5} />
       </mesh>
-
       {/* Encoder (TAE) Stack */}
       {encoderLayers.map((layer, i) => {
         const y = i * layerHeight - (encoderLayers.length * layerHeight) / 2 + layerHeight / 2;
         return <Layer key={`encoder-${i}`} position={[-50, y, 0]} layer={layer} color={COLORS.outer} />;
       })}
-
       {/* Decoder (TAE) Stack */}
       {decoderLayers.map((layer, i) => {
         const y = i * layerHeight - (decoderLayers.length * layerHeight) / 2 + layerHeight / 2;
         return <Layer key={`decoder-${i}`} position={[50, y, 0]} layer={layer} color={COLORS.outer} />;
       })}
-
       <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />
     </Canvas>
   );
@@ -119,7 +133,12 @@ const Sublayer = ({ position, sublayer, color }) => {
     upsample: { xCount: 4, yCount: 4, xInterval: 5, yInterval: 7 },
   };
 
-  const grid = gridConfig[sublayer.type] || { xCount: 1, yCount: 1, xInterval: 10, yInterval: 10 };
+  const grid = gridConfig[sublayer.type] || {
+    xCount: 1,
+    yCount: 1,
+    xInterval: 10,
+    yInterval: 10,
+  };
 
   return (
     <group position={position}>
@@ -129,7 +148,8 @@ const Sublayer = ({ position, sublayer, color }) => {
         xInterval={grid.xInterval}
         yInterval={grid.yInterval}
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
-        color={COLORS.inner} // Inner blue tone for the sublayers
+        color={COLORS.inner} // Apply Judd-inspired color for inner parts
+        highlightColor={COLORS.highlight} // Add highlight/darker edges for contrast
       />
     </group>
   );
@@ -137,14 +157,14 @@ const Sublayer = ({ position, sublayer, color }) => {
 
 const Node = ({ size, color }) => {
   return (
-    <mesh>
+    <mesh castShadow receiveShadow>
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} metalness={0.9} roughness={0.4} /> {/* Subtle material tweaks */}
+      <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
     </mesh>
   );
 };
 
-const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color }) => {
+const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color, highlightColor }) => {
   const positions = useMemo(() => {
     const temp = [];
     for (let i = 0; i < xCount; i++) {
@@ -157,12 +177,14 @@ const InstancedNodes = ({ xCount, yCount, xInterval, yInterval, nodeSize, color 
 
   return (
     <group rotation={[Math.PI / 2, 0, 0]}>
-      <Instances limit={xCount * yCount}>
+      <Instances limit={xCount * yCount} castShadow receiveShadow>
         <boxGeometry args={nodeSize} />
-        <meshStandardMaterial color={color} metalness={1.0} roughness={0.3} />
+        <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
         {positions.map((position, i) => (
-          <Instance key={i} position={position} />
+          <Instance key={i} position={position} castShadow receiveShadow />
         ))}
+        {/* Add a darker highlight layer to enhance depth */}
+        <meshStandardMaterial color={highlightColor} metalness={0.9} roughness={0.1} />
       </Instances>
     </group>
   );

@@ -16,10 +16,13 @@ const Model7 = dynamic(() => import("@/foundations/test-frontend/product-preview
 const Model8 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/8"));
 //bert
 const Model9 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/9"));
-//Meta Video Gen
+//Meta Video Gen & differnet stylings
 const Model10 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10"));
 const Model101 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-1"));
 const Model102 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-2"));
+const Model103 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-3"));
+const Model104 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-4"));
+const Model105 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-5"));
 
 export default function Model() {
   const { idx } = useParams();
@@ -39,6 +42,9 @@ export default function Model() {
       {idx === "10" && <Model10 enableDeviceControls={false} />}
       {idx === "10-1" && <Model101 enableDeviceControls={false} />}
       {idx === "10-2" && <Model102 enableDeviceControls={false} />}
+      {idx === "10-3" && <Model103 enableDeviceControls={false} />}
+      {idx === "10-4" && <Model104 enableDeviceControls={false} />}
+      {idx === "10-5" && <Model105 enableDeviceControls={false} />}
     </>
   );
 }
