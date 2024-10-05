@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles"; // Import all styles as `S`
-
 import { AssistantStream } from "openai/lib/AssistantStream";
 
+// Utility function to map different message roles
 const Message = ({ role, text }) => {
   switch (role) {
     case "user":
@@ -26,15 +26,15 @@ const Message = ({ role, text }) => {
 };
 
 const Chat = ({
-  functionCallHandler = () => Promise.resolve(""), // default to return empty string
+  functionCallHandler = () => Promise.resolve(""), // default handler returns empty string
 }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [threadId, setThreadId] = useState("");
-
-  // automatically scroll to bottom of chat
   const messagesEndRef = useRef(null);
+
+  // Scroll to the bottom of the chat automatically
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -42,27 +42,70 @@ const Chat = ({
     scrollToBottom();
   }, [messages]);
 
-  // create a new threadID when chat component created
+  // Create a new threadID when the component mounts
   useEffect(() => {
     const createThread = async () => {
-      const res = await fetch(`/api/openai/assistants/threads`, {
-        method: "POST",
-      });
-      const data = await res.json();
-      setThreadId(data.threadId);
+      try {
+        const res = await fetch(`/api/openai/assistants/threads`, {
+          method: "POST",
+        });
+        if (!res.ok) {
+          throw new Error(`API Error: ${res.statusText}`);
+        }
+        const data = await res.json();
+        setThreadId(data.threadId);
+      } catch (err) {
+        console.error("Error creating thread:", err.message);
+      }
     };
     createThread();
   }, []);
 
   const sendMessage = async (text) => {
-    const response = await fetch(`/api/openai/assistants/threads/${threadId}/messages`, {
-      method: "POST",
-      body: JSON.stringify({
-        content: text,
-      }),
-    });
-    const stream = AssistantStream.fromReadableStream(response.body);
-    handleReadableStream(stream);
+    try {
+      const response = await fetch(`/api/openai/assistants/threads/${threadId}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+
+      const stream = AssistantStream.fromReadableStream(response.body);
+      handleReadableStream(stream);
+    } catch (err) {
+      console.error("Error sending message:", err.message);
+    }
+  };
+
+  const submitActionResult = async (runId, toolCallOutputs) => {
+    try {
+      const response = await fetch(`/api/openai/assistants/threads/${threadId}/actions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          runId: runId,
+          toolCallOutputs: toolCallOutputs,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+
+      const stream = AssistantStream.fromReadableStream(response.body);
+      handleReadableStream(stream);
+    } catch (err) {
+      console.error("Error submitting action result:", err.message);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -75,12 +118,76 @@ const Chat = ({
     scrollToBottom();
   };
 
+  /* Stream Event Handlers */
+
+  // Handle new assistant message creation
+  const handleTextCreated = () => {
+    appendMessage("assistant", "");
+  };
+
+  // Handle assistant message text updates
+  const handleTextDelta = (delta) => {
+    if (delta.value != null) {
+      appendToLastMessage(delta.value);
+    }
+  };
+
+  // Handle image rendering
+  const handleImageFileDone = (image) => {
+    appendToLastMessage(`\n![${image.file_id}](/api/files/${image.file_id})\n`);
+  };
+
+  // Handle tool call creation
+  const toolCallCreated = (toolCall) => {
+    if (toolCall.type !== "code_interpreter") return;
+    appendMessage("code", "");
+  };
+
+  // Handle tool call delta updates
+  const toolCallDelta = (delta) => {
+    if (delta.type !== "code_interpreter") return;
+    if (!delta.code_interpreter.input) return;
+    appendToLastMessage(delta.code_interpreter.input);
+  };
+
+  // Handle action requests and function calls
+  const handleRequiresAction = async (event) => {
+    const runId = event.data.id;
+    const toolCalls = event.data.required_action.submit_tool_outputs.tool_calls;
+    const toolCallOutputs = await Promise.all(
+      toolCalls.map(async (toolCall) => {
+        const result = await functionCallHandler(toolCall);
+        return { output: result, tool_call_id: toolCall.id };
+      })
+    );
+    setInputDisabled(true);
+    submitActionResult(runId, toolCallOutputs);
+  };
+
+  // Re-enable input after action is completed
+  const handleRunCompleted = () => {
+    setInputDisabled(false);
+  };
+
+  // Handle the readable stream and stream events
   const handleReadableStream = (stream) => {
-    stream.on("textCreated", () => appendMessage("assistant", ""));
-    stream.on("textDelta", (delta) => {
-      if (delta.value != null) appendToLastMessage(delta.value);
+    stream.on("textCreated", handleTextCreated);
+    stream.on("textDelta", handleTextDelta);
+    stream.on("imageFileDone", handleImageFileDone);
+    stream.on("toolCallCreated", toolCallCreated);
+    stream.on("toolCallDelta", toolCallDelta);
+
+    stream.on("event", (event) => {
+      if (event.event === "thread.run.requires_action") {
+        handleRequiresAction(event);
+      }
+      if (event.event === "thread.run.completed") {
+        handleRunCompleted();
+      }
     });
   };
+
+  /* Utility Functions */
 
   const appendToLastMessage = (text) => {
     setMessages((prevMessages) => {

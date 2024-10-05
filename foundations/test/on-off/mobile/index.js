@@ -7,6 +7,8 @@ import useSocket from "@/utils/socket/on-off/useSocketMobile";
 
 import useVisibilityCheck from "@/utils/hooks/useVisibilityCheck";
 
+import AssistantUI from "@/foundations/test-frontend/assistant";
+
 export default function El() {
   ////TO DO
   //to implement: React-use?
@@ -18,5 +20,9 @@ export default function El() {
 
   const isTabVisible = useVisibilityCheck({ socket, mobileId, requestVisibilityCheck, setRequestVisibilityCheck });
 
-  return <S.Container></S.Container>;
+  return (
+    <S.Container>
+      <AssistantUI />
+    </S.Container>
+  );
 }

@@ -24,7 +24,7 @@ export default function useConversation({ conversations, setConversations, setEm
           ? INITIAL_TEXT + conversations.map((el) => el.message.content).join(" ")
           : conversations
               .map((el) => el.message.content)
-              .slice(-6)
+              .slice(-1)
               .join(" ");
 
       setGetNewText(false);

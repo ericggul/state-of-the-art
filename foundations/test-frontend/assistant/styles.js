@@ -14,17 +14,16 @@ export const Container = styled.div`
   height: 100vh;
   width: 100vw;
   padding: ${relVw(20)} ${relVw(16)};
-  text-align: center; /* Centered text */
 `;
 
 export const InputForm = styled.form`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
   padding: ${relVw(8)} 0;
-  background: #1c1c1c;
-  border-radius: 10px;
   margin-top: ${relVw(16)};
+  box-sizing: border-box;
 `;
 
 export const Input = styled.input`
@@ -33,16 +32,15 @@ export const Input = styled.input`
   margin-right: ${relVw(10)};
   border: none;
   border-radius: 8px;
-  background-color: #333;
   color: white;
   font-size: 1rem;
   font-family: "Cardo", serif;
   text-align: center;
+  background: black;
 
   &:focus {
     outline: none;
     border-color: #888;
-    background-color: #444;
   }
 `;
 
@@ -63,51 +61,53 @@ export const Button = styled.button`
 
 export const Messages = styled.div`
   flex-grow: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center; /* Center-aligning messages */
+  justify-content: flex-end;
+  align-items: stretch; /* Align messages to start (left or right depending on the message) */
   padding: ${relVw(10)} 0;
   overflow-y: auto;
   white-space: pre-wrap;
+  box-sizing: border-box;
 `;
 
+// User message aligned to the right (without background)
 export const UserMessage = styled.div`
-  margin: ${relVw(8)} 0;
+  margin: ${relVw(8)} ${relVw(16)};
   padding: ${relVw(8)} ${relVw(16)};
-  background-color: #333;
   border-radius: 15px;
   color: #fff;
   font-style: italic;
   font-size: 1rem;
   font-family: "Cardo", serif;
   max-width: 75%;
-  text-align: center;
+  align-self: flex-end; /* Align message to the right */
+  text-align: right;
 `;
 
+// Assistant message aligned to the left (without background)
 export const AssistantMessage = styled.div`
-  margin: ${relVw(8)} 0;
+  margin: ${relVw(8)} ${relVw(16)};
   padding: ${relVw(8)} ${relVw(16)};
-  background-color: #1e1e1e;
   border-radius: 15px;
   color: #aaa;
   font-size: 1rem;
   font-family: "Cardo", serif;
   max-width: 75%;
-  text-align: center;
+  align-self: flex-start; /* Align message to the left */
+  text-align: left;
 `;
 
 export const CodeMessage = styled.div`
-  margin: ${relVw(8)} 0;
+  margin: ${relVw(8)} ${relVw(16)};
   padding: ${relVw(10)} ${relVw(16)};
-  background-color: #282828;
   border-radius: 15px;
   color: #b8b8b8;
   font-family: "Courier New", monospace;
   font-size: 0.9rem;
   max-width: 80%;
-  text-align: center;
+  text-align: left;
 
   & > div {
     margin-top: ${relVw(4)};
