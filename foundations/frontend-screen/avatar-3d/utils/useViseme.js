@@ -14,7 +14,7 @@ export default function useViseme() {
   async function getViseme() {
     const text = DUMMY_TEXT;
 
-    const audioRes = await axios.post("/api/azure-tts-2", { text }, { responseType: "blob" });
+    const audioRes = await axios.post("/api/azure-tts", { text }, { responseType: "blob" });
 
     // Get audio as blob
     const audio = audioRes.data; // Since the response is now a blob, it's stored in audioRes.data

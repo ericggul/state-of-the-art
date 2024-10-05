@@ -13,7 +13,7 @@ export async function POST(req) {
       messages: [
         {
           role: "system",
-          content: "Generate next sentence of this dadaistic poem.",
+          content: "Generate next sentence, under 15 words.",
         },
         {
           role: "user",
@@ -23,6 +23,8 @@ export async function POST(req) {
       max_tokens: 30,
       logprobs: true,
       top_logprobs: 20,
+      temperature: 2,
+
       ...params,
     });
 
