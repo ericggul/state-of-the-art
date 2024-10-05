@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
+import getTTS from "@/foundations/test-backend/utils/getTTS";
 
 const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
 
@@ -42,7 +43,7 @@ export default function useConversation({ conversations, setConversations, setEm
 
       setConversations((prev) => [...prev, response.data]);
       const resultText = response.data.message.content;
-      // getTTS(resultText);
+      getTTS({ text: resultText });
 
       // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
@@ -56,7 +57,7 @@ export default function useConversation({ conversations, setConversations, setEm
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 3500));
     hasFetchedText.current = false;
     setGetNewText(true);
   }

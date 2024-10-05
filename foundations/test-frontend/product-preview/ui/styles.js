@@ -32,7 +32,7 @@ export const TopLeft = styled.div`
   top: ${relVw(MARGIN_TOP)};
   left: ${relVw(MARGIN_LEFT)};
   font-style: italic;
-  font-size: ${relVw(40)};
+  font-size: ${relVw(30)};
 `;
 
 export const BottomLeft = styled.div`

@@ -27,13 +27,14 @@ export default function Wrapper() {
   const [length, setLength] = useState(10);
 
   useEffect(() => {
-    if (!isblack) {
-      //input: 2nd last element
-      const inputEmbeddings = embeddings[embeddings.length - 2] || INPUT_EMBEDDINGS;
-      const outputEmbeddings = embeddings[embeddings.length - 1] || OUTPUT_EMBEDDINGS;
-      setInputEmbeddings(inputEmbeddings);
-      setOutputEmbeddings(outputEmbeddings);
-      setLength(inputEmbeddings.tokens.length + outputEmbeddings.tokens.length);
+    if (!isblack && embeddings.length > 0) {
+      const lastIndex = embeddings.length - 1;
+      const inputData = lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
+      const outputData = embeddings[lastIndex];
+
+      setInputEmbeddings(inputData);
+      setOutputEmbeddings(outputData);
+      setLength(inputData.tokens.length + outputData.tokens.length);
     }
   }, [isblack, embeddings]);
 
@@ -45,6 +46,14 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 12}
+        timeUnit={1}
+      />
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
@@ -71,8 +80,6 @@ export default function Wrapper() {
       />
       <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack && length <= 38} timeUnit={1} />
       <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} timeUnit={1} />
-
-      {/* <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.3, 0.7], y: [0.3, 0.7] }} visible={isblack} /> */}
     </S.Container>
   );
 }
