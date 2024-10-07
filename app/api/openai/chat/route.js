@@ -1,18 +1,20 @@
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
+  apiKey: process.env["OPENAI_API_KEY"],
 });
 
 export async function POST(req) {
-  const { conversation } = await req.json(); // Retrieve the conversation from the request body
+  const { conversation } = await req.json();
 
   console.log(conversation);
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: conversation, // Send the entire conversation history
-      stream: true, // Enable streaming
+      messages: conversation,
+      stream: true,
+      max_tokens: 500,
+      temperature: 0.7,
     });
 
     const encoder = new TextEncoder();
