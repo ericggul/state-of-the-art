@@ -18,6 +18,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [suggestedResponses, setSuggestedResponses] = useState([]); // Added state for suggested responses
   const messagesEndRef = useRef(null);
   const hasSentInitialMessage = useRef(false); // Ref to track initial message
 
@@ -60,6 +61,9 @@ const Chat = () => {
       // Proceed to the next step in the SYSTEM_SCRIPT after receiving input
       setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
 
+      // Fetch suggested responses after assistant's message
+      await fetchSuggestedResponses();
+
       setInputDisabled(false);
     } catch (err) {
       console.error("Error sending message:", err.message);
@@ -97,12 +101,40 @@ const Chat = () => {
     }
   };
 
+  const fetchSuggestedResponses = async () => {
+    // Get the assistant's last message
+    const assistantLastMessage = messages.filter((msg) => msg.role === "assistant").slice(-1)[0]?.text || "";
+
+    const response = await fetch(`/api/openai/chat/suggested-response`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: assistantLastMessage }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    setSuggestedResponses(data.suggestions || []);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!userInput.trim()) return;
 
     appendMessage("user", userInput);
+    setSuggestedResponses([]); // Clear suggestions after user input
     sendMessage(userInput);
+    setUserInput("");
+  };
+
+  const handleSuggestedResponseClick = (suggestion) => {
+    appendMessage("user", suggestion);
+    setSuggestedResponses([]); // Clear suggestions after user selects one
+    sendMessage(suggestion);
     setUserInput("");
   };
 
@@ -138,6 +170,17 @@ const Chat = () => {
         ))}
         <div ref={messagesEndRef} />
       </S.Messages>
+
+      {/* Display suggested responses */}
+      {suggestedResponses.length > 0 && (
+        <S.SuggestedResponses>
+          {suggestedResponses.map((suggestion, index) => (
+            <S.SuggestedResponseButton key={index} onClick={() => handleSuggestedResponseClick(suggestion)}>
+              {suggestion}
+            </S.SuggestedResponseButton>
+          ))}
+        </S.SuggestedResponses>
+      )}
 
       <S.InputForm onSubmit={handleSubmit}>
         <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder="Enter your message..." disabled={inputDisabled} />

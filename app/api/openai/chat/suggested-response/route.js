@@ -27,46 +27,40 @@ export async function POST(req) {
           content: text,
         },
       ],
-      tools: [
+      functions: [
         {
-          type: "function",
-          funcion: {
-            name: "generate_suggested_responses",
-            description: "Generate 2-3 short suggested user responses.",
-            parameters: {
-              type: "object",
-              properties: {
-                suggestions: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                  },
-                  description: "Array of suggested user responses.",
+          name: "generate_suggested_responses",
+          description: "Generate 2-3 short (Within 5 words) suggested user responses.",
+          parameters: {
+            type: "object",
+            properties: {
+              suggestions: {
+                type: "array",
+                items: {
+                  type: "string",
                 },
+                description: "Array of suggested user responses.",
               },
-              required: ["suggestions"],
             },
+            required: ["suggestions"],
           },
         },
       ],
-
-      tool_choice: "required",
+      function_call: { name: "generate_suggested_responses" },
     });
 
     const message = completion.choices[0].message;
     console.log(message);
 
-    // let suggestedResponses = [];
+    let suggestedResponses = [];
 
-    // if (message.function_call) {
-    //   if (message.function_call.name === "generate_suggested_responses") {
-    //     // Parse the arguments
-    //     const args = JSON.parse(message.function_call.arguments);
-    //     suggestedResponses = args.suggestions;
-    //   }
-    // }
+    if (message.function_call && message.function_call.name === "generate_suggested_responses") {
+      // Parse the arguments
+      const args = JSON.parse(message.function_call.arguments);
+      suggestedResponses = args.suggestions;
+    }
 
-    return new Response(JSON.stringify({ suggestions: "test" }), {
+    return new Response(JSON.stringify({ suggestions: suggestedResponses }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {

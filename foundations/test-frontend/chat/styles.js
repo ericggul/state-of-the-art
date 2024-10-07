@@ -35,6 +35,7 @@ export const InputForm = styled.form`
   width: 100%;
   padding: ${vw(8)} 0;
   box-sizing: border-box;
+  align-items: center;
 `;
 
 // Text input for user messages
@@ -124,5 +125,42 @@ export const CodeMessage = styled.pre`
   span {
     color: #888;
     margin-right: ${vw(8)};
+  }
+`;
+
+// Suggested responses container
+export const SuggestedResponses = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: ${vw(10)} ${vw(16)};
+`;
+
+// Suggested response button styling
+export const SuggestedResponseButton = styled.button`
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: ${vw(6)} ${vw(12)};
+  margin: ${vw(4)};
+  font-size: 0.9rem;
+  font-family: "Cardo", serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #555;
+    border-color: #666;
+  }
+
+  &:active {
+    background-color: #777;
+    border-color: #888;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #aaa;
   }
 `;
