@@ -5,38 +5,20 @@ const openai = new OpenAI({
 });
 
 export async function POST(req) {
-  const { conversation } = await req.json();
+  const { conversation } = await req.json(); // Retrieve the conversation from the request body
 
   try {
+    console.log(conversation);
+    // Make the API call to OpenAI for non-streaming response
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: conversation,
-      stream: true,
-      max_tokens: 500,
-      temperature: 0.7,
+      messages: conversation, // Send the entire conversation history
     });
 
-    const encoder = new TextEncoder();
-
-    // Create a ReadableStream to handle streaming data
-    const stream = new ReadableStream({
-      async start(controller) {
-        for await (const part of response) {
-          const content = part.choices[0].delta?.content;
-          if (content) {
-            controller.enqueue(encoder.encode(content));
-          }
-        }
-        controller.close();
-      },
-    });
-
-    return new Response(stream, {
+    // Return the full completion response instead of streaming it
+    return new Response(JSON.stringify(response.choices[0]), {
       headers: {
-        "Content-Type": "text/plain",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-        "Transfer-Encoding": "chunked",
+        "Content-Type": "application/json",
       },
     });
   } catch (error) {

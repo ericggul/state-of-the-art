@@ -56,25 +56,20 @@ const Chat = () => {
 
       if (text) {
         conversation.push({ role: "user", content: text });
-        appendMessage("user", text); // Add the user message to the state
       }
 
-      // Fetch the assistant response
-      const assistantMessage = await fetchAssistantResponse(conversation);
+      // Stream assistant's response and get the full assistant message
+      const assistantMessage = await streamAssistantResponse(conversation);
 
       // Proceed to the next step in the SYSTEM_SCRIPT after receiving input
       setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
-
-      // Append the assistant's message to the conversation
-      appendMessage("assistant", assistantMessage);
 
       // Prepare updated conversation including the assistant's latest message
       const updatedConversation = [...conversation, { role: "assistant", content: assistantMessage }];
 
       // Get the last 5 messages for context
-      const lastFiveMessages = updatedConversation.slice(-6);
+      const lastFiveMessages = updatedConversation.slice(-5);
 
-      // Fetch suggested responses based on the updated conversation
       await fetchSuggestedResponses({ conversation: lastFiveMessages, nextCommand });
 
       setInputDisabled(false);
@@ -90,26 +85,39 @@ const Chat = () => {
     }
   };
 
-  const fetchAssistantResponse = async (conversation) => {
-    try {
-      const response = await fetch(`/api/openai/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ conversation }),
-      });
+  const streamAssistantResponse = async (conversation) => {
+    const response = await fetch(`/api/openai/chat/streaming`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ conversation }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data.message.content; // Assuming the returned data is in the `content` field
-    } catch (e) {
-      console.error("Error fetching assistant response", e);
-      return "Sorry, something went wrong.";
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
     }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    // Start a new assistant message
+    appendMessage("assistant", "");
+
+    let assistantMessageContent = "";
+
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      if (value) {
+        const chunk = decoder.decode(value);
+        assistantMessageContent += chunk;
+        appendToLastMessage(chunk);
+      }
+    }
+
+    return assistantMessageContent;
   };
 
   const fetchSuggestedResponses = async ({ conversation, nextCommand }) => {
@@ -133,7 +141,7 @@ const Chat = () => {
 
       setSuggestedResponses(cleanSuggestions);
     } catch (e) {
-      console.error("Error fetching suggested responses", e);
+      console.log(e);
     }
   };
 
@@ -141,18 +149,39 @@ const Chat = () => {
     e.preventDefault();
     if (!userInput.trim()) return;
 
+    appendMessage("user", userInput);
     setSuggestedResponses([]); // Clear suggestions after user input
     sendMessage(userInput);
     setUserInput("");
   };
 
   const handleSuggestedResponseClick = (suggestion) => {
+    appendMessage("user", suggestion);
     setSuggestedResponses([]); // Clear suggestions after user selects one
     sendMessage(suggestion);
     setUserInput("");
   };
 
   /* Utility Functions */
+
+  const appendToLastMessage = (text) => {
+    setMessages((prevMessages) => {
+      if (prevMessages.length === 0) return prevMessages;
+
+      const lastMessage = prevMessages[prevMessages.length - 1];
+
+      // Ensure we're updating the assistant's message
+      if (lastMessage.role !== "assistant") return prevMessages;
+
+      const updatedLastMessage = {
+        ...lastMessage,
+        text: lastMessage.text + text,
+      };
+
+      return [...prevMessages.slice(0, -1), updatedLastMessage];
+    });
+  };
+
   const appendMessage = (role, text) => {
     setMessages((prevMessages) => [...prevMessages, { role, text }]);
   };
