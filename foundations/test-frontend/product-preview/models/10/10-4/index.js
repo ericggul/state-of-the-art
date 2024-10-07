@@ -5,7 +5,7 @@ import { Suspense, useMemo } from "react";
 // Constants defining the structure
 const NUM_ENCODER_LAYERS = 6; // Number of encoder layers
 const NUM_DECODER_LAYERS = 6; // Number of decoder layers
-const NUM_ENCODER_DECODER_PAIRS = 10; // Number of encoder-decoder pairs
+const NUM_ENCODER_DECODER_PAIRS = 100; // Number of encoder-decoder pairs
 const STACK_SPACING_X = 60; // Horizontal spacing between encoder-decoder pairs
 const STACK_SPACING_Z = 100; // Vertical spacing along Z-axis (height between encoder and decoder)
 
