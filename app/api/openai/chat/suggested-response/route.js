@@ -5,58 +5,61 @@ const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
 });
 
-const SYSTEM_COMMAND = `
+const getSystemCommand = (nextCommand) => `
 ${SYSTEM_DESCRIPTION}
 
-As the assistant, your task is to generate 2-3 concise and contextually appropriate user replies that would logically follow in this conversation. Provide these suggestions as a JSON array under the key "suggestions", without any additional text or explanation.
+As the assistant, your task is to generate 2-3 concise and contextually appropriate user replies that would logically follow in this conversation. These replies should nudge the user towards the following action: ${nextCommand}. Provide these suggestions as a JSON array under the key "suggestions", without any additional text or explanation.
 `;
 
 export async function POST(req) {
-  const { text } = await req.json();
+  const { conversation, nextCommand } = await req.json();
 
   try {
+    // Build the messages array
+    const messages = [
+      {
+        role: "system",
+        content: getSystemCommand(nextCommand),
+      },
+      ...conversation,
+    ];
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: [
+      messages: messages,
+      tools: [
         {
-          role: "system",
-          content: SYSTEM_COMMAND,
-        },
-        {
-          role: "assistant",
-          content: text,
-        },
-      ],
-      functions: [
-        {
-          name: "generate_suggested_responses",
-          description: "Generate 2-3 short (Within 5 words) suggested user responses.",
-          parameters: {
-            type: "object",
-            properties: {
-              suggestions: {
-                type: "array",
-                items: {
-                  type: "string",
+          type: "function",
+          function: {
+            name: "generate_suggested_responses",
+            description: "Generate 2-3 short (Within 5 words) suggested user responses.",
+            parameters: {
+              type: "object",
+              properties: {
+                suggestions: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of suggested user responses.",
                 },
-                description: "Array of suggested user responses.",
               },
+              required: ["suggestions"],
             },
-            required: ["suggestions"],
           },
         },
       ],
-      function_call: { name: "generate_suggested_responses" },
+
+      tool_choice: "required",
     });
 
     const message = completion.choices[0].message;
-    console.log(message);
 
     let suggestedResponses = [];
 
-    if (message.function_call && message.function_call.name === "generate_suggested_responses") {
+    if (message.tool_calls && message.tool_calls[0].function.name === "generate_suggested_responses") {
       // Parse the arguments
-      const args = JSON.parse(message.function_call.arguments);
+      const args = JSON.parse(message.tool_calls[0].function.arguments);
       suggestedResponses = args.suggestions;
     }
 

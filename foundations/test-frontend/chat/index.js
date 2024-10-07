@@ -16,11 +16,13 @@ const Message = ({ role, text }) => {
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [inputDisabled, setInputDisabled] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(true); // Start with input disabled
   const [currentStep, setCurrentStep] = useState(0);
-  const [suggestedResponses, setSuggestedResponses] = useState([]); // Added state for suggested responses
+  const [suggestedResponses, setSuggestedResponses] = useState([]);
+  const [showInput, setShowInput] = useState(false); // Start with input hidden
+  const [placeholderText, setPlaceholderText] = useState("What's your name?"); // Initial placeholder
   const messagesEndRef = useRef(null);
-  const hasSentInitialMessage = useRef(false); // Ref to track initial message
+  const hasSentInitialMessage = useRef(false);
 
   // Scroll to the bottom automatically
   useEffect(() => {
@@ -31,10 +33,11 @@ const Chat = () => {
   useEffect(() => {
     if (!hasSentInitialMessage.current) {
       hasSentInitialMessage.current = true;
-      // Optionally delay the initial message by 1 second
+      setInputDisabled(true);
+      setShowInput(false); // Hide input during initial delay
       setTimeout(() => {
         sendMessage("");
-      }, 1000);
+      }, 1000); // 1-second delay
     }
   }, []);
 
@@ -55,16 +58,27 @@ const Chat = () => {
         conversation.push({ role: "user", content: text });
       }
 
-      // Stream assistant's response
-      await streamAssistantResponse(conversation);
+      // Stream assistant's response and get the full assistant message
+      const assistantMessage = await streamAssistantResponse(conversation);
 
       // Proceed to the next step in the SYSTEM_SCRIPT after receiving input
       setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
 
-      // Fetch suggested responses after assistant's message
-      await fetchSuggestedResponses();
+      // Prepare updated conversation including the assistant's latest message
+      const updatedConversation = [...conversation, { role: "assistant", content: assistantMessage }];
+
+      // Get the last 5 messages for context
+      const lastFiveMessages = updatedConversation.slice(-5);
+
+      await fetchSuggestedResponses({ conversation: lastFiveMessages, nextCommand });
 
       setInputDisabled(false);
+
+      // Show input and update placeholder after initial assistant message
+      if (currentStep === 0) {
+        setShowInput(true);
+        setPlaceholderText("Enter your message...");
+      }
     } catch (err) {
       console.error("Error sending message:", err.message);
       setInputDisabled(false);
@@ -91,34 +105,44 @@ const Chat = () => {
     // Start a new assistant message
     appendMessage("assistant", "");
 
+    let assistantMessageContent = "";
+
     while (!done) {
       const { value, done: doneReading } = await reader.read();
       done = doneReading;
       if (value) {
         const chunk = decoder.decode(value);
+        assistantMessageContent += chunk;
         appendToLastMessage(chunk);
       }
     }
+
+    return assistantMessageContent;
   };
 
-  const fetchSuggestedResponses = async () => {
-    // Get the assistant's last message
-    const assistantLastMessage = messages.filter((msg) => msg.role === "assistant").slice(-1)[0]?.text || "";
+  const fetchSuggestedResponses = async ({ conversation, nextCommand }) => {
+    try {
+      const response = await fetch(`/api/openai/chat/suggested-response`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ conversation, nextCommand }),
+      });
 
-    const response = await fetch(`/api/openai/chat/suggested-response`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: assistantLastMessage }),
-    });
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.statusText}`);
+      const data = await response.json();
+
+      // Prevent suggestions from containing single or double quotes
+      const cleanSuggestions = (data.suggestions || []).map((suggestion) => suggestion.replace(/['"]/g, ""));
+
+      setSuggestedResponses(cleanSuggestions);
+    } catch (e) {
+      console.log(e);
     }
-
-    const data = await response.json();
-    setSuggestedResponses(data.suggestions || []);
   };
 
   const handleSubmit = (e) => {
@@ -182,12 +206,15 @@ const Chat = () => {
         </S.SuggestedResponses>
       )}
 
-      <S.InputForm onSubmit={handleSubmit}>
-        <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder="Enter your message..." disabled={inputDisabled} />
-        <S.Button type="submit" disabled={inputDisabled}>
-          Send
-        </S.Button>
-      </S.InputForm>
+      {/* Conditionally render the input form */}
+      {showInput && (
+        <S.InputForm onSubmit={handleSubmit}>
+          <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={placeholderText} disabled={inputDisabled} />
+          <S.Button type="submit" disabled={inputDisabled}>
+            Send
+          </S.Button>
+        </S.InputForm>
+      )}
     </S.Container>
   );
 };
