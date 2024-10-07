@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles"; // Import all styles as `S`
+import { SYSTEM_DESCRIPTION, SYSTEM_ENSURMENT, SYSTEM_SCRIPT } from "./constant";
 
 // Utility function to map different message roles
 const Message = ({ role, text }) => {
@@ -27,8 +28,9 @@ const Message = ({ role, text }) => {
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]); // Store the entire conversation
-  const [systemText, setSystemText] = useState("Hello World System!"); // Custom system text
+
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0); // Track script step
   const messagesEndRef = useRef(null);
 
   // Scroll to the bottom of the chat automatically
@@ -43,12 +45,19 @@ const Chat = () => {
     try {
       setInputDisabled(true); // Disable input while fetching
 
-      // Send the entire conversation, including user and assistant messages
+      const nextCommand = SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
+
+      console.log(currentStep, nextCommand);
+
       const conversation = [
-        ...messages.map((msg) => ({ role: msg.role, content: msg.text })),
-        { role: "system", content: systemText },
+        { role: "system", content: SYSTEM_DESCRIPTION },
+        ...messages.map((msg) => ({ role: msg.role, content: msg.text })).slice(-10),
+        { role: "system", content: SYSTEM_ENSURMENT }, // System ensurment to follow script
+        { role: "system", content: `COMMAND: ${nextCommand}` },
         { role: "user", content: text }, // Include the new user input
       ];
+
+      console.log(conversation, "61");
 
       const response = await fetch(`/api/openai/chat-1`, {
         method: "POST",
@@ -71,7 +80,6 @@ const Chat = () => {
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
-        console.log(value, done);
         done = doneReading;
         if (value) {
           const chunk = decoder.decode(value);
@@ -79,14 +87,15 @@ const Chat = () => {
         }
       }
 
+      // Proceed to the next step in the SYSTEM_SCRIPT after receiving input
+      setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
+
       setInputDisabled(false); // Re-enable input after fetching
     } catch (err) {
       console.error("Error sending message:", err.message);
       setInputDisabled(false);
     }
   };
-
-  console.log("input disanbled", inputDisabled);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,11 +132,6 @@ const Chat = () => {
         ))}
         <div ref={messagesEndRef} />
       </S.Messages>
-
-      {/* Input for system text (can be hidden if not needed) */}
-      <S.InputForm>
-        <S.Input type="text" value={systemText} onChange={(e) => setSystemText(e.target.value)} placeholder="System Text" />
-      </S.InputForm>
 
       <S.InputForm onSubmit={handleSubmit}>
         <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder="Enter your message..." disabled={inputDisabled} />
