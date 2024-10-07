@@ -14,6 +14,8 @@ export const Container = styled.div`
   width: 100vw;
   padding: ${vw(20)} ${vw(16)};
   box-sizing: border-box;
+
+  transition: all 0.5s;
 `;
 
 // Container for the messages with scrolling capability
@@ -27,56 +29,8 @@ export const Messages = styled.div`
   justify-content: flex-end;
   box-sizing: border-box;
   white-space: pre-wrap;
-`;
 
-// Form containing the input and send button
-export const InputForm = styled.form`
-  display: flex;
-  width: 100%;
-  padding: ${vw(8)} 0;
-  box-sizing: border-box;
-  align-items: center;
-`;
-
-// Text input for user messages
-export const Input = styled.input`
-  flex-grow: 1;
-  padding: ${vw(10)};
-  margin-right: ${vw(10)};
-  border: 1px solid #444;
-  border-radius: 8px;
-  background-color: #000;
-  color: #fff;
-  font-size: 1rem;
-  font-family: "Cardo", serif;
-  text-align: center;
-
-  &:focus {
-    outline: none;
-    border-color: #888;
-  }
-
-  &:disabled {
-    background-color: #333;
-    cursor: not-allowed;
-  }
-`;
-
-// Send button
-export const Button = styled.button`
-  padding: ${vw(10)} ${vw(16)};
-  background-color: #444;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: "Cardo", serif;
-  cursor: pointer;
-
-  &:disabled {
-    background-color: grey;
-    cursor: not-allowed;
-  }
+  transition: all 0.5s;
 `;
 
 // User message aligned to the right (without background)
@@ -138,13 +92,13 @@ export const SuggestedResponses = styled.div`
 
 // Suggested response button styling
 export const SuggestedResponseButton = styled.button`
-  background-color: #333;
-  color: #fff;
+  background-color: #111;
+  color: #aaa;
   border: 1px solid #444;
-  border-radius: 12px;
-  padding: ${vw(6)} ${vw(12)};
-  margin: ${vw(4)};
-  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: ${vw(4)} ${vw(8)};
+  margin: ${vw(4)} ${vw(4)};
+  font-size: 0.8rem;
   font-family: "Cardo", serif;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
@@ -162,5 +116,66 @@ export const SuggestedResponseButton = styled.button`
   &:focus {
     outline: none;
     border-color: #aaa;
+  }
+`;
+
+// Form containing the input and send button
+export const InputForm = styled.form`
+  display: flex;
+  width: 100%;
+  padding: ${vw(8)} ${vw(20)};
+  box-sizing: border-box;
+  align-items: center;
+`;
+
+// Text input for user messages
+export const Input = styled.input`
+  flex-grow: 1;
+  padding: ${vw(10)};
+  margin-right: ${vw(10)};
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #000;
+  color: #fff;
+  font-size: 1rem;
+  font-family: "Cardo", serif;
+  text-align: center;
+  box-shadow: inset 0 0 0.1rem white;
+
+  //placeholder
+  &::placeholder {
+    font-size: 0.85rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #888;
+  }
+
+  &:disabled {
+    background-color: #333;
+    cursor: not-allowed;
+  }
+`;
+
+// Send button
+export const Button = styled.button`
+  padding: ${vw(10)} ${vw(20)};
+
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "Cardo", serif;
+  cursor: pointer;
+  font-style: italic;
+
+  &:disabled {
+    background-color: black;
+    opacity: 0.3;
+
+    transition: all 0.5s;
+    cursor: not-allowed;
   }
 `;

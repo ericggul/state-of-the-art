@@ -75,8 +75,8 @@ const Chat = () => {
       setInputDisabled(false);
 
       // Show input and update placeholder after initial assistant message
-      if (currentStep === 0) {
-        setShowInput(true);
+      setShowInput(true);
+      if (currentStep >= 1) {
         setPlaceholderText("Enter your message...");
       }
     } catch (err) {
@@ -86,7 +86,7 @@ const Chat = () => {
   };
 
   const streamAssistantResponse = async (conversation) => {
-    const response = await fetch(`/api/openai/chat`, {
+    const response = await fetch(`/api/openai/chat/streaming`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -196,7 +196,7 @@ const Chat = () => {
       </S.Messages>
 
       {/* Display suggested responses */}
-      {suggestedResponses.length > 0 && (
+      {currentStep >= 2 && suggestedResponses.length > 0 && (
         <S.SuggestedResponses>
           {suggestedResponses.map((suggestion, index) => (
             <S.SuggestedResponseButton key={index} onClick={() => handleSuggestedResponseClick(suggestion)}>
@@ -209,7 +209,7 @@ const Chat = () => {
       {/* Conditionally render the input form */}
       {showInput && (
         <S.InputForm onSubmit={handleSubmit}>
-          <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={placeholderText} disabled={inputDisabled} />
+          <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={inputDisabled ? "" : placeholderText} disabled={inputDisabled} />
           <S.Button type="submit" disabled={inputDisabled}>
             Send
           </S.Button>
