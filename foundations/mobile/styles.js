@@ -33,55 +33,6 @@ export const Messages = styled.div`
   transition: all 0.5s;
 `;
 
-// User message aligned to the right (without background)
-export const UserMessage = styled.div`
-  margin: ${vw(8)} ${vw(16)};
-  padding: ${vw(8)} ${vw(16)};
-  border-radius: 15px;
-  color: #fff;
-  font-style: italic;
-  font-size: 1rem;
-  font-family: "Cardo", serif;
-  max-width: 75%;
-  align-self: flex-end; /* Align message to the right */
-  text-align: right;
-`;
-
-// Assistant message aligned to the left (without background)
-export const AssistantMessage = styled.div`
-  margin: ${vw(8)} ${vw(16)};
-  padding: ${vw(8)} ${vw(16)};
-  border-radius: 15px;
-  color: #aaa;
-  font-size: 1rem;
-  font-family: "Cardo", serif;
-  max-width: 75%;
-  align-self: flex-start; /* Align message to the left */
-  text-align: left;
-`;
-
-// Code message block with preserved formatting
-export const CodeMessage = styled.pre`
-  margin: ${vw(8)} ${vw(16)};
-  padding: ${vw(10)} ${vw(16)};
-  border-radius: 15px;
-  color: #b8b8b8;
-  font-family: "Courier New", monospace;
-  font-size: 0.9rem;
-  max-width: 80%;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-
-  & > div {
-    margin-top: ${vw(4)};
-  }
-
-  span {
-    color: #888;
-    margin-right: ${vw(8)};
-  }
-`;
-
 // Suggested responses container
 export const SuggestedResponses = styled.div`
   display: flex;

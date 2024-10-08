@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const Chat = dynamic(() => import("@/foundations/test-frontend/chat"));
+const Chat = dynamic(() => import("@/foundations/mobile"));
 
 export default function ChatPage() {
   return (

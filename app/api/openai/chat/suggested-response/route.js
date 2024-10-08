@@ -1,55 +1,56 @@
 import OpenAI from "openai";
-import { SYSTEM_DESCRIPTION } from "@/foundations/test-frontend/chat/constant";
+import { SYSTEM_DESCRIPTION } from "@/foundations/mobile/constant";
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
 });
 
-const getSystemCommand = (nextCommand) => `
-${SYSTEM_DESCRIPTION}
-
-As the assistant, your task is to generate 2-3 concise and contextually appropriate user replies that would logically follow in this conversation. These replies should nudge the user towards the following action: ${nextCommand}. Provide these suggestions as a JSON array under the key "suggestions", without any additional text or explanation.
-`;
-
 export async function POST(req) {
-  const { conversation, nextCommand } = await req.json();
+  const { conversation, nextCommand, requestedNum = 3 } = await req.json();
 
   try {
     // Build the messages array
+
+    const command = `
+    ${SYSTEM_DESCRIPTION}
+    As the assistant, your task is to generate ${requestedNum} concise and contextually appropriate user replies that would logically follow in this conversation. These replies should nudge the user towards the following action: ${nextCommand}. Provide these suggestions as a JSON array under the key "suggestions", without any additional text or explanation.
+    `;
+
     const messages = [
       {
         role: "system",
-        content: getSystemCommand(nextCommand),
+        content: command,
       },
       ...conversation,
     ];
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: messages,
-      tools: [
-        {
-          type: "function",
-          function: {
-            name: "generate_suggested_responses",
-            description: "Generate 2-3 short (Within 5 words) suggested user responses.",
-            parameters: {
-              type: "object",
-              properties: {
-                suggestions: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                  },
-                  description: "Array of suggested user responses.",
+    const tools = [
+      {
+        type: "function",
+        function: {
+          name: "generate_suggested_responses",
+          description: `Generate ${requestedNum} short (Within 5 words) suggested user responses.`,
+          parameters: {
+            type: "object",
+            properties: {
+              suggestions: {
+                type: "array",
+                items: {
+                  type: "string",
                 },
+                description: "Array of suggested user responses.",
               },
-              required: ["suggestions"],
             },
+            required: ["suggestions"],
           },
         },
-      ],
+      },
+    ];
 
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages,
+      tools,
       tool_choice: "required",
     });
 

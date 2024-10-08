@@ -67,6 +67,7 @@ const Chat = () => {
 
       // Append the assistant's message to the conversation
       appendMessage("assistant", assistantMessage);
+      setInputDisabled(false);
 
       // Prepare updated conversation including the assistant's latest message
       const updatedConversation = [...conversation, { role: "assistant", content: assistantMessage }];
@@ -76,8 +77,6 @@ const Chat = () => {
 
       // Fetch suggested responses based on the updated conversation
       await fetchSuggestedResponses({ conversation: lastFiveMessages, nextCommand });
-
-      setInputDisabled(false);
 
       // Show input and update placeholder after initial assistant message
       setShowInput(true);
@@ -119,7 +118,7 @@ const Chat = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ conversation, nextCommand }),
+        body: JSON.stringify({ conversation, nextCommand, requestedNum: 3 }),
       });
 
       if (!response.ok) {

@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 
-const Chat = dynamic(() => import("@/foundations/test-frontend/chat"));
-const ChatStream = dynamic(() => import("@/foundations/test-frontend/chat/stream"));
+const Chat = dynamic(() => import("@/foundations/mobile"));
+const ChatStream = dynamic(() => import("@/foundations/mobile/stream"));
 
 import { useParams } from "next/navigation";
 

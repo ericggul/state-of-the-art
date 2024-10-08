@@ -2,13 +2,13 @@
 
 import * as S from "./styles";
 
-import { DUMMY_CONVERSATION } from "./constant";
+import MobileEl from "@/foundations/mobile";
 
 export default function Mobile() {
   return (
     <>
       <S.Container>
-        <h1>Mobile</h1>
+        <MobileEl />
       </S.Container>
     </>
   );
