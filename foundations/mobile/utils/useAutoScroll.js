@@ -6,7 +6,7 @@ export const useAutoScroll = (dependencies) => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, dependencies);
+  }, [dependencies]); // Wrap dependencies in an array
 
   return messagesEndRef;
 };
