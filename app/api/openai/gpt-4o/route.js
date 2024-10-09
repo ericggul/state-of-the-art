@@ -8,6 +8,7 @@ export async function POST(req) {
   const { text, params } = await req.json();
 
   try {
+    console.log("11", text);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -25,6 +26,7 @@ export async function POST(req) {
       top_logprobs: 20,
       ...params,
     });
+    console.log(completion);
 
     return Response.json(completion.choices[0]);
   } catch (error) {

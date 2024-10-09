@@ -3,6 +3,7 @@ import axios from "axios";
 
 export default async function getSpeech({ text }) {
   try {
+    console.log("6");
     const audioRes = await axios.post("/api/azure-tts-fast", { text }, { responseType: "blob" });
 
     // Get audio as blob

@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import getTTS from "@/foundations/test-backend/utils/getTTS";
 
-const INITIAL_TEXT = `Is AI the brightness for the humanity?`;
+const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
 
 export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
   const [getNewText, setGetNewText] = useState(true);
@@ -22,18 +21,16 @@ export default function useConversation({ conversations, setConversations, setEm
   async function fetchText(conversations) {
     try {
       const text =
-        conversations.length < 10
+        conversations.length < 6
           ? INITIAL_TEXT + conversations.map((el) => el.message.content).join(" ")
           : conversations
               .map((el) => el.message.content)
-              .slice(-10)
+              .slice(-6)
               .join(" ");
 
       setGetNewText(false);
 
-      console.log(text);
-
-      const response = await axios.post("/api/openai/gpt-4o-mini", {
+      const response = await axios.post("/api/openai/gpt-4o-poem", {
         text,
       });
 
@@ -43,7 +40,6 @@ export default function useConversation({ conversations, setConversations, setEm
 
       setConversations((prev) => [...prev, response.data]);
       const resultText = response.data.message.content;
-      getTTS({ text: resultText });
 
       // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
@@ -57,7 +53,7 @@ export default function useConversation({ conversations, setConversations, setEm
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 3500));
+    await new Promise((r) => setTimeout(r, 1500));
     hasFetchedText.current = false;
     setGetNewText(true);
   }
@@ -97,7 +93,7 @@ export default function useConversation({ conversations, setConversations, setEm
       const tokensToFetch = tokens.filter((token) => !embeddingsCache.current[token]);
 
       // Limit the number of concurrent requests to prevent rate limiting
-      const CONCURRENT_REQUESTS_LIMIT = 10;
+      const CONCURRENT_REQUESTS_LIMIT = 8;
 
       // Function to process tokens in batches
       const processBatch = async (batch) => {
