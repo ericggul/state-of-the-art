@@ -7,36 +7,11 @@ const openai = new OpenAI({
 export async function POST(req) {
   const { conversation } = await req.json(); // Retrieve the conversation from the request body
 
-  const tools = [
-    {
-      type: "function",
-      function: {
-        name: "type",
-        description: `Generate 3 short (Within 5 words) suggested user responses.`,
-        parameters: {
-          type: "object",
-          properties: {
-            suggestions: {
-              type: "array",
-              items: {
-                type: "string",
-              },
-              description: "Array of suggested user responses.",
-            },
-          },
-          required: ["suggestions"],
-        },
-      },
-    },
-  ];
-
   try {
     // Make the API call to OpenAI for non-streaming response
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: conversation, // Send the entire conversation history
-      // tools,
-      // tool_choice: "required",
     });
 
     // Return the full completion response instead of streaming it
