@@ -67,7 +67,7 @@ const Chat = () => {
 
   const fetchAssistantResponse = async (conversation) => {
     try {
-      const response = await fetch(`/api/langchain/test2`, {
+      const response = await fetch(`/api/langchain/v1`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
