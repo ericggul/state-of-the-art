@@ -14,6 +14,7 @@ const Chat = () => {
   );
   const messagesEndRef = useRef(null);
   const initialMessageSent = useRef(false);
+  const [recommendedResponses, setRecommendedResponses] = useState([]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -45,9 +46,10 @@ const Chat = () => {
         });
       }
 
-      const assistantMessage = await fetchAssistantResponse(conversation);
+      const assistantResponse = await fetchAssistantResponse(conversation);
 
-      appendMessage("assistant", assistantMessage);
+      appendMessage("assistant", assistantResponse.content);
+      setRecommendedResponses(assistantResponse.recommended_responses);
       setInputDisabled(false);
       setShowInput(true);
     } catch (err) {
@@ -75,13 +77,16 @@ const Chat = () => {
       if (data.error) {
         throw new Error(`API Error: ${data.error}`);
       }
-      if (!data.content) {
-        throw new Error("Unexpected response format: missing content");
+      if (!data.content || !data.recommended_responses) {
+        throw new Error("Unexpected response format");
       }
-      return data.content;
+      return data;
     } catch (e) {
       console.error("Error fetching assistant response", e);
-      return "Sorry, something went wrong.";
+      return {
+        content: "Sorry, something went wrong.",
+        recommended_responses: [],
+      };
     }
   };
 
@@ -107,18 +112,30 @@ const Chat = () => {
       </S.Messages>
 
       {showInput && (
-        <S.InputForm onSubmit={handleSubmit}>
-          <S.Input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder={inputDisabled ? "" : placeholderText}
-            disabled={inputDisabled}
-          />
-          <S.Button type="submit" disabled={inputDisabled}>
-            Send
-          </S.Button>
-        </S.InputForm>
+        <>
+          <S.SuggestedResponses>
+            {recommendedResponses.map((response, index) => (
+              <S.SuggestedResponseButton
+                key={index}
+                onClick={() => sendMessage(response)}
+              >
+                {response}
+              </S.SuggestedResponseButton>
+            ))}
+          </S.SuggestedResponses>
+          <S.InputForm onSubmit={handleSubmit}>
+            <S.Input
+              type="text"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder={inputDisabled ? "" : placeholderText}
+              disabled={inputDisabled}
+            />
+            <S.Button type="submit" disabled={inputDisabled}>
+              Send
+            </S.Button>
+          </S.InputForm>
+        </>
       )}
     </S.Container>
   );

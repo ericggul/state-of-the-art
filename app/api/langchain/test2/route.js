@@ -1,5 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { z } from "zod";
 
 import {
   SYSTEM_DESCRIPTION,
@@ -23,36 +24,44 @@ Current conversation:
 {chat_history}
 
 user: {input}
-assistant:`;
+assistant: Provide a response to the user's input and suggest three recommended follow-up messages.`;
 
 export async function POST(req) {
   try {
-    // Extract the `messages` from the body of the request
     const { messages } = await req.json();
 
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
     const currentMessageContent = messages.at(-1).content;
 
+    console.log(formattedPreviousMessages, currentMessageContent);
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+
+    console.log(prompt, TEMPLATE);
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      model: "gpt-3.5-turbo",
-      temperature: 0.8,
+      model: "gpt-4o",
     });
 
-    const chain = prompt.pipe(model);
+    const schema = z.object({
+      content: z.string().describe("The main response to the user's input"),
+      recommended_responses: z
+        .array(z.string())
+        .describe("Three recommended follow-up messages for the user"),
+    });
 
-    // Get the full response
+    const functionCallingModel = model.withStructuredOutput(schema);
+
+    const chain = prompt.pipe(functionCallingModel);
+
     const response = await chain.invoke({
       chat_history: formattedPreviousMessages.join("\n"),
       input: currentMessageContent,
     });
 
-    // Respond with the full content
-    return Response.json({ content: response.content });
+    return Response.json(response);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return Response.json({ error: e.message }, { status: e.status ?? 500 });
   }
 }
