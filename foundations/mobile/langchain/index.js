@@ -2,36 +2,27 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import {
-  SYSTEM_DESCRIPTION,
-  SYSTEM_ENSURMENT,
-  SYSTEM_SCRIPT,
-} from "../constant";
-
 import { Message } from "../message";
 
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(true);
-  const [currentStep, setCurrentStep] = useState(0);
   const [showInput, setShowInput] = useState(false);
-  const [placeholderText, setPlaceholderText] = useState("What's your name?");
+  const [placeholderText, setPlaceholderText] = useState(
+    "Enter your message..."
+  );
   const messagesEndRef = useRef(null);
-  const hasSentInitialMessage = useRef(false);
+  const initialMessageSent = useRef(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    if (!hasSentInitialMessage.current) {
-      hasSentInitialMessage.current = true;
-      setInputDisabled(true);
-      setShowInput(false);
-      setTimeout(() => {
-        sendMessage("");
-      }, 1000);
+    if (!initialMessageSent.current) {
+      initialMessageSent.current = true;
+      sendMessage("");
     }
   }, []);
 
@@ -39,45 +30,36 @@ const Chat = () => {
     try {
       setInputDisabled(true);
 
-      const nextCommand =
-        SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
-
       const conversation = [
-        { role: "system", content: SYSTEM_DESCRIPTION },
-        ...messages
-          .map((msg) => ({ role: msg.role, content: msg.text }))
-          .slice(-10),
-        { role: "system", content: SYSTEM_ENSURMENT },
-        { role: "system", content: `COMMAND: ${nextCommand}` },
+        ...messages.map((msg) => ({ role: msg.role, content: msg.text })),
       ];
 
       if (text) {
         conversation.push({ role: "user", content: text });
         appendMessage("user", text);
+      } else {
+        // Handle the case for the initial empty message
+        conversation.push({
+          role: "system",
+          content: "Start the conversation.",
+        });
       }
 
       const assistantMessage = await fetchAssistantResponse(conversation);
 
-      setCurrentStep((prevStep) =>
-        Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1)
-      );
-
       appendMessage("assistant", assistantMessage);
       setInputDisabled(false);
-
       setShowInput(true);
-      if (currentStep >= 1) {
-        setPlaceholderText("Enter your message...");
-      }
     } catch (err) {
       console.error("Error sending message:", err.message);
+      appendMessage("assistant", "Sorry, something went wrong.");
       setInputDisabled(false);
     }
   };
 
   const fetchAssistantResponse = async (conversation) => {
     try {
-      const response = await fetch(`/api/langchain/default`, {
+      const response = await fetch(`/api/langchain/test2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,6 +72,12 @@ const Chat = () => {
       }
 
       const data = await response.json();
+      if (data.error) {
+        throw new Error(`API Error: ${data.error}`);
+      }
+      if (!data.content) {
+        throw new Error("Unexpected response format: missing content");
+      }
       return data.content;
     } catch (e) {
       console.error("Error fetching assistant response", e);
