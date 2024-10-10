@@ -4,6 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
 import { Message } from "../message";
 
+import {
+  SYSTEM_DESCRIPTION,
+  SYSTEM_ENSURMENT,
+  SYSTEM_SCRIPT,
+} from "@/foundations/mobile/constant";
+
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -42,7 +48,7 @@ const Chat = () => {
         // Handle the case for the initial empty message
         conversation.push({
           role: "system",
-          content: "Start the conversation.",
+          content: SYSTEM_ENSURMENT,
         });
       }
 

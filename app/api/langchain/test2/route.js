@@ -33,10 +33,11 @@ export async function POST(req) {
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
     const currentMessageContent = messages.at(-1).content;
 
-    console.log(formattedPreviousMessages, currentMessageContent);
-    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    //console log them
+    console.log("formattedPreviousMessages", formattedPreviousMessages);
+    console.log("currentMessageContent", currentMessageContent);
 
-    console.log(prompt, TEMPLATE);
+    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
