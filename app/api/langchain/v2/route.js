@@ -64,11 +64,11 @@ export async function POST(req) {
     const schema = z.object({
       content: z.string().describe("The main response to the user's input"),
       responseType: z
-        .enum(["ask", "introduce", "explainArch", "discuss", "comapre"])
+        .enum(["ask", "introduce", "explainArch", "discuss", "compare"])
         .describe("The type of response provided"),
       currentArchitecture: z
-        .string()
-        .describe("The current architecture being discussed"),
+        .array(z.string())
+        .describe("An array of current architectures being discussed"),
       recommended_responses: z
         .array(z.string())
         .describe(

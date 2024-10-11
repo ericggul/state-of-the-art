@@ -8,7 +8,7 @@ import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "@/foundations/mobile/constant";
+} from "@/foundations/mobile/constant/v1";
 
 const Chat = () => {
   const [userInput, setUserInput] = useState("");

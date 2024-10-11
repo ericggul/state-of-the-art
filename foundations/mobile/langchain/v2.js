@@ -8,7 +8,7 @@ import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "@/foundations/mobile/constant";
+} from "@/foundations/mobile/constant/v2";
 
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
@@ -21,9 +21,10 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const initialMessageSent = useRef(false);
   const [recommendedResponses, setRecommendedResponses] = useState([]);
-  const [currentArchitecture, setCurrentArchitecture] = useState("");
+  const [currentArchitectures, setCurrentArchitectures] = useState([]);
 
-  console.log("current", currentArchitecture);
+  console.log("current architectures", currentArchitectures);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -59,7 +60,7 @@ const Chat = () => {
 
       appendMessage("assistant", assistantResponse.content);
       setRecommendedResponses(assistantResponse.recommended_responses);
-      setCurrentArchitecture(assistantResponse.currentArchitecture);
+      setCurrentArchitectures(assistantResponse.currentArchitecture);
       setInputDisabled(false);
       setShowInput(true);
 

@@ -1,6 +1,10 @@
 // useChatLogic.js
 import { useState, useEffect, useRef } from "react";
-import { SYSTEM_DESCRIPTION, SYSTEM_ENSURMENT, SYSTEM_SCRIPT } from "../constant";
+import {
+  SYSTEM_DESCRIPTION,
+  SYSTEM_ENSURMENT,
+  SYSTEM_SCRIPT,
+} from "../constant/v1";
 import { fetchAssistantResponse } from "./api";
 
 export const useChatLogic = () => {
@@ -27,11 +31,14 @@ export const useChatLogic = () => {
     try {
       setInputDisabled(true);
 
-      const nextCommand = SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
+      const nextCommand =
+        SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
 
       const conversation = [
         { role: "system", content: SYSTEM_DESCRIPTION },
-        ...messages.map((msg) => ({ role: msg.role, content: msg.text })).slice(-10),
+        ...messages
+          .map((msg) => ({ role: msg.role, content: msg.text }))
+          .slice(-10),
         { role: "system", content: SYSTEM_ENSURMENT },
         { role: "system", content: `COMMAND: ${nextCommand}` },
       ];
@@ -43,7 +50,9 @@ export const useChatLogic = () => {
 
       const assistantMessage = await fetchAssistantResponse(conversation);
 
-      setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
+      setCurrentStep((prevStep) =>
+        Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1)
+      );
       appendMessage("assistant", assistantMessage);
       setInputDisabled(false);
       setShowInput(true);

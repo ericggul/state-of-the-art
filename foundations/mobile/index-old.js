@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import { SYSTEM_DESCRIPTION, SYSTEM_ENSURMENT, SYSTEM_SCRIPT } from "./constant";
+import {
+  SYSTEM_DESCRIPTION,
+  SYSTEM_ENSURMENT,
+  SYSTEM_SCRIPT,
+} from "./constant/v1";
 
 const Message = ({ role, text }) => {
   switch (role) {
@@ -45,11 +49,14 @@ const Chat = () => {
     try {
       setInputDisabled(true);
 
-      const nextCommand = SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
+      const nextCommand =
+        SYSTEM_SCRIPT[currentStep]?.command || "Proceed with custom input.";
 
       const conversation = [
         { role: "system", content: SYSTEM_DESCRIPTION },
-        ...messages.map((msg) => ({ role: msg.role, content: msg.text })).slice(-10),
+        ...messages
+          .map((msg) => ({ role: msg.role, content: msg.text }))
+          .slice(-10),
         { role: "system", content: SYSTEM_ENSURMENT },
         { role: "system", content: `COMMAND: ${nextCommand}` },
       ];
@@ -63,20 +70,28 @@ const Chat = () => {
       const assistantMessage = await fetchAssistantResponse(conversation);
 
       // Proceed to the next step in the SYSTEM_SCRIPT after receiving input
-      setCurrentStep((prevStep) => Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1));
+      setCurrentStep((prevStep) =>
+        Math.min(prevStep + 1, SYSTEM_SCRIPT.length - 1)
+      );
 
       // Append the assistant's message to the conversation
       appendMessage("assistant", assistantMessage);
       setInputDisabled(false);
 
       // Prepare updated conversation including the assistant's latest message
-      const updatedConversation = [...conversation, { role: "assistant", content: assistantMessage }];
+      const updatedConversation = [
+        ...conversation,
+        { role: "assistant", content: assistantMessage },
+      ];
 
       // Get the last 5 messages for context
       const lastFiveMessages = updatedConversation.slice(-6);
 
       // Fetch suggested responses based on the updated conversation
-      await fetchSuggestedResponses({ conversation: lastFiveMessages, nextCommand });
+      await fetchSuggestedResponses({
+        conversation: lastFiveMessages,
+        nextCommand,
+      });
 
       // Show input and update placeholder after initial assistant message
       setShowInput(true);
@@ -128,7 +143,9 @@ const Chat = () => {
       const data = await response.json();
 
       // Prevent suggestions from containing single or double quotes
-      const cleanSuggestions = (data.suggestions || []).map((suggestion) => suggestion.replace(/['"]/g, ""));
+      const cleanSuggestions = (data.suggestions || []).map((suggestion) =>
+        suggestion.replace(/['"]/g, "")
+      );
 
       setSuggestedResponses(cleanSuggestions);
     } catch (e) {
@@ -169,7 +186,10 @@ const Chat = () => {
       {currentStep >= 2 && suggestedResponses.length > 0 && (
         <S.SuggestedResponses>
           {suggestedResponses.map((suggestion, index) => (
-            <S.SuggestedResponseButton key={index} onClick={() => handleSuggestedResponseClick(suggestion)}>
+            <S.SuggestedResponseButton
+              key={index}
+              onClick={() => handleSuggestedResponseClick(suggestion)}
+            >
               {suggestion}
             </S.SuggestedResponseButton>
           ))}
@@ -179,7 +199,13 @@ const Chat = () => {
       {/* Conditionally render the input form */}
       {showInput && (
         <S.InputForm onSubmit={handleSubmit}>
-          <S.Input type="text" value={userInput} onChange={(e) => setUserInput(e.target.value)} placeholder={inputDisabled ? "" : placeholderText} disabled={inputDisabled} />
+          <S.Input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder={inputDisabled ? "" : placeholderText}
+            disabled={inputDisabled}
+          />
           <S.Button type="submit" disabled={inputDisabled}>
             Send
           </S.Button>
