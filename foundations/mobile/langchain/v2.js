@@ -23,6 +23,7 @@ const Chat = () => {
   const [recommendedResponses, setRecommendedResponses] = useState([]);
   const [currentArchitecture, setCurrentArchitecture] = useState("");
 
+  console.log("current", currentArchitecture);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -42,12 +43,19 @@ const Chat = () => {
         ...messages.map((msg) => ({ role: msg.role, content: msg.text })),
       ];
 
+      conversation.push({
+        role: "system",
+        content: SYSTEM_ENSURMENT,
+      });
+
       if (text) {
         conversation.push({ role: "user", content: text });
         appendMessage("user", text);
       }
 
       const assistantResponse = await fetchAssistantResponse(conversation);
+
+      console.log(assistantResponse);
 
       appendMessage("assistant", assistantResponse.content);
       setRecommendedResponses(assistantResponse.recommended_responses);
@@ -65,7 +73,7 @@ const Chat = () => {
 
   const fetchAssistantResponse = async (conversation) => {
     try {
-      const response = await fetch(`/api/langchain/v1`, {
+      const response = await fetch(`/api/langchain/v2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

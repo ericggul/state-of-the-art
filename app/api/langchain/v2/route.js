@@ -5,8 +5,7 @@ import { z } from "zod";
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
-  SYSTEM_SCRIPT,
-} from "@/foundations/mobile/constant";
+} from "@/foundations/mobile/constant/v2";
 import { ARRAY } from "@/foundations/mobile/constant/models/v1";
 
 export const dynamic = "force-dynamic";
@@ -21,29 +20,38 @@ const formatMessage = (message) => {
 
 const TEMPLATE = `${SYSTEM_DESCRIPTION}
 
-${SYSTEM_ENSURMENT}
-
 You are an AI assistant specializing in neural network architectures. Focus on the following models: ${ARRAY.join(
   ", "
 )}.
 
 Engage in a natural conversation about these architectures. Smoothly transition between different architectures when appropriate. Provide detailed information about the current architecture being discussed.
 
+Guidelines:
+1. Be dynamic, engaging, and fun. Lead the conversation proactively.
+2. Switch to a new architecture after discussing one for about 3-5 exchanges.
+3. When introducing a new architecture, mention its year of foundation and where it was invented.
+4. Never explicitly show numbered options for recommended responses.
+5. Keep the conversation focused on neural network architectures, their applications, and specificities.
+6. If the user's question veers off-topic, gently guide the conversation back to relevant architectures.
+7. Ensure recommended responses are primarily about neural network architectures.
+
 Current conversation:
 {chat_history}
 
 user: {input}
-assistant: Respond to the user's input naturally, focusing on neural network architectures. Determine the most appropriate response type and current architecture based on the conversation context.`;
+assistant: Respond to the user's input naturally, focusing on neural network architectures. If the user's question is off-topic, find a way to relate it back to relevant architectures. Determine the most appropriate response type and current architecture based on the conversation context.`;
 
 export async function POST(req) {
   try {
     const { messages } = await req.json();
 
+    console.log("messages", messages);
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
+    console.log("formattedPreviousMessages", formattedPreviousMessages);
+
     const currentMessageContent = messages.at(-1).content;
 
     //console log them
-    console.log("formattedPreviousMessages", formattedPreviousMessages);
     console.log("currentMessageContent", currentMessageContent);
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
@@ -64,7 +72,7 @@ export async function POST(req) {
       recommended_responses: z
         .array(z.string())
         .describe(
-          "Three recommended follow-up questions or options for the user"
+          "Three recommended follow-up questions or options for the user, primarily about neural network architectures"
         ),
     });
 

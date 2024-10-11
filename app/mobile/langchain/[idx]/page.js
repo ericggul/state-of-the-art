@@ -12,7 +12,10 @@ const versionMap = {
 };
 
 export default function LangchainPage() {
-  const { version } = useParams();
-  const MobileEl = versionMap[version] || MobileElV1;
+  const { idx } = useParams();
+  const version = parseInt(idx, 10);
+
+  const MobileEl = versionMap[version] || MobileElV2;
+
   return <MobileEl />;
 }
