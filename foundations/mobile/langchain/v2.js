@@ -21,6 +21,7 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const initialMessageSent = useRef(false);
   const [recommendedResponses, setRecommendedResponses] = useState([]);
+  const [currentArchitecture, setCurrentArchitecture] = useState("");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,20 +45,17 @@ const Chat = () => {
       if (text) {
         conversation.push({ role: "user", content: text });
         appendMessage("user", text);
-      } else {
-        // Handle the case for the initial empty message
-        conversation.push({
-          role: "system",
-          content: SYSTEM_ENSURMENT,
-        });
       }
 
       const assistantResponse = await fetchAssistantResponse(conversation);
 
       appendMessage("assistant", assistantResponse.content);
       setRecommendedResponses(assistantResponse.recommended_responses);
+      setCurrentArchitecture(assistantResponse.currentArchitecture);
       setInputDisabled(false);
       setShowInput(true);
+
+      // You can use assistantResponse.responseType here if needed
     } catch (err) {
       console.error("Error sending message:", err.message);
       appendMessage("assistant", "Sorry, something went wrong.");
@@ -83,14 +81,13 @@ const Chat = () => {
       if (data.error) {
         throw new Error(`API Error: ${data.error}`);
       }
-      if (!data.content || !data.recommended_responses) {
-        throw new Error("Unexpected response format");
-      }
       return data;
     } catch (e) {
       console.error("Error fetching assistant response", e);
       return {
         content: "Sorry, something went wrong.",
+        responseType: "ask",
+        currentArchitecture: "",
         recommended_responses: [],
       };
     }

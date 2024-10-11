@@ -26,11 +26,30 @@ export const Messages = styled.div`
   padding: ${vw(10)} 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start; // Change from flex-end to flex-start
   box-sizing: border-box;
   white-space: pre-wrap;
 
   transition: all 0.5s;
+
+  // Add these styles for better scrolling
+  max-height: calc(100vh - ${vw(150)}); // Adjust the value as needed
+  scrollbar-width: thin;
+  scrollbar-color: #444 #000;
+
+  &::-webkit-scrollbar {
+    width: ${vw(8)};
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #000;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: ${vw(4)};
+    border: ${vw(2)} solid #000;
+  }
 `;
 
 // Suggested responses container

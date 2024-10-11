@@ -14,6 +14,5 @@ const versionMap = {
 export default function LangchainPage() {
   const { version } = useParams();
   const MobileEl = versionMap[version] || MobileElV1;
-
   return <MobileEl />;
 }

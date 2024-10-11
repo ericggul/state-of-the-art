@@ -7,6 +7,7 @@ import {
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
 } from "@/foundations/mobile/constant";
+import { ARRAY } from "@/foundations/mobile/constant/models/v1";
 
 export const dynamic = "force-dynamic";
 
@@ -20,11 +21,19 @@ const formatMessage = (message) => {
 
 const TEMPLATE = `${SYSTEM_DESCRIPTION}
 
+${SYSTEM_ENSURMENT}
+
+You are an AI assistant specializing in neural network architectures. Focus on the following models: ${ARRAY.join(
+  ", "
+)}.
+
+Engage in a natural conversation about these architectures. Smoothly transition between different architectures when appropriate. Provide detailed information about the current architecture being discussed.
+
 Current conversation:
 {chat_history}
 
 user: {input}
-assistant: Provide a response to the user's input and suggest three recommended follow-up messages.`;
+assistant: Respond to the user's input naturally, focusing on neural network architectures. Determine the most appropriate response type and current architecture based on the conversation context.`;
 
 export async function POST(req) {
   try {
@@ -46,9 +55,17 @@ export async function POST(req) {
 
     const schema = z.object({
       content: z.string().describe("The main response to the user's input"),
+      responseType: z
+        .enum(["ask", "introduce", "explainArch", "discuss"])
+        .describe("The type of response provided"),
+      currentArchitecture: z
+        .string()
+        .describe("The current architecture being discussed"),
       recommended_responses: z
         .array(z.string())
-        .describe("Three recommended follow-up messages for the user"),
+        .describe(
+          "Three recommended follow-up questions or options for the user"
+        ),
     });
 
     const functionCallingModel = model.withStructuredOutput(schema);
