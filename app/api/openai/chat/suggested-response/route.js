@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { SYSTEM_DESCRIPTION } from "@/foundations/mobile/constant";
+import { SYSTEM_DESCRIPTION } from "@/foundations/mobile/constant/v1";
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
@@ -58,7 +58,10 @@ export async function POST(req) {
 
     let suggestedResponses = [];
 
-    if (message.tool_calls && message.tool_calls[0].function.name === "generate_suggested_responses") {
+    if (
+      message.tool_calls &&
+      message.tool_calls[0].function.name === "generate_suggested_responses"
+    ) {
       // Parse the arguments
       const args = JSON.parse(message.tool_calls[0].function.arguments);
       suggestedResponses = args.suggestions;
