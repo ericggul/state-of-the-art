@@ -23,8 +23,6 @@ const Chat = () => {
   const [recommendedResponses, setRecommendedResponses] = useState([]);
   const [currentArchitectures, setCurrentArchitectures] = useState([]);
 
-  console.log("current architectures", currentArchitectures);
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -55,8 +53,6 @@ const Chat = () => {
       }
 
       const assistantResponse = await fetchAssistantResponse(conversation);
-
-      console.log(assistantResponse);
 
       appendMessage("assistant", assistantResponse.content);
       setRecommendedResponses(assistantResponse.recommended_responses);

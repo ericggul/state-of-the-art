@@ -6,7 +6,7 @@ import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
 } from "@/foundations/mobile/constant/v2";
-import { ARRAY } from "@/foundations/mobile/constant/models/v1";
+import { OBJECT_ARRAY } from "@/foundations/mobile/constant/models/v1";
 
 export const dynamic = "force-dynamic";
 
@@ -18,11 +18,15 @@ const formatMessage = (message) => {
   return `${message.role}: ${message.content}`;
 };
 
+// Simple in-memory cache for frequency tracking
+let modelFrequency = new Map(OBJECT_ARRAY.map((model) => [model, 0]));
+let lastResetTime = Date.now();
+
 const TEMPLATE = `${SYSTEM_DESCRIPTION}
 
-You are an AI assistant specializing in neural network architectures. You should strictly focus on the following models: ${ARRAY.join(
-  ", "
-)}.
+You are an AI assistant specializing in neural network architectures. You should strictly focus on the following models: ${OBJECT_ARRAY.map(
+  (m) => `${m.name} (${m.version})`
+).join(", ")}.
 
 Engage in a natural conversation about these architectures. Smoothly transition between different architectures when appropriate. Provide detailed information about the current architecture being discussed.
 
@@ -32,6 +36,7 @@ Guidelines:
 3. When introducing a new architecture, mention its year of foundation and where it was invented.
 4. Never explicitly show numbered options for recommended responses.
 5. Keep the conversation focused on neural network architectures.
+6. Try to introduce less-discussed architectures when appropriate.
 
 Current conversation:
 {chat_history}
@@ -39,20 +44,24 @@ Current conversation:
 user: {input}
 assistant: Respond to the user's input naturally, focusing on neural network architectures. 
 If the user's question is off-topic, find a way to relate it back to relevant architectures. 
-Determine the most appropriate response type and current architecture based on the conversation context.`;
+Determine the most appropriate response type and current architecture based on the conversation context.
+When mentioning an architecture, always include its version.`;
 
 export async function POST(req) {
   try {
     const { messages } = await req.json();
 
-    console.log("messages", messages);
+    // Reset frequency data daily
+    if (Date.now() - lastResetTime > 24 * 60 * 60 * 1000) {
+      modelFrequency = new Map(OBJECT_ARRAY.map((model) => [model, 0]));
+      lastResetTime = Date.now();
+    }
+
     const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
-    console.log("formattedPreviousMessages", formattedPreviousMessages);
 
     const currentMessageContent = messages.at(-1).content;
 
-    //console log them
-    console.log("currentMessageContent", currentMessageContent);
+    //console log the
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
@@ -67,8 +76,15 @@ export async function POST(req) {
         .enum(["ask", "introduce", "explainArch", "discuss", "compare"])
         .describe("The type of response provided"),
       currentArchitecture: z
-        .array(z.string())
-        .describe("An array of current architectures being discussed"),
+        .array(
+          z.object({
+            name: z.string(),
+            version: z.string(),
+          })
+        )
+        .describe(
+          "An array of current architectures being discussed, including their versions"
+        ),
       recommended_responses: z
         .array(z.string())
         .describe(
@@ -95,7 +111,7 @@ export async function POST(req) {
       // Attempt to correct the responseType
       if (
         rawOutput.responseType &&
-        !["ask", "introduce", "explainArch", "discuss"].includes(
+        !["ask", "introduce", "explainArch", "discuss", "compare"].includes(
           rawOutput.responseType
         )
       ) {
@@ -105,6 +121,13 @@ export async function POST(req) {
       // Validate the corrected output against the schema
       response = schema.parse(rawOutput);
     }
+
+    console.log(response.currentArchitecture);
+    // Update frequency
+    response.currentArchitecture.forEach((arch) => {
+      const key = `${arch.name} (${arch.version})`;
+      modelFrequency.set(key, (modelFrequency.get(key) || 0) + 1);
+    });
 
     return Response.json(response);
   } catch (e) {
