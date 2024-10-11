@@ -20,7 +20,7 @@ const formatMessage = (message) => {
 
 const TEMPLATE = `${SYSTEM_DESCRIPTION}
 
-You are an AI assistant specializing in neural network architectures. Focus on the following models: ${ARRAY.join(
+You are an AI assistant specializing in neural network architectures. You should strictly focus on the following models: ${ARRAY.join(
   ", "
 )}.
 
@@ -28,18 +28,18 @@ Engage in a natural conversation about these architectures. Smoothly transition 
 
 Guidelines:
 1. Be dynamic, engaging, and fun. Lead the conversation proactively.
-2. Switch to a new architecture after discussing one for about 3-5 exchanges.
+2. Switch to a new architecture after discussing one for about 1-4 exchanges.
 3. When introducing a new architecture, mention its year of foundation and where it was invented.
 4. Never explicitly show numbered options for recommended responses.
-5. Keep the conversation focused on neural network architectures, their applications, and specificities.
-6. If the user's question veers off-topic, gently guide the conversation back to relevant architectures.
-7. Ensure recommended responses are primarily about neural network architectures.
+5. Keep the conversation focused on neural network architectures.
 
 Current conversation:
 {chat_history}
 
 user: {input}
-assistant: Respond to the user's input naturally, focusing on neural network architectures. If the user's question is off-topic, find a way to relate it back to relevant architectures. Determine the most appropriate response type and current architecture based on the conversation context.`;
+assistant: Respond to the user's input naturally, focusing on neural network architectures. 
+If the user's question is off-topic, find a way to relate it back to relevant architectures. 
+Determine the most appropriate response type and current architecture based on the conversation context.`;
 
 export async function POST(req) {
   try {
@@ -64,7 +64,7 @@ export async function POST(req) {
     const schema = z.object({
       content: z.string().describe("The main response to the user's input"),
       responseType: z
-        .enum(["ask", "introduce", "explainArch", "discuss"])
+        .enum(["ask", "introduce", "explainArch", "discuss", "comapre"])
         .describe("The type of response provided"),
       currentArchitecture: z
         .string()
@@ -80,14 +80,38 @@ export async function POST(req) {
 
     const chain = prompt.pipe(functionCallingModel);
 
-    const response = await chain.invoke({
-      chat_history: formattedPreviousMessages.join("\n"),
-      input: currentMessageContent,
-    });
+    let response;
+    try {
+      response = await chain.invoke({
+        chat_history: formattedPreviousMessages.join("\n"),
+        input: currentMessageContent,
+      });
+    } catch (parseError) {
+      console.error("Parsing error:", parseError);
+
+      // Extract the raw output from the error
+      const rawOutput = JSON.parse(parseError.llmOutput);
+
+      // Attempt to correct the responseType
+      if (
+        rawOutput.responseType &&
+        !["ask", "introduce", "explainArch", "discuss"].includes(
+          rawOutput.responseType
+        )
+      ) {
+        rawOutput.responseType = "discuss"; // Default to 'discuss' if invalid
+      }
+
+      // Validate the corrected output against the schema
+      response = schema.parse(rawOutput);
+    }
 
     return Response.json(response);
   } catch (e) {
     console.error(e);
-    return Response.json({ error: e.message }, { status: e.status ?? 500 });
+    return Response.json(
+      { error: "An error occurred while processing your request" },
+      { status: 500 }
+    );
   }
 }
