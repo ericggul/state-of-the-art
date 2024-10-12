@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
+import { LANGUAGE_MAP } from "./constant/language-map";
 
 const ChatUI = () => {
   const {
@@ -27,6 +28,22 @@ const ChatUI = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const detectLanguage = () => {
+      let fullLanguage = navigator.language || navigator.userLanguage || "en";
+      fullLanguage = "ko";
+      const primaryLanguage = fullLanguage.split("-")[0];
+      try {
+        const languageName = LANGUAGE_MAP[primaryLanguage] || "English";
+        useChatStore.getState().setDeviceLanguage(languageName);
+      } catch (e) {
+        useChatStore.getState().setDeviceLanguage("English");
+      }
+    };
+
+    detectLanguage();
+  }, []);
 
   console.log(currentArchitectures, conversationStage);
   console.log("is accelerometer active", isAccelerometerActive);

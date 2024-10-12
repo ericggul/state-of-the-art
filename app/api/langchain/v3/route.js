@@ -30,6 +30,7 @@ You are an AI museum docent showcasing state-of-the-art neural network architect
 
 Current conversation stage: {stage}
 User's name (if known): {userName}
+Device language: {language}
 
 Strictly follow this conversation structure:
 1. Initial: Ask for the user's name.
@@ -45,28 +46,28 @@ Guidelines:
 2. Use a friendly, clear, and informative tone.
 3. Progress to the next stage only when the current stage is completed.
 4. When introducing an architecture, mention its year and origin.
+5. Always respond in the user's device language: {language}
 
 Current conversation:
 {chat_history}
 
 user: {input}
 
-Respond naturally, focusing on neural networks and the current stage. Your response 'content' should only be the text for the user.
+Respond naturally, focusing on neural networks and the current stage. Your response 'content' should only be the text for the user, always in the specified language.
 
 After generating your response, separately provide the following:
 - responseType: The type of response (ask, introduce, explainArch, discuss, or compare).
 - currentArchitecture: An array of current architectures being discussed, including their versions.
-- recommended_responses: Three recommended follow-up responses relevant to the current stage.
+- recommended_responses: Three recommended follow-up responses relevant to the current stage, in the specified language.
 - nextStage: The next stage of the conversation.
 - userName: The user's name, if provided or determined during the conversation.
 
 Ensure all these additional fields are present in your structured output, but keep them separate from the main response content.
-
 `;
 
 export async function POST(req) {
   try {
-    const { messages, stage, userName } = await req.json();
+    const { messages, stage, userName, language } = await req.json();
 
     // Reset frequency data daily
     if (Date.now() - lastResetTime > 24 * 60 * 60 * 1000) {
@@ -120,10 +121,14 @@ export async function POST(req) {
         input: messages[messages.length - 1].content,
         stage,
         userName,
+        language,
       });
 
       // Sanitize the content field
       response.content = response.content.replace(/\n/g, " ").trim();
+
+      // Remove surrounding quotation marks if present
+      response.content = response.content.replace(/^"(.*)"$/, "$1");
 
       // Ensure userName is an empty string if it's null
       response.userName = response.userName || "";
@@ -153,6 +158,8 @@ export async function POST(req) {
           // Sanitize the content field
           if (rawOutput.content) {
             rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
+            // Remove surrounding quotation marks if present
+            rawOutput.content = rawOutput.content.replace(/^"(.*)"$/, "$1");
           }
 
           // Ensure userName is an empty string if it's null

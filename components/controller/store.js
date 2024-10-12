@@ -8,6 +8,7 @@ const useChatStore = create((set, get) => ({
   conversationStage: "initial",
   userName: "",
   isAccelerometerActive: false,
+  deviceLanguage: "en",
 
   appendMessage: (role, text) =>
     set((state) => ({
@@ -21,6 +22,7 @@ const useChatStore = create((set, get) => ({
   setConversationStage: (stage) => set({ conversationStage: stage }),
   setUserName: (name) => set({ userName: name }),
   setIsAccelerometerActive: (active) => set({ isAccelerometerActive: active }),
+  setDeviceLanguage: (language) => set({ deviceLanguage: language }),
 
   sendMessage: async (text) => {
     console.log("26");
@@ -46,7 +48,8 @@ const useChatStore = create((set, get) => ({
       const assistantResponse = await fetchAssistantResponse(
         conversation,
         state.conversationStage,
-        state.userName
+        state.userName,
+        state.deviceLanguage
       );
 
       state.appendMessage("assistant", assistantResponse.content);
@@ -80,7 +83,7 @@ const useChatStore = create((set, get) => ({
   },
 }));
 
-async function fetchAssistantResponse(conversation, stage, userName) {
+async function fetchAssistantResponse(conversation, stage, userName, language) {
   try {
     const response = await fetch(`/api/langchain/v3`, {
       method: "POST",
@@ -91,6 +94,7 @@ async function fetchAssistantResponse(conversation, stage, userName) {
         messages: conversation,
         stage,
         userName,
+        language,
       }),
     });
 
