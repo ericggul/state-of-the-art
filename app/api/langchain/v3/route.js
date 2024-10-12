@@ -51,7 +51,7 @@ Current conversation:
 
 user: {input}
 
-Respond naturally, focusing on neural networks and the current stage. Your response should only be the text for the user.
+Respond naturally, focusing on neural networks and the current stage. Your response 'content' should only be the text for the user.
 
 After generating your response, separately provide the following:
 - responseType: The type of response (ask, introduce, explainArch, discuss, or compare).
@@ -60,7 +60,9 @@ After generating your response, separately provide the following:
 - nextStage: The next stage of the conversation.
 - userName: The user's name, if provided or determined during the conversation.
 
-Ensure all these additional fields are present in your structured output, but keep them separate from the main response content.`;
+Ensure all these additional fields are present in your structured output, but keep them separate from the main response content.
+
+`;
 
 export async function POST(req) {
   try {
@@ -122,34 +124,43 @@ export async function POST(req) {
 
       // Sanitize the content field
       response.content = response.content.replace(/\n/g, " ").trim();
-    } catch (parseError) {
-      console.error("Parsing error:", parseError);
+    } catch (error) {
+      console.error("Error invoking chain:", error);
 
-      // Extract the raw output from the error
-      const rawOutput = JSON.parse(parseError.llmOutput);
+      // If the error is a parsing error, try to extract the raw output
+      if (error.name === "OutputParserException" && error.output) {
+        try {
+          const rawOutput = JSON.parse(error.output);
 
-      // Attempt to correct the responseType
-      if (
-        rawOutput.responseType &&
-        !["ask", "introduce", "explainArch", "discuss", "compare"].includes(
-          rawOutput.responseType
-        )
-      ) {
-        rawOutput.responseType = "discuss"; // Default to 'discuss' if invalid
+          // Attempt to correct the responseType
+          if (
+            rawOutput.responseType &&
+            !["ask", "introduce", "explainArch", "discuss", "compare"].includes(
+              rawOutput.responseType
+            )
+          ) {
+            rawOutput.responseType = "discuss"; // Default to 'discuss' if invalid
+          }
+
+          // Add nextStage if it's missing
+          if (!rawOutput.nextStage) {
+            rawOutput.nextStage = stage; // Keep the current stage if nextStage is missing
+          }
+
+          // Sanitize the content field
+          if (rawOutput.content) {
+            rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
+          }
+
+          // Validate the corrected output against the schema
+          response = schema.parse(rawOutput);
+        } catch (parseError) {
+          console.error("Error parsing raw output:", parseError);
+          throw new Error("Failed to parse AI response");
+        }
+      } else {
+        throw error; // Re-throw if it's not a parsing error
       }
-
-      // Add nextStage if it's missing
-      if (!rawOutput.nextStage) {
-        rawOutput.nextStage = stage; // Keep the current stage if nextStage is missing
-      }
-
-      // Sanitize the content field
-      if (rawOutput.content) {
-        rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
-      }
-
-      // Validate the corrected output against the schema
-      response = schema.parse(rawOutput);
     }
 
     console.log("AI response:", response);
