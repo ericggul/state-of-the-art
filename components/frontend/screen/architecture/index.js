@@ -1,12 +1,54 @@
 import * as S from "./styles";
 import Architecture3D from "@/foundations/frontend/archi/3d";
 import ArchitectureUI from "@/foundations/frontend/archi/ui";
+import { MODELS } from "@/components/controller/constant/models";
 
-export default function Architecture({ version = "v1.1" }) {
+// Function to flatten the MODELS object
+const flattenModels = (models) => {
+  let flattened = [];
+
+  const flatten = (obj, prefix = "") => {
+    for (const key in obj) {
+      const value = obj[key];
+
+      // Check if the value is an object and not null
+      if (typeof value === "object" && value !== null) {
+        // Build the current version string
+        const currentVersion = prefix ? `${prefix}.${key}` : key;
+
+        flattened.push({
+          name: value.name || "",
+          version: key,
+          year: value.year || "",
+          place: value.place || "",
+          citation: value.citation || "",
+          explanation: value.explanation || "",
+        });
+
+        // Continue traversing deeper
+        flatten(value, currentVersion);
+      }
+    }
+  };
+
+  flatten(models);
+
+  return flattened;
+};
+
+export default function Architecture({ version = "v1.2.1" }) {
+  // Flatten the MODELS object
+  const flattenedModels = flattenModels(MODELS);
+
+  // Find relevant model from the flattened array matching with the version
+  const relevantModel = flattenedModels.find(
+    (model) => model.version === version
+  );
+
   return (
     <S.Container>
-      <Architecture3D />
-      <ArchitectureUI />
+      <Architecture3D model={relevantModel} />
+      <ArchitectureUI model={relevantModel} />
     </S.Container>
   );
 }

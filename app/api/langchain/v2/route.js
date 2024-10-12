@@ -5,8 +5,8 @@ import { z } from "zod";
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
-} from "@/foundations/mobile/constant/v2";
-import { OBJECT_ARRAY } from "@/foundations/mobile/constant/models/v1";
+} from "@/components/controller/constant/system-script";
+import { OBJECT_ARRAY } from "@/components/controller/constant/models";
 
 export const dynamic = "force-dynamic";
 
