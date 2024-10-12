@@ -9,7 +9,8 @@ export default function ScreenFrontend() {
   return (
     <>
       <S.Container>
-        <Avatar />
+        {/* <Avatar /> */}
+        <Architecture />
       </S.Container>
     </>
   );
