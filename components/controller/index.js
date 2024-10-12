@@ -1,85 +1,17 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import * as S from "./styles";
-import { Message } from "../message";
-import { useChatLogic } from "@/hooks/useChatLogic";
+import React, { useEffect } from "react";
+import TempChatUI from "@/foundations/mobile/index";
+import useChatStore from "./store";
 
-const ChatUI = () => {
-  const {
-    messages,
-    recommendedResponses,
-    currentArchitectures,
-    conversationStage,
-    isAccelerometerActive,
-    sendMessage,
-  } = useChatLogic();
-
-  const [userInput, setUserInput] = useState("");
-  const [inputDisabled, setInputDisabled] = useState(false);
-  const [showInput, setShowInput] = useState(true);
-  const [placeholderText, setPlaceholderText] = useState(
-    "Enter your message..."
-  );
-
-  const messagesEndRef = useRef(null);
+export default function Controller() {
+  const { sendMessage } = useChatStore();
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    // Send initial message when the component mounts
+    console.log("12");
+    sendMessage("");
+  }, [sendMessage]);
 
-  console.log(currentArchitectures, conversationStage);
-  console.log("is accelerometer active", isAccelerometerActive);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!userInput.trim()) return;
-
-    setInputDisabled(true);
-    const success = await sendMessage(userInput);
-    setInputDisabled(false);
-    if (success) {
-      setUserInput("");
-    }
-  };
-
-  return (
-    <S.Container>
-      <S.Messages>
-        {messages.map((msg, index) => (
-          <Message key={index} role={msg.role} text={msg.text} />
-        ))}
-        <div ref={messagesEndRef} />
-      </S.Messages>
-
-      {showInput && (
-        <>
-          <S.SuggestedResponses>
-            {recommendedResponses.map((response, index) => (
-              <S.SuggestedResponseButton
-                key={index}
-                onClick={() => sendMessage(response)}
-              >
-                {response}
-              </S.SuggestedResponseButton>
-            ))}
-          </S.SuggestedResponses>
-          <S.InputForm onSubmit={handleSubmit}>
-            <S.Input
-              type="text"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder={inputDisabled ? "" : placeholderText}
-              disabled={inputDisabled}
-            />
-            <S.Button type="submit" disabled={inputDisabled}>
-              Send
-            </S.Button>
-          </S.InputForm>
-        </>
-      )}
-    </S.Container>
-  );
-};
-
-export default ChatUI;
+  return <TempChatUI />;
+}

@@ -5,7 +5,7 @@ import { z } from "zod";
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
-} from "@/foundations/mobile/constant/v2";
+} from "@/foundations/mobile/constant/v3";
 import { OBJECT_ARRAY } from "@/foundations/mobile/constant/models/v1";
 
 export const dynamic = "force-dynamic";
@@ -104,7 +104,7 @@ export async function POST(req) {
           "Three recommended follow-up responses relevant to the current stage"
         ),
       nextStage: z.string().describe("The next stage of the conversation"),
-      userName: z.string().optional().describe("The user's name, if provided"),
+      userName: z.string().nullable().describe("The user's name, if provided"),
     });
 
     const functionCallingModel = model.withStructuredOutput(schema);
@@ -124,6 +124,9 @@ export async function POST(req) {
 
       // Sanitize the content field
       response.content = response.content.replace(/\n/g, " ").trim();
+
+      // Ensure userName is an empty string if it's null
+      response.userName = response.userName || "";
     } catch (error) {
       console.error("Error invoking chain:", error);
 
@@ -151,6 +154,9 @@ export async function POST(req) {
           if (rawOutput.content) {
             rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
           }
+
+          // Ensure userName is an empty string if it's null
+          rawOutput.userName = rawOutput.userName || "";
 
           // Validate the corrected output against the schema
           response = schema.parse(rawOutput);

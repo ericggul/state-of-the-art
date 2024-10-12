@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
-import useChatStore from "@/components/controller/store";
+import useChatLogic from "@/components/controller/old/useChatLogic";
 
 const ChatUI = () => {
   const {
@@ -13,7 +13,7 @@ const ChatUI = () => {
     conversationStage,
     isAccelerometerActive,
     sendMessage,
-  } = useChatStore();
+  } = useChatLogic();
 
   const [userInput, setUserInput] = useState("");
   const [inputDisabled, setInputDisabled] = useState(false);

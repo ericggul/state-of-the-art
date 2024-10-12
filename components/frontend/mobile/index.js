@@ -2,7 +2,7 @@
 
 import * as S from "./styles";
 
-import MobileEl from "@/foundations/mobile";
+import MobileEl from "@/foundations/mobile/index-independent";
 
 export default function Mobile() {
   return (
