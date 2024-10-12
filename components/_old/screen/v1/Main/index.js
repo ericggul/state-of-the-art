@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import * as S from "./styles";
 
-import useTone from "@/foundations/screen/Main/useTone";
+import useTone from "@/components/_old/screen/screen/Main/useTone";
 
 import dynamic from "next/dynamic";
 
@@ -11,16 +11,28 @@ const Layer3 = dynamic(() => import("@/foundations/test/3-output/0"));
 
 const FC3D2 = dynamic(() => import("@/foundations/test-frontend/fc-3d/2"));
 
-export default function Main({ layerIdx, layersExpanded, latestPropagation, newResponse, newEmbeddings }) {
+export default function Main({
+  layerIdx,
+  layersExpanded,
+  latestPropagation,
+  newResponse,
+  newEmbeddings,
+}) {
   // useTone({ layerExpanded });
 
   return (
     <S.Container>
       <FC3D2 layerIdx={layerIdx} layersExpanded={layersExpanded} />
 
-      {latestPropagation && latestPropagation.text && layerIdx == "0" && <Layer0 text={latestPropagation.text} newEmbeddings={newEmbeddings} />}
-      {latestPropagation && latestPropagation.text && layerIdx == "1" && <Layer1 newEmbeddings={newEmbeddings} />}
-      {latestPropagation && latestPropagation.text && layerIdx == "3" && <Layer3 newResponse={newResponse.generatedOutput} />}
+      {latestPropagation && latestPropagation.text && layerIdx == "0" && (
+        <Layer0 text={latestPropagation.text} newEmbeddings={newEmbeddings} />
+      )}
+      {latestPropagation && latestPropagation.text && layerIdx == "1" && (
+        <Layer1 newEmbeddings={newEmbeddings} />
+      )}
+      {latestPropagation && latestPropagation.text && layerIdx == "3" && (
+        <Layer3 newResponse={newResponse.generatedOutput} />
+      )}
     </S.Container>
   );
 }

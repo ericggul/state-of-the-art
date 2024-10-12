@@ -103,36 +103,24 @@ const STYLE_STRATEGIES = [
     windowEffect: true,
   },
   {
-    name: "Industrial Judd",
+    name: "Donald Judd",
     colors: {
-      outer: "#7d7d7d",
-      inner: "hsl(240, 100%, 40%)",
-      highlight: "#333333",
+      outer: "#b8860b",
+      inner: "#b8860b",
+      highlight: "#daa520",
     },
     material: {
-      metalness: 0.8,
-      roughness: 0.2,
-      transparent: false,
+      metalness: 0.7,
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.8,
     },
     lighting: {
-      environment: "warehouse",
-      envIntensity: 0.2,
-      directionalLight: {
-        position: [10, 50, 10],
-        intensity: 1.2,
-        castShadow: true,
-      },
-      ambientLight: { intensity: 0.05 },
-      spotLight: {
-        position: [0, 150, 50],
-        intensity: 1.5,
-        angle: 0.3,
-        penumbra: 0.5,
-        castShadow: true,
-        shadowBias: -0.001,
-      },
+      environment: "sunset",
+      envIntensity: 0.5,
+      directionalLight: { position: [5, 5, 5], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
     },
-    shadows: true,
   },
   {
     name: "Monochrome Blue",
@@ -154,15 +142,15 @@ const STYLE_STRATEGIES = [
     },
   },
   {
-    name: "Neon Glow",
+    name: "Neon Nights",
     colors: {
-      outer: "hsl(300, 100%, 50%)",
-      inner: "hsl(180, 100%, 50%)",
-      emissive: "hsl(60, 100%, 50%)",
+      outer: "#ff00ff",
+      inner: "#00ffff",
+      highlight: "#ffff00",
     },
     material: {
-      metalness: 0.2,
-      roughness: 0.8,
+      metalness: 0.9,
+      roughness: 0.2,
       transparent: true,
       opacity: 0.8,
     },
@@ -174,27 +162,81 @@ const STYLE_STRATEGIES = [
     },
     emissive: true,
   },
+
   {
-    name: "Multi-Stack",
+    name: "AlexNet Monochrome",
     colors: {
-      outer: "hsl(230, 70%, 50%)",
-      inner: "hsl(235, 60%, 40%)",
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
     },
     material: {
-      metalness: 0.9,
-      roughness: 0.4,
-      transparent: false,
+      roughness: 0.5,
+      metalness: 0.8,
+      transparent: true,
+      opacity: 0.4,
+      depthTest: false,
+      depthWrite: false,
     },
     lighting: {
-      environment: "sunset",
-      envIntensity: 0.8,
-      directionalLight: { position: [100, 100, 100], intensity: 1.5 },
-      ambientLight: { intensity: 0.4 },
+      environment: "warehouse",
+      pointLight: { position: [10, 10, 10], intensity: 1 },
+      directionalLight1: { position: [0, 10, 10], intensity: 2 },
+      directionalLight2: { position: [10, 0, 10], intensity: 2 },
+      ambientLight: { intensity: 0.5 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 3,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
+    },
+    camera: {
+      position: [40, 30, 50],
+      fov: 50,
+      near: 0.1,
+      far: 5000,
+    },
+    shadows: false,
+  },
+  {
+    name: "Transformer Monochrome",
+    colors: {
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
+    },
+    material: {
+      roughness: 0.3,
+      metalness: 0.5,
+      transparent: true,
+      opacity: 0.6,
+      depthTest: false,
+      depthWrite: false,
+    },
+    lighting: {
+      environment: "warehouse",
+      pointLight: { position: [0, 150, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    camera: {
+      position: [0, 75, 200],
+      fov: 50,
+      near: 0.1,
+      far: 1000,
+    },
+    layout: {
+      layerHeight: 15,
+      encoderPosition: -50,
+      decoderPosition: 50,
+      nodeSize: [10, 5, 1],
+      unexpandedNodeSize: [20, 10, 10],
+      gridInterval: { x: 12, y: 6 },
     },
   },
 ];
 
-export default function VideoGenModelVisualization({ styleIndex = 0 }) {
+export default function VideoGenModelVisualization({ styleIndex = 6 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const encoderLayers = STRUCTURE.filter((layer) => layer.stack === "encoder");
   const decoderLayers = STRUCTURE.filter((layer) => layer.stack === "decoder");
@@ -339,6 +381,7 @@ const Node = ({ size, style, color }) => {
         color={color}
         emissive={style.emissive ? style.colors.emissive : "black"}
         emissiveIntensity={style.emissive ? 0.5 : 0}
+        wireframe={style.material.wireframe}
       />
     </mesh>
   );
@@ -376,6 +419,7 @@ const InstancedNodes = ({
           color={color}
           emissive={style.emissive ? style.colors.emissive : "black"}
           emissiveIntensity={style.emissive ? 0.5 : 0}
+          wireframe={style.material.wireframe}
         />
         {positions.map((position, i) => (
           <Instance
