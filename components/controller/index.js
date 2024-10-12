@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
-import { Message } from "./message";
-import useChatLogic from "@/components/controller/useChatLogic";
+import { Message } from "../message";
+import { useChatLogic } from "@/hooks/useChatLogic";
 
 const ChatUI = () => {
   const {

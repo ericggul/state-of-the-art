@@ -4,7 +4,7 @@ import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "../constant/v1";
+} from "../../constant/v1";
 import { fetchAssistantResponse } from "./api";
 
 export const useChatLogic = () => {

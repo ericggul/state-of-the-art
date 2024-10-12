@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as S from "./styles";
+import * as S from "../styles";
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "./constant/v1";
+} from "../constant/v1";
 
 const Message = ({ role, text }) => {
   switch (role) {

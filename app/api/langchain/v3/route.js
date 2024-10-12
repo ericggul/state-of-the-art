@@ -24,7 +24,7 @@ let lastResetTime = Date.now();
 
 const TEMPLATE = `${SYSTEM_DESCRIPTION}
 
-You are an AI assistant specializing in neural network architectures, focusing on: ${OBJECT_ARRAY.map(
+You are an AI museum docent showcasing state-of-the-art neural network architectures, focusing on: ${OBJECT_ARRAY.map(
   (m) => `${m.name} (${m.version})`
 ).join(", ")}.
 
@@ -37,22 +37,30 @@ Strictly follow this conversation structure:
 3. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
 4. ExplainBasics: If not familiar, explain the basics of Neural Networks.
 5. ExplainArchitectures: Start explaining architectures, beginning with simpler ones.
-6. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer.
-7. InteractiveExperience: Continue explaining architectures with interactive elements using accelerometer data.
+6. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
+7. InteractiveExperience: Continue explaining architectures.
 
 Guidelines:
 1. Strictly adhere to the current stage.
 2. Use a friendly, clear, and informative tone.
-3. Provide context-appropriate recommended responses.
-4. Progress to the next stage only when the current stage is completed.
-5. When introducing an architecture, mention its year and origin.
+3. Progress to the next stage only when the current stage is completed.
+4. When introducing an architecture, mention its year and origin.
 
 Current conversation:
 {chat_history}
 
 user: {input}
-assistant: Respond to the user's input naturally, focusing on neural network architectures and following the current stage. 
-Ensure recommended responses are relevant to the current stage and user's last input.`;
+
+Respond naturally, focusing on neural networks and the current stage. Your response should only be the text for the user.
+
+After generating your response, separately provide the following:
+- responseType: The type of response (ask, introduce, explainArch, discuss, or compare).
+- currentArchitecture: An array of current architectures being discussed, including their versions.
+- recommended_responses: Three recommended follow-up responses relevant to the current stage.
+- nextStage: The next stage of the conversation.
+- userName: The user's name, if provided or determined during the conversation.
+
+Ensure all these additional fields are present in your structured output, but keep them separate from the main response content.`;
 
 export async function POST(req) {
   try {
@@ -103,7 +111,7 @@ export async function POST(req) {
 
     let response;
 
-    console.log(messages);
+    console.log("Current stage:", stage);
     try {
       response = await chain.invoke({
         chat_history: messages.map(formatMessage).join("\n"),
@@ -111,6 +119,9 @@ export async function POST(req) {
         stage,
         userName,
       });
+
+      // Sanitize the content field
+      response.content = response.content.replace(/\n/g, " ").trim();
     } catch (parseError) {
       console.error("Parsing error:", parseError);
 
@@ -127,16 +138,21 @@ export async function POST(req) {
         rawOutput.responseType = "discuss"; // Default to 'discuss' if invalid
       }
 
+      // Add nextStage if it's missing
+      if (!rawOutput.nextStage) {
+        rawOutput.nextStage = stage; // Keep the current stage if nextStage is missing
+      }
+
+      // Sanitize the content field
+      if (rawOutput.content) {
+        rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
+      }
+
       // Validate the corrected output against the schema
       response = schema.parse(rawOutput);
     }
 
-    console.log(response.currentArchitecture);
-    // Update frequency
-    response.currentArchitecture.forEach((arch) => {
-      const key = `${arch.name} (${arch.version})`;
-      modelFrequency.set(key, (modelFrequency.get(key) || 0) + 1);
-    });
+    console.log("AI response:", response);
 
     // Ensure the next stage is valid and advances the conversation
     const validStages = [
@@ -166,9 +182,15 @@ export async function POST(req) {
 
     console.log("Final next stage:", response.nextStage);
 
+    // Update frequency
+    response.currentArchitecture.forEach((arch) => {
+      const key = `${arch.name} (${arch.version})`;
+      modelFrequency.set(key, (modelFrequency.get(key) || 0) + 1);
+    });
+
     return Response.json(response);
   } catch (e) {
-    console.error(e);
+    console.error("Unhandled error:", e);
     return Response.json(
       { error: "An error occurred while processing your request" },
       { status: 500 }
