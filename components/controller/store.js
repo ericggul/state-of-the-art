@@ -25,6 +25,13 @@ const useChatStore = create((set, get) => ({
   sendMessage: async (text) => {
     console.log("26");
     const state = get();
+
+    // Prevent sending empty messages after the initial one
+    if (!text && state.messages.length > 0) {
+      console.log("Ignoring empty message");
+      return false;
+    }
+
     try {
       const conversation = [
         ...state.messages.map((msg) => ({ role: msg.role, content: msg.text })),
