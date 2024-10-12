@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { SYSTEM_ENSURMENT } from "@/foundations/mobile/constant/v3";
+import { SYSTEM_ENSURMENT } from "@/components/controller/constant/system-script";
 
 const useChatStore = create((set, get) => ({
   messages: [],
