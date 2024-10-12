@@ -5,10 +5,12 @@ import { useParams } from "next/navigation";
 
 const MobileElV1 = dynamic(() => import("@/foundations/mobile/langchain/v1"));
 const MobileElV2 = dynamic(() => import("@/foundations/mobile/langchain/v2"));
+const MobileElV3 = dynamic(() => import("@/foundations/mobile/langchain/v3"));
 
 const versionMap = {
   1: MobileElV1,
   2: MobileElV2,
+  3: MobileElV3,
 };
 
 export default function LangchainPage() {
