@@ -2,27 +2,63 @@ import dynamic from "next/dynamic";
 
 import { useParams } from "next/navigation";
 
-const Model0 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/0"));
-const Model1 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/1"));
-const Model2 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/2"));
+const Model0 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/0")
+);
+const Model1 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/1")
+);
+const Model2 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/2")
+);
 //transformers
-const Model3 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/3"));
-const Model4 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/4"));
-const Model5 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/5"));
+const Model3 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/3")
+);
+const Model4 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/4")
+);
+const Model5 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/5")
+);
 //gpt 3
-const Model6 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/6"));
-const Model7 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/7"));
+const Model6 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/6")
+);
+const Model7 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/7")
+);
 //dall e 2
-const Model8 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/8"));
+const Model8 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/8")
+);
 //bert
-const Model9 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/9"));
+const Model9 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/9")
+);
 //Meta Video Gen & differnet stylings
-const Model10 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10"));
-const Model101 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-1"));
-const Model102 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-2"));
-const Model103 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-3"));
-const Model104 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-4"));
-const Model105 = dynamic(() => import("@/foundations/test-frontend/product-preview/models/10/10-5"));
+const Model10 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10")
+);
+const Model101 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10/10-1")
+);
+const Model102 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10/10-2")
+);
+const Model103 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10/10-3")
+);
+const Model104 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10/10-4")
+);
+const Model105 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/10/10-5")
+);
+
+const Model11 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/11")
+);
 
 export default function Model() {
   const { idx } = useParams();
@@ -45,6 +81,7 @@ export default function Model() {
       {idx === "10-3" && <Model103 enableDeviceControls={false} />}
       {idx === "10-4" && <Model104 enableDeviceControls={false} />}
       {idx === "10-5" && <Model105 enableDeviceControls={false} />}
+      {idx === "11" && <Model11 enableDeviceControls={false} />}
     </>
   );
 }

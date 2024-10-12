@@ -5,8 +5,10 @@ import TempChatUI from "@/foundations/mobile/index";
 import useChatStore from "./store";
 
 export default function Controller() {
-  const { sendMessage } = useChatStore();
+  const { currentArchitectures, sendMessage } = useChatStore();
   const initialMessageSent = useRef(false);
+
+  console.log(currentArchitectures);
 
   useEffect(() => {
     if (!initialMessageSent.current) {

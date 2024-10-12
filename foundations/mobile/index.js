@@ -32,7 +32,7 @@ const ChatUI = () => {
   useEffect(() => {
     const detectLanguage = () => {
       let fullLanguage = navigator.language || navigator.userLanguage || "en";
-      fullLanguage = "ko";
+      // fullLanguage = "ko";
       const primaryLanguage = fullLanguage.split("-")[0];
       try {
         const languageName = LANGUAGE_MAP[primaryLanguage] || "English";
