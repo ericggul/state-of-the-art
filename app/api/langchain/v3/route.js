@@ -6,7 +6,7 @@ import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
 } from "@/components/controller/constant/system-script";
-import { OBJECT_ARRAY } from "@/components/controller/constant/models/v1";
+import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 
 export const dynamic = "force-dynamic";
 

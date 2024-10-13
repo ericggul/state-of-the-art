@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import Architecture3D from "@/foundations/frontend/archi/3d/v1";
 import ArchitectureUI from "@/foundations/frontend/archi/ui";
-import { MODELS } from "@/components/controller/constant/models/v1";
+import { MODELS } from "@/components/controller/constant/models/v2";
 
 // Function to flatten the MODELS object
 const flattenModels = (models) => {
