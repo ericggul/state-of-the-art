@@ -14,16 +14,24 @@ export default function ScreenFrontend() {
     handleNewArchitectures,
   });
 
+  const [architecturesArchiving, setArchitecturesArchiving] = useState([]);
+
   const [currentArchitectures, setCurrentArchitectures] = useState([]);
 
   function handleNewArchitectures(data) {
     console.log(data);
     try {
       setCurrentArchitectures(data.currentArchitectures);
+      setArchitecturesArchiving((arr) => [
+        ...arr,
+        ...data.currentArchitectures,
+      ]);
     } catch (e) {
       console.log(e);
     }
   }
+
+  console.log(architecturesArchiving);
 
   const version = useMemo(() => {
     return currentArchitectures.length > 0

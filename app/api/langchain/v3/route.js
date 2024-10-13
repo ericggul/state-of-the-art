@@ -97,7 +97,7 @@ export async function POST(req) {
           })
         )
         .describe(
-          "An array of current architectures being discussed, including their versions"
+          "An array of current architectures being discussed, ordered from most to least important, including their versions."
         ),
       recommended_responses: z
         .array(z.string())
