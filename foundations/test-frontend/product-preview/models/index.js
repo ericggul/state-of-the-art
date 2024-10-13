@@ -8,9 +8,17 @@ const Model0 = dynamic(() =>
 const Model1 = dynamic(() =>
   import("@/foundations/test-frontend/product-preview/models/1")
 );
+
 const Model2 = dynamic(() =>
   import("@/foundations/test-frontend/product-preview/models/2")
 );
+const Model21 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/2/2-1")
+);
+const Model22 = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/models/2/2-2")
+);
+
 //transformers
 const Model3 = dynamic(() =>
   import("@/foundations/test-frontend/product-preview/models/3")
@@ -68,6 +76,8 @@ export default function Model() {
       {(idx === "0" || !idx) && <Model0 enableDeviceControls={false} />}
       {idx === "1" && <Model1 enableDeviceControls={false} />}
       {idx === "2" && <Model2 enableDeviceControls={false} />}
+      {idx === "2-1" && <Model21 enableDeviceControls={false} />}
+      {idx === "2-2" && <Model22 enableDeviceControls={false} />}
       {idx === "3" && <Model3 enableDeviceControls={false} />}
       {idx === "4" && <Model4 enableDeviceControls={false} />}
       {idx === "5" && <Model5 enableDeviceControls={false} />}
