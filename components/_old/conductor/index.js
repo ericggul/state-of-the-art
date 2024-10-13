@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import handlePropagation from "./propagation";
-import useSocket from "@/utils/socket/useSocketConductor";
+import useSocket from "@/utils/socket/useSocketController";
 
 import { handleTokenisation } from "@/utils/hooks/useTokenisation";
 
@@ -77,7 +77,9 @@ async function getGptEmbeddings({ data, socket }) {
           dim: 128,
         });
 
-        embeddings[token] = res.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
+        embeddings[token] = res.data[0].embedding.map((el) =>
+          parseFloat(el.toFixed(6))
+        );
       }
     };
 
@@ -134,7 +136,9 @@ async function getGptEmbeddingsAllCombinations({ data, socket }) {
           dim: 128,
         });
 
-        embeddings[token] = res.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
+        embeddings[token] = res.data[0].embedding.map((el) =>
+          parseFloat(el.toFixed(6))
+        );
       }
     };
 

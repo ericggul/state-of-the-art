@@ -2,8 +2,13 @@ import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
 export default function useSocketScreen({
-  layerIdx = 0,
-  handleNewArchitectures,
+  layerIdx,
+  handleNewMobile,
+  handleNewLayerClicked,
+  handleNewPropagation,
+
+  handleNewResponse = () => {},
+  handleNewEmbeddings = () => {},
 }) {
   const socket = useRef(null);
   const initialized = useRef(false);
@@ -28,7 +33,12 @@ export default function useSocketScreen({
     socket.current.on("connect", () => {
       socket.current.emit("screen-init", { layerIdx });
 
-      socket.current.on("new-controller-architectures", handleNewArchitectures);
+      socket.current.on("new-mobile-init", handleNewMobile);
+      socket.current.on("new-mobile-layer-clicked", handleNewLayerClicked);
+
+      socket.current.on("new-conductor-propagation", handleNewPropagation);
+      socket.current.on("new-conductor-response", handleNewResponse);
+      socket.current.on("new-conductor-embeddings", handleNewEmbeddings);
     });
   };
 

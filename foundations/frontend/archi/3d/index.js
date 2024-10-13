@@ -10,7 +10,7 @@ import { Suspense, useMemo } from "react";
 import { STYLE_STRATEGIES } from "./style";
 import { STRUCTURE, NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS } from "./structure";
 
-export default function VideoGenModelVisualization({ styleIndex = 6 }) {
+export default function VideoGenModelVisualization({ model, styleIndex = 6 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const encoderLayers = STRUCTURE.filter((layer) => layer.stack === "encoder");
   const decoderLayers = STRUCTURE.filter((layer) => layer.stack === "decoder");

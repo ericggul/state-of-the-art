@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 
 import setup from "./socket-setups";
+import oldSetup from "./socket-setups/old";
 import orientationSetup from "./socket-setups/orientation";
 import onOffSetup from "./socket-setups/on-off";
 
@@ -18,7 +19,7 @@ export default function SocketHandler(req, res) {
     setup({ socket, io });
     orientationSetup({ socket, io });
     onOffSetup({ socket, io });
-
+    oldSetup({ socket, io });
     socket.on("disconnect", () => {
       console.log("Client disconnected");
     });

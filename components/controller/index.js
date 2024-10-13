@@ -4,7 +4,11 @@ import React, { useEffect, useRef } from "react";
 import TempChatUI from "@/foundations/mobile/index";
 import useChatStore from "./store";
 
+import useSocketController from "@/utils/socket/useSocketController";
+
 export default function Controller() {
+  const socket = useSocketController();
+
   const { currentArchitectures, sendMessage } = useChatStore();
   const initialMessageSent = useRef(false);
 
@@ -17,6 +21,14 @@ export default function Controller() {
       initialMessageSent.current = true;
     }
   }, [sendMessage]);
+
+  useEffect(() => {
+    if (socket.current && currentArchitectures.length > 0) {
+      socket.current.emit("controller-architectures", {
+        currentArchitectures,
+      });
+    }
+  }, [socket, currentArchitectures]);
 
   return <TempChatUI />;
 }
