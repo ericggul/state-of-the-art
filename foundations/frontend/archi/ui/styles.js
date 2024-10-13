@@ -6,7 +6,7 @@ const relVw = (px) => `${(px / 1920) * 100}vw`;
 const MARGIN_TOP = 35;
 const MARGIN_BOTTOM = 10;
 const MARGIN_LEFT = 63;
-const MARGIN_LOWER_BOTTOM = 60;
+const MARGIN_LOWER_BOTTOM = 50;
 
 export const UIWrapper = styled.div`
   ${WholeContainer}
@@ -21,7 +21,7 @@ export const TopLeft = styled.div`
   top: ${relVw(MARGIN_TOP)};
   left: ${relVw(MARGIN_LEFT)};
   font-style: italic;
-  font-size: ${relVw(30)};
+  font-size: ${relVw(25)};
 `;
 
 export const BottomLeft = styled.div`
@@ -34,8 +34,8 @@ export const BottomLeft = styled.div`
 `;
 
 export const Title = styled.div`
-  font-size: ${relVw(180)};
-  margin-right: ${relVw(60)};
+  font-size: ${relVw(100)};
+  margin-right: ${relVw(40)};
 `;
 
 export const TitleRight = styled.div`
@@ -45,17 +45,17 @@ export const TitleRight = styled.div`
   justify-content: space-between;
   text-align: left;
   position: relative;
-  height: ${relVw(160)};
+  height: ${relVw(95)};
 `;
 
 export const TRTop = styled.div`
-  font-size: ${relVw(40)};
+  font-size: ${relVw(25)};
   position: absolute;
   top: 0;
   min-width: ${relVw(600)};
 `;
 export const TRBottom = styled.div`
-  font-size: ${relVw(70)};
+  font-size: ${relVw(50)};
   position: absolute;
   bottom: 0;
 `;
@@ -65,7 +65,8 @@ export const BottomRight = styled.div`
   bottom: ${relVw(MARGIN_LOWER_BOTTOM)};
   right: ${relVw(60)};
   width: ${relVw(300)};
-  font-size: ${relVw(25)};
+  font-size: ${relVw(20)};
+  line-height: 1;
   p,
   span {
     font-size: ${relVw(15)};
@@ -78,7 +79,9 @@ export const BottomRight = styled.div`
   text-align: right;
 `;
 
-export const Row = styled.div``;
+export const Row = styled.div`
+  margin-bottom: ${relVw(10)};
+`;
 
 export const TopReverse = styled.div`
   ${FlexCenterStyle}

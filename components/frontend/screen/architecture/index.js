@@ -36,14 +36,14 @@ const flattenModels = (models) => {
   return flattened;
 };
 
-export default function Architecture({ version = "v1.2.1" }) {
+export default function Architecture({ version = "v4.0.2.1" }) {
   // Flatten the MODELS object
   const flattenedModels = flattenModels(MODELS);
 
   // Find relevant model from the flattened array matching with the version
-  const relevantModel = flattenedModels.find(
-    (model) => model.version === version
-  );
+  const relevantModel =
+    flattenedModels.find((model) => model.version === version) ||
+    flattenedModels[2];
 
   return (
     <S.Container>

@@ -1,34 +1,28 @@
 import { useMemo, useState, Suspense } from "react";
 import * as S from "./styles";
 
-import { TEST_MODELS } from "./constant";
-
 // Main component to render the neural network
-export default function ProductPreview() {
-  const [modelIdx, setModelIdx] = useState(1);
-
-  return <UI data={TEST_MODELS[modelIdx]} />;
+export default function ProductPreview({ model }) {
+  console.log(model);
+  return <UI model={model} />;
 }
 
-function UI({ data }) {
+function UI({ model }) {
   return (
     <S.UIWrapper>
-      <S.TopLeft>Neural Network Architcture</S.TopLeft>
+      <S.TopLeft>Neural Network Architecture</S.TopLeft>
       <S.BottomLeft>
-        <S.Title>{data.name.header + " "}</S.Title>
+        <S.Title>{model.name}</S.Title>
         <S.TitleRight>
-          <S.TRTop>{data.name.fullName || " "}</S.TRTop>
-          <S.TRBottom>{`v${data.version}`}</S.TRBottom>
+          {/* <S.TRTop>{model.place}</S.TRTop> */}
+          <S.TRBottom>{`${model.version}`}</S.TRBottom>
         </S.TitleRight>
       </S.BottomLeft>
       <S.BottomRight>
-        <S.Row>{data.year}</S.Row>
-        <S.Row>{data.createdFrom}</S.Row>
+        <S.Row>{model.year}</S.Row>
+        <S.Row>{model.place}</S.Row>
         <S.Row>
-          {data.citation} <span>Citations</span>
-        </S.Row>
-        <S.Row>
-          <p>{data.description}</p>
+          <p>{model.explanation}</p>
         </S.Row>
       </S.BottomRight>
     </S.UIWrapper>
