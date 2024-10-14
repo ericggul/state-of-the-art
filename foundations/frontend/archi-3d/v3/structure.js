@@ -88,7 +88,7 @@ export const GPT_STRUCTURE = [
 ];
 
 const GRID_CONFIGS = {
-  videoGen: {
+  videogen: {
     attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
     ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
     diffusion: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 5 },
@@ -116,7 +116,7 @@ const GRID_CONFIGS = {
 };
 
 export const getGridConfig = (model) => {
-  return GRID_CONFIGS[model] || GRID_CONFIGS.videoGen; // Default to videoGen if model not found
+  return GRID_CONFIGS[model] || GRID_CONFIGS.videogen; // Default to videogen if model not found
 };
 
 // ... (export other structures)

@@ -13,13 +13,14 @@ import {
   VGGNET_STRUCTURE,
   LENET_STRUCTURE,
   LENET5_STRUCTURE,
+  TRANSFORMER_STRUCTURE,
 } from "./structure";
 
 import VideoGenLayers from "./components/layers/VideoGenLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
 
-export default function Visualization({ model = "gpt", styleIndex = 7 }) {
+export default function Visualization({ model = "videogen", styleIndex = 5 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
@@ -32,7 +33,7 @@ export default function Visualization({ model = "gpt", styleIndex = 7 }) {
             model={model}
           />
         )}
-        {model === "videoGen" && (
+        {model === "videogen" && (
           <VideoGenLayers
             structure={VIDEO_GEN_STRUCTURE}
             style={style}
@@ -54,6 +55,13 @@ export default function Visualization({ model = "gpt", styleIndex = 7 }) {
         )}
         {model === "lenet5" && (
           <CNNLayers structure={LENET5_STRUCTURE} style={style} model={model} />
+        )}
+        {model === "transformer" && (
+          <TransformerLayers
+            structure={TRANSFORMER_STRUCTURE}
+            style={style}
+            model={model}
+          />
         )}
       </CommonScene>
     </Canvas>

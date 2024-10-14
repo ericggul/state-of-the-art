@@ -35,7 +35,7 @@ export default function Visualization({ model = "lenet5", styleIndex = 7 }) {
             model={model}
           />
         )}
-        {model === "videoGen" && (
+        {model === "videogen" && (
           <VideoGenLayers
             structure={VIDEO_GEN_STRUCTURE}
             style={style}

@@ -3,6 +3,7 @@ import { useSpring, animated } from "@react-spring/three";
 import Node from "./Node";
 import InstancedNodes from "./InstancedNodes";
 import Sublayer from "./Sublayer";
+import { LAYER_CONFIGS } from "../structure";
 
 const Layer = React.memo((props) => {
   const [expanded, setExpanded] = useState(false);
@@ -27,8 +28,11 @@ const Layer = React.memo((props) => {
     return () => clearInterval(timer);
   }, []);
 
-  if (["gpt", "videoGen"].includes(props.model)) {
-    return <ModularLayer {...props} />;
+  const modelConfig = LAYER_CONFIGS[props.model];
+  const layerType = modelConfig ? modelConfig.type : "cnn"; // default to CNN if not specified
+
+  if (layerType === "transformer") {
+    return <TransformerLayer {...props} />;
   } else {
     return (
       <CNNLayer
@@ -40,7 +44,7 @@ const Layer = React.memo((props) => {
   }
 });
 
-const ModularLayer = ({ position, layer, style, model }) => {
+const TransformerLayer = ({ position, layer, style, model }) => {
   const size = [30, 10, 10];
   const gap = 10;
 

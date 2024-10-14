@@ -4,6 +4,7 @@
 export const NUM_ENCODER_LAYERS = 6;
 export const NUM_DECODER_LAYERS = 6;
 export const NUM_GPT_LAYERS = 24;
+export const NUM_TRANSFORMER_LAYERS = 6;
 
 export const VIDEO_GEN_STRUCTURE = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
@@ -162,6 +163,45 @@ export const LENET5_STRUCTURE = [
   { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
 ];
 
+export const TRANSFORMER_STRUCTURE = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_TRANSFORMER_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [512, 8, 8],
+      },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [2048, 8, 1] },
+    ],
+  })),
+  { name: "Output Embeddings", type: "embedding", stack: "decoder" },
+  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  ...Array.from({ length: NUM_TRANSFORMER_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [512, 8, 8],
+      },
+      {
+        name: `Cross-Attention ${i + 1}`,
+        type: "cross_attention",
+        dimensions: [512, 8, 8],
+      },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [2048, 8, 1] },
+    ],
+  })),
+  { name: "Linear Projection", type: "output", stack: "decoder" },
+];
+
 //////CONFIGS/////
 
 // Add this at the top of the file
@@ -169,27 +209,42 @@ export const LAYER_CONFIGS = {
   alexnet: {
     layerHeight: 60,
     keyPrefix: "alexnet",
+    type: "cnn",
   },
   lenet: {
     layerHeight: 60,
     keyPrefix: "lenet",
+    type: "cnn",
   },
   lenet5: {
     layerHeight: 60,
     keyPrefix: "lenet5",
+    type: "cnn",
   },
   vggnet: {
     layerHeight: 60,
     keyPrefix: "vggnet",
+    type: "cnn",
   },
   gpt: {
     layerHeight: 12,
     keyPrefix: "gpt",
+    type: "transformer",
+  },
+  transformer: {
+    layerHeight: 5,
+    keyPrefix: "transformer",
+    type: "transformer",
+  },
+  videogen: {
+    layerHeight: 13,
+    keyPrefix: "videogen",
+    type: "transformer",
   },
 };
 
 const GRID_CONFIGS = {
-  videoGen: {
+  videogen: {
     attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
     ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
     diffusion: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 5 },
@@ -214,8 +269,13 @@ const GRID_CONFIGS = {
     pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
     fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
   },
+  transformer: {
+    attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    cross_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    ffn: { xCount: 16, yCount: 4, xInterval: 3, yInterval: 5 },
+  },
 };
 
 export const getGridConfig = (model) => {
-  return GRID_CONFIGS[model] || GRID_CONFIGS.videoGen; // Default to videoGen if model not found
+  return GRID_CONFIGS[model] || GRID_CONFIGS.videogen; // Default to videogen if model not found
 };

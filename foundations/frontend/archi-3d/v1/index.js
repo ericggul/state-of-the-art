@@ -14,7 +14,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { STYLE_STRATEGIES } from "./style";
 import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
 
-export default function Visualization({ model = "videoGen", styleIndex = 1 }) {
+export default function Visualization({ model = "videogen", styleIndex = 1 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (

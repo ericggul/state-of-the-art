@@ -27,7 +27,7 @@ const Layer = React.memo((props) => {
     return () => clearInterval(timer);
   }, []);
 
-  if (["gpt", "videoGen", "vggnet", "lenet", "lenet5"].includes(props.model)) {
+  if (["gpt", "videogen", "vggnet", "lenet", "lenet5"].includes(props.model)) {
     return <ModularLayer {...props} />;
   } else {
     return (
