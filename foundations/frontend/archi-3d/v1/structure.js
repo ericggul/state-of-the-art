@@ -4,7 +4,7 @@
 export const NUM_ENCODER_LAYERS = 6;
 export const NUM_DECODER_LAYERS = 6;
 
-export const STRUCTURE = [
+export const VIDEO_GEN_STRUCTURE = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
   ...Array.from({ length: NUM_ENCODER_LAYERS }, (_, i) => ({
@@ -48,4 +48,28 @@ export const STRUCTURE = [
   })),
   { name: `TAE Decoder`, type: "decoder", stack: "decoder" },
   { name: `Output Image/Video`, type: "output", stack: "decoder" },
+];
+
+// AlexNet structure definition
+export const ALEXNET_STRUCTURE = [
+  { dimensions: [227, 227, 3], zSpan: [3, 1], type: "input" },
+  { dimensions: [55, 55, 96], zSpan: [12, 8], type: "conv" },
+  { dimensions: [27, 27, 96], zSpan: [12, 8], type: "pool" },
+  { dimensions: [27, 27, 256], zSpan: [16, 16], type: "conv" },
+  { dimensions: [13, 13, 256], zSpan: [16, 16], type: "pool" },
+  { dimensions: [13, 13, 384], zSpan: [24, 16], type: "conv" },
+  { dimensions: [13, 13, 384], zSpan: [24, 16], type: "conv" },
+  { dimensions: [13, 13, 256], zSpan: [16, 16], type: "conv" },
+  { dimensions: [6, 6, 256], zSpan: [16, 16], type: "pool" },
+  { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc" },
+  { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc" },
+  { dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
+];
+
+export const COLORS = [
+  { type: "input", color: "hsl(240, 100%, 50%)" },
+  { type: "conv", color: "hsl(240, 100%, 50%)" },
+  { type: "pool", color: "hsl(240, 100%, 50%)" },
+  { type: "fc", color: "hsl(240, 100%, 50%)" },
+  { type: "output", color: "hsl(240, 100%, 50%)" },
 ];

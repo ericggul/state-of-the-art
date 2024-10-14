@@ -215,4 +215,33 @@ export const STYLE_STRATEGIES = [
       gridInterval: { x: 12, y: 6 },
     },
   },
+  {
+    name: "VideoGen Judd-inspired",
+    colors: {
+      outer: "#7d7d7d", // Metallic gray for the outer parts
+      inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+      highlight: "#333333", // Darker metallic/industrial feel for borders or edges
+    },
+    material: {
+      metalness: 0.8,
+      roughness: 0.2,
+    },
+    lighting: {
+      environment: "apartment",
+      pointLight: { position: [0, 200, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    camera: {
+      position: [0, 0, 0], // This will be calculated dynamically
+      fov: 45,
+      near: 0.1,
+      far: 5000,
+    },
+    layout: {
+      layerHeight: 13,
+      encoderPosition: -50,
+      decoderPosition: 50,
+    },
+  },
 ];
