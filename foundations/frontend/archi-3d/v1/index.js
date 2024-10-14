@@ -1,3 +1,4 @@
+// Visualization.js
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -41,29 +42,24 @@ const COLORS = [
 export default function Visualization({ model = "alexNet", styleIndex = 6 }) {
   return (
     <>
-      {model == "alexNet" ? <AlexNet /> : <VideoGen styleIndex={styleIndex} />}
+      {model === "alexNet" ? <AlexNet /> : <VideoGen styleIndex={styleIndex} />}
     </>
   );
 }
 
 function AlexNet() {
-  console.log("50");
+  const styleIndex = 5; // Style index for AlexNet Monochrome
+  const style = STYLE_STRATEGIES[styleIndex];
+
   return (
-    <Canvas
-      camera={{
-        position: [40, 30, 50],
-        fov: 50,
-        near: 0.1,
-        far: 5000,
-      }}
-    >
+    <Canvas camera={style.camera}>
       <Suspense fallback={null}>
         <Environment preset="warehouse" />
       </Suspense>
-      <pointLight position={[10, 10, 10]} />
-      <directionalLight position={[0, 10, 10]} intensity={2} />
-      <directionalLight position={[10, 0, 10]} intensity={2} />
-      <ambientLight intensity={0.5} />
+      <pointLight {...style.lighting.pointLight} />
+      <directionalLight {...style.lighting.directionalLight1} />
+      <directionalLight {...style.lighting.directionalLight2} />
+      <ambientLight {...style.lighting.ambientLight} />
 
       {ALEXNET_STRUCTURE.map(({ dimensions, type, zSpan }, i) => (
         <Layer
@@ -85,24 +81,20 @@ function AlexNet() {
           }}
           type={type}
           color={COLORS.find((c) => c.type === type)?.color || "white"}
+          style={style}
         />
       ))}
 
       <OrbitControls />
 
       <EffectComposer>
-        <Bloom
-          intensity={3}
-          luminanceThreshold={0.4}
-          luminanceSmoothing={0.9}
-        />
+        <Bloom {...style.postprocessing.bloom} />
       </EffectComposer>
     </Canvas>
   );
 }
 
 function VideoGen({ styleIndex = 6 }) {
-  console.log("105");
   const style = STYLE_STRATEGIES[styleIndex];
   const encoderLayers = VIDEO_GEN_STRUCTURE.filter(
     (layer) => layer.stack === "encoder"
@@ -148,10 +140,7 @@ function VideoGen({ styleIndex = 6 }) {
               color="#000"
               roughness={0.5}
               metalness={0.1}
-              mirror={0.1}
               envMapIntensity={0}
-              metalnessMap={null}
-              reflectivityMap={null}
               emissive="#000"
               emissiveIntensity={0}
               reflectivity={0}
@@ -276,14 +265,14 @@ const Layer = (props) => {
           scale-y={smoothedExpanded}
           scale-z={smoothedExpanded}
         >
-          <InstancedNodes {...grid} node={node} color={color} />
+          <InstancedNodes {...grid} node={node} color={color} style={style} />
         </animated.group>
         <animated.group
           scale-x={smoothedExpanded.to((v) => 1 - v)}
           scale-y={smoothedExpanded.to((v) => 1 - v)}
           scale-z={smoothedExpanded.to((v) => 1 - v)}
         >
-          <Node {...unexpandedNode} color={color} position={[0, 0, 0]} />
+          <Node {...unexpandedNode} color={color} style={style} />
         </animated.group>
       </group>
     );
@@ -320,39 +309,24 @@ const Sublayer = ({ position, sublayer, style, isCollapsing }) => {
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         style={style}
         color={style.colors.inner}
+        rotation={[Math.PI / 2, 0, 0]}
       />
     </RigidBody>
   );
 };
 
-const Node = ({
-  size,
-  position = [0, 0, 0],
-  style = {},
-  color,
-  wireframeDivision = 1,
-  opacity = 1,
-  scale = [1, 1, 1],
-}) => {
+const Node = ({ size, style, color }) => {
   return (
-    <group position={position} scale={scale}>
-      <mesh castShadow={style.shadows} receiveShadow={style.shadows}>
-        <boxGeometry
-          args={[...size, wireframeDivision, wireframeDivision, 1]}
-        />
-        <meshStandardMaterial
-          {...style.material}
-          color={color}
-          roughness={0.5}
-          metalness={0.8}
-          opacity={opacity}
-          transparent={opacity < 1}
-          emissive={style.emissive ? style.colors.emissive : "black"}
-          emissiveIntensity={style.emissive ? 0.5 : 0}
-          wireframe={style.material?.wireframe}
-        />
-      </mesh>
-    </group>
+    <mesh castShadow={style.shadows} receiveShadow={style.shadows}>
+      <boxGeometry args={size} />
+      <meshStandardMaterial
+        {...style.material}
+        color={color}
+        emissive={style.emissive ? style.colors.emissive : "black"}
+        emissiveIntensity={style.emissive ? 0.5 : 0}
+        wireframe={style.material.wireframe}
+      />
+    </mesh>
   );
 };
 
@@ -362,9 +336,9 @@ const InstancedNodes = ({
   xInterval,
   yInterval,
   nodeSize,
-  node,
+  style,
   color,
-  style = {},
+  rotation = [0, 0, 0],
 }) => {
   const positions = useMemo(() => {
     const temp = [];
@@ -380,22 +354,16 @@ const InstancedNodes = ({
     return temp;
   }, [xCount, yCount, xInterval, yInterval]);
 
-  const size = nodeSize || node.size;
-
   return (
-    <group rotation={[Math.PI / 2, 0, 0]}>
+    <group rotation={rotation}>
       <Instances limit={xCount * yCount}>
-        <boxGeometry args={size} />
+        <boxGeometry args={nodeSize} />
         <meshStandardMaterial
           {...style.material}
           color={color}
-          roughness={0.5}
-          metalness={0.8}
-          opacity={1}
-          transparent={false}
           emissive={style.emissive ? style.colors.emissive : "black"}
           emissiveIntensity={style.emissive ? 0.5 : 0}
-          wireframe={style.material?.wireframe}
+          wireframe={style.material.wireframe}
         />
         {positions.map((position, i) => (
           <Instance

@@ -138,11 +138,51 @@ export const STYLE_STRATEGIES = [
       far: 5000,
     },
   },
+
+  {
+    name: "AlexNet Monochrome",
+    colors: {
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
+      emissive: "hsl(240, 100%, 50%)",
+    },
+    material: {
+      roughness: 0.5,
+      metalness: 0.8,
+      transparent: true,
+      opacity: 0.4,
+      depthTest: false,
+      depthWrite: false,
+    },
+    emissive: true,
+    shadows: true,
+    lighting: {
+      environment: "warehouse",
+      pointLight: { position: [10, 10, 10], intensity: 1 },
+      directionalLight1: { position: [0, 10, 10], intensity: 2 },
+      directionalLight2: { position: [10, 0, 10], intensity: 2 },
+      ambientLight: { intensity: 0.5 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 3,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
+    },
+    camera: {
+      position: [40, 30, 50],
+      fov: 50,
+      near: 0.1,
+      far: 5000,
+    },
+  },
   {
     name: "Transformer Monochrome",
     colors: {
       outer: "hsl(240, 100%, 50%)",
       inner: "hsl(240, 100%, 50%)",
+      emissive: "hsl(240, 100%, 50%)",
     },
     material: {
       roughness: 0.3,
@@ -152,6 +192,8 @@ export const STYLE_STRATEGIES = [
       depthTest: false,
       depthWrite: false,
     },
+    emissive: true,
+    shadows: true,
     lighting: {
       environment: "warehouse",
       pointLight: { position: [0, 150, 0], intensity: 1 },
