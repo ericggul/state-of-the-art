@@ -1,7 +1,6 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/archi-3d/v1";
+import Architecture3D from "@/foundations/frontend/archi-3d/v2";
 import ArchitectureUI from "@/foundations/frontend/archi-ui";
-
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";
 
@@ -45,12 +44,6 @@ export default function Architecture({ version = "v4.0.2.1" }) {
     .filter((model) => model.name !== "")
     .map((model) => ({ name: model.name, version: model.version }));
 
-  console.log(
-    refinedFlattend,
-
-    //array with only name
-    refinedFlattend.map((model) => model.name)
-  );
   // Find relevant model from the flattened array matching with the version
   const relevantModel =
     flattenedModels.find((model) => model.version === version) ||

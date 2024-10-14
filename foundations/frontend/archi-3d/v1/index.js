@@ -7,7 +7,6 @@ import {
   Instance,
 } from "@react-three/drei";
 import { Suspense, useMemo, useEffect, useState } from "react";
-import { Physics, RigidBody } from "@react-three/rapier";
 import { useSpring, animated } from "@react-spring/three";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
@@ -15,7 +14,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { STYLE_STRATEGIES } from "./style";
 import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
 
-export default function Visualization({ model = "videoGen", styleIndex = 3 }) {
+export default function Visualization({ model = "alexNet", styleIndex = 3 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
@@ -93,15 +92,13 @@ function AlexNetLayers({ structure, style }) {
 }
 
 function VideoGenLayers({ structure, style }) {
-  const [isCollapsing, setIsCollapsing] = useState(false);
   const layerHeight = 13;
 
   const encoderLayers = structure.filter((layer) => layer.stack === "encoder");
   const decoderLayers = structure.filter((layer) => layer.stack === "decoder");
 
   return (
-    <Physics gravity={[0, -22, 0]}>
-      <InvisibleFloor />
+    <>
       {encoderLayers.map((layer, i) => (
         <Layer
           key={`encoder-${i}`}
@@ -112,7 +109,6 @@ function VideoGenLayers({ structure, style }) {
           ]}
           layer={layer}
           style={style}
-          isCollapsing={isCollapsing}
         />
       ))}
       {decoderLayers.map((layer, i) => (
@@ -125,31 +121,9 @@ function VideoGenLayers({ structure, style }) {
           ]}
           layer={layer}
           style={style}
-          isCollapsing={isCollapsing}
         />
       ))}
-    </Physics>
-  );
-}
-
-function InvisibleFloor() {
-  return (
-    <RigidBody type="fixed" colliders="cuboid">
-      <mesh position={[0, -100, 0]} visible={true}>
-        <boxGeometry args={[200, 1, 200]} />
-        <meshStandardMaterial
-          color="#000"
-          roughness={0.5}
-          metalness={0.1}
-          envMapIntensity={0}
-          emissive="#000"
-          emissiveIntensity={0}
-          reflectivity={0}
-          transparent={true}
-          opacity={0}
-        />
-      </mesh>
-    </RigidBody>
+    </>
   );
 }
 
@@ -167,7 +141,7 @@ const Layer = (props) => {
   }
 };
 
-const VideoGenLayer = ({ position, layer, style, isCollapsing }) => {
+const VideoGenLayer = ({ position, layer, style }) => {
   const size = [30, 10, 10];
   const gap = 10;
 
@@ -184,7 +158,6 @@ const VideoGenLayer = ({ position, layer, style, isCollapsing }) => {
             ]}
             sublayer={sublayer}
             style={style}
-            isCollapsing={isCollapsing}
           />
         ))}
       </group>
@@ -192,13 +165,9 @@ const VideoGenLayer = ({ position, layer, style, isCollapsing }) => {
   }
 
   return (
-    <RigidBody
-      position={position}
-      colliders="cuboid"
-      type={isCollapsing ? "dynamic" : "fixed"}
-    >
+    <group position={position}>
       <Node size={size} style={style} color={style.colors.outer} />
-    </RigidBody>
+    </group>
   );
 };
 
@@ -253,7 +222,7 @@ const AlexNetLayer = ({
   );
 };
 
-const Sublayer = ({ position, sublayer, style, isCollapsing }) => {
+const Sublayer = ({ position, sublayer, style }) => {
   const size = [20, 8, 8];
   const gridConfig = {
     attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
@@ -270,11 +239,7 @@ const Sublayer = ({ position, sublayer, style, isCollapsing }) => {
   };
 
   return (
-    <RigidBody
-      position={position}
-      colliders="cuboid"
-      type={isCollapsing ? "dynamic" : "fixed"}
-    >
+    <group position={position}>
       <InstancedNodes
         xCount={grid.xCount}
         yCount={grid.yCount}
@@ -285,7 +250,7 @@ const Sublayer = ({ position, sublayer, style, isCollapsing }) => {
         color={style.colors.inner}
         rotation={[Math.PI / 2, 0, 0]}
       />
-    </RigidBody>
+    </group>
   );
 };
 
