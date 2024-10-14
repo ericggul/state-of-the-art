@@ -30,13 +30,8 @@ export default function VideoGenModelVisualization({ model, styleIndex = 6 }) {
 
   return (
     <Canvas
-      shadows={style.shadows}
       camera={{
-        position: [
-          0,
-          (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 0.5,
-          (NUM_ENCODER_LAYERS + NUM_DECODER_LAYERS) * layerHeight * 1.2,
-        ],
+        position: [-100, 50, 150],
         fov: 50,
         near: 0.1,
         far: 5000,
@@ -44,11 +39,10 @@ export default function VideoGenModelVisualization({ model, styleIndex = 6 }) {
     >
       <Physics gravity={[0, -22, 0]}>
         {" "}
-        {/* Increased gravity for faster fall */}
         <Suspense fallback={null}>
           <Environment
-            preset={style.lighting.environment}
-            intensity={style.lighting.envIntensity}
+            preset={style.lighting.environment || "apartment"}
+            intensity={style.lighting.envIntensity || 1}
           />
         </Suspense>
         {style.lighting.pointLight && (
@@ -59,9 +53,6 @@ export default function VideoGenModelVisualization({ model, styleIndex = 6 }) {
         )}
         {style.lighting.ambientLight && (
           <ambientLight {...style.lighting.ambientLight} />
-        )}
-        {style.lighting.spotLight && (
-          <spotLight {...style.lighting.spotLight} />
         )}
         {/* Invisible floor */}
         <RigidBody type="fixed" colliders="cuboid">

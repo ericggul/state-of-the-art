@@ -1,6 +1,8 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/archi-3d";
+import Architecture3D from "@/foundations/frontend/archi-3d/v0";
 import ArchitectureUI from "@/foundations/frontend/archi-ui";
+
+//constant
 import { MODELS } from "@/components/controller/constant/models/v2";
 
 // Function to flatten the MODELS object

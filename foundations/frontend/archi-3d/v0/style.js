@@ -137,7 +137,6 @@ export const STYLE_STRATEGIES = [
       near: 0.1,
       far: 5000,
     },
-    shadows: false,
   },
   {
     name: "Transformer Monochrome",
