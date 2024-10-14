@@ -217,4 +217,34 @@ export const STYLE_STRATEGIES = [
       decoderPosition: 50,
     },
   },
+  {
+    name: "GPT-3 Visualization",
+    colors: {
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
+    },
+    material: {
+      roughness: 0.3,
+      metalness: 0.5,
+      transparent: true,
+      opacity: 0.6,
+    },
+    lighting: {
+      environment: "warehouse",
+      pointLight: { position: [0, 200, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    shadows: false,
+    emissive: false,
+    camera: {
+      position: [0, 24 * 5, 24 * 6],
+      fov: 50,
+      near: 0.1,
+      far: 5000,
+    },
+    layout: {
+      layerHeight: 10,
+    },
+  },
 ];

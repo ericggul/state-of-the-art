@@ -26,10 +26,8 @@ const Layer = React.memo((props) => {
     return () => clearInterval(timer);
   }, []);
 
-  if (props.model === "gpt") {
-    return <GPTLayer {...props} />;
-  } else if (props.model === "videoGen") {
-    return <VideoGenLayer {...props} />;
+  if (props.model === "gpt" || props.model === "videoGen") {
+    return <ModularLayer {...props} />;
   } else {
     return (
       <AlexNetLayer
@@ -41,7 +39,7 @@ const Layer = React.memo((props) => {
   }
 });
 
-const VideoGenLayer = ({ position, layer, style }) => {
+const ModularLayer = ({ position, layer, style }) => {
   const size = [30, 10, 10];
   const gap = 10;
 
@@ -129,36 +127,6 @@ const Sublayer = ({ position, sublayer, style }) => {
         color={style.colors.inner}
         rotation={[Math.PI / 2, 0, 0]}
       />
-    </group>
-  );
-};
-
-const GPTLayer = ({ position, layer, style }) => {
-  const size = [30, 10, 10];
-  const gap = 10;
-
-  if (layer.sublayers) {
-    return (
-      <group position={position}>
-        {layer.sublayers.map((sublayer, idx) => (
-          <Sublayer
-            key={`${layer.name}-sublayer-${idx}`}
-            position={[
-              0,
-              (idx - (layer.sublayers.length - 1) / 2) * (size[1] + gap),
-              0,
-            ]}
-            sublayer={sublayer}
-            style={style}
-          />
-        ))}
-      </group>
-    );
-  }
-
-  return (
-    <group position={position}>
-      <Node size={size} style={style} color={style.colors.outer} />
     </group>
   );
 };

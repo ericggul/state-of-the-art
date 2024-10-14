@@ -40,8 +40,6 @@ const InstancedNodes = React.memo(
             emissiveIntensity={style.emissive ? 0.5 : 0}
             wireframe={style.material.wireframe}
             transparent={true}
-            depthTest={false}
-            depthWrite={false}
           />
           {positions.map((position, i) => (
             <Instance

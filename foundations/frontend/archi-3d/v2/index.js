@@ -16,7 +16,7 @@ import AlexNetLayers from "./layers/AlexNetLayers";
 import VideoGenLayers from "./layers/VideoGenLayers";
 import GPTLayers from "./layers/GPTLayers";
 
-export default function Visualization({ model = "gpt", styleIndex = 0 }) {
+export default function Visualization({ model = "gpt", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
