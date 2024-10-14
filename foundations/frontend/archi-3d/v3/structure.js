@@ -112,7 +112,7 @@ const GRID_CONFIGS = {
     conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
     pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
     fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  }
+  },
 };
 
 export const getGridConfig = (model) => {
@@ -169,3 +169,22 @@ export const LENET5_STRUCTURE = [
   { name: "Output", type: "output", dimensions: [10, 1, 1] },
 ];
 
+// Add this at the top of the file
+export const LAYER_CONFIGS = {
+  gpt: {
+    layerHeight: 10,
+    keyPrefix: "gpt",
+  },
+  lenet: {
+    layerHeight: 20,
+    keyPrefix: "lenet",
+  },
+  lenet5: {
+    layerHeight: 20,
+    keyPrefix: "lenet5",
+  },
+  vggnet: {
+    layerHeight: 15,
+    keyPrefix: "vggnet",
+  },
+};
