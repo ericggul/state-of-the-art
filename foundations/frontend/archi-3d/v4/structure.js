@@ -183,7 +183,7 @@ export const LAYER_CONFIGS = {
     keyPrefix: "vggnet",
   },
   gpt: {
-    layerHeight: 10,
+    layerHeight: 12,
     keyPrefix: "gpt",
   },
 };

@@ -19,7 +19,7 @@ import VideoGenLayers from "./components/layers/VideoGenLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
 
-export default function Visualization({ model = "videoGen", styleIndex = 7 }) {
+export default function Visualization({ model = "gpt", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (

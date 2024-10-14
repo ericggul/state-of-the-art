@@ -1,42 +1,36 @@
 import React from "react";
 import Layer from "../Layer";
+import { LAYER_CONFIGS } from "../../structure";
 
 const VideoGenLayers = React.memo(({ structure, style, model }) => {
-  const layerHeight = style.layout?.layerHeight || 13;
+  const config = LAYER_CONFIGS[model] || {};
+  const layerHeight = style.layout?.layerHeight || config.layerHeight || 13;
   const encoderPosition = style.layout?.encoderPosition || -50;
   const decoderPosition = style.layout?.decoderPosition || 50;
 
   const encoderLayers = structure.filter((layer) => layer.stack === "encoder");
   const decoderLayers = structure.filter((layer) => layer.stack === "decoder");
 
+  const renderLayers = (layers, xPosition) => {
+    return layers.map((layer, i) => (
+      <Layer
+        key={`${model}-${layer.stack}-${i}`}
+        position={[
+          xPosition,
+          calculateYPosition(i, layers.length, layerHeight),
+          0,
+        ]}
+        layer={layer}
+        style={style}
+        model={model}
+      />
+    ));
+  };
+
   return (
     <>
-      {encoderLayers.map((layer, i) => (
-        <Layer
-          key={`encoder-${i}`}
-          position={[
-            encoderPosition,
-            calculateYPosition(i, encoderLayers.length, layerHeight),
-            0,
-          ]}
-          layer={layer}
-          style={style}
-          model={model}
-        />
-      ))}
-      {decoderLayers.map((layer, i) => (
-        <Layer
-          key={`decoder-${i}`}
-          position={[
-            decoderPosition,
-            calculateYPosition(i, decoderLayers.length, layerHeight),
-            0,
-          ]}
-          layer={layer}
-          style={style}
-          model={model}
-        />
-      ))}
+      {renderLayers(encoderLayers, encoderPosition)}
+      {renderLayers(decoderLayers, decoderPosition)}
     </>
   );
 });
