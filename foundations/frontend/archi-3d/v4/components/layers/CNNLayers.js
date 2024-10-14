@@ -1,5 +1,7 @@
-import React from "react";
-import Layer from "../Layer";
+import React, { useState, useEffect } from "react";
+import { useSpring, animated } from "@react-spring/three";
+import Node from "../Node";
+import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS } from "../../structure";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
@@ -10,7 +12,7 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
     const y =
       i * layerHeight - (structure.length * layerHeight) / 2 + layerHeight / 2;
     return (
-      <Layer
+      <CNNLayer
         key={`${config.keyPrefix}-${i}`}
         position={[0, y, 0]}
         unexpandedNode={{
@@ -42,6 +44,51 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
       />
     );
   });
+});
+
+const CNNLayer = React.memo((props) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const { smoothedExpanded } = useSpring({
+    smoothedExpanded: expanded ? 1 : 0,
+    config: { mass: 1, tension: 120, friction: 13 },
+  });
+
+  useEffect(() => {
+    const toggleExpanded = () => {
+      setExpanded((prev) => !prev);
+    };
+
+    const minInterval = 1000;
+    const maxInterval = 8000;
+    const randomInterval =
+      Math.random() * (maxInterval - minInterval) + minInterval;
+
+    const timer = setInterval(toggleExpanded, randomInterval);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const { position, unexpandedNode, node, grid, color, style } = props;
+
+  return (
+    <group position={position}>
+      <animated.group
+        scale-x={smoothedExpanded}
+        scale-y={smoothedExpanded}
+        scale-z={smoothedExpanded}
+      >
+        <InstancedNodes {...grid} node={node} color={color} style={style} />
+      </animated.group>
+      <animated.group
+        scale-x={smoothedExpanded.to((v) => 1 - v)}
+        scale-y={smoothedExpanded.to((v) => 1 - v)}
+        scale-z={smoothedExpanded.to((v) => 1 - v)}
+      >
+        <Node {...unexpandedNode} color={color} style={style} />
+      </animated.group>
+    </group>
+  );
 });
 
 export default CNNLayers;

@@ -254,6 +254,11 @@ const GRID_CONFIGS = {
     attention: { xCount: 16, yCount: 16, xInterval: 3, yInterval: 3 },
     ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
   },
+  transformer: {
+    attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    cross_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    ffn: { xCount: 16, yCount: 4, xInterval: 3, yInterval: 5 },
+  },
   vggnet: {
     conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
@@ -268,11 +273,6 @@ const GRID_CONFIGS = {
     conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
     pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
     fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  transformer: {
-    attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    cross_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    ffn: { xCount: 16, yCount: 4, xInterval: 3, yInterval: 5 },
   },
 };
 

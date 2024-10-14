@@ -14,51 +14,52 @@ import {
   LENET_STRUCTURE,
   LENET5_STRUCTURE,
   TRANSFORMER_STRUCTURE,
+  LAYER_CONFIGS,
 } from "./structure";
 
-import VideoGenLayers from "./components/layers/VideoGenLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
 
-export default function Visualization({ model = "videogen", styleIndex = 5 }) {
+export default function Visualization({
+  model = "transformer",
+  styleIndex = 5,
+}) {
   const style = STYLE_STRATEGIES[styleIndex];
+  const modelConfig = LAYER_CONFIGS[model];
+
+  const getStructure = (model) => {
+    switch (model) {
+      case "videogen":
+        return VIDEO_GEN_STRUCTURE;
+      case "gpt":
+        return GPT_STRUCTURE;
+      case "transformer":
+        return TRANSFORMER_STRUCTURE;
+      case "alexnet":
+        return ALEXNET_STRUCTURE;
+      case "vggnet":
+        return VGGNET_STRUCTURE;
+      case "lenet":
+        return LENET_STRUCTURE;
+      case "lenet5":
+        return LENET5_STRUCTURE;
+      default:
+        return [];
+    }
+  };
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
-        {model === "alexnet" && (
+        {modelConfig && modelConfig.type === "transformer" ? (
+          <TransformerLayers
+            structure={getStructure(model)}
+            style={style}
+            model={model}
+          />
+        ) : (
           <CNNLayers
-            structure={ALEXNET_STRUCTURE}
-            style={style}
-            model={model}
-          />
-        )}
-        {model === "videogen" && (
-          <VideoGenLayers
-            structure={VIDEO_GEN_STRUCTURE}
-            style={style}
-            model={model}
-          />
-        )}
-        {model === "gpt" && (
-          <TransformerLayers
-            structure={GPT_STRUCTURE}
-            style={style}
-            model={model}
-          />
-        )}
-        {model === "vggnet" && (
-          <CNNLayers structure={VGGNET_STRUCTURE} style={style} model={model} />
-        )}
-        {model === "lenet" && (
-          <CNNLayers structure={LENET_STRUCTURE} style={style} model={model} />
-        )}
-        {model === "lenet5" && (
-          <CNNLayers structure={LENET5_STRUCTURE} style={style} model={model} />
-        )}
-        {model === "transformer" && (
-          <TransformerLayers
-            structure={TRANSFORMER_STRUCTURE}
+            structure={getStructure(model)}
             style={style}
             model={model}
           />
