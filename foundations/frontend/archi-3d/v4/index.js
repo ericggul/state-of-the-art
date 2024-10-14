@@ -6,16 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
-import {
-  VIDEO_GEN_STRUCTURE,
-  ALEXNET_STRUCTURE,
-  GPT_STRUCTURE,
-  VGGNET_STRUCTURE,
-  LENET_STRUCTURE,
-  LENET5_STRUCTURE,
-  TRANSFORMER_STRUCTURE,
-  LAYER_CONFIGS,
-} from "./structure";
+import { LAYER_CONFIGS, getModelStructure } from "./structure";
 
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
@@ -26,43 +17,21 @@ export default function Visualization({
 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const modelConfig = LAYER_CONFIGS[model];
+  const structure = getModelStructure(model);
 
-  const getStructure = (model) => {
-    switch (model) {
-      case "videogen":
-        return VIDEO_GEN_STRUCTURE;
-      case "gpt":
-        return GPT_STRUCTURE;
-      case "transformer":
-        return TRANSFORMER_STRUCTURE;
-      case "alexnet":
-        return ALEXNET_STRUCTURE;
-      case "vggnet":
-        return VGGNET_STRUCTURE;
-      case "lenet":
-        return LENET_STRUCTURE;
-      case "lenet5":
-        return LENET5_STRUCTURE;
-      default:
-        return [];
-    }
-  };
+  console.log(model, structure);
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
         {modelConfig && modelConfig.type === "transformer" ? (
           <TransformerLayers
-            structure={getStructure(model)}
+            structure={structure}
             style={style}
             model={model}
           />
         ) : (
-          <CNNLayers
-            structure={getStructure(model)}
-            style={style}
-            model={model}
-          />
+          <CNNLayers structure={structure} style={style} model={model} />
         )}
       </CommonScene>
     </Canvas>
