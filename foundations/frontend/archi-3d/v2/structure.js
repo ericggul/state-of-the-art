@@ -86,3 +86,22 @@ export const GPT_STRUCTURE = [
   { name: "Final LayerNorm", type: "layernorm", stack: "decoder" },
   { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
+
+const GRID_CONFIGS = {
+  videoGen: {
+    attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
+    ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
+    diffusion: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 5 },
+    upsample: { xCount: 4, yCount: 4, xInterval: 5, yInterval: 7 },
+  },
+  gpt: {
+    attention: { xCount: 16, yCount: 16, xInterval: 3, yInterval: 3 },
+    ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
+  },
+};
+
+export const getGridConfig = (model) => {
+  return GRID_CONFIGS[model] || GRID_CONFIGS.videoGen; // Default to videoGen if model not found
+};
+
+// ... (export other structures)

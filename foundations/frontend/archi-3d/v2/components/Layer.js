@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Node from "./Node";
 import InstancedNodes from "./InstancedNodes";
+import Sublayer from "./Sublayer";
 
 const Layer = React.memo((props) => {
   const [expanded, setExpanded] = useState(false);
@@ -39,7 +40,7 @@ const Layer = React.memo((props) => {
   }
 });
 
-const ModularLayer = ({ position, layer, style }) => {
+const ModularLayer = ({ position, layer, style, model }) => {
   const size = [30, 10, 10];
   const gap = 10;
 
@@ -56,6 +57,7 @@ const ModularLayer = ({ position, layer, style }) => {
             ]}
             sublayer={sublayer}
             style={style}
+            model={model}
           />
         ))}
       </group>
@@ -95,40 +97,6 @@ const AlexNetLayer = ({
       >
         <Node {...unexpandedNode} color={color} style={style} />
       </animated.group>
-    </group>
-  );
-};
-
-const Sublayer = ({ position, sublayer, style }) => {
-  const size = [20, 8, 8];
-  const gridConfig = {
-    // attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
-    // ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
-    attention: { xCount: 16, yCount: 16, xInterval: 3, yInterval: 3 },
-    ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
-    diffusion: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 5 },
-    upsample: { xCount: 4, yCount: 4, xInterval: 5, yInterval: 7 },
-  };
-
-  const grid = gridConfig[sublayer.type] || {
-    xCount: 1,
-    yCount: 1,
-    xInterval: 10,
-    yInterval: 10,
-  };
-
-  return (
-    <group position={position}>
-      <InstancedNodes
-        xCount={grid.xCount}
-        yCount={grid.yCount}
-        xInterval={grid.xInterval}
-        yInterval={grid.yInterval}
-        nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
-        style={style}
-        color={style.colors.inner}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
     </group>
   );
 };
