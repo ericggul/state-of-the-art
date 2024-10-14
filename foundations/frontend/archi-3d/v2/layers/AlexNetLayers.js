@@ -1,6 +1,5 @@
 import React from "react";
 import Layer from "./Layer";
-import { COLORS } from "../structure";
 
 const AlexNetLayers = React.memo(({ structure, style }) => {
   return structure.map(({ dimensions, type, zSpan }, i) => (
@@ -22,7 +21,7 @@ const AlexNetLayers = React.memo(({ structure, style }) => {
         yInterval: dimensions[1] * 0.55,
       }}
       type={type}
-      color={COLORS.find((c) => c.type === type)?.color || style.colors.inner}
+      color={style.colors.inner || `hsl(240, 100%, 50%)`}
       style={style}
     />
   ));

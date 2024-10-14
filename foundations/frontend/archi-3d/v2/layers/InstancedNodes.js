@@ -8,6 +8,7 @@ const InstancedNodes = React.memo(
     xInterval,
     yInterval,
     nodeSize,
+    node,
     style,
     color,
     rotation = [0, 0, 0],
@@ -26,16 +27,21 @@ const InstancedNodes = React.memo(
       return temp;
     }, [xCount, yCount, xInterval, yInterval]);
 
+    const instanceSize = node ? node.size : nodeSize;
+
     return (
       <group rotation={rotation}>
         <Instances limit={xCount * yCount}>
-          <boxGeometry args={nodeSize} />
+          <boxGeometry args={instanceSize} />
           <meshStandardMaterial
             {...style.material}
             color={color}
             emissive={style.emissive ? style.colors.emissive : "black"}
             emissiveIntensity={style.emissive ? 0.5 : 0}
             wireframe={style.material.wireframe}
+            transparent={true}
+            depthTest={false}
+            depthWrite={false}
           />
           {positions.map((position, i) => (
             <Instance

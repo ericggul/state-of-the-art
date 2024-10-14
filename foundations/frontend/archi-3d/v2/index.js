@@ -1,13 +1,7 @@
 // Visualization.js
 import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Environment,
-  Instances,
-  Instance,
-} from "@react-three/drei";
+import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense, useMemo, useEffect, useState } from "react";
-import { useSpring, animated } from "@react-spring/three";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 // Import styles and structures
@@ -17,7 +11,7 @@ import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
 import AlexNetLayers from "./layers/AlexNetLayers";
 import VideoGenLayers from "./layers/VideoGenLayers";
 
-export default function Visualization({ model = "alexNet", styleIndex = 1 }) {
+export default function Visualization({ model = "alexNet", styleIndex = 3 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (

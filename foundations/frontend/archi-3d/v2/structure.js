@@ -65,11 +65,3 @@ export const ALEXNET_STRUCTURE = [
   { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc" },
   { dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
 ];
-
-export const COLORS = [
-  { type: "input", color: "hsl(240, 100%, 50%)" },
-  { type: "conv", color: "hsl(240, 100%, 50%)" },
-  { type: "pool", color: "hsl(240, 100%, 50%)" },
-  { type: "fc", color: "hsl(240, 100%, 50%)" },
-  { type: "output", color: "hsl(240, 100%, 50%)" },
-];
