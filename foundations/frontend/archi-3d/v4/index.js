@@ -15,21 +15,18 @@ import {
   LENET5_STRUCTURE,
 } from "./structure";
 
-import AlexNetLayers from "./components/layers/AlexNetLayers";
 import VideoGenLayers from "./components/layers/VideoGenLayers";
-import GPTLayers from "./components/layers/GPTLayers";
-import VGGNetLayers from "./components/layers/VGGNetLayers";
-import LeNetLayers from "./components/layers/LeNetLayers";
-import LeNet5Layers from "./components/layers/LeNet5Layers";
+import CNNLayers from "./components/layers/CNNLayers";
+import TransformerLayers from "./components/layers/TransformerLayers";
 
-export default function Visualization({ model = "lenet5", styleIndex = 7 }) {
+export default function Visualization({ model = "lenet", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
         {model === "alexnet" && (
-          <AlexNetLayers
+          <CNNLayers
             structure={ALEXNET_STRUCTURE}
             style={style}
             model={model}
@@ -43,28 +40,20 @@ export default function Visualization({ model = "lenet5", styleIndex = 7 }) {
           />
         )}
         {model === "gpt" && (
-          <GPTLayers structure={GPT_STRUCTURE} style={style} model={model} />
+          <TransformerLayers
+            structure={GPT_STRUCTURE}
+            style={style}
+            model={model}
+          />
         )}
         {model === "vggnet" && (
-          <VGGNetLayers
-            structure={VGGNET_STRUCTURE}
-            style={style}
-            model={model}
-          />
+          <CNNLayers structure={VGGNET_STRUCTURE} style={style} model={model} />
         )}
         {model === "lenet" && (
-          <LeNetLayers
-            structure={LENET_STRUCTURE}
-            style={style}
-            model={model}
-          />
+          <CNNLayers structure={LENET_STRUCTURE} style={style} model={model} />
         )}
         {model === "lenet5" && (
-          <LeNet5Layers
-            structure={LENET5_STRUCTURE}
-            style={style}
-            model={model}
-          />
+          <CNNLayers structure={LENET5_STRUCTURE} style={style} model={model} />
         )}
       </CommonScene>
     </Canvas>

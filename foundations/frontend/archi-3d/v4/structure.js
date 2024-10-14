@@ -171,20 +171,24 @@ export const LENET5_STRUCTURE = [
 
 // Add this at the top of the file
 export const LAYER_CONFIGS = {
-  gpt: {
-    layerHeight: 10,
-    keyPrefix: "gpt",
+  alexnet: {
+    layerHeight: 60,
+    keyPrefix: "alexnet",
   },
   lenet: {
-    layerHeight: 20,
+    layerHeight: 60,
     keyPrefix: "lenet",
   },
   lenet5: {
-    layerHeight: 20,
+    layerHeight: 60,
     keyPrefix: "lenet5",
   },
   vggnet: {
-    layerHeight: 15,
+    layerHeight: 60,
     keyPrefix: "vggnet",
+  },
+  gpt: {
+    layerHeight: 10,
+    keyPrefix: "gpt",
   },
 };

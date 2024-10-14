@@ -14,10 +14,10 @@ import { useSpring, animated } from "@react-spring/three";
 import { STYLE_STRATEGIES } from "./style";
 import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE, COLORS } from "./structure";
 
-export default function Visualization({ model = "alexNet", styleIndex = 3 }) {
+export default function Visualization({ model = "alexnet", styleIndex = 3 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const structure =
-    model === "alexNet" ? ALEXNET_STRUCTURE : VIDEO_GEN_STRUCTURE;
+    model === "alexnet" ? ALEXNET_STRUCTURE : VIDEO_GEN_STRUCTURE;
 
   return (
     <Canvas camera={style.camera}>

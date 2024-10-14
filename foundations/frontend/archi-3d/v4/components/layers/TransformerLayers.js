@@ -1,15 +1,17 @@
 import React from "react";
 import Layer from "../Layer";
+import { LAYER_CONFIGS } from "../../structure";
 
-const VGGNetLayers = React.memo(({ structure, style, model }) => {
-  const layerHeight = 15; // Vertical spacing between layers
+const TransformerLayers = React.memo(({ structure, style, model }) => {
+  const config = LAYER_CONFIGS[model];
+  const layerHeight = config.layerHeight;
 
   return structure.map((layer, i) => {
     const y =
       i * layerHeight - (structure.length * layerHeight) / 2 + layerHeight / 2;
     return (
       <Layer
-        key={`vggnet-${i}`}
+        key={`${config.keyPrefix}-${i}`}
         position={[0, y, 0]}
         layer={layer}
         style={style}
@@ -19,4 +21,4 @@ const VGGNetLayers = React.memo(({ structure, style, model }) => {
   });
 });
 
-export default VGGNetLayers;
+export default TransformerLayers;

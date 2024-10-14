@@ -19,13 +19,13 @@ import AlexNetLayers from "./components/layers/AlexNetLayers";
 import VideoGenLayers from "./components/layers/VideoGenLayers";
 import CommonLayers from "./components/layers/CommonLayers";
 
-export default function Visualization({ model = "vggnet", styleIndex = 7 }) {
+export default function Visualization({ model = "lenet", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
-        {model === "alexNet" && (
+        {model === "alexnet" && (
           <AlexNetLayers
             structure={ALEXNET_STRUCTURE}
             style={style}

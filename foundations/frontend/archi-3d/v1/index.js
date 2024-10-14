@@ -20,7 +20,7 @@ export default function Visualization({ model = "videoGen", styleIndex = 1 }) {
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
-        {model === "alexNet" ? (
+        {model === "alexnet" ? (
           <AlexNetLayers structure={ALEXNET_STRUCTURE} style={style} />
         ) : (
           <VideoGenLayers structure={VIDEO_GEN_STRUCTURE} style={style} />
