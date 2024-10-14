@@ -19,21 +19,13 @@ export const STYLE_STRATEGIES = [
       directionalLight: { position: [0, 150, 100], intensity: 1 },
       ambientLight: { intensity: 0.5 },
     },
-    shadows: true,
-    emissive: false,
-    camera: {
-      position: [0, 50, 150],
-      fov: 50,
-      near: 0.1,
-      far: 1000,
-    },
   },
   {
     name: "Seagram Building",
     colors: {
-      outer: "#7d7d7d", // Darker bronze-like metallic tone
-      inner: "#1b1b1b", // Dark reflective window-like material
-      windowGlow: "hsl(240, 10%, 20%)", // Subtle dark glow
+      outer: "#7d7d7d",
+      inner: "#1b1b1b",
+      windowGlow: "hsl(240, 10%, 20%)",
     },
     material: {
       metalness: 0.9,
@@ -48,14 +40,7 @@ export const STYLE_STRATEGIES = [
       directionalLight: { position: [0, 150, 100], intensity: 1 },
       ambientLight: { intensity: 0.5 },
     },
-    shadows: true,
     windowEffect: true,
-    camera: {
-      position: [0, 75, 200],
-      fov: 50,
-      near: 0.1,
-      far: 1000,
-    },
   },
   {
     name: "Donald Judd",
@@ -76,14 +61,6 @@ export const STYLE_STRATEGIES = [
       directionalLight: { position: [5, 5, 5], intensity: 1 },
       ambientLight: { intensity: 0.5 },
     },
-    shadows: true,
-    emissive: false,
-    camera: {
-      position: [0, 75, 200],
-      fov: 50,
-      near: 0.1,
-      far: 1000,
-    },
   },
   {
     name: "Monochrome Blue",
@@ -103,14 +80,6 @@ export const STYLE_STRATEGIES = [
       directionalLight: { position: [10, 20, 10], intensity: 1 },
       ambientLight: { intensity: 0.3 },
     },
-    shadows: true,
-    emissive: false,
-    camera: {
-      position: [0, 50, 150],
-      fov: 50,
-      near: 0.1,
-      far: 1000,
-    },
   },
   {
     name: "Neon Nights",
@@ -125,13 +94,35 @@ export const STYLE_STRATEGIES = [
       transparent: true,
       opacity: 0.8,
     },
-    shadows: true,
-    emissive: true,
     lighting: {
       environment: "night",
       envIntensity: 0.1,
       pointLight: { position: [0, 50, 0], intensity: 2 },
       ambientLight: { intensity: 0.1 },
+    },
+    emissive: true,
+  },
+
+  {
+    name: "AlexNet Monochrome",
+    colors: {
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
+    },
+    material: {
+      roughness: 0.5,
+      metalness: 0.8,
+      transparent: true,
+      opacity: 0.4,
+      depthTest: false,
+      depthWrite: false,
+    },
+    lighting: {
+      environment: "warehouse",
+      pointLight: { position: [10, 10, 10], intensity: 1 },
+      directionalLight1: { position: [0, 10, 10], intensity: 2 },
+      directionalLight2: { position: [10, 0, 10], intensity: 2 },
+      ambientLight: { intensity: 0.5 },
     },
     postprocessing: {
       bloom: {
@@ -141,12 +132,13 @@ export const STYLE_STRATEGIES = [
       },
     },
     camera: {
-      position: [0, 50, 150],
+      position: [40, 30, 50],
       fov: 50,
       near: 0.1,
-      far: 1000,
+      far: 5000,
     },
   },
+
   {
     name: "AlexNet Monochrome",
     colors: {
@@ -162,8 +154,8 @@ export const STYLE_STRATEGIES = [
       depthTest: false,
       depthWrite: false,
     },
-    shadows: true,
     emissive: true,
+    shadows: true,
     lighting: {
       environment: "warehouse",
       pointLight: { position: [10, 10, 10], intensity: 1 },
@@ -186,19 +178,54 @@ export const STYLE_STRATEGIES = [
     },
   },
   {
+    name: "Transformer Monochrome",
+    colors: {
+      outer: "hsl(240, 100%, 50%)",
+      inner: "hsl(240, 100%, 50%)",
+      emissive: "hsl(240, 100%, 50%)",
+    },
+    material: {
+      roughness: 0.3,
+      metalness: 0.5,
+      transparent: true,
+      opacity: 0.6,
+      depthTest: false,
+      depthWrite: false,
+    },
+    emissive: true,
+    shadows: true,
+    lighting: {
+      environment: "warehouse",
+      pointLight: { position: [0, 150, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    camera: {
+      position: [0, 75, 200],
+      fov: 50,
+      near: 0.1,
+      far: 1000,
+    },
+    layout: {
+      layerHeight: 15,
+      encoderPosition: -50,
+      decoderPosition: 50,
+      nodeSize: [10, 5, 1],
+      unexpandedNodeSize: [20, 10, 10],
+      gridInterval: { x: 12, y: 6 },
+    },
+  },
+  {
     name: "VideoGen Judd-inspired",
     colors: {
       outer: "#7d7d7d", // Metallic gray for the outer parts
-      inner: "hsl(240, 100%, 40%)", // Bold deep blue for inner layers
-      highlight: "#333333", // Darker metallic tone for edges
+      inner: "hsl(240, 100%, 40%)", // Bold deep blue for the inner layers
+      highlight: "#333333", // Darker metallic/industrial feel for borders or edges
     },
     material: {
       metalness: 0.8,
       roughness: 0.2,
-      transparent: false,
     },
-    shadows: true,
-    emissive: false,
     lighting: {
       environment: "apartment",
       pointLight: { position: [0, 200, 0], intensity: 1 },
@@ -206,7 +233,7 @@ export const STYLE_STRATEGIES = [
       ambientLight: { intensity: 0.5 },
     },
     camera: {
-      position: [0, 75, 200],
+      position: [0, 0, 0], // This will be calculated dynamically
       fov: 45,
       near: 0.1,
       far: 5000,

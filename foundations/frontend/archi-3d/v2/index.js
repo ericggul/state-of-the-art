@@ -6,23 +6,28 @@ import {
   Instances,
   Instance,
 } from "@react-three/drei";
-import { Suspense, useEffect, useState, useMemo } from "react";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { Suspense, useMemo, useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
-import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE, COLORS } from "./structure";
+import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
 
-export default function Visualization({ model = "videoGen", styleIndex = 3 }) {
+import AlexNetLayers from "./layers/AlexNetLayers";
+import VideoGenLayers from "./layers/VideoGenLayers";
+
+export default function Visualization({ model = "alexNet", styleIndex = 1 }) {
   const style = STYLE_STRATEGIES[styleIndex];
-  const structure =
-    model === "alexNet" ? ALEXNET_STRUCTURE : VIDEO_GEN_STRUCTURE;
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
-        <Layers structure={structure} style={style} />
+        {model === "alexNet" ? (
+          <AlexNetLayers structure={ALEXNET_STRUCTURE} style={style} />
+        ) : (
+          <VideoGenLayers structure={VIDEO_GEN_STRUCTURE} style={style} />
+        )}
       </CommonScene>
     </Canvas>
   );
@@ -60,70 +65,5 @@ function CommonScene({ style, children }) {
         )}
       </EffectComposer>
     </>
-  );
-}
-
-function Layers({ structure, style }) {
-  const totalLayers = structure.length;
-  const layerGap = 15; // Adjust gap between layers
-
-  return (
-    <>
-      {structure.map((layer, index) => (
-        <Layer
-          key={index}
-          layer={layer}
-          style={style}
-          position={[0, -index * layerGap, 0]}
-        />
-      ))}
-    </>
-  );
-}
-
-function Layer({ layer, style, position }) {
-  const color = COLORS[layer.type] || "white";
-
-  // If the layer has sublayers, render them recursively
-  if (layer.sublayers && layer.sublayers.length > 0) {
-    const sublayerGap = 12; // Adjust gap between sublayers
-    return (
-      <group position={position}>
-        {layer.sublayers.map((sublayer, idx) => (
-          <Layer
-            key={`${layer.name}-sublayer-${idx}`}
-            layer={sublayer}
-            style={style}
-            position={[0, idx * sublayerGap, 0]}
-          />
-        ))}
-      </group>
-    );
-  }
-
-  // Handle rendering based on layer type
-  return (
-    <group position={position}>
-      <Node size={layer.dimensions} style={style} color={color} />
-    </group>
-  );
-}
-
-function Node({ size, style, color }) {
-  // Scale down the size for visualization
-  const scaleFactor = 0.05; // Adjust scale factor as needed
-  const adjustedSize = size.map((dim) => dim * scaleFactor);
-
-  return (
-    <mesh castShadow={style.shadows} receiveShadow={style.shadows}>
-      <boxGeometry args={adjustedSize} />
-      <meshStandardMaterial
-        {...style.material}
-        color={color}
-        emissive={style.emissive ? style.colors.emissive : "black"}
-        emissiveIntensity={style.emissive ? 0.5 : 0}
-        wireframe={style.material.wireframe}
-      />
-    </mesh>
   );
 }

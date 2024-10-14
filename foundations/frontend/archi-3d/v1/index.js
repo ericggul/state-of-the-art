@@ -14,7 +14,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { STYLE_STRATEGIES } from "./style";
 import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
 
-export default function Visualization({ model = "alexNet", styleIndex = 3 }) {
+export default function Visualization({ model = "videoGen", styleIndex = 1 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
@@ -163,7 +163,6 @@ const VideoGenLayer = ({ position, layer, style }) => {
       </group>
     );
   }
-
   return (
     <group position={position}>
       <Node size={size} style={style} color={style.colors.outer} />
@@ -209,7 +208,12 @@ const AlexNetLayer = ({
         scale-y={smoothedExpanded}
         scale-z={smoothedExpanded}
       >
-        <InstancedNodes {...grid} node={node} color={color} style={style} />
+        <InstancedNodesAlexNet
+          {...grid}
+          node={node}
+          color={color}
+          style={style}
+        />
       </animated.group>
       <animated.group
         scale-x={smoothedExpanded.to((v) => 1 - v)}
@@ -314,5 +318,47 @@ const InstancedNodes = ({
         ))}
       </Instances>
     </group>
+  );
+};
+
+// Component to render instances of nodes
+const InstancedNodesAlexNet = ({
+  xCount,
+  yCount,
+  xInterval,
+  yInterval,
+  node,
+  color,
+}) => {
+  const positions = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < xCount; i++) {
+      for (let j = 0; j < yCount; j++) {
+        temp.push([
+          xInterval * i - ((xCount - 1) * xInterval) / 2,
+          yInterval * j - ((yCount - 1) * yInterval) / 2,
+          0,
+        ]);
+      }
+    }
+    return temp;
+  }, [xCount, yCount, xInterval, yInterval]);
+
+  return (
+    <Instances limit={xCount * yCount}>
+      <boxGeometry args={[...node.size]} />
+      <meshStandardMaterial
+        color={color}
+        roughness={0.5}
+        metalness={0.8}
+        opacity={1}
+        transparent={true}
+        depthTest={false}
+        depthWrite={false}
+      />
+      {positions.map((position, i) => (
+        <Instance key={i} position={position} />
+      ))}
+    </Instances>
   );
 };
