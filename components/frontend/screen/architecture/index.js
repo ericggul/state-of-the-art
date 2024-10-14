@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/archi-3d/v0";
+import Architecture3D from "@/foundations/frontend/archi-3d/v1";
 import ArchitectureUI from "@/foundations/frontend/archi-ui";
 
 //constant
@@ -58,7 +58,7 @@ export default function Architecture({ version = "v4.0.2.1" }) {
 
   return (
     <S.Container>
-      <Architecture3D model={relevantModel} />
+      <Architecture3D />
       <ArchitectureUI model={relevantModel} />
     </S.Container>
   );
