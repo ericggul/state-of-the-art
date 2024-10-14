@@ -1,7 +1,7 @@
 import React from "react";
 import Layer from "./Layer";
 
-const VideoGenLayers = React.memo(({ structure, style }) => {
+const VideoGenLayers = React.memo(({ structure, style, model }) => {
   const layerHeight = style.layout?.layerHeight || 13;
   const encoderPosition = style.layout?.encoderPosition || -50;
   const decoderPosition = style.layout?.decoderPosition || 50;
@@ -21,6 +21,7 @@ const VideoGenLayers = React.memo(({ structure, style }) => {
           ]}
           layer={layer}
           style={style}
+          model={model}
         />
       ))}
       {decoderLayers.map((layer, i) => (
@@ -33,6 +34,7 @@ const VideoGenLayers = React.memo(({ structure, style }) => {
           ]}
           layer={layer}
           style={style}
+          model={model}
         />
       ))}
     </>

@@ -1,26 +1,43 @@
 // Visualization.js
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
-import { Suspense, useMemo, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
-import { VIDEO_GEN_STRUCTURE, ALEXNET_STRUCTURE } from "./structure";
+import {
+  VIDEO_GEN_STRUCTURE,
+  ALEXNET_STRUCTURE,
+  GPT_STRUCTURE,
+} from "./structure";
 
 import AlexNetLayers from "./layers/AlexNetLayers";
 import VideoGenLayers from "./layers/VideoGenLayers";
+import GPTLayers from "./layers/GPTLayers";
 
-export default function Visualization({ model = "alexNet", styleIndex = 3 }) {
+export default function Visualization({ model = "gpt", styleIndex = 0 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
     <Canvas camera={style.camera}>
       <CommonScene style={style}>
-        {model === "alexNet" ? (
-          <AlexNetLayers structure={ALEXNET_STRUCTURE} style={style} />
-        ) : (
-          <VideoGenLayers structure={VIDEO_GEN_STRUCTURE} style={style} />
+        {model === "alexNet" && (
+          <AlexNetLayers
+            structure={ALEXNET_STRUCTURE}
+            style={style}
+            model={model}
+          />
+        )}
+        {model === "videoGen" && (
+          <VideoGenLayers
+            structure={VIDEO_GEN_STRUCTURE}
+            style={style}
+            model={model}
+          />
+        )}
+        {model === "gpt" && (
+          <GPTLayers structure={GPT_STRUCTURE} style={style} model={model} />
         )}
       </CommonScene>
     </Canvas>

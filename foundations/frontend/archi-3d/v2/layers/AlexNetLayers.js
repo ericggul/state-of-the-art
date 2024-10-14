@@ -1,7 +1,7 @@
 import React from "react";
 import Layer from "./Layer";
 
-const AlexNetLayers = React.memo(({ structure, style }) => {
+const AlexNetLayers = React.memo(({ structure, style, model = { model } }) => {
   return structure.map(({ dimensions, type, zSpan }, i) => (
     <Layer
       key={i}
@@ -23,6 +23,7 @@ const AlexNetLayers = React.memo(({ structure, style }) => {
       type={type}
       color={style.colors.inner || `hsl(240, 100%, 50%)`}
       style={style}
+      model={model}
     />
   ));
 });

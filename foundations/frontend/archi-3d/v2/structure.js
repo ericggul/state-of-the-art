@@ -3,6 +3,7 @@
 // Constants defining the structure
 export const NUM_ENCODER_LAYERS = 6;
 export const NUM_DECODER_LAYERS = 6;
+export const NUM_GPT_LAYERS = 24;
 
 export const VIDEO_GEN_STRUCTURE = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
@@ -64,4 +65,24 @@ export const ALEXNET_STRUCTURE = [
   { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc" },
   { dimensions: [4096, 1, 1], zSpan: [1, 1], type: "fc" },
   { dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
+];
+
+export const GPT_STRUCTURE = [
+  { name: `Input Embeddings`, type: "input", stack: "decoder" },
+  { name: `Positional Encoding`, type: "positional", stack: "decoder" },
+  ...Array.from({ length: NUM_GPT_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1280, 16, 16],
+      },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [5120, 16, 1] },
+    ],
+  })),
+  { name: "Final LayerNorm", type: "layernorm", stack: "decoder" },
+  { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
