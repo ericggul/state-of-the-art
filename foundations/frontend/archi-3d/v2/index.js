@@ -10,13 +10,15 @@ import {
   VIDEO_GEN_STRUCTURE,
   ALEXNET_STRUCTURE,
   GPT_STRUCTURE,
+  VGGNET_STRUCTURE,
 } from "./structure";
 
 import AlexNetLayers from "./components/layers/AlexNetLayers";
 import VideoGenLayers from "./components/layers/VideoGenLayers";
 import GPTLayers from "./components/layers/GPTLayers";
+import VGGNetLayers from "./components/layers/VGGNetLayers";
 
-export default function Visualization({ model = "alexNet", styleIndex = 7 }) {
+export default function Visualization({ model = "vggNet", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (
@@ -38,6 +40,13 @@ export default function Visualization({ model = "alexNet", styleIndex = 7 }) {
         )}
         {model === "gpt" && (
           <GPTLayers structure={GPT_STRUCTURE} style={style} model={model} />
+        )}
+        {model === "vggNet" && (
+          <VGGNetLayers
+            structure={VGGNET_STRUCTURE}
+            style={style}
+            model={model}
+          />
         )}
       </CommonScene>
     </Canvas>

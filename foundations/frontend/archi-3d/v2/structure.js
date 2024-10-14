@@ -98,6 +98,11 @@ const GRID_CONFIGS = {
     attention: { xCount: 16, yCount: 16, xInterval: 3, yInterval: 3 },
     ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
   },
+  vggNet: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    fc: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+  },
 };
 
 export const getGridConfig = (model) => {
@@ -105,3 +110,28 @@ export const getGridConfig = (model) => {
 };
 
 // ... (export other structures)
+
+export const VGGNET_STRUCTURE = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3] },
+  { name: "Conv1_1", type: "conv", dimensions: [224, 224, 64] },
+  { name: "Conv1_2", type: "conv", dimensions: [224, 224, 64] },
+  { name: "MaxPool1", type: "pool", dimensions: [112, 112, 64] },
+  { name: "Conv2_1", type: "conv", dimensions: [112, 112, 128] },
+  { name: "Conv2_2", type: "conv", dimensions: [112, 112, 128] },
+  { name: "MaxPool2", type: "pool", dimensions: [56, 56, 128] },
+  { name: "Conv3_1", type: "conv", dimensions: [56, 56, 256] },
+  { name: "Conv3_2", type: "conv", dimensions: [56, 56, 256] },
+  { name: "Conv3_3", type: "conv", dimensions: [56, 56, 256] },
+  { name: "MaxPool3", type: "pool", dimensions: [28, 28, 256] },
+  { name: "Conv4_1", type: "conv", dimensions: [28, 28, 512] },
+  { name: "Conv4_2", type: "conv", dimensions: [28, 28, 512] },
+  { name: "Conv4_3", type: "conv", dimensions: [28, 28, 512] },
+  { name: "MaxPool4", type: "pool", dimensions: [14, 14, 512] },
+  { name: "Conv5_1", type: "conv", dimensions: [14, 14, 512] },
+  { name: "Conv5_2", type: "conv", dimensions: [14, 14, 512] },
+  { name: "Conv5_3", type: "conv", dimensions: [14, 14, 512] },
+  { name: "MaxPool5", type: "pool", dimensions: [7, 7, 512] },
+  { name: "FC6", type: "fc", dimensions: [4096, 1, 1] },
+  { name: "FC7", type: "fc", dimensions: [4096, 1, 1] },
+  { name: "FC8", type: "output", dimensions: [1000, 1, 1] },
+];

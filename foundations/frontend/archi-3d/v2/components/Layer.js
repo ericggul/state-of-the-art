@@ -27,7 +27,11 @@ const Layer = React.memo((props) => {
     return () => clearInterval(timer);
   }, []);
 
-  if (props.model === "gpt" || props.model === "videoGen") {
+  if (
+    props.model === "gpt" ||
+    props.model === "videoGen" ||
+    props.model === "vggNet"
+  ) {
     return <ModularLayer {...props} />;
   } else {
     return (
@@ -66,7 +70,11 @@ const ModularLayer = ({ position, layer, style, model }) => {
 
   return (
     <group position={position}>
-      <Node size={size} style={style} color={style.colors.outer} />
+      <Node
+        size={layer.dimensions || size}
+        style={style}
+        color={style.colors[layer.type] || style.colors.outer}
+      />
     </group>
   );
 };
