@@ -1,5 +1,5 @@
 import React from "react";
-import Layer from "./Layer";
+import Layer from "../Layer";
 
 const VideoGenLayers = React.memo(({ structure, style, model }) => {
   const layerHeight = style.layout?.layerHeight || 13;

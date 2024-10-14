@@ -225,9 +225,7 @@ export const STYLE_STRATEGIES = [
     },
     material: {
       roughness: 0.3,
-      metalness: 0.5,
-      transparent: true,
-      opacity: 0.6,
+      metalness: 0.8,
     },
     lighting: {
       environment: "warehouse",

@@ -36,10 +36,9 @@ const InstancedNodes = React.memo(
           <meshStandardMaterial
             {...style.material}
             color={color}
-            emissive={style.emissive ? style.colors.emissive : "black"}
-            emissiveIntensity={style.emissive ? 0.5 : 0}
-            wireframe={style.material.wireframe}
-            transparent={true}
+            // emissive={style.emissive ? style.colors.emissive : "black"}
+            // emissiveIntensity={style.emissive ? 0.5 : 0}
+            // wireframe={style.material.wireframe}
           />
           {positions.map((position, i) => (
             <Instance

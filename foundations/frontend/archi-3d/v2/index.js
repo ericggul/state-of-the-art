@@ -12,11 +12,11 @@ import {
   GPT_STRUCTURE,
 } from "./structure";
 
-import AlexNetLayers from "./layers/AlexNetLayers";
-import VideoGenLayers from "./layers/VideoGenLayers";
-import GPTLayers from "./layers/GPTLayers";
+import AlexNetLayers from "./components/layers/AlexNetLayers";
+import VideoGenLayers from "./components/layers/VideoGenLayers";
+import GPTLayers from "./components/layers/GPTLayers";
 
-export default function Visualization({ model = "gpt", styleIndex = 7 }) {
+export default function Visualization({ model = "videoGen", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (

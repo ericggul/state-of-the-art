@@ -1,5 +1,5 @@
 import React from "react";
-import Layer from "./Layer";
+import Layer from "../Layer";
 
 const AlexNetLayers = React.memo(({ structure, style, model = { model } }) => {
   return structure.map(({ dimensions, type, zSpan }, i) => (

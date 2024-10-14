@@ -1,5 +1,5 @@
 import React from "react";
-import Layer from "./Layer";
+import Layer from "../Layer";
 
 const GPTLayers = React.memo(({ structure, style, model }) => {
   const layerHeight = 10; // Vertical spacing between layers
