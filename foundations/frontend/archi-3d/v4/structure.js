@@ -87,6 +87,107 @@ export const GPT_STRUCTURE = [
   { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
 
+// ... (export other structures)
+
+export const VGGNET_STRUCTURE = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1_1", type: "conv", dimensions: [224, 224, 64], zSpan: [8, 8] },
+  { name: "Conv1_2", type: "conv", dimensions: [224, 224, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  {
+    name: "Conv2_1",
+    type: "conv",
+    dimensions: [112, 112, 128],
+    zSpan: [12, 12],
+  },
+  {
+    name: "Conv2_2",
+    type: "conv",
+    dimensions: [112, 112, 128],
+    zSpan: [12, 12],
+  },
+  {
+    name: "MaxPool2",
+    type: "pool",
+    dimensions: [56, 56, 128],
+    zSpan: [12, 12],
+  },
+  { name: "Conv3_1", type: "conv", dimensions: [56, 56, 256], zSpan: [16, 16] },
+  { name: "Conv3_2", type: "conv", dimensions: [56, 56, 256], zSpan: [16, 16] },
+  { name: "Conv3_3", type: "conv", dimensions: [56, 56, 256], zSpan: [16, 16] },
+  {
+    name: "MaxPool3",
+    type: "pool",
+    dimensions: [28, 28, 256],
+    zSpan: [16, 16],
+  },
+  { name: "Conv4_1", type: "conv", dimensions: [28, 28, 512], zSpan: [24, 24] },
+  { name: "Conv4_2", type: "conv", dimensions: [28, 28, 512], zSpan: [24, 24] },
+  { name: "Conv4_3", type: "conv", dimensions: [28, 28, 512], zSpan: [24, 24] },
+  {
+    name: "MaxPool4",
+    type: "pool",
+    dimensions: [14, 14, 512],
+    zSpan: [24, 24],
+  },
+  { name: "Conv5_1", type: "conv", dimensions: [14, 14, 512], zSpan: [24, 24] },
+  { name: "Conv5_2", type: "conv", dimensions: [14, 14, 512], zSpan: [24, 24] },
+  { name: "Conv5_3", type: "conv", dimensions: [14, 14, 512], zSpan: [24, 24] },
+  { name: "MaxPool5", type: "pool", dimensions: [7, 7, 512], zSpan: [24, 24] },
+  { name: "FC6", type: "fc", dimensions: [4096, 1, 1], zSpan: [1, 1] },
+  { name: "FC7", type: "fc", dimensions: [4096, 1, 1], zSpan: [1, 1] },
+  { name: "FC8", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+export const LENET_STRUCTURE = [
+  { name: "Input", type: "input", dimensions: [32, 32, 1], zSpan: [1, 1] },
+  { name: "C1", type: "conv", dimensions: [28, 28, 6], zSpan: [3, 2] },
+  { name: "S2", type: "pool", dimensions: [14, 14, 6], zSpan: [3, 2] },
+  { name: "C3", type: "conv", dimensions: [10, 10, 16], zSpan: [4, 4] },
+  { name: "S4", type: "pool", dimensions: [5, 5, 16], zSpan: [4, 4] },
+  { name: "C5", type: "conv", dimensions: [1, 1, 120], zSpan: [12, 10] },
+  { name: "F6", type: "fc", dimensions: [84, 1, 1], zSpan: [1, 1] },
+  { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
+];
+
+export const LENET5_STRUCTURE = [
+  { name: "Input", type: "input", dimensions: [32, 32, 1], zSpan: [1, 1] },
+  { name: "C1", type: "conv", dimensions: [28, 28, 6], zSpan: [3, 2] },
+  { name: "S2", type: "pool", dimensions: [14, 14, 6], zSpan: [3, 2] },
+  { name: "C3", type: "conv", dimensions: [10, 10, 16], zSpan: [4, 4] },
+  { name: "S4", type: "pool", dimensions: [5, 5, 16], zSpan: [4, 4] },
+  { name: "C5", type: "conv", dimensions: [1, 1, 120], zSpan: [12, 10] },
+  { name: "F6", type: "fc", dimensions: [84, 1, 1], zSpan: [1, 1] },
+  { name: "F7", type: "fc", dimensions: [10, 1, 1], zSpan: [1, 1] },
+  { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
+];
+
+//////CONFIGS/////
+
+// Add this at the top of the file
+export const LAYER_CONFIGS = {
+  alexnet: {
+    layerHeight: 60,
+    keyPrefix: "alexnet",
+  },
+  lenet: {
+    layerHeight: 60,
+    keyPrefix: "lenet",
+  },
+  lenet5: {
+    layerHeight: 60,
+    keyPrefix: "lenet5",
+  },
+  vggnet: {
+    layerHeight: 60,
+    keyPrefix: "vggnet",
+  },
+  gpt: {
+    layerHeight: 10,
+    keyPrefix: "gpt",
+  },
+};
+
 const GRID_CONFIGS = {
   videoGen: {
     attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
@@ -117,78 +218,4 @@ const GRID_CONFIGS = {
 
 export const getGridConfig = (model) => {
   return GRID_CONFIGS[model] || GRID_CONFIGS.videoGen; // Default to videoGen if model not found
-};
-
-// ... (export other structures)
-
-export const VGGNET_STRUCTURE = [
-  { name: "Input", type: "input", dimensions: [224, 224, 3] },
-  { name: "Conv1_1", type: "conv", dimensions: [224, 224, 64] },
-  { name: "Conv1_2", type: "conv", dimensions: [224, 224, 64] },
-  { name: "MaxPool1", type: "pool", dimensions: [112, 112, 64] },
-  { name: "Conv2_1", type: "conv", dimensions: [112, 112, 128] },
-  { name: "Conv2_2", type: "conv", dimensions: [112, 112, 128] },
-  { name: "MaxPool2", type: "pool", dimensions: [56, 56, 128] },
-  { name: "Conv3_1", type: "conv", dimensions: [56, 56, 256] },
-  { name: "Conv3_2", type: "conv", dimensions: [56, 56, 256] },
-  { name: "Conv3_3", type: "conv", dimensions: [56, 56, 256] },
-  { name: "MaxPool3", type: "pool", dimensions: [28, 28, 256] },
-  { name: "Conv4_1", type: "conv", dimensions: [28, 28, 512] },
-  { name: "Conv4_2", type: "conv", dimensions: [28, 28, 512] },
-  { name: "Conv4_3", type: "conv", dimensions: [28, 28, 512] },
-  { name: "MaxPool4", type: "pool", dimensions: [14, 14, 512] },
-  { name: "Conv5_1", type: "conv", dimensions: [14, 14, 512] },
-  { name: "Conv5_2", type: "conv", dimensions: [14, 14, 512] },
-  { name: "Conv5_3", type: "conv", dimensions: [14, 14, 512] },
-  { name: "MaxPool5", type: "pool", dimensions: [7, 7, 512] },
-  { name: "FC6", type: "fc", dimensions: [4096, 1, 1] },
-  { name: "FC7", type: "fc", dimensions: [4096, 1, 1] },
-  { name: "FC8", type: "output", dimensions: [1000, 1, 1] },
-];
-
-export const LENET_STRUCTURE = [
-  { name: "Input", type: "input", dimensions: [32, 32, 1] },
-  { name: "C1", type: "conv", dimensions: [28, 28, 6] },
-  { name: "S2", type: "pool", dimensions: [14, 14, 6] },
-  { name: "C3", type: "conv", dimensions: [10, 10, 16] },
-  { name: "S4", type: "pool", dimensions: [5, 5, 16] },
-  { name: "C5", type: "conv", dimensions: [1, 1, 120] },
-  { name: "F6", type: "fc", dimensions: [84, 1, 1] },
-  { name: "Output", type: "output", dimensions: [10, 1, 1] },
-];
-
-export const LENET5_STRUCTURE = [
-  { name: "Input", type: "input", dimensions: [32, 32, 1] },
-  { name: "C1", type: "conv", dimensions: [28, 28, 6] },
-  { name: "S2", type: "pool", dimensions: [14, 14, 6] },
-  { name: "C3", type: "conv", dimensions: [10, 10, 16] },
-  { name: "S4", type: "pool", dimensions: [5, 5, 16] },
-  { name: "C5", type: "conv", dimensions: [1, 1, 120] },
-  { name: "F6", type: "fc", dimensions: [84, 1, 1] },
-  { name: "F7", type: "fc", dimensions: [10, 1, 1] },
-  { name: "Output", type: "output", dimensions: [10, 1, 1] },
-];
-
-// Add this at the top of the file
-export const LAYER_CONFIGS = {
-  alexnet: {
-    layerHeight: 60,
-    keyPrefix: "alexnet",
-  },
-  lenet: {
-    layerHeight: 60,
-    keyPrefix: "lenet",
-  },
-  lenet5: {
-    layerHeight: 60,
-    keyPrefix: "lenet5",
-  },
-  vggnet: {
-    layerHeight: 60,
-    keyPrefix: "vggnet",
-  },
-  gpt: {
-    layerHeight: 10,
-    keyPrefix: "gpt",
-  },
 };

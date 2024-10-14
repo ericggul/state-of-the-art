@@ -19,7 +19,7 @@ import AlexNetLayers from "./components/layers/AlexNetLayers";
 import VideoGenLayers from "./components/layers/VideoGenLayers";
 import CommonLayers from "./components/layers/CommonLayers";
 
-export default function Visualization({ model = "lenet", styleIndex = 7 }) {
+export default function Visualization({ model = "alexnet", styleIndex = 7 }) {
   const style = STYLE_STRATEGIES[styleIndex];
 
   return (

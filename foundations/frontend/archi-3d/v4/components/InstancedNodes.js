@@ -11,7 +11,8 @@ const InstancedNodes = React.memo(
     node,
     style,
     color,
-    rotation = [0, 0, 0],
+    // rotation = [0, 0, 0],
+    rotation = [Math.PI / 2, 0, 0],
   }) => {
     const positions = useMemo(() => {
       const temp = [];
@@ -28,18 +29,17 @@ const InstancedNodes = React.memo(
     }, [xCount, yCount, xInterval, yInterval]);
 
     const instanceSize = node ? node.size : nodeSize;
+    const instanceCount = positions.length;
+
+    if (instanceCount === 0) {
+      return null; // Return null if there are no instances to render
+    }
 
     return (
       <group rotation={rotation}>
-        <Instances limit={xCount * yCount}>
+        <Instances limit={instanceCount}>
           <boxGeometry args={instanceSize} />
-          <meshStandardMaterial
-            {...style.material}
-            color={color}
-            // emissive={style.emissive ? style.colors.emissive : "black"}
-            // emissiveIntensity={style.emissive ? 0.5 : 0}
-            // wireframe={style.material.wireframe}
-          />
+          <meshStandardMaterial {...style.material} color={color} />
           {positions.map((position, i) => (
             <Instance
               key={i}

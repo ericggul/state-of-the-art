@@ -27,11 +27,11 @@ const Layer = React.memo((props) => {
     return () => clearInterval(timer);
   }, []);
 
-  if (["gpt", "videoGen", "vggnet", "lenet", "lenet5"].includes(props.model)) {
+  if (["gpt", "videoGen"].includes(props.model)) {
     return <ModularLayer {...props} />;
   } else {
     return (
-      <AlexNetLayer
+      <CNNLayer
         {...props}
         expanded={expanded}
         smoothedExpanded={smoothedExpanded}
@@ -75,7 +75,7 @@ const ModularLayer = ({ position, layer, style, model }) => {
   );
 };
 
-const AlexNetLayer = ({
+const CNNLayer = ({
   position,
   unexpandedNode,
   node,
