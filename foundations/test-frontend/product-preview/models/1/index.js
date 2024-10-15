@@ -40,20 +40,16 @@ export default function Yakitori({ enableDeviceControls = true }) {
       <pointLight position={[10, 10, 10]} />
       <directionalLight position={[0, 10, 10]} intensity={2} />
       <directionalLight position={[10, 0, 10]} intensity={2} />
-      {new Array(Y_LEN).fill(0).map((_, y) =>
-        new Array(Y_LEN).fill(0).map((_, z) => (
-          <SingleLayer
-            key={`${y}-${z}`}
-            position={[
-              INTERVAL * (y - (Y_LEN - 1) / 2), // Y-axis position
-              INTERVAL * (z - (Y_LEN - 1) / 2), // Z-axis position
-              0, // X-axis remains the same
-            ]}
-            yIdx={y}
-            zIdx={z}
-          />
-        ))
-      )}
+
+      <SingleLayer
+        position={[
+          0,
+          0,
+          0, // X-axis remains the same
+        ]}
+        yIdx={0}
+        zIdx={0}
+      />
 
       <OrbitControls />
       {enableDeviceControls && <DeviceOrientationControls />}

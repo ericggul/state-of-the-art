@@ -36,6 +36,9 @@ export const LAYER_CONFIGS = {
     keyPrefix: "videogen",
     type: "transformer",
   },
+  basic_nn: { type: "basic_nn", keyPrefix: "basic_nn", layerHeight: 20 },
+  mcculloch_pitts: { type: "basic_nn", keyPrefix: "mp", layerHeight: 20 },
+  perceptron: { type: "basic_nn", keyPrefix: "perceptron", layerHeight: 20 },
 };
 
 const GRID_CONFIGS = {
@@ -75,7 +78,6 @@ export const getGridConfig = (model) => {
   return GRID_CONFIGS[model] || GRID_CONFIGS.videogen;
 };
 
-export const getModelStructure = (model) => {
-  console.log(MODELS, model);
+export function getModelStructure(model) {
   return MODELS[model.toUpperCase()] || [];
-};
+}

@@ -10,16 +10,12 @@ import { LAYER_CONFIGS, getModelStructure } from "./structure";
 
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
+import BasicNNLayers from "./components/layers/BasicNNLayers";
 
-export default function Visualization({
-  model = "transformer",
-  styleIndex = 5,
-}) {
+export default function Visualization({ model = "basic_nn", styleIndex = 5 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const modelConfig = LAYER_CONFIGS[model];
   const structure = getModelStructure(model);
-
-  console.log(model, structure);
 
   return (
     <Canvas camera={style.camera}>
@@ -30,6 +26,8 @@ export default function Visualization({
             style={style}
             model={model}
           />
+        ) : modelConfig && modelConfig.type === "basic_nn" ? (
+          <BasicNNLayers structure={structure} style={style} model={model} />
         ) : (
           <CNNLayers structure={structure} style={style} model={model} />
         )}
