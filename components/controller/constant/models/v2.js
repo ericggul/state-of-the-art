@@ -36,14 +36,6 @@ export const MODELS = {
     },
   },
   "v2.x - Memory-Based and Unsupervised Models": {
-    "v2.0": {
-      name: "Hopfield Networks",
-      year: 1982,
-      place: "John Hopfield, Caltech",
-      citation: 48000,
-      explanation:
-        "A form of recurrent neural network serving as content-addressable memory systems with binary threshold nodes.",
-    },
     "v2.3": {
       name: "Autoencoders and Self-Supervised Learning",
       "v2.3.1": {
@@ -53,14 +45,7 @@ export const MODELS = {
         year: 1986,
         place: "David E. Rumelhart, Geoffrey E. Hinton, Ronald J. Williams",
       },
-      "v2.3.2": {
-        name: "Denoising Autoencoder",
-        year: 2008,
-        place: "Pascal Vincent et al.",
-        citation: 9900,
-        explanation:
-          "Trained to reconstruct original input from corrupted versions, improving robustness and learning useful features.",
-      },
+
       "v2.3.3": {
         name: "Variational Autoencoder (VAE)",
         year: 2013,
@@ -885,9 +870,7 @@ export const ARRAY = [
   "Perceptron",
   "Multi-Layer Perceptron (MLP)",
   "Backpropagation Algorithm",
-  "Hopfield Networks",
   "Basic Autoencoder",
-  "Denoising Autoencoder",
   "Variational Autoencoder (VAE)",
   "β-VAE",
   "SimCLR",
@@ -996,16 +979,8 @@ export const OBJECT_ARRAY = [
     version: "v1.2.1",
   },
   {
-    name: "Hopfield Networks",
-    version: "v2.0",
-  },
-  {
     name: "Basic Autoencoder",
     version: "v2.3.1",
-  },
-  {
-    name: "Denoising Autoencoder",
-    version: "v2.3.2",
   },
   {
     name: "Variational Autoencoder (VAE)",
