@@ -73,13 +73,13 @@ AIが「最先端」ギャラリーの全体的な語と事前に構築された
 };
 
 const LANGUAGE_MAPPINGS = {
-  ko: ["ko", "ko-KR", "ko-KP"],
-  en: ["en", "en-US", "en-GB", "en-AU"],
+  ko: ["ko", "ko-KR", "ko-KP", "kr", "kr-KR", "kr-KP"],
+  en: ["en", "en-US", "en-GB", "en-AU", "us", "uk", "au"],
   fr: ["fr", "fr-FR", "fr-CA"],
-  es: ["es", "es-ES", "es-MX", "es-AR"],
+  es: ["es", "es-ES", "es-MX", "es-AR", "mx"],
   de: ["de", "de-DE", "de-AT", "de-CH"],
-  ja: ["ja", "ja-JP"],
-  zh: ["zh", "zh-CN", "zh-TW", "zh-HK"],
+  ja: ["ja", "ja-JP", "jp"],
+  zh: ["zh", "zh-CN", "zh-TW", "zh-HK", "cn", "hk"],
 };
 
 export const getLanguageKey = (language) => {
