@@ -6,14 +6,13 @@ import {
   getSystemDescription,
   getSystemEnsurment,
 } from "@/components/controller/constant/system-script";
+import { TRANSLATED_TEMPLATES } from "@/components/controller/constant/translated-templates";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
+
+import { LANGUAGE_MAP } from "@/foundations/mobile/constant/language-map";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Basic memory formatter that stringifies and passes
- * message history directly into the model.
- */
 const formatMessage = (message) => {
   return `${message.role}: ${message.content}`;
 };
@@ -22,31 +21,28 @@ const formatMessage = (message) => {
 let modelFrequency = new Map(OBJECT_ARRAY.map((model) => [model, 0]));
 let lastResetTime = Date.now();
 
-const createTemplate = (language) => `${getSystemDescription(language)}
+const createTemplate = (language) => {
+  const template = TRANSLATED_TEMPLATES[language] || TRANSLATED_TEMPLATES.en;
+  const systemDescription = getSystemDescription(language);
+  const systemEnsurment = getSystemEnsurment(language);
 
-${getSystemEnsurment(language)}
+  console.log(language, systemDescription, systemEnsurment);
+
+  return `${systemDescription}
+
+${systemEnsurment}
 
 You are an AI museum docent showcasing state-of-the-art neural network architectures, focusing on: ${OBJECT_ARRAY.map(
-  (m) => `${m.name} (${m.version})`
-).join(", ")}.
+    (m) => `${m.name} (${m.version})`
+  ).join(", ")}.
 
 Current conversation stage: {stage}
 User's name (if known): {userName}
-Device language: {language}
+Device language: {languageName}
 
-Strictly follow this conversation structure:
-1. Initial: Ask for the user's name.
-2. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
-3. ExplainBasics: If not familiar, explain the basics of Neural Networks Architectures.
-4. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
-5. InteractiveExperience: Continue explaining architectures.
+${template.conversationStructure}
 
-Guidelines:
-1. Strictly adhere to the current stage.
-2. Use a friendly, clear, and informative tone.
-3. Progress to the next stage only when the current stage is completed.
-4. When introducing an architecture, mention its year and origin.
-5. Always respond in the user's device language: {language}
+${template.guidelines}
 
 Current conversation:
 {chat_history}
@@ -64,6 +60,7 @@ After generating your response, separately provide the following:
 
 Ensure all these additional fields are present in your structured output, but keep them separate from the main response content.
 `;
+};
 
 export async function POST(req) {
   try {
@@ -77,6 +74,8 @@ export async function POST(req) {
 
     const TEMPLATE = createTemplate(language);
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+    // console.log("template", TEMPLATE);
+    // console.log("prompt", prompt);
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -115,12 +114,14 @@ export async function POST(req) {
 
     console.log("Current stage:", stage);
     try {
+      const languageName = LANGUAGE_MAP[language] || "English";
       response = await chain.invoke({
         chat_history: messages.map(formatMessage).join("\n"),
         input: messages[messages.length - 1].content,
         stage,
         userName,
         language,
+        languageName,
       });
 
       // Sanitize the content field

@@ -5,6 +5,7 @@ import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
 import { LANGUAGE_MAP } from "./constant/language-map";
+import { getLanguageKey } from "@/components/controller/constant/system-script";
 
 const ChatUI = () => {
   const {
@@ -32,13 +33,11 @@ const ChatUI = () => {
   useEffect(() => {
     const detectLanguage = () => {
       let fullLanguage = navigator.language || navigator.userLanguage || "en";
-      // fullLanguage = "en";
-      const primaryLanguage = fullLanguage.split("-")[0];
       try {
-        const languageName = LANGUAGE_MAP[primaryLanguage] || "English";
-        useChatStore.getState().setDeviceLanguage(languageName);
+        const languageKey = getLanguageKey(fullLanguage);
+        useChatStore.getState().setDeviceLanguage(languageKey);
       } catch (e) {
-        useChatStore.getState().setDeviceLanguage("English");
+        useChatStore.getState().setDeviceLanguage("en");
       }
     };
 

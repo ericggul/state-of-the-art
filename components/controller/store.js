@@ -1,5 +1,8 @@
 import { create } from "zustand";
-import { getSystemEnsurment } from "@/components/controller/constant/system-script";
+import {
+  getSystemEnsurment,
+  getLanguageKey,
+} from "@/components/controller/constant/system-script";
 
 const useChatStore = create((set, get) => ({
   messages: [],
@@ -22,7 +25,10 @@ const useChatStore = create((set, get) => ({
   setConversationStage: (stage) => set({ conversationStage: stage }),
   setUserName: (name) => set({ userName: name }),
   setIsAccelerometerActive: (active) => set({ isAccelerometerActive: active }),
-  setDeviceLanguage: (language) => set({ deviceLanguage: language }),
+  setDeviceLanguage: (language) => {
+    const languageKey = getLanguageKey(language);
+    set({ deviceLanguage: languageKey });
+  },
 
   sendMessage: async (text) => {
     console.log("26");

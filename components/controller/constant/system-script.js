@@ -38,7 +38,7 @@ Jeder Austausch ist ein dialektischer, künstlerischer Moment von höchstens 50 
   zh: `
 您是"最先进"画廊的AI讲解员，这是一个专门展示尖端神经网络架构的prestigeous空间。
 您与不同专业水平的人类互动，轻松适应。
-您的回答简洁、精炼、高雅的英式英语，富有诗意——融入了艺术画廊的细微差别和技术术语。
+您的回答简洁、精炼、高雅的英式英语，富有诗意——融入了艺术画廊的细微差别和技术术��。
 每次交流都是一个辩证的、艺术的时刻，不超过50个字——准确、富有启发性，巧妙地引导用户更深入地参与最先进的架构。`,
 };
 
@@ -64,7 +64,7 @@ Stellen Sie sicher, dass die KI sich an die übergreifende Erzählung der State-
 Bestätigen Sie immer zuerst die Eingabe des Benutzers und lenken Sie dann das Gespräch zurück zum geskripteten Ablauf über neuronale Netzwerkarchitekturen. Der Benutzer sollte sich engagiert fühlen, aber dennoch durch die State-of-the-Art-Ausstellung geführt werden.`,
 
   ja: `
-AIが「最先端」ギャラリーの全体的な物語と事前に構築されたコマンドスクリプトに従いながら、ユーザーの入力を認識し、微妙に応答することを確認してください。
+AIが「最先端」ギャラリーの全体的な語と事前に構築されたコマンドスクリプトに従いながら、ユーザーの入力を認識し、微妙に応答することを確認してください。
 常にユーザーの入力を最初に肯定し、その後、会話をニューラルネットワークアーキテクチャに関するスクリプト化されたフローに戻すようにしてください。ユーザーは関与していると感じながらも、最先端の展示を通じて導かれているように感じるべきです。`,
 
   zh: `
@@ -72,12 +72,34 @@ AIが「最先端」ギャラリーの全体的な物語と事前に構築され
 始终先肯定用户的输入，然后将对话引导回关于神经网络架构的脚本流程。用户应该感到参与其中，同时被引导穿过"最先进"展览。`,
 };
 
+const LANGUAGE_MAPPINGS = {
+  ko: ["ko", "ko-KR", "ko-KP"],
+  en: ["en", "en-US", "en-GB", "en-AU"],
+  fr: ["fr", "fr-FR", "fr-CA"],
+  es: ["es", "es-ES", "es-MX", "es-AR"],
+  de: ["de", "de-DE", "de-AT", "de-CH"],
+  ja: ["ja", "ja-JP"],
+  zh: ["zh", "zh-CN", "zh-TW", "zh-HK"],
+};
+
+export const getLanguageKey = (language) => {
+  const languagePrefix = language.split("-")[0].toLowerCase();
+  for (const [key, values] of Object.entries(LANGUAGE_MAPPINGS)) {
+    if (values.includes(languagePrefix) || values.includes(language)) {
+      return key;
+    }
+  }
+  return "en"; // Default to English if no match found
+};
+
 export const getSystemDescription = (language) => {
-  return DESCRIPTIONS[language] || DESCRIPTIONS["en"];
+  const languageKey = getLanguageKey(language);
+  return DESCRIPTIONS[languageKey] || DESCRIPTIONS["en"];
 };
 
 export const getSystemEnsurment = (language) => {
-  return ENSURMENTS[language] || ENSURMENTS["en"];
+  const languageKey = getLanguageKey(language);
+  return ENSURMENTS[languageKey] || ENSURMENTS["en"];
 };
 
 export const SYSTEM_DESCRIPTION = DESCRIPTIONS["en"];
