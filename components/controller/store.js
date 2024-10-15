@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { SYSTEM_ENSURMENT } from "@/components/controller/constant/system-script";
+import { getSystemEnsurment } from "@/components/controller/constant/system-script";
 
 const useChatStore = create((set, get) => ({
   messages: [],
@@ -35,9 +35,10 @@ const useChatStore = create((set, get) => ({
     }
 
     try {
+      const systemEnsurment = getSystemEnsurment(state.deviceLanguage);
       const conversation = [
         ...state.messages.map((msg) => ({ role: msg.role, content: msg.text })),
-        { role: "system", content: SYSTEM_ENSURMENT },
+        { role: "system", content: systemEnsurment },
       ];
 
       if (text) {

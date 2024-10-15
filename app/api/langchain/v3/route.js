@@ -3,8 +3,8 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { z } from "zod";
 
 import {
-  SYSTEM_DESCRIPTION,
-  SYSTEM_ENSURMENT,
+  getSystemDescription,
+  getSystemEnsurment,
 } from "@/components/controller/constant/system-script";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 
@@ -22,7 +22,9 @@ const formatMessage = (message) => {
 let modelFrequency = new Map(OBJECT_ARRAY.map((model) => [model, 0]));
 let lastResetTime = Date.now();
 
-const TEMPLATE = `${SYSTEM_DESCRIPTION}
+const createTemplate = (language) => `${getSystemDescription(language)}
+
+${getSystemEnsurment(language)}
 
 You are an AI museum docent showcasing state-of-the-art neural network architectures, focusing on: ${OBJECT_ARRAY.map(
   (m) => `${m.name} (${m.version})`
@@ -34,12 +36,10 @@ Device language: {language}
 
 Strictly follow this conversation structure:
 1. Initial: Ask for the user's name.
-2. AskReady: Ask if the user is ready for the journey.
-3. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
-4. ExplainBasics: If not familiar, explain the basics of Neural Networks.
-5. ExplainArchitectures: Start explaining architectures, beginning with simpler ones.
-6. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
-7. InteractiveExperience: Continue explaining architectures.
+2. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
+3. ExplainBasics: If not familiar, explain the basics of Neural Networks Architectures.
+4. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
+5. InteractiveExperience: Continue explaining architectures.
 
 Guidelines:
 1. Strictly adhere to the current stage.
@@ -75,8 +75,7 @@ export async function POST(req) {
       lastResetTime = Date.now();
     }
 
-    //console log the
-
+    const TEMPLATE = createTemplate(language);
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
 
     const model = new ChatOpenAI({
@@ -181,10 +180,8 @@ export async function POST(req) {
     // Ensure the next stage is valid and advances the conversation
     const validStages = [
       "initial",
-      "askReady",
       "checkFamiliarity",
       "explainBasics",
-      "explainArchitectures",
       "activateAccelerometer",
       "interactiveExperience",
     ];
