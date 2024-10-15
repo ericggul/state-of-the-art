@@ -11,23 +11,12 @@ export const MODELS = {
         "Introduced the first mathematical model of a neuron, laying the foundation for neural network research.",
     },
     "v1.1": {
-      name: "Perceptron Family",
-      "v1.1.1": {
-        name: "Perceptron",
-        year: 1958,
-        place: "Frank Rosenblatt, Cornell Aeronautical Laboratory",
-        citation: 13000,
-        explanation:
-          "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
-      },
-      "v1.1.2": {
-        name: "ADALINE",
-        year: 1960,
-        place: "Bernard Widrow and Marcian Hoff, Stanford University",
-        citation: 9000,
-        explanation:
-          "An early neural network using the delta rule for weight updates, applied to pattern recognition.",
-      },
+      name: "Perceptron",
+      year: 1958,
+      place: "Frank Rosenblatt, Cornell Aeronautical Laboratory",
+      citation: 13000,
+      explanation:
+        "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
     },
     "v1.2": {
       name: "Multi-Layer Perceptron (MLP)",
@@ -54,31 +43,6 @@ export const MODELS = {
       citation: 48000,
       explanation:
         "A form of recurrent neural network serving as content-addressable memory systems with binary threshold nodes.",
-    },
-    "v2.1": {
-      name: "Boltzmann Machines",
-      year: 1985,
-      place: "Geoffrey Hinton and Terry Sejnowski",
-      citation: 6700,
-      explanation:
-        "Stochastic recurrent neural networks capable of learning internal representations; use simulated annealing.",
-
-      "v2.1.1": {
-        name: "Deep Belief Networks (DBN)",
-        year: 2006,
-        place: "Geoffrey Hinton, Simon Osindero, Yee-Whye Teh",
-        citation: 27000,
-        explanation:
-          "Stacked RBMs forming deep networks; a pre-training technique for deep learning.",
-      },
-    },
-    "v2.2": {
-      name: "Self-Organizing Maps",
-      year: 1982,
-      place: "Teuvo Kohonen",
-      citation: 61000,
-      explanation:
-        "Unsupervised learning algorithm for visualizing high-dimensional data via dimensionality reduction.",
     },
     "v2.3": {
       name: "Autoencoders and Self-Supervised Learning",
@@ -154,14 +118,6 @@ export const MODELS = {
     },
   },
   "v3.x - Convolutional Neural Networks": {
-    "v3.0": {
-      name: "Neocognitron",
-      year: 1980,
-      place: "Kunihiko Fukushima",
-      citation: 12000,
-      explanation:
-        "Early model of a hierarchical, multilayered neural network for visual pattern recognition; precursor to CNNs.",
-    },
     "v3.1": {
       name: "LeNet Family",
       "v3.1.1": {
@@ -926,72 +882,52 @@ export const MODELS = {
 
 export const ARRAY = [
   "McCulloch-Pitts Neuron",
-  "Perceptron Family",
   "Perceptron",
-  "ADALINE",
   "Multi-Layer Perceptron (MLP)",
   "Backpropagation Algorithm",
   "Hopfield Networks",
-  "Boltzmann Machines",
-  "Deep Belief Networks (DBN)",
-  "Self-Organizing Maps",
-  "Autoencoders and Self-Supervised Learning",
   "Basic Autoencoder",
   "Denoising Autoencoder",
   "Variational Autoencoder (VAE)",
   "β-VAE",
-  "Contrastive Learning Models",
   "SimCLR",
   "MoCo",
-  "Self-Distillation Models",
   "DINO",
   "DINOv2",
-  "Neocognitron",
-  "LeNet Family",
   "LeNet-1",
   "LeNet-5",
-  "Modern CNNs",
   "AlexNet",
   "VGGNet",
   "GoogLeNet/Inception",
   "ResNet",
   "DenseNet",
   "EfficientNet",
-  "Vision Transformers (ViT)",
   "Vision Transformer (ViT)",
   "Swin Transformer",
   "DeiT",
-  "Advanced CNN Architectures",
   "U-Net",
   "SegNet",
   "YOLO (You Only Look Once)",
-  "Recurrent Neural Networks (RNNs)",
   "Simple RNN (Elman Network)",
   "Long Short-Term Memory (LSTM)",
   "Peephole LSTM",
   "Bidirectional LSTM",
   "Gated Recurrent Unit (GRU)",
-  "Attention Mechanisms",
   "Basic Attention",
   "Self-Attention",
   "Transformer Architecture",
-  "Encoder-Decoder Transformers",
   "T5",
   "BART",
-  "Encoder-Only Models",
   "BERT",
   "RoBERTa",
-  "Decoder-Only Models",
   "GPT",
   "GPT-2",
   "GPT-3",
   "GPT-4",
   "PaLM",
   "PaLM 2",
-  "Open-Source Models",
   "LLaMA",
   "Falcon LLM",
-  "Advanced Transformer Variants",
   "Transformer-XL",
   "XLNet",
   "ELECTRA",
@@ -1001,63 +937,44 @@ export const ARRAY = [
   "BigBird",
   "Reformer",
   "Longformer",
-  "Multilingual and Cross-lingual Models",
   "ERNIE",
   "XLM",
   "Generative Adversarial Networks (GANs)",
   "Original GAN",
-  "Architectural Variants",
   "DCGAN",
   "WGAN",
   "Progressive GAN",
-  "Conditional Variants",
   "Conditional GAN",
   "CycleGAN",
-  "StyleGAN Family",
   "StyleGAN",
   "StyleGAN2",
   "StyleGAN3",
-  "Diffusion Models",
   "Denoising Diffusion Probabilistic Models (DDPM)",
-  "Latent Diffusion Models",
   "Stable Diffusion",
-  "Neural Rendering and 3D Models",
   "Neural Radiance Fields (NeRF)",
-  "Early Multimodal Models",
   "Show and Tell",
   "Visual Question Answering (VQA) Models",
-  "Contrastive Multimodal Models",
   "CLIP",
-  "Generative Multimodal Models",
   "DALL-E",
   "DALL-E 2",
   "Stable Diffusion",
-  "Advanced Multimodal Models",
   "PaLM-E",
   "GPT-4V",
-  "Deep Reinforcement Learning",
   "Deep Q-Network (DQN)",
   "Asynchronous Advantage Actor-Critic (A3C)",
-  "Mastery in Complex Games",
   "AlphaGo",
   "AlphaZero",
   "MuZero",
-  "Efficiency-Focused Models",
   "MobileNet",
   "EfficientNet",
-  "Self-Supervised Vision Models",
   "SimCLR",
   "MoCo",
   "DINO",
   "DINOv2",
-  "Other Specialized Models",
   "Neural Architecture Search (NAS) Models",
   "Graph Neural Networks (GNNs)",
-  "Novel Architectures",
   "Capsule Networks (CapsNet)",
-  "Contextual Word Embeddings",
   "ELMo",
-  "Transfer Learning in NLP",
   "ULMFiT",
 ];
 
@@ -1067,16 +984,8 @@ export const OBJECT_ARRAY = [
     version: "v1.0",
   },
   {
-    name: "Perceptron Family",
-    version: "v1.1",
-  },
-  {
     name: "Perceptron",
-    version: "v1.1.1",
-  },
-  {
-    name: "ADALINE",
-    version: "v1.1.2",
+    version: "v1.1",
   },
   {
     name: "Multi-Layer Perceptron (MLP)",
@@ -1089,22 +998,6 @@ export const OBJECT_ARRAY = [
   {
     name: "Hopfield Networks",
     version: "v2.0",
-  },
-  {
-    name: "Boltzmann Machines",
-    version: "v2.1",
-  },
-  {
-    name: "Deep Belief Networks (DBN)",
-    version: "v2.1.1",
-  },
-  {
-    name: "Self-Organizing Maps",
-    version: "v2.2",
-  },
-  {
-    name: "Autoencoders and Self-Supervised Learning",
-    version: "v2.3",
   },
   {
     name: "Basic Autoencoder",
@@ -1123,20 +1016,12 @@ export const OBJECT_ARRAY = [
     version: "v2.3.3.1",
   },
   {
-    name: "Contrastive Learning Models",
-    version: "v2.3.4",
-  },
-  {
     name: "SimCLR",
     version: "v2.3.4.1",
   },
   {
     name: "MoCo",
     version: "v2.3.4.2",
-  },
-  {
-    name: "Self-Distillation Models",
-    version: "v2.3.5",
   },
   {
     name: "DINO",
@@ -1147,24 +1032,12 @@ export const OBJECT_ARRAY = [
     version: "v2.3.5.2",
   },
   {
-    name: "Neocognitron",
-    version: "v3.0",
-  },
-  {
-    name: "LeNet Family",
-    version: "v3.1",
-  },
-  {
     name: "LeNet-1",
     version: "v3.1.1",
   },
   {
     name: "LeNet-5",
     version: "v3.1.2",
-  },
-  {
-    name: "Modern CNNs",
-    version: "v3.2",
   },
   {
     name: "AlexNet",
@@ -1191,10 +1064,6 @@ export const OBJECT_ARRAY = [
     version: "v3.2.6",
   },
   {
-    name: "Vision Transformers (ViT)",
-    version: "v3.3",
-  },
-  {
     name: "Vision Transformer (ViT)",
     version: "v3.3.1",
   },
@@ -1207,10 +1076,6 @@ export const OBJECT_ARRAY = [
     version: "v3.3.3",
   },
   {
-    name: "Advanced CNN Architectures",
-    version: "v3.4",
-  },
-  {
     name: "U-Net",
     version: "v3.4.1",
   },
@@ -1221,10 +1086,6 @@ export const OBJECT_ARRAY = [
   {
     name: "YOLO (You Only Look Once)",
     version: "v3.4.3",
-  },
-  {
-    name: "Recurrent Neural Networks (RNNs)",
-    version: "v4.0",
   },
   {
     name: "Simple RNN (Elman Network)",
@@ -1247,10 +1108,6 @@ export const OBJECT_ARRAY = [
     version: "v4.0.3",
   },
   {
-    name: "Attention Mechanisms",
-    version: "v4.1",
-  },
-  {
     name: "Basic Attention",
     version: "v4.1.1",
   },
@@ -1263,10 +1120,6 @@ export const OBJECT_ARRAY = [
     version: "v4.2",
   },
   {
-    name: "Encoder-Decoder Transformers",
-    version: "v4.2.1",
-  },
-  {
     name: "T5",
     version: "v4.2.1.2",
   },
@@ -1275,20 +1128,12 @@ export const OBJECT_ARRAY = [
     version: "v4.2.1.3",
   },
   {
-    name: "Encoder-Only Models",
-    version: "v4.2.2",
-  },
-  {
     name: "BERT",
     version: "v4.2.2.1",
   },
   {
     name: "RoBERTa",
     version: "v4.2.2.2",
-  },
-  {
-    name: "Decoder-Only Models",
-    version: "v4.2.3",
   },
   {
     name: "GPT",
@@ -1315,20 +1160,12 @@ export const OBJECT_ARRAY = [
     version: "v4.2.3.6",
   },
   {
-    name: "Open-Source Models",
-    version: "v4.2.3.7",
-  },
-  {
     name: "LLaMA",
     version: "v4.2.3.7.1",
   },
   {
     name: "Falcon LLM",
     version: "v4.2.3.7.2",
-  },
-  {
-    name: "Advanced Transformer Variants",
-    version: "v4.3",
   },
   {
     name: "Transformer-XL",
@@ -1367,10 +1204,6 @@ export const OBJECT_ARRAY = [
     version: "v4.3.9",
   },
   {
-    name: "Multilingual and Cross-lingual Models",
-    version: "v4.4",
-  },
-  {
     name: "ERNIE",
     version: "v4.4.1",
   },
@@ -1387,10 +1220,6 @@ export const OBJECT_ARRAY = [
     version: "v5.0.1",
   },
   {
-    name: "Architectural Variants",
-    version: "v5.0.2",
-  },
-  {
     name: "DCGAN",
     version: "v5.0.2.1",
   },
@@ -1403,20 +1232,12 @@ export const OBJECT_ARRAY = [
     version: "v5.0.2.3",
   },
   {
-    name: "Conditional Variants",
-    version: "v5.0.3",
-  },
-  {
     name: "Conditional GAN",
     version: "v5.0.3.1",
   },
   {
     name: "CycleGAN",
     version: "v5.0.3.2",
-  },
-  {
-    name: "StyleGAN Family",
-    version: "v5.0.4",
   },
   {
     name: "StyleGAN",
@@ -1431,32 +1252,16 @@ export const OBJECT_ARRAY = [
     version: "v5.0.4.3",
   },
   {
-    name: "Diffusion Models",
-    version: "v5.1",
-  },
-  {
     name: "Denoising Diffusion Probabilistic Models (DDPM)",
     version: "v5.1.1",
-  },
-  {
-    name: "Latent Diffusion Models",
-    version: "v5.1.2",
   },
   {
     name: "Stable Diffusion",
     version: "v5.1.2.1",
   },
   {
-    name: "Neural Rendering and 3D Models",
-    version: "v5.2",
-  },
-  {
     name: "Neural Radiance Fields (NeRF)",
     version: "v5.2.1",
-  },
-  {
-    name: "Early Multimodal Models",
-    version: "v6.0",
   },
   {
     name: "Show and Tell",
@@ -1467,16 +1272,8 @@ export const OBJECT_ARRAY = [
     version: "v6.0.2",
   },
   {
-    name: "Contrastive Multimodal Models",
-    version: "v6.1",
-  },
-  {
     name: "CLIP",
     version: "v6.1.1",
-  },
-  {
-    name: "Generative Multimodal Models",
-    version: "v6.2",
   },
   {
     name: "DALL-E",
@@ -1491,10 +1288,6 @@ export const OBJECT_ARRAY = [
     version: "v6.2.3",
   },
   {
-    name: "Advanced Multimodal Models",
-    version: "v6.3",
-  },
-  {
     name: "PaLM-E",
     version: "v6.3.1",
   },
@@ -1503,20 +1296,12 @@ export const OBJECT_ARRAY = [
     version: "v6.3.2",
   },
   {
-    name: "Deep Reinforcement Learning",
-    version: "v7.0",
-  },
-  {
     name: "Deep Q-Network (DQN)",
     version: "v7.0.1",
   },
   {
     name: "Asynchronous Advantage Actor-Critic (A3C)",
     version: "v7.0.2",
-  },
-  {
-    name: "Mastery in Complex Games",
-    version: "v7.1",
   },
   {
     name: "AlphaGo",
@@ -1531,20 +1316,12 @@ export const OBJECT_ARRAY = [
     version: "v7.1.3",
   },
   {
-    name: "Efficiency-Focused Models",
-    version: "v8.0",
-  },
-  {
     name: "MobileNet",
     version: "v8.0.1",
   },
   {
     name: "EfficientNet",
     version: "v8.0.2",
-  },
-  {
-    name: "Self-Supervised Vision Models",
-    version: "v8.1",
   },
   {
     name: "SimCLR",
@@ -1563,10 +1340,6 @@ export const OBJECT_ARRAY = [
     version: "v8.1.4",
   },
   {
-    name: "Other Specialized Models",
-    version: "v8.2",
-  },
-  {
     name: "Neural Architecture Search (NAS) Models",
     version: "v8.2.1",
   },
@@ -1575,24 +1348,12 @@ export const OBJECT_ARRAY = [
     version: "v8.2.2",
   },
   {
-    name: "Novel Architectures",
-    version: "v8.3",
-  },
-  {
     name: "Capsule Networks (CapsNet)",
     version: "v8.3.1",
   },
   {
-    name: "Contextual Word Embeddings",
-    version: "v9.0",
-  },
-  {
     name: "ELMo",
     version: "v9.0.1",
-  },
-  {
-    name: "Transfer Learning in NLP",
-    version: "v9.1",
   },
   {
     name: "ULMFiT",

@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
-import { LANGUAGE_MAP } from "./constant/language-map";
 import { getLanguageKey } from "@/components/controller/constant/system-script";
 
 const ChatUI = () => {

@@ -50,6 +50,7 @@ Current conversation:
 user: {input}
 
 Respond naturally, focusing on neural networks and the current stage. Your response 'content' should only be the text for the user, always in the specified language.
+Explain about each architecture for only one-two times, and then move on to the next architecture.
 
 After generating your response, separately provide the following:
 - responseType: The type of response (ask, introduce, explainArch, discuss, or compare).

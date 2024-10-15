@@ -41,8 +41,20 @@ export default function Architecture({ version = "v4.0.2.1" }) {
   // Flatten the MODELS object
   const flattenedModels = flattenModels(MODELS);
   const refinedFlattend = flattenedModels
-    .filter((model) => model.name !== "")
+    .filter(
+      (model) =>
+        model.name !== "" &&
+        (model.year !== "" ||
+          model.place !== "" ||
+          model.citation !== "" ||
+          model.explanation !== "")
+    )
     .map((model) => ({ name: model.name, version: model.version }));
+
+  console.log(
+    refinedFlattend,
+    refinedFlattend.map((model) => model.name)
+  );
 
   // Find relevant model from the flattened array matching with the version
   const relevantModel =
