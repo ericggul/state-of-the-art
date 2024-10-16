@@ -98,8 +98,7 @@ export default function Architecture({ version = "v4.0.2.1" }) {
   return (
     <S.Container>
       <Architecture3D
-        // version={testVersion}
-        styleIndex={styleIndex}
+      // version={testVersion}
       />
       <ArchitectureUI model={relevantModel} />
     </S.Container>

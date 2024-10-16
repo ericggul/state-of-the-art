@@ -29,6 +29,14 @@ const NUM_LONGFORMER_LAYERS = 12; // Longformer Base
 const NUM_ERNIE_LAYERS = 12; // ERNIE Base
 const NUM_XLM_LAYERS = 12; // XLM Base
 
+// New constants for ViT and Swin Transformer
+const NUM_VIT_LAYERS = 12; // ViT Base
+const NUM_SWIN_STAGES = 4; // Swin Transformer Base
+const NUM_SWIN_LAYERS_PER_STAGE = 2; // Swin Transformer Base
+
+// Add this constant
+const NUM_DEIT_LAYERS = 12; // DeiT-base has 12 layers
+
 export const VIDEOGEN = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -735,6 +743,93 @@ export const XLM = [
   { name: "Output Layer", type: "output", stack: "encoder" },
 ];
 
+// Add to the existing model structures
+export const VISION_TRANSFORMER_VIT = [
+  { name: "Patch Embedding", type: "embedding", stack: "encoder" },
+  { name: "Position Embedding", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_VIT_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "MLP Head", type: "output", stack: "encoder" },
+];
+
+export const SWIN_TRANSFORMER = [
+  { name: "Patch Embedding", type: "embedding", stack: "encoder" },
+  ...Array.from({ length: NUM_SWIN_STAGES }, (_, stageIndex) => [
+    ...Array.from({ length: NUM_SWIN_LAYERS_PER_STAGE }, (_, i) => ({
+      name: `Stage ${stageIndex + 1} Layer ${i + 1}`,
+      type: "encoder_layer",
+      stack: "encoder",
+      sublayers: [
+        { name: `Layer Norm 1`, type: "layernorm", dimensions: [768, 1, 1] },
+        {
+          name: `Window Attention ${i + 1}`,
+          type: "window_attention",
+          dimensions: [768, 12, 64],
+        },
+        { name: `Layer Norm 2`, type: "layernorm", dimensions: [768, 1, 1] },
+        {
+          name: `Feed Forward ${i + 1}`,
+          type: "ffn",
+          dimensions: [3072, 1, 1],
+        },
+      ],
+    })),
+    {
+      name: `Patch Merging ${stageIndex + 1}`,
+      type: "patch_merging",
+      stack: "encoder",
+    },
+  ]).flat(),
+  { name: "Global Average Pooling", type: "pooling", stack: "encoder" },
+  { name: "Linear Classifier", type: "output", stack: "encoder" },
+];
+
+// Add DeiT structure
+export const DEIT = [
+  { name: "Patch + Position Embedding", type: "embedding", stack: "encoder" },
+  { name: "Class Token", type: "token", stack: "encoder" },
+  { name: "Distillation Token", type: "token", stack: "encoder" },
+  ...Array.from({ length: NUM_DEIT_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Layer Norm", type: "layernorm", stack: "encoder" },
+  { name: "Classification Head", type: "output", stack: "encoder" },
+  { name: "Distillation Head", type: "output", stack: "encoder" },
+];
+
 ///////NOTE////////////////////////////////
 //LAYER HEIGHT is not important, it is calculated automatically in TransformerLayers.js
 
@@ -862,6 +957,21 @@ export const LAYER_CONFIGS = {
   XLM: {
     layerHeight: 10,
     keyPrefix: "xlm",
+    type: "transformer",
+  },
+  VISION_TRANSFORMER_VIT: {
+    layerHeight: 10,
+    keyPrefix: "vit",
+    type: "transformer",
+  },
+  SWIN_TRANSFORMER: {
+    layerHeight: 10,
+    keyPrefix: "swin",
+    type: "transformer",
+  },
+  DEIT: {
+    layerHeight: 10,
+    keyPrefix: "deit",
     type: "transformer",
   },
 };
@@ -1006,5 +1116,20 @@ export const GRID_CONFIGS = {
   XLM: {
     attention: { xCount: 16, yCount: 16, xInterval: 64, yInterval: 64 },
     ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+
+  ///////
+  VISION_TRANSFORMER_VIT: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  SWIN_TRANSFORMER: {
+    window_attention: { xCount: 8, yCount: 8, xInterval: 32, yInterval: 32 },
+    ffn: { xCount: 16, yCount: 4, xInterval: 64, yInterval: 5 },
+    patch_merging: { xCount: 8, yCount: 8, xInterval: 32, yInterval: 32 },
+  },
+  DEIT: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
 };
