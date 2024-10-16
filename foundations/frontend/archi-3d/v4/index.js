@@ -15,6 +15,7 @@ import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
 import RNNLayers from "./components/layers/RNNLayers";
 import VAELayers from "./components/layers/VAELayers";
+import SelfSupervisedLayers from "./components/layers/SelfSupervisedLayers";
 
 //current target versions
 //mcculloch v1.0
@@ -28,7 +29,7 @@ import VAELayers from "./components/layers/VAELayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v2.3.1";
+const CURRENT_TESTING_VERSION = "v2.3.4.1";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
@@ -69,6 +70,7 @@ export default function Visualisation({
 
   let ModelComponent;
   if (modelConfig) {
+    console.log(modelConfig);
     switch (modelConfig.type) {
       case "basic_nn":
         ModelComponent = BasicNNLayers;
@@ -84,6 +86,9 @@ export default function Visualisation({
         break;
       case "vae":
         ModelComponent = VAELayers;
+        break;
+      case "self_supervised":
+        ModelComponent = SelfSupervisedLayers;
         break;
       default:
         console.warn(
