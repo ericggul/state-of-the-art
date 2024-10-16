@@ -1,31 +1,66 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Node from "../Node";
 import Sublayer from "../Sublayer";
 import { LAYER_CONFIGS } from "../../models";
 
+const INTERLAYER_MARGIN = 1.3;
+
 const TransformerLayers = React.memo(({ structure, style, model }) => {
   const config = LAYER_CONFIGS[model] || {};
-  const layerHeight = style.layout?.layerHeight || config.layerHeight || 13;
+
+  const { layerHeight, encoderLayers, decoderLayers } = useMemo(() => {
+    const avgSingleLayerHeight =
+      structure.reduce((acc, layer) => {
+        if (layer.sublayers?.length) {
+          return (
+            acc +
+            layer.sublayers.reduce(
+              (subAcc, sublayer) => subAcc + (sublayer.dimensions?.[1] || 0),
+              0
+            ) /
+              layer.sublayers.length
+          );
+        }
+        return acc + (layer.dimensions?.[1] || 0);
+      }, 0) / structure.length;
+
+    const layerHeight =
+      avgSingleLayerHeight * INTERLAYER_MARGIN ||
+      style.layout?.layerHeight ||
+      config.layerHeight ||
+      13;
+
+    const encoderLayers = structure.filter(
+      (layer) => layer.stack === "encoder"
+    );
+    const decoderLayers = structure.filter(
+      (layer) => layer.stack === "decoder"
+    );
+
+    return { layerHeight, encoderLayers, decoderLayers };
+  }, [structure, style.layout?.layerHeight, config.layerHeight]);
+
   const encoderPosition = style.layout?.encoderPosition || -50;
   const decoderPosition = style.layout?.decoderPosition || 50;
 
-  const encoderLayers = structure.filter((layer) => layer.stack === "encoder");
-  const decoderLayers = structure.filter((layer) => layer.stack === "decoder");
-
-  const renderLayers = (layers, zPosition) => {
-    return layers.map((layer, i) => {
-      const y = calculateYPosition(i, layers.length, layerHeight);
-      return (
+  const renderLayers = useMemo(
+    () => (layers, zPosition) => {
+      return layers.map((layer, i) => (
         <TransformerLayer
           key={`${config.keyPrefix || model}-${layer.stack}-${i}`}
-          position={[0, y, zPosition]}
+          position={[
+            0,
+            calculateYPosition(i, layers.length, layerHeight),
+            zPosition,
+          ]}
           layer={layer}
           style={style}
           model={model}
         />
-      );
-    });
-  };
+      ));
+    },
+    [config.keyPrefix, model, layerHeight, style]
+  );
 
   return (
     <>
@@ -35,7 +70,7 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
   );
 });
 
-const TransformerLayer = ({ position, layer, style, model }) => {
+const TransformerLayer = React.memo(({ position, layer, style, model }) => {
   const size = [30, 10, 10];
   const gap = 10;
 
@@ -68,7 +103,7 @@ const TransformerLayer = ({ position, layer, style, model }) => {
       />
     </group>
   );
-};
+});
 
 function calculateYPosition(index, totalLayers, layerHeight) {
   return (

@@ -13,8 +13,6 @@ import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 import BasicNNLayers from "./components/layers/BasicNNLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
-import LargeTransformerLayers from "./components/layers/LargeTransformerLayers";
-
 //current target versions
 //mcculloch v1.0
 //perceptron v1.1
@@ -76,9 +74,6 @@ export default function Visualisation({
         break;
       case "transformer":
         ModelComponent = TransformerLayers;
-        break;
-      case "large_transformer":
-        ModelComponent = LargeTransformerLayers;
         break;
       default:
         console.warn(

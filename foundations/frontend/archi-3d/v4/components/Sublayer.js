@@ -2,6 +2,9 @@ import React from "react";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../models";
 
+const INTERLAYER_MARGIN_X = 1.2;
+const INTERLAYER_MARGIN_Y = 1.5;
+
 const Sublayer = ({ position, sublayer, style, model }) => {
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
@@ -19,8 +22,8 @@ const Sublayer = ({ position, sublayer, style, model }) => {
         xCount={grid.xCount}
         yCount={grid.yCount}
         //New Method: Automatically calculate xInterval and yInterval based on size and grid size
-        xInterval={(size[0] / grid.xCount) * 1.2}
-        yInterval={(size[1] / grid.yCount) * 1.2}
+        xInterval={(size[0] / grid.xCount) * INTERLAYER_MARGIN_X}
+        yInterval={(size[1] / grid.yCount) * INTERLAYER_MARGIN_Y}
         //Old Method: Use the xInterval and yInterval from the grid
         // xInterval={grid.xInterval}
         // yInterval={grid.yInterval}
