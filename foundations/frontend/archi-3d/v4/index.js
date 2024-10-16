@@ -27,7 +27,7 @@ import LargeTransformerLayers from "./components/layers/LargeTransformerLayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v4.2.1.2";
+const CURRENT_TESTING_VERSION = "v4.2.3.3";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name

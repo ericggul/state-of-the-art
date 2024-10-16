@@ -12,13 +12,13 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
   const encoderLayers = structure.filter((layer) => layer.stack === "encoder");
   const decoderLayers = structure.filter((layer) => layer.stack === "decoder");
 
-  const renderLayers = (layers, xPosition) => {
+  const renderLayers = (layers, zPosition) => {
     return layers.map((layer, i) => {
       const y = calculateYPosition(i, layers.length, layerHeight);
       return (
         <TransformerLayer
           key={`${config.keyPrefix || model}-${layer.stack}-${i}`}
-          position={[xPosition, y, 0]}
+          position={[0, y, zPosition]}
           layer={layer}
           style={style}
           model={model}
