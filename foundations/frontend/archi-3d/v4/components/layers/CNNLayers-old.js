@@ -1,50 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
-  // Pre-calculate the cumulative heights of layers
-  const layerPositions = [];
-  let cumulativeHeight = 0;
-
-  // First, calculate the heights of all layers
-  const layerHeights = structure.map((layer) => {
-    // For composite layers, take the maximum height among sublayers
-    if (layer.sublayers) {
-      const sublayerHeights = layer.sublayers.map(
-        (sublayer) => sublayer.dimensions[1]
-      );
-      return Math.max(...sublayerHeights);
-    } else {
-      return layer.dimensions[1];
-    }
-  });
-
-  // Next, calculate the cumulative positions
-  for (let i = 0; i < layerHeights.length; i++) {
-    const layerHeight = layerHeights[i];
-    // Add a gap between layers if desired, let's use a multiplier
-    const gap = 10; // Adjust the gap as needed
-    cumulativeHeight +=
-      i === 0 ? 0 : layerHeights[i - 1] / 2 + layerHeight / 2 + gap;
-    layerPositions.push(cumulativeHeight);
-  }
-
-  // Center the model vertically
-  const totalHeight =
-    cumulativeHeight + layerHeights[layerHeights.length - 1] / 2;
-  const centerOffset = totalHeight / 2;
+  const config = LAYER_CONFIGS[model];
+  const layerHeight = config.layerHeight;
 
   return structure.map((layer, i) => {
-    const y = layerPositions[i] - centerOffset;
+    const y =
+      i * layerHeight - (structure.length * layerHeight) / 2 + layerHeight / 2;
 
     // Handle composite layers with sublayers (e.g., inception modules)
     if (layer.sublayers) {
       return (
         <CompositeLayer
-          key={`${model}-layer-${i}`}
+          key={`${config.keyPrefix}-${i}`}
           position={[0, y, 0]}
           layer={layer}
           style={style}
@@ -56,7 +28,7 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
     // Handle regular layers
     return (
       <CNNLayer
-        key={`${model}-layer-${i}`}
+        key={`${config.keyPrefix}-${i}`}
         position={[0, y, 0]}
         layer={layer}
         style={style}
@@ -67,8 +39,6 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
 });
 
 const CNNLayer = React.memo(({ position, layer, style, model }) => {
-  // ... (same as before)
-
   const [expanded, setExpanded] = useState(false);
 
   const { smoothedExpanded } = useSpring({
@@ -92,12 +62,14 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
   }, []);
 
   const gridConfig = GRID_CONFIGS[model] || {};
-  const gridTypeConfig = gridConfig[layer.type] || {
+  let gridTypeConfig = gridConfig[layer.type] || {
     xCount: layer.zSpan[0],
     yCount: layer.zSpan[1],
-    xInterval: layer.dimensions[0] * 0.55,
-    yInterval: layer.dimensions[1] * 0.55,
+    xInterval: layer.dimensions[0] * 0.6,
+    yInterval: layer.dimensions[1] * 0.6,
   };
+  gridTypeConfig.xInterval = layer.dimensions[0] * 0.6;
+  gridTypeConfig.yInterval = layer.dimensions[1] * 0.6;
 
   const grid = {
     xCount: gridTypeConfig.xCount,
@@ -144,13 +116,8 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
 
 const CompositeLayer = React.memo(({ position, layer, style, model }) => {
   const sublayerGap = 10;
-
-  // Calculate the total width of sublayers
-  const sublayerWidths = layer.sublayers.map(
-    (sublayer) => sublayer.dimensions[0]
-  );
   const totalWidth =
-    sublayerWidths.reduce((sum, width) => sum + width, 0) +
+    layer.sublayers.reduce((sum, sublayer) => sum + sublayer.dimensions[0], 0) +
     (layer.sublayers.length - 1) * sublayerGap;
 
   let accumulatedWidth = -totalWidth / 2;

@@ -349,10 +349,11 @@ export const LAYER_CONFIGS = {
 
 export const GRID_CONFIGS = {
   VGGNET: {
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    conv: { xCount: 8, yCount: 8, xInterval: 20, yInterval: 20 },
     pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
     fc: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
   },
+
   LENET_1: {
     conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
     pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
