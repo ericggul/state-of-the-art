@@ -3,7 +3,9 @@ import Node from "../Node";
 import Sublayer from "../Sublayer";
 import { LAYER_CONFIGS } from "../../models";
 
-const INTERLAYER_MARGIN = 1.3;
+const INTERLAYER_MARGIN = 1.2;
+const TARGET_AXIS = 2;
+const MIN_DIMENSION = 2;
 
 const TransformerLayers = React.memo(({ structure, style, model }) => {
   const config = LAYER_CONFIGS[model] || {};
@@ -12,17 +14,28 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
     const avgSingleLayerHeight =
       structure.reduce((acc, layer) => {
         if (layer.sublayers?.length) {
-          return (
-            acc +
-            layer.sublayers.reduce(
-              (subAcc, sublayer) => subAcc + (sublayer.dimensions?.[1] || 0),
-              0
-            ) /
-              layer.sublayers.length
+          const validSublayers = layer.sublayers.filter(
+            (sublayer) => sublayer.dimensions?.[TARGET_AXIS] > MIN_DIMENSION
           );
+          if (validSublayers.length > 0) {
+            const sublayerSum = validSublayers.reduce(
+              (subAcc, sublayer) => subAcc + sublayer.dimensions[TARGET_AXIS],
+              0
+            );
+            return acc + sublayerSum / validSublayers.length;
+          }
+        } else if (layer.dimensions?.[TARGET_AXIS] > MIN_DIMENSION) {
+          return acc + layer.dimensions[TARGET_AXIS];
         }
-        return acc + (layer.dimensions?.[1] || 0);
-      }, 0) / structure.length;
+        return acc;
+      }, 0) /
+      structure.filter(
+        (layer) =>
+          layer.dimensions?.[TARGET_AXIS] > MIN_DIMENSION ||
+          layer.sublayers?.some(
+            (sublayer) => sublayer.dimensions?.[TARGET_AXIS] > MIN_DIMENSION
+          )
+      ).length;
 
     const layerHeight =
       avgSingleLayerHeight * INTERLAYER_MARGIN ||
@@ -30,6 +43,7 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
       config.layerHeight ||
       13;
 
+    console.log(avgSingleLayerHeight, layerHeight);
     const encoderLayers = structure.filter(
       (layer) => layer.stack === "encoder"
     );

@@ -6,7 +6,7 @@ const NUM_T5_LAYERS = 12;
 const NUM_BART_LAYERS = 6;
 const NUM_BERT_LAYERS = 24;
 const NUM_ROBERTA_LAYERS = 24;
-const NUM_GPT_LAYERS = 24;
+const NUM_GPT_LAYERS = 12;
 const NUM_GPT_2_LAYERS = 24; // for GPT-2 small, adjust for other sizes
 const NUM_GPT_3_LAYERS = 96; // for GPT-3 175B, adjust for other sizes
 const NUM_GPT_4_LAYERS = 120; // This is an estimate, exact architecture is not public
@@ -14,6 +14,20 @@ const NUM_PALM_LAYERS = 118; // for PaLM 540B
 const NUM_PALM_2_LAYERS = 150; // This is an estimate, exact architecture is not public
 const NUM_LLAMA_LAYERS = 32; // for LLaMA 7B, adjust for other sizes
 const NUM_FALCON_LLM_LAYERS = 60; // for Falcon 40B, adjust for other sizes
+
+const NUM_TRANSFORMER_XL_LAYERS = 18; // Transformer-XL Base
+const NUM_XLNET_LAYERS = 12; // XLNet Base
+const NUM_ELECTRA_LAYERS = 12; // ELECTRA Base
+const NUM_SWITCH_LAYERS = 36; // Switch Transformer example size
+const NUM_ALBERT_LAYERS = 12; // ALBERT Base
+const NUM_DISTILBERT_LAYERS = 6; // DistilBERT halves BERT layers
+
+// New constants for the additional models
+const NUM_BIGBIRD_LAYERS = 12; // BigBird Base
+const NUM_REFORMER_LAYERS = 12; // Reformer Base
+const NUM_LONGFORMER_LAYERS = 12; // Longformer Base
+const NUM_ERNIE_LAYERS = 12; // ERNIE Base
+const NUM_XLM_LAYERS = 12; // XLM Base
 
 export const VIDEOGEN = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
@@ -191,22 +205,22 @@ export const BART = [
 export const BERT = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
   { name: "Positional Encoding", type: "positional", stack: "encoder" },
-  { name: "Segment Embeddings", type: "embedding", stack: "encoder" },
   ...Array.from({ length: NUM_BERT_LAYERS }, (_, i) => ({
     name: `Encoder Layer ${i + 1}`,
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
+      { name: `Layer Norm ${i + 1}`, type: "layernorm" },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
-        dimensions: [768, 12, 12],
+        dimensions: [768, 12, 64],
+        gridConfig: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
       },
-      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 12, 1] },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 1, 1] },
     ],
   })),
-  { name: "Pooler", type: "pooler", stack: "encoder" },
-  { name: "Task-specific Outputs", type: "output", stack: "encoder" },
+  { name: "Pooler", type: "output", stack: "encoder" },
 ];
 
 export const ROBERTA = [
@@ -221,10 +235,11 @@ export const ROBERTA = [
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
-        dimensions: [768, 12, 12],
+        dimensions: [768, 12, 64],
+        gridConfig: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
       },
       { name: `Layer Norm 2 ${i + 1}`, type: "layernorm" },
-      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 12, 1] },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 1, 1] },
     ],
   })),
   { name: "Final Layer Norm", type: "layernorm", stack: "encoder" },
@@ -232,22 +247,27 @@ export const ROBERTA = [
 ];
 
 export const GPT = [
-  { name: `Input Embeddings`, type: "input", stack: "decoder" },
-  { name: `Positional Encoding`, type: "positional", stack: "decoder" },
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  { name: "Positional Encoding", type: "positional", stack: "decoder" },
   ...Array.from({ length: NUM_GPT_LAYERS }, (_, i) => ({
     name: `Decoder Layer ${i + 1}`,
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm ${i + 1}`, type: "layernorm" },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
-        dimensions: [1280, 16, 16],
+        dimensions: [768, 12, 64],
       },
-      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [5120, 16, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 12, 1],
+      },
     ],
   })),
-  { name: "Final LayerNorm", type: "layernorm", stack: "decoder" },
+  { name: "Final Layer Norm", type: "layernorm", stack: "decoder" },
   { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
 
@@ -259,12 +279,14 @@ export const GPT_2 = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
-        dimensions: [768, 12, 12],
+        dimensions: [1024, 16, 64],
       },
-      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [3072, 12, 1] },
+      { name: `Layer Norm 2`, type: "layernorm" },
+      { name: `Feed Forward ${i + 1}`, type: "ffn", dimensions: [4096, 12, 1] },
     ],
   })),
   { name: "Layer Norm", type: "layernorm", stack: "decoder" },
@@ -279,22 +301,22 @@ export const GPT_3 = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
-        dimensions: [12288, 96, 96],
-        gridConfig: { xCount: 20, yCount: 12, xInterval: 800, yInterval: 30 },
+        dimensions: [12288, 96, 128],
       },
+      { name: `Layer Norm 2`, type: "layernorm" },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
-        dimensions: [49152, 96, 1],
-        gridConfig: { xCount: 24, yCount: 4, xInterval: 2000, yInterval: 50 },
+        dimensions: [49152, 12, 1],
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
-  { name: "Output", type: "output", stack: "decoder" },
+  { name: "Final Layer Norm", type: "layernorm", stack: "decoder" },
+  { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
 
 export const GPT_4 = [
@@ -305,11 +327,13 @@ export const GPT_4 = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [16384, 1, 1] },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
         dimensions: [16384, 128, 128],
       },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [16384, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -317,8 +341,8 @@ export const GPT_4 = [
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
-  { name: "Output", type: "output", stack: "decoder" },
+  { name: "Final Layer Norm", type: "layernorm", stack: "decoder" },
+  { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
 
 export const PALM = [
@@ -329,11 +353,13 @@ export const PALM = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [18432, 1, 1] },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
         dimensions: [18432, 128, 128],
       },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [18432, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -353,11 +379,13 @@ export const PALM_2 = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [20480, 1, 1] },
       {
         name: `Self-Attention ${i + 1}`,
         type: "attention",
         dimensions: [20480, 160, 160],
       },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [20480, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -377,11 +405,13 @@ export const LLAMA = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [4096, 1, 1] },
       {
         name: `RoPE Self-Attention ${i + 1}`,
         type: "attention",
         dimensions: [4096, 32, 32],
       },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -401,11 +431,13 @@ export const FALCON_LLM = [
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [8192, 1, 1] },
       {
         name: `Multi-Query Attention ${i + 1}`,
         type: "attention",
         dimensions: [8192, 64, 64],
       },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [8192, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -416,6 +448,295 @@ export const FALCON_LLM = [
   { name: "Layer Norm", type: "layernorm", stack: "decoder" },
   { name: "Output", type: "output", stack: "decoder" },
 ];
+
+export const TRANSFORMER_XL = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Segment Embeddings", type: "segment", stack: "encoder" },
+  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_TRANSFORMER_XL_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Multi-Scale Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const XLNET = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Segment Embeddings", type: "segment", stack: "encoder" },
+  {
+    name: "Relative Positional Encoding",
+    type: "positional",
+    stack: "encoder",
+  },
+  ...Array.from({ length: NUM_XLNET_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Relative Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const ELECTRA = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  // ELECTRA consists of a generator and a discriminator; focusing on the discriminator
+  ...Array.from({ length: NUM_ELECTRA_LAYERS }, (_, i) => ({
+    name: `Discriminator Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const SWITCH_TRANSFORMER = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_SWITCH_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1024, 16, 64],
+      },
+      {
+        name: `Mixture-of-Experts FFN ${i + 1}`,
+        type: "moe_ffn",
+        dimensions: [65536, 1, 1], // Large FFN due to Mixture-of-Experts
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const ALBERT = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  {
+    name: "Positional Encoding",
+    type: "positional",
+    stack: "encoder",
+  },
+  // ALBERT shares parameters across layers
+  ...Array.from({ length: NUM_ALBERT_LAYERS }, () => ({
+    name: `Shared Encoder Layer`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Self-Attention`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Feed Forward`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const DISTILBERT = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  {
+    name: "Positional Encoding",
+    type: "positional",
+    stack: "encoder",
+  },
+  ...Array.from({ length: NUM_DISTILBERT_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const BIGBIRD = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_BIGBIRD_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
+      {
+        name: `BigBird Attention ${i + 1}`,
+        type: "bigbird_attention",
+        dimensions: [768, 12, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm" },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const REFORMER = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_REFORMER_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
+      {
+        name: `LSH Self-Attention ${i + 1}`,
+        type: "lsh_attention",
+        dimensions: [512, 8, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm" },
+      {
+        name: `Reversible Feed Forward ${i + 1}`,
+        type: "reversible_ffn",
+        dimensions: [2048, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const LONGFORMER = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_LONGFORMER_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
+      {
+        name: `Longformer Attention ${i + 1}`,
+        type: "longformer_attention",
+        dimensions: [768, 12, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm" },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const ERNIE = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Segment Embeddings", type: "segment", stack: "encoder" },
+  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_ERNIE_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [768, 12, 64],
+      },
+      {
+        name: `Knowledge Integration ${i + 1}`,
+        type: "knowledge_integration",
+        dimensions: [768, 1, 1],
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [768, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [3072, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+export const XLM = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Language Embeddings", type: "language", stack: "encoder" },
+  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_XLM_LAYERS }, (_, i) => ({
+    name: `Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm" },
+      {
+        name: `Cross-Lingual Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1024, 16, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm" },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [4096, 1, 1],
+      },
+    ],
+  })),
+  { name: "Output Layer", type: "output", stack: "encoder" },
+];
+
+///////NOTE////////////////////////////////
+//LAYER HEIGHT is not important, it is calculated automatically in TransformerLayers.js
 
 export const LAYER_CONFIGS = {
   VIDEOGEN: {
@@ -488,6 +809,61 @@ export const LAYER_CONFIGS = {
     keyPrefix: "falcon",
     type: "transformer",
   },
+  TRANSFORMER_XL: {
+    layerHeight: 10,
+    keyPrefix: "transformer_xl",
+    type: "transformer",
+  },
+  XLNET: {
+    layerHeight: 10,
+    keyPrefix: "xlnet",
+    type: "transformer",
+  },
+  ELECTRA: {
+    layerHeight: 10,
+    keyPrefix: "electra",
+    type: "transformer",
+  },
+  SWITCH_TRANSFORMER: {
+    layerHeight: 10,
+    keyPrefix: "switch",
+    type: "transformer",
+  },
+  ALBERT: {
+    layerHeight: 10,
+    keyPrefix: "albert",
+    type: "transformer",
+  },
+  DISTILBERT: {
+    layerHeight: 10,
+    keyPrefix: "distilbert",
+    type: "transformer",
+  },
+  BIGBIRD: {
+    layerHeight: 10,
+    keyPrefix: "bigbird",
+    type: "transformer",
+  },
+  REFORMER: {
+    layerHeight: 10,
+    keyPrefix: "reformer",
+    type: "transformer",
+  },
+  LONGFORMER: {
+    layerHeight: 10,
+    keyPrefix: "longformer",
+    type: "transformer",
+  },
+  ERNIE: {
+    layerHeight: 10,
+    keyPrefix: "ernie",
+    type: "transformer",
+  },
+  XLM: {
+    layerHeight: 10,
+    keyPrefix: "xlm",
+    type: "transformer",
+  },
 };
 export const GRID_CONFIGS = {
   VIDEOGEN: {
@@ -529,31 +905,106 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 24, yCount: 4, xInterval: 2, yInterval: 5 },
   },
   GPT_3: {
+    ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 192, yCount: 8, xInterval: 1, yInterval: 3 },
     attention: { xCount: 20, yCount: 12, xInterval: 800, yInterval: 30 },
     ffn: { xCount: 24, yCount: 4, xInterval: 2000, yInterval: 50 },
+    reduced: true,
   },
   GPT_4: {
+    ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 12, yCount: 12, xInterval: 300, yInterval: 300 },
+    attention: { xCount: 32, yCount: 12, xInterval: 300, yInterval: 300 },
     ffn: { xCount: 24, yCount: 4, xInterval: 200, yInterval: 500 },
+    reduced: true,
   },
   PALM: {
-    attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
+    ///Original Values: Drop-off due to performance issues
+    // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
+    // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
+    attention: { xCount: 20, yCount: 20, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 1, yInterval: 1 },
+    reduced: true,
   },
   PALM_2: {
-    attention: { xCount: 160, yCount: 160, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 320, yCount: 8, xInterval: 1, yInterval: 3 },
+    ///Original Values: Drop-off due to performance issues
+    // attention: { xCount: 160, yCount: 160, xInterval: 1, yInterval: 1 },
+    // ffn: { xCount: 320, yCount: 8, xInterval: 1, yInterval: 3 },
+    attention: { xCount: 24, yCount: 20, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 28, yCount: 4, xInterval: 1, yInterval: 1 },
+    reduced: true,
   },
   LLAMA: {
-    attention: { xCount: 32, yCount: 32, xInterval: 2, yInterval: 2 },
-    ffn: { xCount: 64, yCount: 6, xInterval: 1, yInterval: 4 },
+    ///Original Values: Drop-off due to performance issues
+    // attention: { xCount: 32, yCount: 32, xInterval: 2, yInterval: 2 },
+    // ffn: { xCount: 64, yCount: 6, xInterval: 1, yInterval: 4 },
+    attention: { xCount: 24, yCount: 20, xInterval: 2, yInterval: 2 },
+    ffn: { xCount: 24, yCount: 6, xInterval: 1, yInterval: 4 },
+    reduced: true,
   },
   FALCON_LLM: {
-    attention: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 128, yCount: 8, xInterval: 1, yInterval: 3 },
+    ///Original Values: Drop-off due to performance issues
+    // attention: { xCount: 32, yCount: 32, xInterval: 2, yInterval: 2 },
+    // ffn: { xCount: 64, yCount: 6, xInterval: 1, yInterval: 4 },
+    attention: { xCount: 32, yCount: 20, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 64, yCount: 8, xInterval: 1, yInterval: 3 },
+    reduced: true,
+  },
+  TRANSFORMER_XL: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  XLNET: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  ELECTRA: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  SWITCH_TRANSFORMER: {
+    attention: { xCount: 16, yCount: 16, xInterval: 64, yInterval: 64 },
+    moe_ffn: { xCount: 32, yCount: 4, xInterval: 2048, yInterval: 5 },
+  },
+  ALBERT: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  DISTILBERT: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  BIGBIRD: {
+    bigbird_attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  REFORMER: {
+    lsh_attention: { xCount: 8, yCount: 8, xInterval: 64, yInterval: 64 },
+    reversible_ffn: { xCount: 16, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  LONGFORMER: {
+    longformer_attention: {
+      xCount: 12,
+      yCount: 12,
+      xInterval: 64,
+      yInterval: 64,
+    },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  ERNIE: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    knowledge_integration: {
+      xCount: 12,
+      yCount: 1,
+      xInterval: 64,
+      yInterval: 5,
+    },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  XLM: {
+    attention: { xCount: 16, yCount: 16, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
   },
 };
