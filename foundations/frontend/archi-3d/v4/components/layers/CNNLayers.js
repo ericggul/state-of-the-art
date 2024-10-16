@@ -92,12 +92,15 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
   }, []);
 
   const gridConfig = GRID_CONFIGS[model] || {};
-  const gridTypeConfig = gridConfig[layer.type] || {
+  let gridTypeConfig = gridConfig[layer.type] || {
     xCount: layer.zSpan[0],
     yCount: layer.zSpan[1],
-    xInterval: layer.dimensions[0] * 0.55,
-    yInterval: layer.dimensions[1] * 0.55,
+    xInterval: layer.dimensions[0] * 0.6,
+    yInterval: layer.dimensions[1] * 0.6,
   };
+
+  gridTypeConfig.xInterval = layer.dimensions[0] * 0.54;
+  gridTypeConfig.yInterval = layer.dimensions[1] * 0.54;
 
   const grid = {
     xCount: gridTypeConfig.xCount,

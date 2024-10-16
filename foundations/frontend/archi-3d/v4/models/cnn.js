@@ -4,6 +4,7 @@ const NUM_DENSENET_BLOCKS = 4; // DenseNet blocks
 const NUM_EFFICIENTNET_BLOCKS = 7; // EfficientNet-B0
 const NUM_U_NET_LEVELS = 4; // U-Net depth
 const NUM_GOOGLENET_INCEPTIONS = 9; // Number of Inception modules in GoogLeNet
+const NUM_YOLO_LAYERS = 31; // This can be adjusted based on the specific YOLO version
 
 // AlexNet structure definition
 export const ALEXNET = [
@@ -294,6 +295,45 @@ export const SEGNET = [
   },
 ];
 
+export const YOLO_YOU_ONLY_LOOK_ONCE = [
+  { name: "Input", type: "input", dimensions: [448, 448, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [224, 224, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  ...Array.from({ length: NUM_YOLO_LAYERS - 7 }, (_, i) => {
+    const layerIndex = i + 2;
+    const isEven = layerIndex % 2 === 0;
+    return {
+      name: `Conv${layerIndex}`,
+      type: "conv",
+      dimensions: [
+        112 / Math.pow(2, Math.floor(i / 4)),
+        112 / Math.pow(2, Math.floor(i / 4)),
+        isEven ? 256 : 512,
+      ],
+      zSpan: isEven ? [16, 16] : [24, 24],
+    };
+  }),
+  {
+    name: "ConvFinal",
+    type: "conv",
+    dimensions: [7, 7, 1024],
+    zSpan: [32, 32],
+  },
+  {
+    name: "ConvFC1",
+    type: "conv",
+    dimensions: [7, 7, 1024],
+    zSpan: [32, 32],
+  },
+  {
+    name: "ConvFC2",
+    type: "conv",
+    dimensions: [7, 7, 30],
+    zSpan: [8, 8],
+  },
+  { name: "Output", type: "output", dimensions: [7, 7, 30], zSpan: [8, 8] },
+];
+
 export const LAYER_CONFIGS = {
   VGGNET: {
     layerHeight: 60,
@@ -345,6 +385,11 @@ export const LAYER_CONFIGS = {
     keyPrefix: "segnet",
     type: "cnn",
   },
+  YOLO_YOU_ONLY_LOOK_ONCE: {
+    layerHeight: 60,
+    keyPrefix: "yolo",
+    type: "cnn",
+  },
 };
 
 export const GRID_CONFIGS = {
@@ -391,5 +436,10 @@ export const GRID_CONFIGS = {
   },
   SEGNET: {
     conv: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 3 },
+  },
+  YOLO_YOU_ONLY_LOOK_ONCE: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    fc: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
   },
 };

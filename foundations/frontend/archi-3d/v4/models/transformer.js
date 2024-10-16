@@ -31,7 +31,7 @@ const NUM_XLM_LAYERS = 12; // XLM Base
 
 // New constants for ViT and Swin Transformer
 const NUM_VIT_LAYERS = 12; // ViT Base
-const NUM_SWIN_STAGES = 4; // Swin Transformer Base
+const NUM_SWIN_STAGES = 12; // Swin Transformer Base
 const NUM_SWIN_LAYERS_PER_STAGE = 2; // Swin Transformer Base
 
 // Add this constant
