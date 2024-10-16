@@ -142,7 +142,7 @@ export const MODELS = {
           "Demonstrated that increasing depth with small convolution filters improves performance.",
       },
       "v3.2.3": {
-        name: "GoogLeNet/Inception",
+        name: "GoogLeNet",
         year: 2014,
         place: "Christian Szegedy et al., Google",
         citation: 63000,
@@ -233,7 +233,7 @@ export const MODELS = {
     "v4.0": {
       name: "Recurrent Neural Networks (RNNs)",
       "v4.0.1": {
-        name: "Simple RNN (Elman Network)",
+        name: "RNN (Recurrent Neural Network)",
         year: 1990,
         place: "Jeffrey Elman",
         citation: 16800,
@@ -881,7 +881,7 @@ export const ARRAY = [
   "LeNet-5",
   "AlexNet",
   "VGGNet",
-  "GoogLeNet/Inception",
+  "GoogLeNet",
   "ResNet",
   "DenseNet",
   "EfficientNet",
@@ -891,7 +891,7 @@ export const ARRAY = [
   "U-Net",
   "SegNet",
   "YOLO (You Only Look Once)",
-  "Simple RNN (Elman Network)",
+  "RNN (Recurrent Neural Network)",
   "Long Short-Term Memory (LSTM)",
   "Peephole LSTM",
   "Bidirectional LSTM",
@@ -1023,7 +1023,7 @@ export const OBJECT_ARRAY = [
     version: "v3.2.2",
   },
   {
-    name: "GoogLeNet/Inception",
+    name: "GoogLeNet",
     version: "v3.2.3",
   },
   {
@@ -1063,7 +1063,7 @@ export const OBJECT_ARRAY = [
     version: "v3.4.3",
   },
   {
-    name: "Simple RNN (Elman Network)",
+    name: "RNN (Recurrent Neural Network)",
     version: "v4.0.1",
   },
   {

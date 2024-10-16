@@ -1,3 +1,10 @@
+// New constants for additional models
+const NUM_RESNET_LAYERS = 50; // ResNet-50 as an example
+const NUM_DENSENET_BLOCKS = 4; // DenseNet blocks
+const NUM_EFFICIENTNET_BLOCKS = 7; // EfficientNet-B0
+const NUM_U_NET_LEVELS = 4; // U-Net depth
+const NUM_GOOGLENET_INCEPTIONS = 9; // Number of Inception modules in GoogLeNet
+
 // AlexNet structure definition
 export const ALEXNET = [
   { dimensions: [227, 227, 3], zSpan: [3, 1], type: "input" },
@@ -87,6 +94,206 @@ export const LENET_5 = [
   { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
 ];
 
+export const GOOGLENET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
+  { name: "Conv2", type: "conv", dimensions: [56, 56, 192], zSpan: [16, 16] },
+  {
+    name: "MaxPool2",
+    type: "pool",
+    dimensions: [28, 28, 192],
+    zSpan: [16, 16],
+  },
+  ...Array.from({ length: NUM_GOOGLENET_INCEPTIONS }, (_, i) => ({
+    name: `Inception Module ${i + 1}`,
+    type: "inception",
+    dimensions: [28, 28, 256], // Adjust dimensions per module
+    zSpan: [24, 24],
+    sublayers: [
+      {
+        name: "1x1 Conv",
+        type: "conv",
+        dimensions: [28, 28, 64],
+        zSpan: [8, 8],
+      },
+      {
+        name: "3x3 Conv",
+        type: "conv",
+        dimensions: [28, 28, 128],
+        zSpan: [16, 16],
+      },
+      {
+        name: "5x5 Conv",
+        type: "conv",
+        dimensions: [28, 28, 32],
+        zSpan: [8, 8],
+      },
+      {
+        name: "Max Pool",
+        type: "pool",
+        dimensions: [28, 28, 32],
+        zSpan: [8, 8],
+      },
+    ],
+  })),
+  // Continue with the rest of the network...
+  {
+    name: "Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 1024],
+    zSpan: [32, 32],
+  },
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+export const RESNET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
+  ...Array.from({ length: NUM_RESNET_LAYERS }, (_, i) => ({
+    name: `Residual Block ${i + 1}`,
+    type: "residual_block",
+    dimensions: [56, 56, 256], // Adjust per block
+    zSpan: [16, 16],
+    sublayers: [
+      {
+        name: "Conv1x1 Downsample",
+        type: "conv",
+        dimensions: [56, 56, 64],
+        zSpan: [8, 8],
+      },
+      {
+        name: "Conv3x3",
+        type: "conv",
+        dimensions: [56, 56, 64],
+        zSpan: [8, 8],
+      },
+      {
+        name: "Conv1x1",
+        type: "conv",
+        dimensions: [56, 56, 256],
+        zSpan: [16, 16],
+      },
+    ],
+  })),
+  {
+    name: "Global Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 512],
+    zSpan: [16, 16],
+  },
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+export const DENSENET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
+  ...Array.from({ length: NUM_DENSENET_BLOCKS }, (_, blockIndex) => [
+    {
+      name: `Dense Block ${blockIndex + 1}`,
+      type: "dense_block",
+      dimensions: [56, 56, 128], // Adjust per block
+      zSpan: [16, 16],
+      sublayers: Array.from({ length: 6 }, (_, i) => ({
+        name: `Bottleneck Layer ${i + 1}`,
+        type: "bottleneck",
+        dimensions: [56, 56, 32],
+        zSpan: [8, 8],
+      })),
+    },
+    {
+      name: `Transition Layer ${blockIndex + 1}`,
+      type: "transition",
+      dimensions: [28, 28, 64], // Adjust per transition
+      zSpan: [8, 8],
+    },
+  ]).flat(),
+  {
+    name: "Global Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 1024],
+    zSpan: [32, 32],
+  },
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+export const EFFICIENTNET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  ...Array.from({ length: NUM_EFFICIENTNET_BLOCKS }, (_, i) => ({
+    name: `MBConv Block ${i + 1}`,
+    type: "mbconv",
+    dimensions: [224 / 2 ** i, 224 / 2 ** i, 16 * 2 ** i],
+    zSpan: [8, 8],
+  })),
+  {
+    name: "Global Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 1280],
+    zSpan: [32, 32],
+  },
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+export const U_NET = [
+  { name: "Input", type: "input", dimensions: [572, 572, 1], zSpan: [1, 1] },
+  // Downsampling path
+  ...Array.from({ length: NUM_U_NET_LEVELS }, (_, i) => ({
+    name: `Down Conv ${i + 1}`,
+    type: "conv",
+    dimensions: [572 / 2 ** i, 572 / 2 ** i, 64 * 2 ** i],
+    zSpan: [8, 8],
+  })),
+  // Bottleneck
+  {
+    name: "Bottleneck",
+    type: "conv",
+    dimensions: [28, 28, 1024],
+    zSpan: [32, 32],
+  },
+  // Upsampling path
+  ...Array.from({ length: NUM_U_NET_LEVELS }, (_, i) => ({
+    name: `Up Conv ${i + 1}`,
+    type: "upconv",
+    dimensions: [28 * 2 ** i, 28 * 2 ** i, 512 / 2 ** i],
+    zSpan: [16, 16],
+  })),
+  { name: "Output", type: "output", dimensions: [388, 388, 2], zSpan: [2, 1] },
+];
+
+export const SEGNET = [
+  { name: "Input", type: "input", dimensions: [360, 480, 3], zSpan: [3, 1] },
+  // Encoder
+  ...Array.from({ length: 13 }, (_, i) => ({
+    name: `Encoder Conv ${i + 1}`,
+    type: "conv",
+    dimensions: [
+      360 / 2 ** Math.floor(i / 2),
+      480 / 2 ** Math.floor(i / 2),
+      64 * 2 ** Math.floor(i / 3),
+    ],
+    zSpan: [8, 8],
+  })),
+  // Decoder
+  ...Array.from({ length: 13 }, (_, i) => ({
+    name: `Decoder Conv ${i + 1}`,
+    type: "conv",
+    dimensions: [
+      360 / 2 ** (6 - Math.floor(i / 2)),
+      480 / 2 ** (6 - Math.floor(i / 2)),
+      64 * 2 ** (3 - Math.floor(i / 3)),
+    ],
+    zSpan: [8, 8],
+  })),
+  {
+    name: "Output",
+    type: "output",
+    dimensions: [360, 480, 12],
+    zSpan: [12, 1],
+  },
+];
+
 export const LAYER_CONFIGS = {
   VGGNET: {
     layerHeight: 60,
@@ -108,6 +315,36 @@ export const LAYER_CONFIGS = {
     keyPrefix: "alexnet",
     type: "cnn",
   },
+  GOOGLENET: {
+    layerHeight: 60,
+    keyPrefix: "googlenet",
+    type: "cnn",
+  },
+  RESNET: {
+    layerHeight: 60,
+    keyPrefix: "resnet",
+    type: "cnn",
+  },
+  DENSENET: {
+    layerHeight: 60,
+    keyPrefix: "densenet",
+    type: "cnn",
+  },
+  EFFICIENTNET: {
+    layerHeight: 60,
+    keyPrefix: "efficientnet",
+    type: "cnn",
+  },
+  U_NET: {
+    layerHeight: 60,
+    keyPrefix: "unet",
+    type: "cnn",
+  },
+  SEGNET: {
+    layerHeight: 60,
+    keyPrefix: "segnet",
+    type: "cnn",
+  },
 };
 
 export const GRID_CONFIGS = {
@@ -125,5 +362,33 @@ export const GRID_CONFIGS = {
     conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
     pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
     fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  GOOGLENET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    inception: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+  },
+  RESNET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    residual_block: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+  },
+  DENSENET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    dense_block: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 2, yInterval: 2 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    transition: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  EFFICIENTNET: {
+    mbconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+  },
+  U_NET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 3 },
+    upconv: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 3 },
+  },
+  SEGNET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 3 },
   },
 };
