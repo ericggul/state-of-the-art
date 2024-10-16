@@ -1,12 +1,16 @@
 import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
-import VAEConnections from "../connections/VAEConnections";
+import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models/self_supervised";
+
+// Constants for positioning
+const INTERLAYER_MARGIN = 1.2; // Adjust as needed
 
 export default function SelfSupervisedLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];
-  const layerHeight = modelConfig.layerHeight || 60;
+  const layerHeight = modelConfig.layerHeight || 20;
 
+  // Calculate layer positions
   const layers = useMemo(() => {
     const gridConfig = GRID_CONFIGS[model] || {};
 
@@ -14,8 +18,8 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
       const grid = gridConfig[layer.type] || {
         xCount: 1,
         yCount: 1,
-        xInterval: 5,
-        yInterval: 5,
+        xInterval: 1,
+        yInterval: 1,
       };
 
       const position = [0, 0, layerHeight * (i - (structure.length - 1) / 2)];
@@ -28,20 +32,18 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
     });
   }, [structure, model, layerHeight]);
 
-  console.log(layers);
-
   return (
     <group>
       {layers.map((layer, i) => (
         <Sublayer
-          key={`${model}-${i}`}
+          key={`${model}-${layer.name}-${i}`}
           position={layer.position}
           sublayer={layer}
           style={style}
           model={model}
         />
       ))}
-      {/* <VAEConnections structure={layers} style={style} /> */}
+      {/* <Connections structure={layers} style={style} /> */}
     </group>
   );
 }

@@ -29,7 +29,7 @@ import SelfSupervisedLayers from "./components/layers/SelfSupervisedLayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v2.3.4.1";
+const CURRENT_TESTING_VERSION = "v2.3.5.2";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
