@@ -64,7 +64,7 @@ export const VGGNET = [
   { name: "FC8", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
 ];
 
-export const LENET = [
+export const LENET_1 = [
   { name: "Input", type: "input", dimensions: [32, 32, 1], zSpan: [1, 1] },
   { name: "C1", type: "conv", dimensions: [28, 28, 6], zSpan: [3, 2] },
   { name: "S2", type: "pool", dimensions: [14, 14, 6], zSpan: [3, 2] },
@@ -75,7 +75,7 @@ export const LENET = [
   { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
 ];
 
-export const LENET5 = [
+export const LENET_5 = [
   { name: "Input", type: "input", dimensions: [32, 32, 1], zSpan: [1, 1] },
   { name: "C1", type: "conv", dimensions: [28, 28, 6], zSpan: [3, 2] },
   { name: "S2", type: "pool", dimensions: [14, 14, 6], zSpan: [3, 2] },

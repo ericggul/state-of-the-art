@@ -69,7 +69,7 @@ export const GPT = [
   { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
 
-export const TRANSFORMER = [
+export const TRANSFORMER_ARCHITECTURE = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
   { name: "Positional Encoding", type: "positional", stack: "encoder" },
   ...Array.from({ length: NUM_TRANSFORMER_LAYERS }, (_, i) => ({
