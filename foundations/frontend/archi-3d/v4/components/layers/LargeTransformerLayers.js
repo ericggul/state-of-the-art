@@ -14,7 +14,7 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
 
   const renderLayers = (layers, xPosition) => {
     return layers.map((layer, i) => {
-      const y = calculateYPosition(i, layers.length, layerHeight);
+      const y = calculateYPosition(i, layers.length, layerHeight * 20);
       return (
         <TransformerLayer
           key={`${config.keyPrefix || model}-${layer.stack}-${i}`}

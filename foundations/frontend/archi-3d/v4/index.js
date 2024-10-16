@@ -13,6 +13,7 @@ import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 import BasicNNLayers from "./components/layers/BasicNNLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
+import LargeTransformerLayers from "./components/layers/LargeTransformerLayers";
 
 //current target versions
 //mcculloch v1.0
@@ -26,7 +27,7 @@ import TransformerLayers from "./components/layers/TransformerLayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v3.2.1";
+const CURRENT_TESTING_VERSION = "v4.2.1.2";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
@@ -76,6 +77,9 @@ export default function Visualisation({
       case "transformer":
         ModelComponent = TransformerLayers;
         break;
+      case "large_transformer":
+        ModelComponent = LargeTransformerLayers;
+        break;
       default:
         console.warn(
           `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`
@@ -90,7 +94,12 @@ export default function Visualisation({
   }
 
   return (
-    <Canvas camera={style.camera}>
+    <Canvas
+      camera={{
+        ...style.camera,
+        far: 500000,
+      }}
+    >
       <CommonScene style={style}>
         <ModelComponent structure={structure} style={style} model={modelName} />
       </CommonScene>
