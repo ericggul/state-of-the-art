@@ -31,7 +31,10 @@ const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
 function convertToVariableName(name) {
-  return name.toUpperCase().replace(/[^A-Z0-9]+/g, "_");
+  return name
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, ""); // Remove leading and trailing underscores
 }
 
 // Utility function to map version to model name

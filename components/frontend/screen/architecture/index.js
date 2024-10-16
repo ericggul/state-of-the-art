@@ -51,8 +51,8 @@ const flattenModels = (models) => {
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v4.2.3.1";
-const VERSION_TO_MORPH = "v3.2.2";
+const CURRENT_TESTING_VERSION = "v1.2";
+const VERSION_TO_MORPH = "v1.0";
 
 export default function Architecture({ version = "v4.0.2.1" }) {
   // Flatten the MODELS object
@@ -82,17 +82,17 @@ export default function Architecture({ version = "v4.0.2.1" }) {
   const [styleIndex, setStyleIndex] = useState(0);
 
   //testing: every 5s change the version
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     //back and forth from two versions
-  //     if (testVersion === CURRENT_TESTING_VERSION) {
-  //       setTestVersion(VERSION_TO_MORPH);
-  //     } else {
-  //       setTestVersion(CURRENT_TESTING_VERSION);
-  //     }
-  //   }, 3000);
-  //   return () => clearTimeout(timeout);
-  // }, [testVersion]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      //back and forth from two versions
+      if (testVersion === CURRENT_TESTING_VERSION) {
+        setTestVersion(VERSION_TO_MORPH);
+      } else {
+        setTestVersion(CURRENT_TESTING_VERSION);
+      }
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [testVersion]);
 
   return (
     <S.Container>
