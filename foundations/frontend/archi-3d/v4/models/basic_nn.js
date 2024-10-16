@@ -2,6 +2,12 @@ export const BASIC_NN = [
   { name: "Input Layer", type: "input", neurons: 3 },
   { name: "Hidden Layer", type: "hidden", neurons: 4 },
   { name: "Output Layer", type: "output", neurons: 2 },
+  { name: "Input Layer", type: "input", neurons: 3 },
+  { name: "Hidden Layer", type: "hidden", neurons: 4 },
+  { name: "Output Layer", type: "output", neurons: 2 },
+  { name: "Input Layer", type: "input", neurons: 3 },
+  { name: "Hidden Layer", type: "hidden", neurons: 4 },
+  { name: "Output Layer", type: "output", neurons: 2 },
 ];
 
 export const MCCULLOCH_PITTS = [

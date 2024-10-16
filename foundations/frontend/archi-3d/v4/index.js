@@ -12,7 +12,7 @@ import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
 import BasicNNLayers from "./components/layers/BasicNNLayers";
 
-export default function Visualization({ model = "basic_nn", styleIndex = 5 }) {
+export default function Visualization({ model = "basic_nn", styleIndex = 2 }) {
   const style = STYLE_STRATEGIES[styleIndex];
   const modelConfig = LAYER_CONFIGS[model];
   const structure = getModelStructure(model);
