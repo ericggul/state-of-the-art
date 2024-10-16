@@ -1,20 +1,17 @@
 import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
-import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models/self_supervised";
-
-// Constants for positioning
-const INTERLAYER_MARGIN = 1.2; // Adjust as needed
 
 export default function SelfSupervisedLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];
-  const layerHeight = modelConfig.layerHeight || 20;
+  const layerGap = 10; // Adjust this value to change the gap between layers
 
   // Calculate layer positions
   const layers = useMemo(() => {
     const gridConfig = GRID_CONFIGS[model] || {};
+    let cumulativeHeight = 0;
 
-    return structure.map((layer, i) => {
+    const layersWithPositions = structure.map((layer, i) => {
       const grid = gridConfig[layer.type] || {
         xCount: 1,
         yCount: 1,
@@ -22,15 +19,37 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
         yInterval: 1,
       };
 
-      const position = [0, 0, layerHeight * (i - (structure.length - 1) / 2)];
+      const layerHeight = layer.dimensions[1] || 20; // Use the layer's height or default to 20
+
+      // Calculate the y position for this layer
+      const y = cumulativeHeight + layerHeight / 2;
+
+      // Update the cumulative height for the next layer
+      cumulativeHeight += layerHeight + layerGap;
 
       return {
         ...layer,
         grid,
-        position,
+        position: [0, y, 0],
+        dimensions: layer.dimensions || [20, 20, 20], // Default dimensions if not provided
       };
     });
-  }, [structure, model, layerHeight]);
+
+    // Center the entire model vertically
+    const totalHeight = cumulativeHeight - layerGap;
+    const centerOffset = totalHeight / 2;
+
+    return layersWithPositions.map((layer) => ({
+      ...layer,
+      position: [
+        layer.position[0],
+        layer.position[1] - centerOffset,
+        layer.position[2],
+      ],
+    }));
+  }, [structure, model]);
+
+  console.log(layers);
 
   return (
     <group>
@@ -41,9 +60,9 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
           sublayer={layer}
           style={style}
           model={model}
+          useGivenInterval={true}
         />
       ))}
-      {/* <Connections structure={layers} style={style} /> */}
     </group>
   );
 }

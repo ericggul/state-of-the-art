@@ -29,7 +29,7 @@ import SelfSupervisedLayers from "./components/layers/SelfSupervisedLayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v2.3.5.2";
+const CURRENT_TESTING_VERSION = "v2.3.5.1";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
@@ -142,7 +142,7 @@ function CommonScene({ style, children }) {
         <ambientLight {...style.lighting.ambientLight} />
       )}
       {children}
-      <OrbitControls enablePan={true} maxPolarAngle={Math.PI / 2} />
+      <OrbitControls enablePan={true} />
       <EffectComposer>
         {style.postprocessing && style.postprocessing.bloom && (
           <Bloom {...style.postprocessing.bloom} />
