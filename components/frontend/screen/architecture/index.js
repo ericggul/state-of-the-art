@@ -4,6 +4,8 @@ import ArchitectureUI from "@/foundations/frontend/archi-ui";
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";
 
+import { useState, useEffect } from "react";
+
 // Function to flatten the MODELS object
 const flattenModels = (models) => {
   let flattened = [];
@@ -37,6 +39,21 @@ const flattenModels = (models) => {
   return flattened;
 };
 
+//current target versions
+//mcculloch v1.0
+//perceptron v1.1
+//multi layer v1.2
+
+//lenet v3.1.1
+//lenet5 v3.1.2
+//alexnet v3.2.1
+//vgg v3.2.2
+//transformer v4.2
+//gpt v4.2.3.1
+
+const CURRENT_TESTING_VERSION = "v4.2.3.1";
+const VERSION_TO_MORPH = "v3.2.2";
+
 export default function Architecture({ version = "v4.0.2.1" }) {
   // Flatten the MODELS object
   const flattenedModels = flattenModels(MODELS);
@@ -61,9 +78,25 @@ export default function Architecture({ version = "v4.0.2.1" }) {
     flattenedModels.find((model) => model.version === version) ||
     flattenedModels[2];
 
+  const [testVersion, setTestVersion] = useState(CURRENT_TESTING_VERSION);
+  const [styleIndex, setStyleIndex] = useState(0);
+
+  //testing: every 5s change the version
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     //back and forth from two versions
+  //     if (testVersion === CURRENT_TESTING_VERSION) {
+  //       setTestVersion(VERSION_TO_MORPH);
+  //     } else {
+  //       setTestVersion(CURRENT_TESTING_VERSION);
+  //     }
+  //   }, 3000);
+  //   return () => clearTimeout(timeout);
+  // }, [testVersion]);
+
   return (
     <S.Container>
-      <Architecture3D />
+      <Architecture3D version={testVersion} styleIndex={styleIndex} />
       <ArchitectureUI model={relevantModel} />
     </S.Container>
   );
