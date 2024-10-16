@@ -11,7 +11,7 @@ export const BASIC_AUTOENCODER = [
   { name: "Output", type: "output", dimensions: [INPUT_DIM, 1, 1] },
 ];
 
-export const VAE = [
+export const VARIATIONAL_AUTOENCODER_VAE = [
   { name: "Input", type: "input", dimensions: [INPUT_DIM, 1, 1] },
   { name: "Encoder Hidden", type: "dense", dimensions: [HIDDEN_DIM, 1, 1] },
   { name: "Mean", type: "dense", dimensions: [LATENT_DIM, 1, 1] },
@@ -43,17 +43,17 @@ export const BETA_VAE = [
 
 export const MODELS = {
   BASIC_AUTOENCODER,
-  VAE,
+  VARIATIONAL_AUTOENCODER_VAE,
   BETA_VAE,
 };
 
 export const LAYER_CONFIGS = {
   BASIC_AUTOENCODER: {
-    layerHeight: 30,
+    layerHeight: 60,
     keyPrefix: "basicae",
     type: "vae",
   },
-  VAE: {
+  VARIATIONAL_AUTOENCODER_VAE: {
     layerHeight: 60,
     keyPrefix: "vae",
     type: "vae",
@@ -71,7 +71,7 @@ export const GRID_CONFIGS = {
     input: { xCount: 28, yCount: 28, xInterval: 2, yInterval: 2 },
     output: { xCount: 28, yCount: 28, xInterval: 2, yInterval: 2 },
   },
-  VAE: {
+  VARIATIONAL_AUTOENCODER_VAE: {
     dense: { xCount: 10, yCount: 10, xInterval: 5, yInterval: 5 },
     input: { xCount: 28, yCount: 28, xInterval: 1, yInterval: 1 },
     output: { xCount: 28, yCount: 28, xInterval: 1, yInterval: 1 },

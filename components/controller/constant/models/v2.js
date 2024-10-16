@@ -54,7 +54,7 @@ export const MODELS = {
         explanation:
           "Probabilistic generative model that learns latent representations, enabling data generation.",
         "v2.3.3.1": {
-          name: "β-VAE",
+          name: "Beta-VAE",
           year: 2017,
           place: "Irina Higgins et al.",
           citation: 3100,
@@ -872,7 +872,7 @@ export const ARRAY = [
   "Backpropagation Algorithm",
   "Basic Autoencoder",
   "Variational Autoencoder (VAE)",
-  "β-VAE",
+  "Beta-VAE",
   "SimCLR",
   "MoCo",
   "DINO",
@@ -987,7 +987,7 @@ export const OBJECT_ARRAY = [
     version: "v2.3.3",
   },
   {
-    name: "β-VAE",
+    name: "Beta-VAE",
     version: "v2.3.3.1",
   },
   {
