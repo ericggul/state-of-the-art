@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import * as THREE from "three";
-import Connections from "../Connections";
+import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 // Function to generate the structure

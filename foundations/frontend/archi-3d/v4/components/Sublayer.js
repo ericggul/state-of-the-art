@@ -8,6 +8,7 @@ const INTERLAYER_MARGIN_Y = 1.5;
 const Sublayer = ({ position, sublayer, style, model, expanded }) => {
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
+  console.log(sublayer);
 
   const grid = gridConfig[sublayer.type] || {
     xCount: 1,
@@ -27,6 +28,7 @@ const Sublayer = ({ position, sublayer, style, model, expanded }) => {
         //Old Method: Use the xInterval and yInterval from the grid
         // xInterval={grid.xInterval}
         // yInterval={grid.yInterval}
+        // nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         style={style}
         color={style.colors.inner}

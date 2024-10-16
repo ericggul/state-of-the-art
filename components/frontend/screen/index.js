@@ -36,7 +36,7 @@ export default function ScreenFrontend() {
   const version = useMemo(() => {
     return currentArchitectures.length > 0
       ? currentArchitectures[0].version
-      : "v4.0.2.1";
+      : "v4.2.3.4";
   }, [currentArchitectures]);
 
   return (

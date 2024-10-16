@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Sublayer from "../Sublayer";
-import Connections from "../Connections";
+import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 export default function RNNLayers({ structure, style, model }) {
