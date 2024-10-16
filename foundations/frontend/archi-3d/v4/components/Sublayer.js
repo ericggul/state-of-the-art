@@ -5,7 +5,7 @@ import { GRID_CONFIGS } from "../models";
 const INTERLAYER_MARGIN_X = 1.2;
 const INTERLAYER_MARGIN_Y = 1.5;
 
-const Sublayer = ({ position, sublayer, style, model }) => {
+const Sublayer = ({ position, sublayer, style, model, expanded }) => {
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
 

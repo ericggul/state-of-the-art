@@ -13,6 +13,7 @@ import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 import BasicNNLayers from "./components/layers/BasicNNLayers";
 import CNNLayers from "./components/layers/CNNLayers";
 import TransformerLayers from "./components/layers/TransformerLayers";
+import RNNLayers from "./components/layers/RNNLayers"; // Import RNNLayers
 //current target versions
 //mcculloch v1.0
 //perceptron v1.1
@@ -25,7 +26,7 @@ import TransformerLayers from "./components/layers/TransformerLayers";
 //transformer v4.2
 //gpt v4.2.3.1
 
-const CURRENT_TESTING_VERSION = "v3.4.3";
+const CURRENT_TESTING_VERSION = "v4.0.1";
 const VERSION_TO_MORPH = "v3.2.2";
 
 // Utility function to convert model name to variable name
@@ -52,6 +53,7 @@ export default function Visualisation({
 
   useEffect(() => {
     const name = getModelNameFromVersion(version);
+    console.log(name, version);
     if (name) {
       setModelName(name);
       const modelStructure = getModelStructure(name);
@@ -74,6 +76,9 @@ export default function Visualisation({
         break;
       case "transformer":
         ModelComponent = TransformerLayers;
+        break;
+      case "rnn":
+        ModelComponent = RNNLayers; // Add this case
         break;
       default:
         console.warn(

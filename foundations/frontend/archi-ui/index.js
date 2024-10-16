@@ -3,7 +3,6 @@ import * as S from "./styles";
 
 // Main component to render the neural network
 export default function ProductPreview({ model }) {
-  console.log(model);
   return <UI model={model} />;
 }
 

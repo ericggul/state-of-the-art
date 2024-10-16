@@ -102,6 +102,7 @@ const TransformerLayer = React.memo(({ position, layer, style, model }) => {
             sublayer={sublayer}
             style={style}
             model={model}
+            expanded={true}
           />
         ))}
       </group>

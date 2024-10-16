@@ -5,11 +5,14 @@ import * as THREE from "three";
 
 function Connections({ layersExpanded, structure, style }) {
   const connectionsExpanded = useMemo(() => {
+    if (!layersExpanded || layersExpanded.length === 0) {
+      return structure.slice(0, -1).map(() => ({ from: false, to: false }));
+    }
     return layersExpanded.slice(0, -1).map((layer, i) => ({
       from: layer,
       to: layersExpanded[i + 1],
     }));
-  }, [layersExpanded]);
+  }, [layersExpanded, structure]);
 
   return (
     <>
