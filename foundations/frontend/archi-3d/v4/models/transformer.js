@@ -107,3 +107,39 @@ export const TRANSFORMER_ARCHITECTURE = [
   })),
   { name: "Linear Projection", type: "output", stack: "decoder" },
 ];
+
+export const LAYER_CONFIGS = {
+  VIDEOGEN: {
+    layerHeight: 13,
+    keyPrefix: "videogen",
+    type: "transformer",
+  },
+  GPT: {
+    layerHeight: 12,
+    keyPrefix: "gpt",
+    type: "transformer",
+  },
+  TRANSFORMER_ARCHITECTURE: {
+    layerHeight: 5,
+    keyPrefix: "transformer",
+    type: "transformer",
+  },
+};
+
+export const GRID_CONFIGS = {
+  VIDEOGEN: {
+    attention: { xCount: 8, yCount: 8, xInterval: 5, yInterval: 3 },
+    ffn: { xCount: 12, yCount: 4, xInterval: 2, yInterval: 4 },
+    diffusion: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 5 },
+    upsample: { xCount: 4, yCount: 4, xInterval: 5, yInterval: 7 },
+  },
+  GPT: {
+    attention: { xCount: 16, yCount: 16, xInterval: 3, yInterval: 3 },
+    ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
+  },
+  TRANSFORMER_ARCHITECTURE: {
+    attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    cross_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    ffn: { xCount: 16, yCount: 4, xInterval: 3, yInterval: 5 },
+  },
+};

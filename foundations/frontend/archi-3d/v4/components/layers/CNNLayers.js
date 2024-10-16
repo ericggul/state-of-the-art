@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
-import { LAYER_CONFIGS } from "../../structure";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
   const config = LAYER_CONFIGS[model];

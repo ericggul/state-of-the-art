@@ -86,3 +86,44 @@ export const LENET_5 = [
   { name: "F7", type: "fc", dimensions: [10, 1, 1], zSpan: [1, 1] },
   { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
 ];
+
+export const LAYER_CONFIGS = {
+  VGGNET: {
+    layerHeight: 60,
+    keyPrefix: "vggnet",
+    type: "cnn",
+  },
+  LENET_1: {
+    layerHeight: 60,
+    keyPrefix: "lenet1",
+    type: "cnn",
+  },
+  LENET_5: {
+    layerHeight: 60,
+    keyPrefix: "lenet5",
+    type: "cnn",
+  },
+  ALEXNET: {
+    layerHeight: 60,
+    keyPrefix: "alexnet",
+    type: "cnn",
+  },
+};
+
+export const GRID_CONFIGS = {
+  VGGNET: {
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
+    fc: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+  },
+  LENET_1: {
+    conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
+    pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
+    fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  LENET_5: {
+    conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
+    pool: { xCount: 3, yCount: 3, xInterval: 4, yInterval: 4 },
+    fc: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+};

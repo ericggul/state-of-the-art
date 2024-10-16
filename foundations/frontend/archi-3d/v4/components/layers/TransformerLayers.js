@@ -1,7 +1,7 @@
 import React from "react";
 import Node from "../Node";
 import Sublayer from "../Sublayer";
-import { LAYER_CONFIGS } from "../../structure";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 const TransformerLayers = React.memo(({ structure, style, model }) => {
   const config = LAYER_CONFIGS[model] || {};

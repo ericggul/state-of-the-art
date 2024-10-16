@@ -1,10 +1,10 @@
 import React from "react";
 import InstancedNodes from "./InstancedNodes";
-import { getGridConfig } from "../structure";
+import { GRID_CONFIGS } from "../models";
 
 const Sublayer = ({ position, sublayer, style, model }) => {
   const size = [20, 8, 8];
-  const gridConfig = getGridConfig(model);
+  const gridConfig = GRID_CONFIGS[model] || {};
 
   const grid = gridConfig[sublayer.type] || {
     xCount: 1,

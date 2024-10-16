@@ -7,3 +7,15 @@ export const MODELS = {
   ...TRANSFORMER,
   ...BASIC_NN,
 };
+
+export const LAYER_CONFIGS = {
+  ...CNN.LAYER_CONFIGS,
+  ...TRANSFORMER.LAYER_CONFIGS,
+  ...BASIC_NN.LAYER_CONFIGS,
+};
+
+export const GRID_CONFIGS = {
+  ...CNN.GRID_CONFIGS,
+  ...TRANSFORMER.GRID_CONFIGS,
+  ...BASIC_NN.GRID_CONFIGS,
+};

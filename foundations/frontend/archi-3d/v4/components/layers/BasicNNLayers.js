@@ -2,12 +2,12 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import * as THREE from "three";
 import Connections from "../Connections";
-import { LAYER_CONFIGS, getGridConfig } from "../../structure";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
 
 // Function to generate the structure
 function generateStructure(modelStructure, model) {
   const layerConfig = LAYER_CONFIGS[model];
-  const gridConfig = getGridConfig(model);
+  const gridConfig = GRID_CONFIGS[model] || {};
 
   return modelStructure.map((layer, i) => ({
     ...layer,
