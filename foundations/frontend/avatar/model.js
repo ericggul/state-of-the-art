@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useGLTF, useAnimations, Center } from "@react-three/drei";
 import { MathUtils, MeshStandardMaterial } from "three";
 
 import useBlink from "./utils/useBlink";
@@ -14,6 +14,16 @@ const ANIMATIONS_URL = "/3d/avatars/animations-2.glb";
 const ANIMATION_FADE_TIME = 0.5;
 
 export default function Model(props) {
+  const defaultProps = {
+    scale: [2, 2, 2],
+    position: [0, -0.4, 74], // Keep z-position to maintain visibility
+    //rotate just a bit
+    rotation: [Math.PI * 0.1, 0, 0],
+  };
+
+  // Merge default props with passed props
+  const mergedProps = { ...defaultProps, ...props };
+
   //////TEMPORARY TESTING: MESSAGE STORAGE
 
   const { tempMessage } = useViseme();
@@ -69,8 +79,13 @@ export default function Model(props) {
           break;
         }
       }
-      if (actions[animation].time > actions[animation].getClip().duration - ANIMATION_FADE_TIME) {
-        setAnimation((animation) => (animation === "Talking" ? "Talking2" : "Talking")); // Could load more type of animations and randomization here
+      if (
+        actions[animation].time >
+        actions[animation].getClip().duration - ANIMATION_FADE_TIME
+      ) {
+        setAnimation((animation) =>
+          animation === "Talking" ? "Talking2" : "Talking"
+        ); // Could load more type of animations and randomization here
       }
     }
 
@@ -88,10 +103,17 @@ export default function Model(props) {
     scene.traverse((child) => {
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
         const index = child.morphTargetDictionary[target];
-        if (index === undefined || child.morphTargetInfluences[index] === undefined) {
+        if (
+          index === undefined ||
+          child.morphTargetInfluences[index] === undefined
+        ) {
           return;
         }
-        child.morphTargetInfluences[index] = MathUtils.lerp(child.morphTargetInfluences[index], value, speed);
+        child.morphTargetInfluences[index] = MathUtils.lerp(
+          child.morphTargetInfluences[index],
+          value,
+          speed
+        );
       }
     });
   };
@@ -108,8 +130,10 @@ export default function Model(props) {
   }, [animation, actions]);
 
   return (
-    <group {...props} dispose={null} ref={group}>
-      <primitive object={scene} />
+    <group {...mergedProps} dispose={null} ref={group}>
+      <Center>
+        <primitive object={scene} />
+      </Center>
     </group>
   );
 }

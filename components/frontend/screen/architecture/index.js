@@ -73,18 +73,14 @@ export default function Architecture({ version = CURRENT_TESTING_VERSION }) {
 
   // Memoize the relevant model
   const relevantModel = useMemo(
-    () =>
-      flattenedModels.find((model) => model.version === version) ||
-      flattenedModels[2],
+    () => flattenedModels.find((model) => model.version === version) || null,
     [flattenedModels, version]
   );
-
-  console.log(version, relevantModel);
 
   return (
     <S.Container>
       <Architecture3D version={version} />
-      <ArchitectureUI model={relevantModel} />
+      {relevantModel && <ArchitectureUI model={relevantModel} />}
     </S.Container>
   );
 }

@@ -1,10 +1,6 @@
 // Visualization.js
 import React, { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
-import { Suspense } from "react";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import * as THREE from "three";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
@@ -59,7 +55,7 @@ function getModelNameFromVersion(version) {
 
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
-  styleIndex = 1,
+  styleIndex = 0,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
@@ -67,7 +63,6 @@ export default function Visualisation({
 
   useEffect(() => {
     const name = getModelNameFromVersion(version);
-    console.log(name, version);
     if (name) {
       setModelName(name);
       const modelStructure = getModelStructure(name);
@@ -123,7 +118,7 @@ export default function Visualisation({
     >
       <CommonScene style={style}>
         <ModelComponent structure={structure} style={style} model={modelName} />
-        <AvatarModel position={[0, 50, 150]} scale={[2, 2, 2]} />
+        <AvatarModel />
       </CommonScene>
     </Canvas>
   );

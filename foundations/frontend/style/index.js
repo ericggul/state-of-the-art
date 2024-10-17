@@ -16,13 +16,13 @@ export const STYLE_STRATEGIES = [
       environment: "studio", // Kept 'studio' for the gallery-like feel
       envIntensity: 0.5, // Further reduced for a more subdued look
       pointLight: { position: [0, 200, 0], intensity: 0.7 },
-      directionalLight: { position: [0, 150, 100], intensity: 0.5 },
+      directionalLight: { position: [0, 150, -100], intensity: 0.5 },
       ambientLight: { intensity: 0.3 },
     },
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -49,7 +49,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 45,
       near: 0.1,
     },
@@ -77,7 +77,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     windowEffect: true,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -104,7 +104,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -131,7 +131,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -159,7 +159,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     windowEffect: true,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -186,7 +186,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -212,7 +212,7 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -246,7 +246,7 @@ export const STYLE_STRATEGIES = [
       },
     },
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -283,7 +283,7 @@ export const STYLE_STRATEGIES = [
       },
     },
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
@@ -309,7 +309,7 @@ export const STYLE_STRATEGIES = [
       ambientLight: { intensity: 0.5 },
     },
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 45,
       near: 0.1,
     },
@@ -338,7 +338,7 @@ export const STYLE_STRATEGIES = [
     shadows: false,
     emissive: false,
     camera: {
-      position: [0, 50, 150],
+      position: [0, 0, 80],
       fov: 50,
       near: 0.1,
     },
