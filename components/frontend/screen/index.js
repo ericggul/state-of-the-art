@@ -3,7 +3,6 @@
 import { useMemo, useState, useEffect } from "react";
 import * as S from "./styles";
 
-import Avatar from "./avatar";
 import Architecture from "./architecture";
 
 import useSocketScreen from "@/utils/socket/useSocketScreen";
@@ -42,7 +41,6 @@ export default function ScreenFrontend() {
   return (
     <>
       <S.Container>
-        {/* <Avatar /> */}
         <Architecture version={version} />
       </S.Container>
     </>

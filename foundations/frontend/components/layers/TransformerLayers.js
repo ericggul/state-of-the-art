@@ -43,7 +43,6 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
       config.layerHeight ||
       13;
 
-    console.log(avgSingleLayerHeight, layerHeight);
     const encoderLayers = structure.filter(
       (layer) => layer.stack === "encoder"
     );

@@ -7,6 +7,8 @@ const Frontend = dynamic(() =>
   import("@/components/frontend/screen/architecture")
 );
 
+const CURRENT_TESTING_VERSION = "v1.0";
+
 export default function ScreenWrapper() {
   return (
     <Suspense>
@@ -18,7 +20,7 @@ export default function ScreenWrapper() {
 function Screen() {
   return (
     <>
-      <Frontend />
+      <Frontend version={CURRENT_TESTING_VERSION} />
     </>
   );
 }

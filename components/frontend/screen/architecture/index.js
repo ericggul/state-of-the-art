@@ -1,6 +1,6 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/arch-3d";
-import ArchitectureUI from "@/foundations/frontend/arch-ui";
+import Architecture3D from "@/foundations/frontend/3d";
+import ArchitectureUI from "@/foundations/frontend/ui";
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";
 import { useMemo } from "react";
@@ -43,7 +43,7 @@ const flattenModels = (models) => {
 //perceptron v1.1
 //multi layer v1.2
 
-const CURRENT_TESTING_VERSION = "v4.3.3";
+const CURRENT_TESTING_VERSION = "v4.2.3.4";
 
 export default function Architecture({ version = CURRENT_TESTING_VERSION }) {
   // Memoize the flattened models

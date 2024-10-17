@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import * as THREE from "three";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
@@ -16,6 +17,8 @@ import TransformerLayers from "./components/layers/TransformerLayers";
 import RNNLayers from "./components/layers/RNNLayers";
 import VAELayers from "./components/layers/VAELayers";
 import SelfSupervisedLayers from "./components/layers/SelfSupervisedLayers";
+
+import AvatarModel from "@/foundations/frontend/avatar/model";
 
 //current target versions
 //mcculloch v1.0
@@ -115,9 +118,11 @@ export default function Visualisation({
         ...style.camera,
         far: 500000,
       }}
+      gl={{ alpha: true, antialias: true }}
     >
       <CommonScene style={style}>
         <ModelComponent structure={structure} style={style} model={modelName} />
+        <AvatarModel position={[0, -3, 0]} scale={[2, 2, 2]} />
       </CommonScene>
     </Canvas>
   );

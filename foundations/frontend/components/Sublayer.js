@@ -2,8 +2,8 @@ import React from "react";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../models";
 
-const INTERLAYER_MARGIN_X = 1.2;
-const INTERLAYER_MARGIN_Y = 1.5;
+const INTERLAYER_MARGIN_X = 1.3;
+const INTERLAYER_MARGIN_Y = 3.0;
 
 const Sublayer = ({
   position,
