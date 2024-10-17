@@ -1,6 +1,119 @@
 // Expanded styling strategies
 export const STYLE_STRATEGIES = [
   {
+    name: "Subtle Red",
+    colors: {
+      outer: "hsl(355, 65%, 28%)", // Deep, rich red
+      inner: "hsl(355, 70%, 35%)", // Slightly brighter red
+      plane: "hsl(355, 50%, 15%)", // Dark, muted red
+    },
+    material: {
+      metalness: 0.6, // Kept the same
+      roughness: 0.4, // Kept the same
+      transparent: false,
+    },
+    lighting: {
+      environment: "studio", // Kept 'studio' for the gallery-like feel
+      envIntensity: 0.5, // Further reduced for a more subdued look
+      pointLight: { position: [0, 200, 0], intensity: 0.7 },
+      directionalLight: { position: [0, 150, 100], intensity: 0.5 },
+      ambientLight: { intensity: 0.3 },
+    },
+    shadows: true,
+    emissive: false,
+    camera: {
+      position: [0, 50, 150],
+      fov: 50,
+      near: 0.1,
+      far: 1000,
+    },
+  },
+  {
+    name: "Judd Red",
+    colors: {
+      outer: "hsl(0, 65%, 30%)", // Deep, rich red
+      inner: "hsl(0, 70%, 25%)", // Slightly darker red for inner parts
+      highlight: "hsl(0, 80%, 40%)", // Brighter red for highlights
+    },
+    material: {
+      metalness: 0.4,
+      roughness: 0.6,
+      transparent: false,
+    },
+    lighting: {
+      environment: "studio",
+      envIntensity: 0.6,
+      pointLight: { position: [0, 200, 0], intensity: 0.8 },
+      directionalLight: { position: [0, 150, 100], intensity: 0.7 },
+      ambientLight: { intensity: 0.4 },
+    },
+    shadows: true,
+    emissive: false,
+    camera: {
+      position: [0, 75, 200],
+      fov: 45,
+      near: 0.1,
+      far: 1000,
+    },
+  },
+  {
+    name: "Seagram Green",
+    colors: {
+      outer: "hsl(140, 20%, 35%)", // Stronger green with a metallic tinge
+      inner: "hsl(140, 25%, 20%)", // Deeper, more saturated green for inner parts
+      windowGlow: "hsl(140, 30%, 15%)", // Subtle but noticeable green glow
+    },
+    material: {
+      metalness: 0.9,
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.6,
+    },
+    lighting: {
+      environment: "apartment",
+      envIntensity: 1,
+      pointLight: { position: [0, 200, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    shadows: true,
+    windowEffect: true,
+    camera: {
+      position: [0, 75, 200],
+      fov: 50,
+      near: 0.1,
+      far: 1000,
+    },
+  },
+  {
+    name: "Subtle Green",
+    colors: {
+      outer: "hsl(170, 60%, 15%)",
+      inner: "hsl(165, 60%, 15%)",
+      plane: "hsl(160, 70%, 10%)",
+    },
+    material: {
+      metalness: 0.9,
+      roughness: 0.4,
+      transparent: false,
+    },
+    lighting: {
+      environment: "apartment",
+      envIntensity: 1,
+      pointLight: { position: [0, 200, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    shadows: true,
+    emissive: false,
+    camera: {
+      position: [0, 50, 150],
+      fov: 50,
+      near: 0.1,
+      far: 1000,
+    },
+  },
+  {
     name: "Subtle Blue",
     colors: {
       outer: "hsl(230, 70%, 50%)",

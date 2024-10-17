@@ -46,9 +46,16 @@ function getModelNameFromVersion(version) {
   return model ? convertToVariableName(model.name) : null;
 }
 
+//styleidx
+//0: subtle red
+//1: judd red
+//2: seagram green
+//3: subtle green
+//4: subtle blue
+
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
-  styleIndex = 2,
+  styleIndex = 1,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
