@@ -3,8 +3,7 @@ import Architecture3D from "@/foundations/frontend/archi-3d/v4";
 import ArchitectureUI from "@/foundations/frontend/archi-ui";
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";
-
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 
 // Function to flatten the MODELS object
 const flattenModels = (models) => {
@@ -44,63 +43,45 @@ const flattenModels = (models) => {
 //perceptron v1.1
 //multi layer v1.2
 
-//lenet v3.1.1
-//lenet5 v3.1.2
-//alexnet v3.2.1
-//vgg v3.2.2
-//transformer v4.2
-//gpt v4.2.3.1
+const CURRENT_TESTING_VERSION = "v4.3.3";
 
-const CURRENT_TESTING_VERSION = "v1.2";
-const VERSION_TO_MORPH = "v4.0.1";
+export default function Architecture({ version = CURRENT_TESTING_VERSION }) {
+  // Memoize the flattened models
+  const flattenedModels = useMemo(() => flattenModels(MODELS), []);
 
-export default function Architecture({ version = "v4.0.2.1" }) {
-  // Flatten the MODELS object
-  const flattenedModels = flattenModels(MODELS);
-  const refinedFlattend = flattenedModels
-    .filter(
-      (model) =>
-        model.name !== "" &&
-        (model.year !== "" ||
-          model.place !== "" ||
-          model.citation !== "" ||
-          model.explanation !== "")
-    )
-    .map((model) => ({ name: model.name, version: model.version }));
+  // Memoize the refined flattened models
+  const refinedFlattened = useMemo(
+    () =>
+      flattenedModels
+        .filter(
+          (model) =>
+            model.name !== "" &&
+            (model.year !== "" ||
+              model.place !== "" ||
+              model.citation !== "" ||
+              model.explanation !== "")
+        )
+        .map((model) => ({ name: model.name, version: model.version })),
+    [flattenedModels]
+  );
 
-  //DO NOT ERASE THIS COMMENT
+  //DO NOT ERASE THIS COMMENT: FOR GENERATING LATEST FLATTENED MODELS
   // console.log(
   //   refinedFlattend,
   //   refinedFlattend.map((model) => model.name)
   // );
 
-  // Find relevant model from the flattened array matching with the version
-  const relevantModel =
-    flattenedModels.find((model) => model.version === version) ||
-    flattenedModels[2];
-
-  const [testVersion, setTestVersion] = useState(CURRENT_TESTING_VERSION);
-  const [styleIndex, setStyleIndex] = useState(0);
-
-  //testing: every 5s change the version
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      //back and forth from two versions
-      if (testVersion === CURRENT_TESTING_VERSION) {
-        setTestVersion(VERSION_TO_MORPH);
-      } else {
-        setTestVersion(CURRENT_TESTING_VERSION);
-      }
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [testVersion]);
+  // Memoize the relevant model
+  const relevantModel = useMemo(
+    () =>
+      flattenedModels.find((model) => model.version === version) ||
+      flattenedModels[2],
+    [flattenedModels, version]
+  );
 
   return (
     <S.Container>
-      <Architecture3D
-
-      // version={testVersion}
-      />
+      <Architecture3D version={version} />
       <ArchitectureUI model={relevantModel} />
     </S.Container>
   );

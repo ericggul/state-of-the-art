@@ -14,7 +14,6 @@ const Sublayer = ({
 }) => {
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
-  console.log(sublayer);
 
   const grid = gridConfig[sublayer.type] || {
     xCount: 1,

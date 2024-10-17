@@ -844,7 +844,6 @@ export const ARRAY = [
   "YOLO (You Only Look Once)",
   "RNN (Recurrent Neural Network)",
   "Long Short-Term Memory (LSTM)",
-
   "Transformer Architecture",
   "T5",
   "BART",
@@ -1016,7 +1015,6 @@ export const OBJECT_ARRAY = [
     name: "Long Short-Term Memory (LSTM)",
     version: "v4.0.2",
   },
-
   {
     name: "Transformer Architecture",
     version: "v4.2",
@@ -1117,7 +1115,6 @@ export const OBJECT_ARRAY = [
     name: "Generative Adversarial Networks (GANs)",
     version: "v5.0",
   },
-
   {
     name: "DCGAN",
     version: "v5.0.2.1",
