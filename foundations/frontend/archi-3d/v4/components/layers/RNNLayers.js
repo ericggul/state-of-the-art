@@ -1,76 +1,75 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
+import RNNConnections from "../connections/RNNConnections";
 
 const RNNLayers = React.memo(({ structure, style, model }) => {
-  // Pre-calculate the cumulative heights of layers
-  const layerPositions = [];
-  let cumulativeHeight = 0;
+  const [expandedLayers, setExpandedLayers] = useState({});
 
-  // First, calculate the heights of all layers
-  const layerHeights = structure.map((layer) => {
-    // For composite layers, take the maximum height among sublayers if any
-    if (layer.sublayers) {
-      const sublayerHeights = layer.sublayers.map(
-        (sublayer) => sublayer.dimensions[1]
-      );
-      return Math.max(...sublayerHeights);
-    } else {
-      return layer.dimensions[1];
-    }
-  });
+  const layers = useMemo(() => {
+    let cumulativeHeight = 0;
+    const layerGap = 10;
+    const gridConfig = GRID_CONFIGS[model] || {};
 
-  // Next, calculate the cumulative positions
-  for (let i = 0; i < layerHeights.length; i++) {
-    const layerHeight = layerHeights[i];
-    // Add a gap between layers
-    const gap = 10; // Adjust the gap as needed
-    cumulativeHeight +=
-      i === 0 ? 0 : layerHeights[i - 1] / 2 + layerHeight / 2 + gap;
-    layerPositions.push(cumulativeHeight);
-  }
+    return structure.map((layer, i) => {
+      const height = layer.dimensions[1];
+      const y = cumulativeHeight + height / 2;
+      cumulativeHeight += height + layerGap;
 
-  // Center the model vertically
+      const gridTypeConfig = gridConfig[layer.type] || {
+        xCount: 4,
+        yCount: 4,
+        xInterval: 5,
+        yInterval: 5,
+      };
+
+      const grid = {
+        xCount: layer.zSpan ? layer.zSpan[0] : gridTypeConfig.xCount,
+        yCount: layer.zSpan ? layer.zSpan[1] : gridTypeConfig.yCount,
+        xInterval: gridTypeConfig.xInterval,
+        yInterval: gridTypeConfig.yInterval,
+      };
+
+      return {
+        ...layer,
+        position: [0, y, 0],
+        grid,
+      };
+    });
+  }, [structure, model]);
+
   const totalHeight =
-    cumulativeHeight + layerHeights[layerHeights.length - 1] / 2;
+    layers[layers.length - 1].position[1] +
+    layers[layers.length - 1].dimensions[1] / 2;
   const centerOffset = totalHeight / 2;
 
+  const handleLayerExpand = (index, isExpanded) => {
+    setExpandedLayers((prev) => ({ ...prev, [index]: isExpanded }));
+  };
+
   return (
-    <group>
-      {structure.map((layer, i) => {
-        const y = layerPositions[i] - centerOffset;
-
-        // Handle composite layers with sublayers if needed
-        if (layer.sublayers) {
-          return (
-            <CompositeLayer
-              key={`${model}-layer-${i}`}
-              position={[0, y, 0]}
-              layer={layer}
-              style={style}
-              model={model}
-            />
-          );
-        }
-
-        // Handle regular layers
-        return (
-          <RNNLayer
-            key={`${model}-layer-${i}`}
-            position={[0, y, 0]}
-            layer={layer}
-            style={style}
-            model={model}
-          />
-        );
-      })}
+    <group position={[0, -centerOffset, 0]}>
+      <RNNConnections
+        structure={layers}
+        style={style}
+        expandedLayers={expandedLayers}
+      />
+      {layers.map((layer, i) => (
+        <RNNLayer
+          key={`${model}-layer-${i}`}
+          layer={layer}
+          style={style}
+          model={model}
+          onExpand={(isExpanded) => handleLayerExpand(i, isExpanded)}
+        />
+      ))}
     </group>
   );
 });
 
-const RNNLayer = React.memo(({ position, layer, style, model }) => {
+const RNNLayer = React.memo(({ layer, style, model, onExpand }) => {
   const [expanded, setExpanded] = useState(false);
 
   const { smoothedExpanded } = useSpring({
@@ -80,28 +79,23 @@ const RNNLayer = React.memo(({ position, layer, style, model }) => {
 
   useEffect(() => {
     const toggleExpanded = () => {
-      setExpanded((prev) => !prev);
+      const newExpanded = !expanded;
+      setExpanded(newExpanded);
+      onExpand(newExpanded);
     };
-
-    const minInterval = 2000;
-    const maxInterval = 5000;
-    const randomInterval =
-      Math.random() * (maxInterval - minInterval) + minInterval;
-
-    const timer = setInterval(toggleExpanded, randomInterval);
-
+    const interval = Math.random() * 2000 + 500;
+    const timer = setInterval(toggleExpanded, interval);
     return () => clearInterval(timer);
-  }, []);
+  }, [onExpand]);
 
   const gridConfig = GRID_CONFIGS[model] || {};
-  let gridTypeConfig = gridConfig[layer.type] || {
-    xCount: 1,
-    yCount: 1,
+  const gridTypeConfig = gridConfig[layer.type] || {
+    xCount: 4,
+    yCount: 4,
     xInterval: 5,
     yInterval: 5,
   };
 
-  // Define grid based on layer dimensions and grid config
   const grid = {
     xCount: layer.zSpan ? layer.zSpan[0] : gridTypeConfig.xCount,
     yCount: layer.zSpan ? layer.zSpan[1] : gridTypeConfig.yCount,
@@ -109,13 +103,11 @@ const RNNLayer = React.memo(({ position, layer, style, model }) => {
     yInterval: gridTypeConfig.yInterval,
   };
 
-  // Node size for individual nodes in the expanded state
-  const node = {
+  const expandedNode = {
     size: [1, 1, 1],
     wireframeDivision: 1,
   };
 
-  // Size for the unexpanded (collapsed) layer representation
   const unexpandedNode = {
     size: [
       layer.dimensions[0],
@@ -128,57 +120,26 @@ const RNNLayer = React.memo(({ position, layer, style, model }) => {
   const color = style.colors.inner;
 
   return (
-    <group position={position}>
+    <group position={layer.position}>
       <animated.group
         scale-x={smoothedExpanded}
-        scale-y={1}
-        scale-z={smoothedExpanded}
+        scale-y={smoothedExpanded}
+        scale-z={1}
       >
-        <InstancedNodes {...grid} node={node} color={color} style={style} />
+        <InstancedNodes
+          {...grid}
+          node={expandedNode}
+          color={color}
+          style={style}
+        />
       </animated.group>
       <animated.group
         scale-x={smoothedExpanded.to((v) => 1 - v)}
-        scale-y={1}
-        scale-z={smoothedExpanded.to((v) => 1 - v)}
+        scale-y={smoothedExpanded.to((v) => 1 - v)}
+        scale-z={1}
       >
         <Node {...unexpandedNode} color={color} style={style} />
       </animated.group>
-    </group>
-  );
-});
-
-const CompositeLayer = React.memo(({ position, layer, style, model }) => {
-  const sublayerGap = 10;
-
-  // Calculate the total width of sublayers
-  const sublayerWidths = layer.sublayers.map(
-    (sublayer) => sublayer.dimensions[0]
-  );
-  const totalWidth =
-    sublayerWidths.reduce((sum, width) => sum + width, 0) +
-    (layer.sublayers.length - 1) * sublayerGap;
-
-  let accumulatedWidth = -totalWidth / 2;
-
-  return (
-    <group position={position}>
-      {layer.sublayers.map((sublayer, idx) => {
-        const x =
-          accumulatedWidth +
-          sublayer.dimensions[0] / 2 +
-          (idx > 0 ? sublayerGap : 0);
-        accumulatedWidth += sublayer.dimensions[0] + sublayerGap;
-
-        return (
-          <RNNLayer
-            key={`${layer.name}-sublayer-${idx}`}
-            position={[x, 0, 0]}
-            layer={sublayer}
-            style={style}
-            model={model}
-          />
-        );
-      })}
     </group>
   );
 });

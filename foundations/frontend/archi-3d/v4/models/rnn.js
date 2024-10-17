@@ -1,7 +1,7 @@
 // models/rnn.js
 
 // Constants for model configurations
-const NUM_RNN_LAYERS = 1;
+const NUM_RNN_LAYERS = 10;
 const NUM_LSTM_LAYERS = 10;
 const NUM_GRU_LAYERS = 10;
 const HIDDEN_SIZE = 128;
@@ -22,13 +22,6 @@ export const RNN_RECURRENT_NEURAL_NETWORK = [
     name: `RNN Layer ${i + 1}`,
     type: "rnn_cell",
     dimensions: RNN_LAYER_DIMENSIONS,
-    components: {
-      inputGate: true,
-      forgetGate: true,
-      outputGate: true,
-      cellState: true,
-      hiddenState: true,
-    },
     zSpan: [4, 4],
   })),
   {
@@ -50,13 +43,6 @@ export const LONG_SHORT_TERM_MEMORY_LSTM = [
     name: `LSTM Layer ${i + 1}`,
     type: "lstm_cell",
     dimensions: RNN_LAYER_DIMENSIONS,
-    components: {
-      inputGate: true,
-      forgetGate: true,
-      outputGate: true,
-      cellState: true,
-      hiddenState: true,
-    },
     zSpan: [4, 4],
   })),
   {
