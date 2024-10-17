@@ -1,21 +1,21 @@
 import styled from "styled-components";
-
+import { FlexCenterStyle, WholeContainerStyle } from "@/styles";
 // Function to convert pixels to viewport width units for responsiveness
 const vw = (px) => `${(px / 390) * 100}vw`;
 
 // Main container that fills the viewport
 export const Container = styled.div`
-  display: flex;
+  ${WholeContainerStyle}
+  ${FlexCenterStyle}
   flex-direction: column;
   background-color: #000;
   color: #fff;
   font-family: "Cardo", serif;
-  height: 100vh;
-  width: 100vw;
+  position: relative;
+  overflow: hidden;
   padding: ${vw(20)} ${vw(16)};
+  padding-top: ${vw(5)};
   box-sizing: border-box;
-
-  transition: all 0.5s;
 `;
 
 // Container for the messages with scrolling capability
@@ -23,19 +23,15 @@ export const Messages = styled.div`
   flex-grow: 1;
   width: 100%;
   overflow-y: auto;
-  padding: ${vw(10)} 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; // Change from flex-end to flex-start
   box-sizing: border-box;
   white-space: pre-wrap;
 
-  transition: all 0.5s;
-
-  // Add these styles for better scrolling
-  max-height: calc(100vh - ${vw(150)}); // Adjust the value as needed
   scrollbar-width: thin;
   scrollbar-color: #444 #000;
+  height: calc(100vh - ${vw(280)});
+  padding-bottom: ${vw(60)};
 
   &::-webkit-scrollbar {
     width: ${vw(8)};
@@ -57,12 +53,12 @@ export const SuggestedResponses = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin: ${vw(10)} ${vw(16)};
+  margin: ${vw(10)} 0;
 `;
 
 // Suggested response button styling
 export const SuggestedResponseButton = styled.button`
-  background-color: #111;
+  background-color: ${(props) => (props.isSelected ? "#444" : "#111")};
   color: #aaa;
   border: 1px solid #444;
   border-radius: 8px;
@@ -87,13 +83,18 @@ export const SuggestedResponseButton = styled.button`
     outline: none;
     border-color: #aaa;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 // Form containing the input and send button
 export const InputForm = styled.form`
   display: flex;
   width: 100%;
-  padding: ${vw(8)} ${vw(20)};
+  padding: ${vw(8)} 0;
   box-sizing: border-box;
   align-items: center;
 `;
@@ -148,4 +149,50 @@ export const Button = styled.button`
     transition: all 0.5s;
     cursor: not-allowed;
   }
+`;
+
+export const BottomContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  padding: ${vw(0)} ${vw(32)};
+  padding-bottom: ${vw(50)};
+  width: calc(100% - ${vw(64)}); // Subtracting left and right padding
+  margin: 0 auto; // Center the container
+  max-width: 390px; // Match the original container width
+`;
+
+export const GeneratingIndicator = styled.div`
+  color: #aaa;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: ${vw(10)} 0;
+  align-self: flex-start;
+`;
+
+export const UserMessage = styled.div`
+  // ... (existing styles)
+  align-self: flex-start;
+  text-align: left;
+`;
+
+export const AssistantMessage = styled.div`
+  // ... (existing styles)
+  align-self: flex-start;
+  text-align: left;
+`;
+
+export const LoadingIndicator = styled.div`
+  margin: ${vw(8)} ${vw(16)};
+  padding: ${vw(8)} ${vw(16)};
+  border-radius: 15px;
+  color: #aaa;
+  font-size: 1rem;
+  font-family: "Cardo", serif;
+  font-style: italic;
+  max-width: 75%;
+  align-self: flex-start;
+  text-align: left;
 `;
