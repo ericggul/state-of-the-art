@@ -1,8 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
 
 function RNNConnections({ structure, style, expandedLayers }) {
   const connections = useMemo(() => {
+    if (!structure || !expandedLayers) return [];
+
     const temp = [];
     for (let i = 0; i < structure.length - 1; i++) {
       const fromLayer = structure[i];
@@ -60,10 +62,8 @@ function RNNConnections({ structure, style, expandedLayers }) {
     return temp;
   }, [structure, expandedLayers]);
 
-  console.log(connections);
-
   return (
-    <>
+    <Suspense fallback={<div>Loading RNN Connections...</div>}>
       {connections.map((connection, i) => (
         <SingleLine
           key={i}
@@ -72,12 +72,14 @@ function RNNConnections({ structure, style, expandedLayers }) {
           style={style}
         />
       ))}
-    </>
+    </Suspense>
   );
 }
 
 function SingleLine({ from, to, style }) {
   const geometry = useMemo(() => {
+    if (!from || !to) return null;
+
     const start = new THREE.Vector3().fromArray(from);
     const end = new THREE.Vector3().fromArray(to);
     const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
@@ -85,6 +87,8 @@ function SingleLine({ from, to, style }) {
     const points = [start, mid, end];
     return new THREE.BufferGeometry().setFromPoints(points);
   }, [from, to]);
+
+  if (!geometry) return null;
 
   const lineMaterialProps = {
     color: style?.colors?.connection || style?.colors?.inner || "blue",

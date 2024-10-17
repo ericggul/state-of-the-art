@@ -1,8 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
 
 function VAEConnections({ structure, style }) {
   const connections = useMemo(() => {
+    if (!structure) return [];
+
     const temp = [];
     for (let i = 0; i < structure.length - 1; i++) {
       const fromLayer = structure[i];
@@ -43,7 +45,7 @@ function VAEConnections({ structure, style }) {
   }, [structure]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading VAE Connections...</div>}>
       {connections.map((connection, i) => (
         <SingleLine
           key={i}
@@ -52,17 +54,21 @@ function VAEConnections({ structure, style }) {
           style={style}
         />
       ))}
-    </>
+    </Suspense>
   );
 }
 
 function SingleLine({ from, to, style }) {
   const geometry = useMemo(() => {
+    if (!from || !to) return null;
+
     const start = new THREE.Vector3().fromArray(from);
     const end = new THREE.Vector3().fromArray(to);
     const points = [start, end];
     return new THREE.BufferGeometry().setFromPoints(points);
   }, [from, to]);
+
+  if (!geometry) return null;
 
   const lineMaterialProps = {
     color: style?.colors?.connection || style?.colors?.inner || "blue",

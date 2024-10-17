@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/archi-3d/v4";
+import Architecture3D from "@/foundations/frontend/archi-3d";
 import ArchitectureUI from "@/foundations/frontend/archi-ui";
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";

@@ -1,6 +1,4 @@
-// foundations/frontend/archi-3d/v4/components/layers/Connections.js
-
-import React, { useMemo } from "react";
+import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
 
 function Connections({ layersExpanded, structure, style }) {
@@ -15,22 +13,26 @@ function Connections({ layersExpanded, structure, style }) {
   }, [layersExpanded, structure]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading Connections...</div>}>
       {structure.slice(0, -1).map((_, i) => (
         <SingleConnection
           key={i}
           layerFrom={structure[i]}
           layerTo={structure[i + 1]}
-          expanded={connectionsExpanded[i]}
+          expanded={connectionsExpanded[i] || { from: false, to: false }}
           style={style}
         />
       ))}
-    </>
+    </Suspense>
   );
 }
 
 function SingleConnection({ layerFrom, layerTo, expanded, style }) {
   const connections = useMemo(() => {
+    if (!layerFrom || !layerTo || !expanded) {
+      return [];
+    }
+
     const temp = [];
 
     const fromXCount = expanded.from ? layerFrom.grid.xCount : 1;
