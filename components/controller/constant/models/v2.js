@@ -511,14 +511,7 @@ export const MODELS = {
       citation: 66600,
       explanation:
         "Introduced the GAN framework, where two neural networks compete in a zero-sum game to generate realistic data.",
-      "v5.0.1": {
-        name: "Original GAN",
-        year: 2014,
-        place: "Ian Goodfellow et al., University of Montreal",
-        citation: 66600,
-        explanation:
-          "The foundational GAN model proposing the adversarial training framework.",
-      },
+
       "v5.0.2": {
         name: "Architectural Variants",
         "v5.0.2.1": {
@@ -923,7 +916,6 @@ export const ARRAY = [
   "ERNIE",
   "XLM",
   "Generative Adversarial Networks (GANs)",
-  "Original GAN",
   "DCGAN",
   "WGAN",
   "Progressive GAN",
@@ -1190,10 +1182,7 @@ export const OBJECT_ARRAY = [
     name: "Generative Adversarial Networks (GANs)",
     version: "v5.0",
   },
-  {
-    name: "Original GAN",
-    version: "v5.0.1",
-  },
+
   {
     name: "DCGAN",
     version: "v5.0.2.1",
