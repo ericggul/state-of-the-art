@@ -5,6 +5,7 @@ import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
 import { getLanguageKey } from "@/components/controller/constant/system-script";
+import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 
 const ChatUI = () => {
   const {
@@ -14,16 +15,22 @@ const ChatUI = () => {
     conversationStage,
     isAccelerometerActive,
     sendMessage,
+    setIsAccelerometerActive,
+    grantAccelerometerAccess,
+    isWaitingForResponse,
   } = useChatStore();
 
+  const { supportsDeviceOrientation, permission, orientation, requestAccess } =
+    useAccelerometer();
+
   const [userInput, setUserInput] = useState("");
-  const [inputDisabled, setInputDisabled] = useState(false);
   const [showInput, setShowInput] = useState(true);
-  const [placeholderText, setPlaceholderText] = useState("Enter your Name?");
-  const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState("What's your Name?");
   const [selectedResponse, setSelectedResponse] = useState(null);
+  const [isAccelerometerPrompt, setIsAccelerometerPrompt] = useState(false);
 
   const messagesEndRef = useRef(null);
+  const prevConversationStageRef = useRef(conversationStage);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,12 +57,29 @@ const ChatUI = () => {
     }
     if (
       isWaitingForResponse &&
+      messages.length >= 1 &&
       messages[messages.length - 1].role === "assistant"
     ) {
       setIsWaitingForResponse(false);
       setSelectedResponse(null);
     }
   }, [messages, isWaitingForResponse]);
+
+  useEffect(() => {
+    if (
+      prevConversationStageRef.current === "activateAccelerometer" &&
+      conversationStage === "interactiveExperience"
+    ) {
+      setIsAccelerometerPrompt(true);
+    }
+    prevConversationStageRef.current = conversationStage;
+  }, [conversationStage]);
+
+  useEffect(() => {
+    if (permission) {
+      console.log("Device Orientation:", orientation);
+    }
+  }, [permission, orientation]);
 
   console.log(currentArchitectures, conversationStage);
   console.log("is accelerometer active", isAccelerometerActive);
@@ -64,21 +88,28 @@ const ChatUI = () => {
     e.preventDefault();
     if (!userInput.trim() || isWaitingForResponse) return;
 
-    setIsWaitingForResponse(true);
-    const success = await sendMessage(userInput);
-    if (success) {
-      setUserInput("");
-    }
-    setIsWaitingForResponse(false);
+    await sendMessage(userInput);
+    setUserInput("");
   };
 
   const handleSuggestedResponse = async (response) => {
     if (isWaitingForResponse) return;
 
     setSelectedResponse(response);
-    setIsWaitingForResponse(true);
     await sendMessage(response);
-    setIsWaitingForResponse(false);
+  };
+
+  const handleGrantAccess = async () => {
+    const granted = await requestAccess();
+    setIsAccelerometerActive(granted);
+    setIsAccelerometerPrompt(false);
+    await grantAccelerometerAccess(granted);
+  };
+
+  const getLoadingIndicatorText = () => {
+    return conversationStage === "interactiveExperience"
+      ? "Curating Next Architecture..."
+      : "Generating Next Response...";
   };
 
   return (
@@ -88,37 +119,48 @@ const ChatUI = () => {
           <Message key={index} role={msg.role} text={msg.text} />
         ))}
         {isWaitingForResponse && (
-          <S.LoadingIndicator>Curating Next Architecture...</S.LoadingIndicator>
+          <S.LoadingIndicator>{getLoadingIndicatorText()}</S.LoadingIndicator>
         )}
         <div ref={messagesEndRef} />
       </S.Messages>
 
       {showInput && (
         <S.BottomContainer>
-          <S.SuggestedResponses>
-            {recommendedResponses.map((response, index) => (
-              <S.SuggestedResponseButton
-                key={index}
-                onClick={() => handleSuggestedResponse(response)}
-                disabled={isWaitingForResponse}
-                isSelected={response === selectedResponse}
-              >
-                {response}
-              </S.SuggestedResponseButton>
-            ))}
-          </S.SuggestedResponses>
-          <S.InputForm onSubmit={handleSubmit}>
-            <S.Input
-              type="text"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder={isWaitingForResponse ? "" : placeholderText}
+          {isAccelerometerPrompt ? (
+            <S.Button
+              onClick={handleGrantAccess}
               disabled={isWaitingForResponse}
-            />
-            <S.Button type="submit" disabled={isWaitingForResponse}>
-              Send
+            >
+              {supportsDeviceOrientation ? "Grant Access" : "Continue"}
             </S.Button>
-          </S.InputForm>
+          ) : (
+            <>
+              <S.SuggestedResponses>
+                {recommendedResponses.map((response, index) => (
+                  <S.SuggestedResponseButton
+                    key={index}
+                    onClick={() => handleSuggestedResponse(response)}
+                    disabled={isWaitingForResponse}
+                    isSelected={response === selectedResponse}
+                  >
+                    {response}
+                  </S.SuggestedResponseButton>
+                ))}
+              </S.SuggestedResponses>
+              <S.InputForm onSubmit={handleSubmit}>
+                <S.Input
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder={isWaitingForResponse ? "" : placeholderText}
+                  disabled={isWaitingForResponse}
+                />
+                <S.Button type="submit" disabled={isWaitingForResponse}>
+                  Send
+                </S.Button>
+              </S.InputForm>
+            </>
+          )}
         </S.BottomContainer>
       )}
     </S.Container>
