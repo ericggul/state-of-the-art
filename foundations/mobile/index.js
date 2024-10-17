@@ -5,9 +5,12 @@ import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
 import { getLanguageKey } from "@/components/controller/constant/system-script";
-import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 
-const ChatUI = () => {
+const ChatUI = ({
+  supportsDeviceOrientation,
+  accelerometerGranted,
+  handleGrantAccess,
+}) => {
   const {
     messages,
     recommendedResponses,
@@ -19,9 +22,6 @@ const ChatUI = () => {
     grantAccelerometerAccess,
     isWaitingForResponse,
   } = useChatStore();
-
-  const { supportsDeviceOrientation, permission, orientation, requestAccess } =
-    useAccelerometer();
 
   const [userInput, setUserInput] = useState("");
   const [showInput, setShowInput] = useState(true);
@@ -78,12 +78,6 @@ const ChatUI = () => {
     prevConversationStageRef.current = conversationStage;
   }, [conversationStage]);
 
-  useEffect(() => {
-    if (permission) {
-      console.log("Device Orientation:", orientation);
-    }
-  }, [permission, orientation]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput.trim() || isWaitingForResponse) return;
@@ -98,13 +92,6 @@ const ChatUI = () => {
     console.log("100");
     setSelectedResponse(response);
     await sendMessage(response);
-  };
-
-  const handleGrantAccess = async () => {
-    const granted = await requestAccess();
-    setIsAccelerometerActive(granted);
-    setIsAccelerometerPrompt(false);
-    await grantAccelerometerAccess(granted);
   };
 
   const getLoadingIndicatorText = () => {
@@ -130,7 +117,7 @@ const ChatUI = () => {
           {isAccelerometerPrompt ? (
             <S.Button
               onClick={handleGrantAccess}
-              disabled={isWaitingForResponse}
+              disabled={isWaitingForResponse || accelerometerGranted}
             >
               {supportsDeviceOrientation ? "Grant Access" : "Continue"}
             </S.Button>

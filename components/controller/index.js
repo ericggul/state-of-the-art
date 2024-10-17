@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import TempChatUI from "@/foundations/mobile/index";
+import TempChatUI from "@/foundations/mobile/wrapper";
 import useChatStore from "./store";
 
 import useSocketController from "@/utils/socket/useSocketController";
