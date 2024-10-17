@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
 import VAEConnections from "../connections/VAEConnections";
-import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
 export default function VAELayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];

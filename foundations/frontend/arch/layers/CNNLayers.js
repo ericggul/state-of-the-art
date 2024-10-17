@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
-import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
   // Pre-calculate the cumulative heights of layers

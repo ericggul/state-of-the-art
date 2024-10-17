@@ -8,17 +8,18 @@ import * as THREE from "three";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
-import { LAYER_CONFIGS, getModelStructure } from "./structure";
+import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 
-import BasicNNLayers from "./components/layers/BasicNNLayers";
-import CNNLayers from "./components/layers/CNNLayers";
-import TransformerLayers from "./components/layers/TransformerLayers";
-import RNNLayers from "./components/layers/RNNLayers";
-import VAELayers from "./components/layers/VAELayers";
-import SelfSupervisedLayers from "./components/layers/SelfSupervisedLayers";
+import BasicNNLayers from "./arch/layers/BasicNNLayers";
+import CNNLayers from "./arch/layers/CNNLayers";
+import TransformerLayers from "./arch/layers/TransformerLayers";
+import RNNLayers from "./arch/layers/RNNLayers";
+import VAELayers from "./arch/layers/VAELayers";
+import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
+import CommonScene from "./style/common-scene";
 
 //current target versions
 //mcculloch v1.0
@@ -122,43 +123,8 @@ export default function Visualisation({
     >
       <CommonScene style={style}>
         <ModelComponent structure={structure} style={style} model={modelName} />
-        <AvatarModel position={[0, -3, 0]} scale={[2, 2, 2]} />
+        <AvatarModel position={[0, 50, 150]} scale={[2, 2, 2]} />
       </CommonScene>
     </Canvas>
-  );
-}
-
-function CommonScene({ style, children }) {
-  return (
-    <>
-      <Suspense fallback={null}>
-        <Environment
-          preset={style.lighting.environment || "warehouse"}
-          intensity={style.lighting.envIntensity || 1}
-        />
-      </Suspense>
-      {style.lighting.pointLight && (
-        <pointLight {...style.lighting.pointLight} />
-      )}
-      {style.lighting.directionalLight && (
-        <directionalLight {...style.lighting.directionalLight} />
-      )}
-      {style.lighting.directionalLight1 && (
-        <directionalLight {...style.lighting.directionalLight1} />
-      )}
-      {style.lighting.directionalLight2 && (
-        <directionalLight {...style.lighting.directionalLight2} />
-      )}
-      {style.lighting.ambientLight && (
-        <ambientLight {...style.lighting.ambientLight} />
-      )}
-      {children}
-      <OrbitControls enablePan={true} />
-      <EffectComposer>
-        {style.postprocessing && style.postprocessing.bloom && (
-          <Bloom {...style.postprocessing.bloom} />
-        )}
-      </EffectComposer>
-    </>
   );
 }

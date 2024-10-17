@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
-import { LAYER_CONFIGS, GRID_CONFIGS } from "../../models/self_supervised";
+import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models/self_supervised";
 
 export default function SelfSupervisedLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];

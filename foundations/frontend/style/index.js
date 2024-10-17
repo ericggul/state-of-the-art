@@ -25,7 +25,6 @@ export const STYLE_STRATEGIES = [
       position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -50,10 +49,9 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 75, 200],
+      position: [0, 50, 150],
       fov: 45,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -79,10 +77,9 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     windowEffect: true,
     camera: {
-      position: [0, 75, 200],
+      position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -110,7 +107,6 @@ export const STYLE_STRATEGIES = [
       position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -138,7 +134,6 @@ export const STYLE_STRATEGIES = [
       position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -164,10 +159,9 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     windowEffect: true,
     camera: {
-      position: [0, 75, 200],
+      position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -192,10 +186,9 @@ export const STYLE_STRATEGIES = [
     shadows: true,
     emissive: false,
     camera: {
-      position: [0, 75, 200],
+      position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -222,7 +215,6 @@ export const STYLE_STRATEGIES = [
       position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -257,7 +249,6 @@ export const STYLE_STRATEGIES = [
       position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 1000,
     },
   },
   {
@@ -292,10 +283,9 @@ export const STYLE_STRATEGIES = [
       },
     },
     camera: {
-      position: [40, 30, 50],
+      position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 5000,
     },
   },
   {
@@ -319,10 +309,9 @@ export const STYLE_STRATEGIES = [
       ambientLight: { intensity: 0.5 },
     },
     camera: {
-      position: [0, 75, 200],
+      position: [0, 50, 150],
       fov: 45,
       near: 0.1,
-      far: 5000,
     },
     layout: {
       layerHeight: 13,
@@ -349,10 +338,9 @@ export const STYLE_STRATEGIES = [
     shadows: false,
     emissive: false,
     camera: {
-      position: [0, 24 * 5, 24 * 6],
+      position: [0, 50, 150],
       fov: 50,
       near: 0.1,
-      far: 5000,
     },
     layout: {
       layerHeight: 10,

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Node from "../Node";
 import Sublayer from "../Sublayer";
-import { LAYER_CONFIGS } from "../../models";
+import { LAYER_CONFIGS } from "../../arch-models";
 
 const INTERLAYER_MARGIN = 1.2;
 const TARGET_AXIS = 2;

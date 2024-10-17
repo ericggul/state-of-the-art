@@ -1,4 +1,4 @@
-import { MODELS, LAYER_CONFIGS, GRID_CONFIGS } from "./models";
+import { MODELS, LAYER_CONFIGS, GRID_CONFIGS } from "./index";
 
 export { LAYER_CONFIGS, GRID_CONFIGS };
 

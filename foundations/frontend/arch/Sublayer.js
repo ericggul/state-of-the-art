@@ -1,6 +1,6 @@
 import React from "react";
 import InstancedNodes from "./InstancedNodes";
-import { GRID_CONFIGS } from "../models";
+import { GRID_CONFIGS } from "../arch-models";
 
 const INTERLAYER_MARGIN_X = 1.3;
 const INTERLAYER_MARGIN_Y = 3.0;
