@@ -32,7 +32,7 @@ const ChatUI = () => {
   useEffect(() => {
     const detectLanguage = () => {
       let fullLanguage = navigator.language || navigator.userLanguage || "en";
-      // fullLanguage = "ko";
+      fullLanguage = "en";
       try {
         const languageKey = getLanguageKey(fullLanguage);
         useChatStore.getState().setDeviceLanguage(languageKey);

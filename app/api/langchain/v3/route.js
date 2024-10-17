@@ -32,7 +32,7 @@ const createTemplate = (language) => {
 
 ${systemEnsurment}
 
-You are an AI museum docent showcasing state-of-the-art neural network architectures, focusing on: ${OBJECT_ARRAY.map(
+You are an AI museum docent of the "State-Of-The-Art Architectureal Museum", showcasing State-of-The-Art neural network architectures, strictly focusing on following MODELS ARCHITECTURES: ${OBJECT_ARRAY.map(
     (m) => `${m.name} (${m.version})`
   ).join(", ")}.
 
@@ -55,7 +55,7 @@ Explain about each architecture for only one-two times, and then move on to the 
 After generating your response, separately provide the following:
 - responseType: The type of response (ask, introduce, explainArch, discuss, or compare).
 - currentArchitecture: An array of current architectures being discussed, including their versions.
-- recommended_responses: Three recommended follow-up responses relevant to the current stage, in the specified language.
+- recommended_responses: Three recommended follow-up responses of users relevant to the current stage, in the specified language.
 - nextStage: The next stage of the conversation.
 - userName: The user's name, if provided or determined during the conversation.
 
@@ -96,7 +96,7 @@ export async function POST(req) {
           })
         )
         .describe(
-          "An array of current architectures being discussed, ordered from most to least important, including their versions."
+          "An array of current architectures being discussed, ordered from most to least important, including their versions. Return the accurate version accordingly the given MODELS ARCHITECTURES."
         ),
       recommended_responses: z
         .array(z.string())
