@@ -51,7 +51,10 @@ const ChatUI = () => {
     detectLanguage();
   }, []);
 
+  console.log("select", selectedResponse);
+
   useEffect(() => {
+    setSelectedResponse(null);
     if (messages.length > 1) {
       setPlaceholderText("Enter your message...");
     }
@@ -81,9 +84,6 @@ const ChatUI = () => {
     }
   }, [permission, orientation]);
 
-  console.log(currentArchitectures, conversationStage);
-  console.log("is accelerometer active", isAccelerometerActive);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput.trim() || isWaitingForResponse) return;
@@ -95,6 +95,7 @@ const ChatUI = () => {
   const handleSuggestedResponse = async (response) => {
     if (isWaitingForResponse) return;
 
+    console.log("100");
     setSelectedResponse(response);
     await sendMessage(response);
   };

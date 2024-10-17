@@ -68,6 +68,7 @@ export const SuggestedResponseButton = styled.button`
   font-family: "Cardo", serif;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+  text-align: left;
 
   &:hover {
     background-color: #555;
@@ -170,18 +171,6 @@ export const GeneratingIndicator = styled.div`
   font-style: italic;
   margin: ${vw(10)} 0;
   align-self: flex-start;
-`;
-
-export const UserMessage = styled.div`
-  // ... (existing styles)
-  align-self: flex-start;
-  text-align: left;
-`;
-
-export const AssistantMessage = styled.div`
-  // ... (existing styles)
-  align-self: flex-start;
-  text-align: left;
 `;
 
 export const LoadingIndicator = styled.div`
