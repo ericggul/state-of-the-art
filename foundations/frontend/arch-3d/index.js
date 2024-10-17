@@ -70,7 +70,6 @@ export default function Visualisation({
 
   let ModelComponent;
   if (modelConfig) {
-    console.log(modelConfig);
     switch (modelConfig.type) {
       case "basic_nn":
         ModelComponent = BasicNNLayers;

@@ -49,8 +49,6 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
     }));
   }, [structure, model]);
 
-  console.log(layers);
-
   return (
     <group>
       {layers.map((layer, i) => (

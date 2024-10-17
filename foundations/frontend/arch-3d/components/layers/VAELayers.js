@@ -28,8 +28,6 @@ export default function VAELayers({ structure, style, model }) {
     });
   }, [structure, model, layerHeight]);
 
-  console.log(layers);
-
   return (
     <group>
       <VAEConnections structure={layers} style={style} />

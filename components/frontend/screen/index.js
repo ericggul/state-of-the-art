@@ -31,7 +31,7 @@ export default function ScreenFrontend() {
     }
   }
 
-  console.log(architecturesArchiving);
+  // console.log(architecturesArchiving);
 
   const version = useMemo(() => {
     return currentArchitectures.length > 0

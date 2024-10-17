@@ -1,6 +1,6 @@
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/archi-3d";
-import ArchitectureUI from "@/foundations/frontend/archi-ui";
+import Architecture3D from "@/foundations/frontend/arch-3d";
+import ArchitectureUI from "@/foundations/frontend/arch-ui";
 //constant
 import { MODELS } from "@/components/controller/constant/models/v2";
 import { useMemo } from "react";
@@ -78,6 +78,8 @@ export default function Architecture({ version = CURRENT_TESTING_VERSION }) {
       flattenedModels[2],
     [flattenedModels, version]
   );
+
+  console.log(version, relevantModel);
 
   return (
     <S.Container>
