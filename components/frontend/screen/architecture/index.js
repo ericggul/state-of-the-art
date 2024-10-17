@@ -52,7 +52,7 @@ const flattenModels = (models) => {
 //gpt v4.2.3.1
 
 const CURRENT_TESTING_VERSION = "v1.2";
-const VERSION_TO_MORPH = "v1.0";
+const VERSION_TO_MORPH = "v4.0.1";
 
 export default function Architecture({ version = "v4.0.2.1" }) {
   // Flatten the MODELS object
@@ -98,6 +98,7 @@ export default function Architecture({ version = "v4.0.2.1" }) {
   return (
     <S.Container>
       <Architecture3D
+
       // version={testVersion}
       />
       <ArchitectureUI model={relevantModel} />

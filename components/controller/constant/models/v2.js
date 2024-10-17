@@ -247,51 +247,9 @@ export const MODELS = {
         citation: 75400,
         explanation:
           "Addressed the vanishing gradient problem in RNNs, enabling learning of long-term dependencies.",
-        "v4.0.2.1": {
-          name: "Peephole LSTM",
-          year: 2000,
-          place: "Felix A. Gers et al.",
-          citation: 5200,
-          explanation:
-            "Extended LSTM by adding peephole connections, allowing internal states to influence gates.",
-        },
-        "v4.0.2.2": {
-          name: "Bidirectional LSTM",
-          year: 2005,
-          place: "Alex Graves and Jürgen Schmidhuber",
-          citation: 22000,
-          explanation:
-            "Processes data in both forward and backward directions to capture context from both sides.",
-        },
-      },
-      "v4.0.3": {
-        name: "Gated Recurrent Unit (GRU)",
-        year: 2014,
-        place: "Kyunghyun Cho et al.",
-        citation: 16700,
-        explanation:
-          "Simplified version of LSTM with fewer parameters, efficient for sequence modeling.",
       },
     },
-    "v4.1": {
-      name: "Attention Mechanisms",
-      "v4.1.1": {
-        name: "Basic Attention",
-        year: 2014,
-        place: "Dzmitry Bahdanau et al.",
-        citation: 34500,
-        explanation:
-          "Introduced attention for machine translation, allowing models to focus on relevant parts of input.",
-      },
-      "v4.1.2": {
-        name: "Self-Attention",
-        year: 2017,
-        place: "Ashish Vaswani et al.",
-        citation: 110000,
-        explanation:
-          "Mechanism where different positions of a single sequence are related to compute representations.",
-      },
-    },
+
     "v4.2": {
       name: "Transformer Architecture",
       year: 2017,
@@ -886,11 +844,7 @@ export const ARRAY = [
   "YOLO (You Only Look Once)",
   "RNN (Recurrent Neural Network)",
   "Long Short-Term Memory (LSTM)",
-  "Peephole LSTM",
-  "Bidirectional LSTM",
-  "Gated Recurrent Unit (GRU)",
-  "Basic Attention",
-  "Self-Attention",
+
   "Transformer Architecture",
   "T5",
   "BART",
@@ -1062,26 +1016,7 @@ export const OBJECT_ARRAY = [
     name: "Long Short-Term Memory (LSTM)",
     version: "v4.0.2",
   },
-  {
-    name: "Peephole LSTM",
-    version: "v4.0.2.1",
-  },
-  {
-    name: "Bidirectional LSTM",
-    version: "v4.0.2.2",
-  },
-  {
-    name: "Gated Recurrent Unit (GRU)",
-    version: "v4.0.3",
-  },
-  {
-    name: "Basic Attention",
-    version: "v4.1.1",
-  },
-  {
-    name: "Self-Attention",
-    version: "v4.1.2",
-  },
+
   {
     name: "Transformer Architecture",
     version: "v4.2",
