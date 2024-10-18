@@ -3,9 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const Frontend = dynamic(() =>
-  import("@/components/frontend/screen/architecture")
-);
+const Frontend = dynamic(() => import("@/components/frontend/architecture"));
 
 const CURRENT_TESTING_VERSION = "v1.0";
 

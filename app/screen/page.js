@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const Frontend = dynamic(() => import("@/components/frontend/screen"));
+const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend/screen"));
 
 export default function ScreenWrapper() {

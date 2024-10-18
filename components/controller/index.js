@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import TempChatUI from "@/foundations/mobile/wrapper";
 import useChatStore from "./store";
 
 import useSocketController from "@/utils/socket/useSocketController";
@@ -30,5 +29,5 @@ export default function Controller() {
     }
   }, [socket, currentArchitectures]);
 
-  return <TempChatUI />;
+  return <></>;
 }

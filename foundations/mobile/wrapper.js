@@ -1,7 +1,9 @@
+"use client";
+
 import React from "react";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import ChatUI from "./index";
-import AccelerometerHandler from "./AccelerometerHandler";
+import AccelerometerHandler from "./accelrometer/handler";
 import useChatStore from "@/components/controller/store";
 
 const AccelerometerWrapper = () => {
