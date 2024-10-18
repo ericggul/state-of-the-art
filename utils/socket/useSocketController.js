@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client"; // Moved import inside the module
 
-export default function useSocketController() {
+export default function useSocketController({
+  handleNewResponse,
+  handleNewVisibilityChange,
+}) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
@@ -24,6 +27,12 @@ export default function useSocketController() {
 
     socket.current.on("connect", () => {
       socket.current.emit("controller-init");
+
+      socket.current.on("new-mobile-response", handleNewResponse);
+      socket.current.on(
+        "new-mobile-visibility-change",
+        handleNewVisibilityChange
+      );
     });
   };
 

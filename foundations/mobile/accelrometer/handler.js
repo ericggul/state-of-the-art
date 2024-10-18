@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useAccelerometerStore from "@/components/mobile/store";
+import useAccelerometerStore from "@/components/mobile/store/accelerometer";
 
 const AccelerometerHandler = () => {
   const [orientation, setOrientation] = useState({

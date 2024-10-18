@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function useSocketMobile({ mobileId }) {
+export default function useSocketMobile({ mobileId, handleNewResponse }) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
@@ -25,6 +25,8 @@ export default function useSocketMobile({ mobileId }) {
     socket.current.on("connect", () => {
       console.log("23", mobileId);
       socket.current.emit("mobile-init", { mobileId });
+
+      socket.current.on("new-controller-response", handleNewResponse);
     });
   };
 

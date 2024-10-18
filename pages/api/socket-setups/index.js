@@ -18,7 +18,27 @@ export default function mobileSetup({ socket, io }) {
     socket.join("controller");
   });
 
-  socket.on("controller-architectures", (data) => {
+  //controller -> screen
+  socket.on("controller-new-architectures", (data) => {
     socket.to("screen").emit("new-controller-architectures", data);
+  });
+
+  socket.on("controller-new-speech", (data) => {
+    socket.to("screen").emit("new-controller-speech", data);
+  });
+
+  //controller <-> mobile
+  socket.on("controller-new-response", (data) => {
+    socket.to("mobile").emit("new-controller-response", data);
+  });
+
+  socket.on("mobile-new-response", (data) => {
+    socket.to("controller").emit("new-mobile-response", data);
+  });
+
+  //front <-> back visibiltiy change
+  socket.on("mobile-new-visibility-change", (data) => {
+    socket.to("controller").emit("new-mobile-visibility-change", data);
+    socket.to("screen").emit("new-mobile-visibility-change", data);
   });
 }
