@@ -2,41 +2,48 @@
 
 import React, { useEffect, useRef } from "react";
 import useChatStore from "./store";
-
 import useSocketController from "@/utils/socket/useSocketController";
 
 export default function Controller() {
-  const socket = useSocketController({
-    handleNewResponse,
-    handleNewVisibilityChange,
-  });
+  const { sendMessage, messages, currentArchitectures } = useChatStore();
 
-  function handleNewResponse(data) {
-    console.log("new response", data);
-  }
+  const handleNewResponse = async (data) => {
+    console.log("new response from mobile", data);
+    await sendMessage(data.text);
+  };
 
   function handleNewVisibilityChange(data) {
     console.log("new visibility change", data);
   }
 
-  const { currentArchitectures, sendMessage } = useChatStore();
-  const initialMessageSent = useRef(false);
+  const socket = useSocketController({
+    handleNewResponse,
+    handleNewVisibilityChange,
+  });
 
   useEffect(() => {
-    if (!initialMessageSent.current) {
-      console.log("Sending initial message");
-      sendMessage("");
-      initialMessageSent.current = true;
+    const initializeChat = async () => {
+      console.log("Initializing chat");
+      await sendMessage("");
+    };
+    if (messages.length === 0) {
+      initializeChat();
     }
-  }, [sendMessage]);
+  }, [sendMessage, messages]);
 
   useEffect(() => {
-    if (socket.current && currentArchitectures.length > 0) {
-      socket.current.emit("controller-new-architectures", {
-        currentArchitectures,
+    if (socket.current && messages.length > 0) {
+      const state = useChatStore.getState();
+      console.log("Emitting controller-new-response", state);
+      socket.current.emit("controller-new-response", {
+        currentArchitectures: state.currentArchitectures,
+        messages: state.messages,
+        recommendedResponses: state.recommendedResponses,
+        conversationStage: state.conversationStage,
+        userName: state.userName,
       });
     }
-  }, [socket, currentArchitectures]);
+  }, [socket, messages]);
 
   return <></>;
 }

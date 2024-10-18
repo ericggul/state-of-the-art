@@ -125,49 +125,18 @@ export async function POST(req) {
         languageName,
       });
 
-      // Sanitize the content field
-      response.content = response.content.replace(/\n/g, " ").trim();
-
-      // Remove surrounding quotation marks if present
-      response.content = response.content.replace(/^"(.*)"$/, "$1");
-
-      // Ensure userName is an empty string if it's null
-      response.userName = response.userName || "";
+      // Sanitize and process the response
+      response = sanitizeAndProcessResponse(response);
     } catch (error) {
       console.error("Error invoking chain:", error);
 
-      // If the error is a parsing error, try to extract the raw output
       if (error.name === "OutputParserException" && error.output) {
         try {
           const rawOutput = JSON.parse(error.output);
-
-          // Attempt to correct the responseType
-          if (
-            rawOutput.responseType &&
-            !["ask", "introduce", "explainArch", "discuss", "compare"].includes(
-              rawOutput.responseType
-            )
-          ) {
-            rawOutput.responseType = "discuss"; // Default to 'discuss' if invalid
-          }
-
-          // Add nextStage if it's missing
-          if (!rawOutput.nextStage) {
-            rawOutput.nextStage = stage; // Keep the current stage if nextStage is missing
-          }
-
-          // Sanitize the content field
-          if (rawOutput.content) {
-            rawOutput.content = rawOutput.content.replace(/\n/g, " ").trim();
-            // Remove surrounding quotation marks if present
-            rawOutput.content = rawOutput.content.replace(/^"(.*)"$/, "$1");
-          }
-
-          // Ensure userName is an empty string if it's null
-          rawOutput.userName = rawOutput.userName || "";
+          response = sanitizeAndProcessResponse(rawOutput);
 
           // Validate the corrected output against the schema
-          response = schema.parse(rawOutput);
+          response = schema.parse(response);
         } catch (parseError) {
           console.error("Error parsing raw output:", parseError);
           throw new Error("Failed to parse AI response");
@@ -219,4 +188,55 @@ export async function POST(req) {
       { status: 500 }
     );
   }
+}
+
+function sanitizeAndProcessResponse(response) {
+  // Sanitize the content field
+  if (response.content) {
+    response.content = response.content.replace(/\n/g, " ").trim();
+    // Remove surrounding quotation marks if present
+    response.content = response.content.replace(/^"(.*)"$/, "$1");
+  }
+
+  // Ensure responseType is valid
+  const validResponseTypes = [
+    "ask",
+    "introduce",
+    "explainArch",
+    "discuss",
+    "compare",
+  ];
+  if (!validResponseTypes.includes(response.responseType)) {
+    console.warn(
+      `Invalid responseType: ${response.responseType}. Defaulting to "discuss".`
+    );
+    response.responseType = "discuss";
+  }
+
+  // Ensure nextStage is present
+  if (!response.nextStage) {
+    console.warn("nextStage is missing. Using the current stage.");
+    response.nextStage = stage;
+  }
+
+  // Ensure userName is an empty string if it's null
+  response.userName = response.userName || "";
+
+  // Ensure currentArchitecture is an array
+  if (!Array.isArray(response.currentArchitecture)) {
+    console.warn(
+      "currentArchitecture is not an array. Setting to empty array."
+    );
+    response.currentArchitecture = [];
+  }
+
+  // Ensure recommended_responses is an array
+  if (!Array.isArray(response.recommended_responses)) {
+    console.warn(
+      "recommended_responses is not an array. Setting to empty array."
+    );
+    response.recommended_responses = [];
+  }
+
+  return response;
 }

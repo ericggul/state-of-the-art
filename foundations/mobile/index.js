@@ -3,14 +3,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
-import useChatStore from "@/components/controller/store";
+import useMobileStore from "@/components/mobile/store";
 import useAccelerometerStore from "@/components/mobile/store/accelerometer";
-import { getLanguageKey } from "@/components/controller/constant/system-script";
 
 const ChatUI = ({
   supportsDeviceOrientation,
   accelerometerGranted,
   handleGrantAccess,
+  socket,
 }) => {
   const {
     messages,
@@ -20,7 +20,9 @@ const ChatUI = ({
     sendMessage,
     isWaitingForResponse,
     setIsWaitingForResponse,
-  } = useChatStore();
+    detectLanguage,
+    deviceLanguage,
+  } = useMobileStore();
 
   const {
     isAccelerometerActive,
@@ -43,17 +45,6 @@ const ChatUI = ({
   }, [messages, isWaitingForResponse]);
 
   useEffect(() => {
-    const detectLanguage = () => {
-      let fullLanguage = navigator.language || navigator.userLanguage || "en";
-      fullLanguage = "en";
-      try {
-        const languageKey = getLanguageKey(fullLanguage);
-        useChatStore.getState().setDeviceLanguage(languageKey);
-      } catch (e) {
-        useChatStore.getState().setDeviceLanguage("en");
-      }
-    };
-
     detectLanguage();
   }, []);
 
@@ -87,12 +78,22 @@ const ChatUI = ({
     prevConversationStageRef.current = conversationStage;
   }, [conversationStage, isAccelerometerActive, setIsAccelerometerPrompt]);
 
+  const [inputDisabled, setInputDisabled] = useState(true);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setInputDisabled(false);
+      setPlaceholderText("Enter your name...");
+    }
+  }, [messages]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput.trim() || isWaitingForResponse) return;
 
     setShowRecommendedResponses(false);
-    await sendMessage(userInput);
+    setIsWaitingForResponse(true);
+    await sendMessage(userInput, socket);
     setUserInput("");
   };
 
@@ -101,7 +102,8 @@ const ChatUI = ({
 
     setSelectedResponse(response);
     setShowRecommendedResponses(false);
-    await sendMessage(response);
+    setIsWaitingForResponse(true);
+    await sendMessage(response, socket);
   };
 
   const handleAccelerometerAccess = async () => {
@@ -159,9 +161,12 @@ const ChatUI = ({
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder={isWaitingForResponse ? "" : placeholderText}
-                  disabled={isWaitingForResponse}
+                  disabled={isWaitingForResponse || inputDisabled}
                 />
-                <S.Button type="submit" disabled={isWaitingForResponse}>
+                <S.Button
+                  type="submit"
+                  disabled={isWaitingForResponse || inputDisabled}
+                >
                   Send
                 </S.Button>
               </S.InputForm>
