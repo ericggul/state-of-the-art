@@ -68,7 +68,7 @@ export default function Visualisation({
       const modelStructure = getModelStructure(name);
       setStructure(modelStructure);
     } else {
-      console.error(`No model found for version: ${version}`);
+      console.log(`No model found for version: ${version}`);
     }
   }, [version]);
 

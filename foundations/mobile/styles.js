@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { FlexCenterStyle, WholeContainerStyle } from "@/styles";
+import { FlexCenterStyle, WholeContainer } from "@/styles";
 // Function to convert pixels to viewport width units for responsiveness
 const vw = (px) => `${(px / 390) * 100}vw`;
 
 // Main container that fills the viewport
 export const Container = styled.div`
-  ${WholeContainerStyle}
+  ${WholeContainer}
   ${FlexCenterStyle}
   flex-direction: column;
   background-color: #000;
@@ -27,11 +27,11 @@ export const Messages = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   white-space: pre-wrap;
+  padding-bottom: ${vw(160)}; // Adjust this value as needed
+  margin-bottom: ${vw(60)}; // Add margin to create space for BottomContainer
 
   scrollbar-width: thin;
   scrollbar-color: #444 #000;
-  height: calc(100vh - ${vw(280)});
-  padding-bottom: ${vw(60)};
 
   &::-webkit-scrollbar {
     width: ${vw(8)};
@@ -158,11 +158,11 @@ export const BottomContainer = styled.div`
   left: 0;
   right: 0;
   background-color: #000;
-  padding: ${vw(0)} ${vw(32)};
-  padding-bottom: ${vw(50)};
-  width: calc(100% - ${vw(64)}); // Subtracting left and right padding
-  margin: 0 auto; // Center the container
-  max-width: 390px; // Match the original container width
+  padding: ${vw(16)} ${vw(32)};
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 390px;
+  margin: 0 auto;
 `;
 
 export const GeneratingIndicator = styled.div`
