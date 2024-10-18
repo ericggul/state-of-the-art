@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useChatStore from "@/components/controller/store";
+import useAccelerometerStore from "@/components/mobile/store";
 
 const AccelerometerHandler = () => {
   const [orientation, setOrientation] = useState({
@@ -7,7 +7,7 @@ const AccelerometerHandler = () => {
     beta: 0,
     gamma: 0,
   });
-  const { isAccelerometerActive } = useChatStore();
+  const { isAccelerometerActive } = useAccelerometerStore();
 
   useEffect(() => {
     const orientationDetector = (e) => {

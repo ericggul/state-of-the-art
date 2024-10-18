@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
 import useChatStore from "@/components/controller/store";
+import useAccelerometerStore from "@/components/mobile/store";
 import { getLanguageKey } from "@/components/controller/constant/system-script";
 
 const ChatUI = ({
@@ -16,17 +17,21 @@ const ChatUI = ({
     recommendedResponses,
     currentArchitectures,
     conversationStage,
-    isAccelerometerActive,
     sendMessage,
     isWaitingForResponse,
     setIsWaitingForResponse,
   } = useChatStore();
 
+  const {
+    isAccelerometerActive,
+    isAccelerometerPrompt,
+    setIsAccelerometerPrompt,
+  } = useAccelerometerStore();
+
   const [userInput, setUserInput] = useState("");
   const [showInput, setShowInput] = useState(true);
   const [placeholderText, setPlaceholderText] = useState("What's your Name?");
   const [selectedResponse, setSelectedResponse] = useState(null);
-  const [isAccelerometerPrompt, setIsAccelerometerPrompt] = useState(false);
   const [showRecommendedResponses, setShowRecommendedResponses] =
     useState(false);
 
@@ -80,7 +85,7 @@ const ChatUI = ({
       setIsAccelerometerPrompt(false);
     }
     prevConversationStageRef.current = conversationStage;
-  }, [conversationStage, isAccelerometerActive]);
+  }, [conversationStage, isAccelerometerActive, setIsAccelerometerPrompt]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

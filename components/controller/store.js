@@ -10,9 +10,7 @@ const useChatStore = create((set, get) => ({
   currentArchitectures: [],
   conversationStage: "initial",
   userName: "",
-  isAccelerometerActive: false,
   deviceLanguage: "en",
-  isAccelerometerPrompt: false,
   isWaitingForResponse: false,
 
   appendMessage: (role, text) =>
@@ -24,47 +22,18 @@ const useChatStore = create((set, get) => ({
     set({ recommendedResponses: responses }),
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
-  setConversationStage: (stage) => {
-    const prevStage = get().conversationStage;
-    set((state) => ({
-      conversationStage: stage,
-      isAccelerometerPrompt:
-        prevStage === "activateAccelerometer" &&
-        stage === "interactiveExperience"
-          ? true
-          : state.isAccelerometerPrompt,
-    }));
-  },
+  setConversationStage: (stage) => set({ conversationStage: stage }),
   setUserName: (name) => set({ userName: name }),
-  setIsAccelerometerActive: (active) => set({ isAccelerometerActive: active }),
   setDeviceLanguage: (language) => {
     const languageKey = getLanguageKey(language);
     set({ deviceLanguage: languageKey });
   },
-  setIsAccelerometerPrompt: (isPrompt) =>
-    set({ isAccelerometerPrompt: isPrompt }),
   setIsWaitingForResponse: (isWaiting) =>
     set({ isWaitingForResponse: isWaiting }),
-
-  grantAccelerometerAccess: async (granted) => {
-    set((state) => ({
-      isAccelerometerActive: granted,
-      isAccelerometerPrompt: false,
-      isWaitingForResponse: true,
-    }));
-
-    const state = get();
-    const message = granted
-      ? "User granted accelerometer access."
-      : "User denied accelerometer access.";
-
-    await state.sendMessage(message);
-  },
 
   sendMessage: async (text) => {
     const state = get();
 
-    // Prevent sending empty messages after the initial one
     if (!text && state.messages.length > 0) {
       console.log("Ignoring empty message");
       return false;

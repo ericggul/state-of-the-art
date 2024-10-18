@@ -3,16 +3,19 @@ import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import ChatUI from "./index";
 import AccelerometerHandler from "./accelrometer/handler";
 import useChatStore from "@/components/controller/store";
+import useAccelerometerStore from "@/components/mobile/store";
 
 const AccelerometerWrapper = () => {
   const { supportsDeviceOrientation, permission, requestAccess } =
     useAccelerometer();
-  const { setIsAccelerometerActive, grantAccelerometerAccess } = useChatStore();
+  const { sendMessage } = useChatStore();
+  const { setIsAccelerometerActive, grantAccelerometerAccess } =
+    useAccelerometerStore();
 
   const handleGrantAccess = async () => {
     const granted = await requestAccess();
     setIsAccelerometerActive(granted);
-    await grantAccelerometerAccess(granted);
+    await grantAccelerometerAccess(granted, sendMessage);
   };
 
   return (
