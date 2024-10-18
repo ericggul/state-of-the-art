@@ -18,9 +18,8 @@ const ChatUI = ({
     conversationStage,
     isAccelerometerActive,
     sendMessage,
-    setIsAccelerometerActive,
-    grantAccelerometerAccess,
     isWaitingForResponse,
+    setIsWaitingForResponse,
   } = useChatStore();
 
   const [userInput, setUserInput] = useState("");
@@ -28,6 +27,8 @@ const ChatUI = ({
   const [placeholderText, setPlaceholderText] = useState("What's your Name?");
   const [selectedResponse, setSelectedResponse] = useState(null);
   const [isAccelerometerPrompt, setIsAccelerometerPrompt] = useState(false);
+  const [showRecommendedResponses, setShowRecommendedResponses] =
+    useState(false);
 
   const messagesEndRef = useRef(null);
   const prevConversationStageRef = useRef(conversationStage);
@@ -51,37 +52,41 @@ const ChatUI = ({
     detectLanguage();
   }, []);
 
-  console.log("select", selectedResponse);
-
   useEffect(() => {
     setSelectedResponse(null);
     if (messages.length > 1) {
       setPlaceholderText("Enter your message...");
     }
     if (
-      isWaitingForResponse &&
       messages.length >= 1 &&
       messages[messages.length - 1].role === "assistant"
     ) {
       setIsWaitingForResponse(false);
       setSelectedResponse(null);
+      setIsAccelerometerPrompt(false);
+      setShowRecommendedResponses(true);
     }
-  }, [messages, isWaitingForResponse]);
+  }, [messages, setIsWaitingForResponse]);
 
   useEffect(() => {
     if (
       prevConversationStageRef.current === "activateAccelerometer" &&
-      conversationStage === "interactiveExperience"
+      conversationStage === "interactiveExperience" &&
+      !isAccelerometerActive
     ) {
       setIsAccelerometerPrompt(true);
+      setShowRecommendedResponses(false);
+    } else if (isAccelerometerActive) {
+      setIsAccelerometerPrompt(false);
     }
     prevConversationStageRef.current = conversationStage;
-  }, [conversationStage]);
+  }, [conversationStage, isAccelerometerActive]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput.trim() || isWaitingForResponse) return;
 
+    setShowRecommendedResponses(false);
     await sendMessage(userInput);
     setUserInput("");
   };
@@ -89,9 +94,15 @@ const ChatUI = ({
   const handleSuggestedResponse = async (response) => {
     if (isWaitingForResponse) return;
 
-    console.log("100");
     setSelectedResponse(response);
+    setShowRecommendedResponses(false);
     await sendMessage(response);
+  };
+
+  const handleAccelerometerAccess = async () => {
+    setShowRecommendedResponses(false);
+    await handleGrantAccess();
+    setIsAccelerometerPrompt(false);
   };
 
   const getLoadingIndicatorText = () => {
@@ -116,25 +127,27 @@ const ChatUI = ({
         <S.BottomContainer>
           {isAccelerometerPrompt ? (
             <S.Button
-              onClick={handleGrantAccess}
+              onClick={handleAccelerometerAccess}
               disabled={isWaitingForResponse || accelerometerGranted}
             >
               {supportsDeviceOrientation ? "Grant Access" : "Continue"}
             </S.Button>
           ) : (
             <>
-              <S.SuggestedResponses>
-                {recommendedResponses.map((response, index) => (
-                  <S.SuggestedResponseButton
-                    key={index}
-                    onClick={() => handleSuggestedResponse(response)}
-                    disabled={isWaitingForResponse}
-                    isSelected={response === selectedResponse}
-                  >
-                    {response}
-                  </S.SuggestedResponseButton>
-                ))}
-              </S.SuggestedResponses>
+              {showRecommendedResponses && (
+                <S.SuggestedResponses>
+                  {recommendedResponses.map((response, index) => (
+                    <S.SuggestedResponseButton
+                      key={index}
+                      onClick={() => handleSuggestedResponse(response)}
+                      disabled={isWaitingForResponse}
+                      isSelected={response === selectedResponse}
+                    >
+                      {response}
+                    </S.SuggestedResponseButton>
+                  ))}
+                </S.SuggestedResponses>
+              )}
               <S.InputForm onSubmit={handleSubmit}>
                 <S.Input
                   type="text"
