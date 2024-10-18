@@ -4,8 +4,7 @@ import {
   getLanguageKey,
 } from "@/components/controller/constant/system-script";
 
-const WELCOME_MESSAGE =
-  "Hi there, dear visitor, welcome to the State-of-the-Art Neural Network Architecture gallery. May I enjoy an honour to know your name?";
+const WELCOME_MESSAGE = `Welcome, dear visitor, to the visionary narrative of this State-of-the-Art Architecture Gallery. May I claim the privilege of learning your name, as we open these doors to the wonders of neural networks?`;
 
 const useChatStore = create((set, get) => ({
   messages: [],
@@ -36,11 +35,13 @@ const useChatStore = create((set, get) => ({
 
   sendMessage: async (text) => {
     const state = get();
+    console.log("Sending message:", text);
 
     set({ isWaitingForResponse: true });
 
     try {
       if (state.messages.length === 0) {
+        console.log("Sending welcome message");
         // Send the welcome message for the first interaction
         set((state) => ({
           messages: [
@@ -50,6 +51,7 @@ const useChatStore = create((set, get) => ({
           isWaitingForResponse: false,
           conversationStage: "askName",
         }));
+        console.log("Welcome message sent");
         return true;
       }
 

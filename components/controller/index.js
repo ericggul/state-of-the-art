@@ -6,10 +6,21 @@ import useSocketController from "@/utils/socket/useSocketController";
 
 export default function Controller() {
   const { sendMessage, messages, currentArchitectures } = useChatStore();
+  const chatInitializedRef = useRef(false);
 
   const handleNewResponse = async (data) => {
     console.log("new response from mobile", data);
     await sendMessage(data.text);
+  };
+
+  const handleNewMobileInit = async (data) => {
+    console.log("new mobile init", data);
+    if (!chatInitializedRef.current) {
+      console.log("Initializing chat");
+      chatInitializedRef.current = true;
+      await sendMessage("");
+      console.log("Chat initialized");
+    }
   };
 
   function handleNewVisibilityChange(data) {
@@ -18,20 +29,12 @@ export default function Controller() {
 
   const socket = useSocketController({
     handleNewResponse,
+    handleNewMobileInit,
     handleNewVisibilityChange,
   });
 
   useEffect(() => {
-    const initializeChat = async () => {
-      console.log("Initializing chat");
-      await sendMessage("");
-    };
-    if (messages.length === 0) {
-      initializeChat();
-    }
-  }, [sendMessage, messages]);
-
-  useEffect(() => {
+    console.log("Current messages:", messages);
     if (socket.current && messages.length > 0) {
       const state = useChatStore.getState();
       console.log("Emitting controller-new-response", state);

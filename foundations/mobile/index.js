@@ -81,11 +81,16 @@ const ChatUI = ({
   const [inputDisabled, setInputDisabled] = useState(true);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    console.log("ChatUI messages updated:", messages);
+    if (
+      messages.length > 0 &&
+      messages[messages.length - 1].role === "assistant"
+    ) {
       setInputDisabled(false);
-      setPlaceholderText("Enter your name...");
+      setIsWaitingForResponse(false);
+      setPlaceholderText("Enter your message...");
     }
-  }, [messages]);
+  }, [messages, setIsWaitingForResponse]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,6 +98,7 @@ const ChatUI = ({
 
     setShowRecommendedResponses(false);
     setIsWaitingForResponse(true);
+    setInputDisabled(true);
     await sendMessage(userInput, socket);
     setUserInput("");
   };

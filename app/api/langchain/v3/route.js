@@ -208,15 +208,26 @@ function sanitizeAndProcessResponse(response) {
   ];
   if (!validResponseTypes.includes(response.responseType)) {
     console.warn(
-      `Invalid responseType: ${response.responseType}. Defaulting to "discuss".`
+      `Invalid responseType: ${response.responseType}. Mapping to appropriate type.`
     );
-    response.responseType = "discuss";
+    // Map "checkFamiliarity" to "ask", or default to "discuss" for other unexpected types
+    response.responseType =
+      response.responseType === "checkFamiliarity" ? "ask" : "discuss";
   }
 
-  // Ensure nextStage is present
-  if (!response.nextStage) {
-    console.warn("nextStage is missing. Using the current stage.");
-    response.nextStage = stage;
+  // Ensure nextStage is present and valid
+  const validStages = [
+    "initial",
+    "checkFamiliarity",
+    "explainBasics",
+    "activateAccelerometer",
+    "interactiveExperience",
+  ];
+  if (!response.nextStage || !validStages.includes(response.nextStage)) {
+    console.warn(
+      `Invalid or missing nextStage: ${response.nextStage}. Using default.`
+    );
+    response.nextStage = "checkFamiliarity";
   }
 
   // Ensure userName is an empty string if it's null
