@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import { Message } from "../message";
+import { Message } from "../../message";
 
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "@/foundations/mobile/constant/v2";
+} from "@/foundations/mobile/_old/constant/v2";
 
 const Chat = () => {
   const [userInput, setUserInput] = useState("");

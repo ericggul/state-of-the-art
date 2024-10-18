@@ -1,7 +1,7 @@
 // Chat.js
 import React from "react";
 import * as S from "./styles";
-import { Message } from "../message";
+import { Message } from "../../message";
 import { useChatLogic } from "./utils/useChatLogic";
 import { useSuggestedResponses } from "./utils/useSuggestedResponses";
 import { useAutoScroll } from "./utils/useAutoScroll";

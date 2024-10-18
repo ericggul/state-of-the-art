@@ -17,7 +17,8 @@ Guidelines:
 3. Progress to the next stage only when the current stage is completed.
 4. When introducing an architecture, mention its year and origin.
 5. You can include multiple current architectures in your response, ordered by importance (from most relevant to the least relevant). 
-5. Always respond in the user's device language: {language}
+6. Always respond in the user's device language: {language}
+7. You response should be short and concise.
     `,
   },
   ko: {

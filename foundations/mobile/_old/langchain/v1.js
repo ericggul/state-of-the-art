@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import { Message } from "../message";
+import { Message } from "../../message";
 
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,
   SYSTEM_SCRIPT,
-} from "@/foundations/mobile/constant/v2";
+} from "@/foundations/mobile/constant/v1";
 
 const Chat = () => {
   const [userInput, setUserInput] = useState("");
@@ -21,7 +21,6 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const initialMessageSent = useRef(false);
   const [recommendedResponses, setRecommendedResponses] = useState([]);
-  const [currentArchitectures, setCurrentArchitectures] = useState([]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,25 +41,23 @@ const Chat = () => {
         ...messages.map((msg) => ({ role: msg.role, content: msg.text })),
       ];
 
-      conversation.push({
-        role: "system",
-        content: SYSTEM_ENSURMENT,
-      });
-
       if (text) {
         conversation.push({ role: "user", content: text });
         appendMessage("user", text);
+      } else {
+        // Handle the case for the initial empty message
+        conversation.push({
+          role: "system",
+          content: SYSTEM_ENSURMENT,
+        });
       }
 
       const assistantResponse = await fetchAssistantResponse(conversation);
 
       appendMessage("assistant", assistantResponse.content);
       setRecommendedResponses(assistantResponse.recommended_responses);
-      setCurrentArchitectures(assistantResponse.currentArchitecture);
       setInputDisabled(false);
       setShowInput(true);
-
-      // You can use assistantResponse.responseType here if needed
     } catch (err) {
       console.error("Error sending message:", err.message);
       appendMessage("assistant", "Sorry, something went wrong.");
@@ -70,7 +67,7 @@ const Chat = () => {
 
   const fetchAssistantResponse = async (conversation) => {
     try {
-      const response = await fetch(`/api/langchain/v2`, {
+      const response = await fetch(`/api/langchain/v1`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,13 +83,14 @@ const Chat = () => {
       if (data.error) {
         throw new Error(`API Error: ${data.error}`);
       }
+      if (!data.content || !data.recommended_responses) {
+        throw new Error("Unexpected response format");
+      }
       return data;
     } catch (e) {
       console.error("Error fetching assistant response", e);
       return {
         content: "Sorry, something went wrong.",
-        responseType: "ask",
-        currentArchitecture: "",
         recommended_responses: [],
       };
     }

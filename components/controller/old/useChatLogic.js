@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { SYSTEM_ENSURMENT } from "@/foundations/mobile/constant/v2";
+import { SYSTEM_ENSURMENT } from "@/foundations/mobile/_old/constant/v2";
 
 export default function useChatLogic() {
   const [messages, setMessages] = useState([]);

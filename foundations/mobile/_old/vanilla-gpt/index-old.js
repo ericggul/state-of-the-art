@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as S from "../styles";
+import * as S from "../../styles";
 import {
   SYSTEM_DESCRIPTION,
   SYSTEM_ENSURMENT,

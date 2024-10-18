@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const MobileEl = dynamic(() => import("@/components/frontend/mobile/wrapper"));
+const MobileEl = dynamic(() => import("@/components/frontend/mobile"));
 
 export default function MobileWrapper() {
   return (
