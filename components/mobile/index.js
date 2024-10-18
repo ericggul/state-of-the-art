@@ -1,15 +1,11 @@
 "use client";
 
-import * as S from "./styles";
-
-import MobileEl from "@/foundations/mobile/index-independent";
+import MobileEl from "@/foundations/mobile/wrapper";
 
 export default function Mobile() {
   return (
     <>
-      <S.Container>
-        <MobileEl />
-      </S.Container>
+      <MobileEl />
     </>
   );
 }
