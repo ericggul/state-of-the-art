@@ -12,6 +12,8 @@ export default function ScreenWrapper() {
   const socket = useSocketScreen({
     layerIdx: 0,
     handleNewArchitectures,
+    handleNewSpeech,
+    handleNewVisibilityChange,
   });
 
   ////Architectures handling logic
@@ -29,6 +31,14 @@ export default function ScreenWrapper() {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  function handleNewSpeech(data) {
+    console.log(data);
+  }
+
+  function handleNewVisibilityChange(data) {
+    console.log(data);
   }
 
   return (

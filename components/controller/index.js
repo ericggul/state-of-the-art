@@ -45,8 +45,34 @@ export default function Controller() {
         conversationStage: state.conversationStage,
         userName: state.userName,
       });
+
+      //transmit speech to screen
+      if (
+        messages[messages.length - 1].role === "assistant" &&
+        messages[messages.length - 1].text &&
+        messages[messages.length - 1].text.length > 0
+      ) {
+        socket.current.emit("controller-new-speech", {
+          text: messages[messages.length - 1].text,
+        });
+      }
     }
   }, [socket, messages]);
+
+  //on new architecture, controller-new-architecture socket
+  //on new speech, controller-new-speech socket
+
+  useEffect(() => {
+    try {
+      if (currentArchitectures.length > 0 && socket.current) {
+        socket.current.emit("controller-new-architectures", {
+          currentArchitectures,
+        });
+      }
+    } catch (e) {
+      console.log("Error emitting controller-new-architectures", e);
+    }
+  }, [currentArchitectures]);
 
   return <></>;
 }
