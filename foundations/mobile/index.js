@@ -81,7 +81,6 @@ const ChatUI = ({
   const [inputDisabled, setInputDisabled] = useState(true);
 
   useEffect(() => {
-    console.log("ChatUI messages updated:", messages);
     if (
       messages.length > 0 &&
       messages[messages.length - 1].role === "assistant"
@@ -97,6 +96,7 @@ const ChatUI = ({
     if (!userInput.trim() || isWaitingForResponse) return;
 
     setShowRecommendedResponses(false);
+
     setIsWaitingForResponse(true);
     setInputDisabled(true);
     await sendMessage(userInput, socket);
@@ -108,13 +108,16 @@ const ChatUI = ({
 
     setSelectedResponse(response);
     setShowRecommendedResponses(false);
+
     setIsWaitingForResponse(true);
     await sendMessage(response, socket);
   };
 
   const handleAccelerometerAccess = async () => {
     setShowRecommendedResponses(false);
+
     await handleGrantAccess();
+
     setIsAccelerometerPrompt(false);
   };
 
@@ -141,7 +144,7 @@ const ChatUI = ({
           {isAccelerometerPrompt ? (
             <S.Button
               onClick={handleAccelerometerAccess}
-              disabled={isWaitingForResponse || accelerometerGranted}
+              disabled={isWaitingForResponse}
             >
               {supportsDeviceOrientation ? "Grant Access" : "Continue"}
             </S.Button>

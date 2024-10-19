@@ -23,17 +23,13 @@ export default function Mobile() {
     setCurrentArchitectures(data.currentArchitectures || []);
     setConversationStage(data.conversationStage);
     setUserName(data.userName);
-    setIsWaitingForResponse(false);
+    // setIsWaitingForResponse(false);
   };
 
   const socket = useSocketMobile({
     mobileId: "1",
     handleNewResponse,
   });
-
-  useEffect(() => {
-    console.log("Current mobile messages:", messages);
-  }, [messages]);
 
   return (
     <>

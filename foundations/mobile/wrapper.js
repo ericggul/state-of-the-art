@@ -13,7 +13,11 @@ const AccelerometerWrapper = ({ socket }) => {
     useAccelerometerStore();
 
   const handleGrantAccess = async () => {
-    const granted = await requestAccess();
+    let granted = false;
+    if (supportsDeviceOrientation) {
+      granted = await requestAccess();
+    }
+
     setIsAccelerometerActive(granted);
     await grantAccelerometerAccess(granted, (message) => {
       sendMessage(message, socket);

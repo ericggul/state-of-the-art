@@ -16,7 +16,7 @@ const useAccelerometerStore = create((set) => ({
 
     const message = granted
       ? "User granted accelerometer access."
-      : "User denied accelerometer access.";
+      : "User has no accelerometer access.";
 
     await sendMessage(message);
   },
