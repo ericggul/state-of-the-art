@@ -1,7 +1,6 @@
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useRef, useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import * as Tone from "tone";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
@@ -21,16 +20,6 @@ export function OrientationCamera({ cameraDistance = 100 }) {
   const zoomFactorRef = useRef(1);
   const targetZoomFactorRef = useRef(1);
   const lastAccelRef = useRef(new THREE.Vector3());
-
-  // Audio setup with minor improvements
-  const synth = useMemo(() => {
-    const s = new Tone.Synth({
-      oscillator: { type: "sine" },
-      envelope: { attack: 0.05, decay: 0.2, sustain: 0.4, release: 0.5 },
-    }).toDestination();
-    s.volume.value = -25; // Slightly lower initial volume
-    return s;
-  }, []);
 
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
@@ -66,19 +55,9 @@ export function OrientationCamera({ cameraDistance = 100 }) {
       targetZoomFactorRef.current += zoomDelta;
       targetZoomFactorRef.current = THREE.MathUtils.clamp(
         targetZoomFactorRef.current,
-        0.01,
-        3
+        0.2,
+        5
       );
-
-      // Play sound for shake with improved frequency mapping
-      const shakeFrequency = THREE.MathUtils.mapLinear(
-        accelMagnitude,
-        0,
-        2,
-        150,
-        600
-      );
-      synth.triggerAttackRelease(shakeFrequency, "32n", undefined, 0.3);
     }
     lastAccelRef.current.copy(currentAccel);
 
@@ -105,24 +84,6 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     // Lerp the camera position for smooth movement
     camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
     camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
-
-    // Update audio based on zoom factor with smoother transitions
-    const zoomFrequency = THREE.MathUtils.mapLinear(
-      zoomFactorRef.current,
-      0.01,
-      3,
-      120,
-      800
-    );
-    synth.frequency.rampTo(zoomFrequency, 0.2);
-    const zoomVolume = THREE.MathUtils.mapLinear(
-      zoomFactorRef.current,
-      0.01,
-      3,
-      -35,
-      -15
-    );
-    synth.volume.rampTo(zoomVolume, 0.2);
   });
 
   useEffect(() => {
@@ -132,9 +93,8 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     return () => {
       camera.position.copy(originalPosition);
       camera.rotation.copy(originalRotation);
-      synth.dispose(); // Clean up the synth when component unmounts
     };
-  }, [camera, synth]);
+  }, [camera]);
 
   useEffect(() => {
     // When cameraDistance changes, update targetDistanceRef

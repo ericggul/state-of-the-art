@@ -19,18 +19,6 @@ import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
 
-//current target versions
-//mcculloch v1.0
-//perceptron v1.1
-//multi layer v1.2
-
-//lenet v3.1.1
-//lenet5 v3.1.2
-//alexnet v3.2.1
-//vgg v3.2.2
-//transformer v4.2
-//gpt v4.2.3.1
-
 const CURRENT_TESTING_VERSION = "v4.0.3";
 const VERSION_TO_MORPH = "v3.2.2";
 
@@ -78,30 +66,27 @@ export default function Visualisation({
   }, [version]);
 
   useEffect(() => {
-    if (modelGroupRef.current) {
-      const box = new Box3().setFromObject(modelGroupRef.current);
-      const size = new Vector3();
-      box.getSize(size);
+    if (modelGroupRef.current && structure.length > 0) {
+      // Delay the calculation to ensure the 3D objects are rendered
+      setTimeout(() => {
+        const box = new Box3().setFromObject(modelGroupRef.current);
+        const size = new Vector3();
+        box.getSize(size);
+        console.log("size", size);
 
-      // Check if size is valid
-      if (
-        !size.x ||
-        !size.y ||
-        !size.z ||
-        size.x === 0 ||
-        size.y === 0 ||
-        size.z === 0
-      ) {
-        console.warn("Model size is zero. Using default camera distance.");
-        setCameraDistance(100); // Default distance
-      } else {
-        const maxDimension1 = Math.max(size.x, size.y);
-        const maxDimension2 = Math.max(maxDimension1, size.z);
-        const maxDimension = (maxDimension1 + maxDimension2) / 2;
-        const distance = maxDimension * 1.5; // Adjust multiplier as needed
-        console.log(`Calculated camera distance for ${modelName}:`, distance); // Debug log
-        setCameraDistance(distance || 100);
-      }
+        // Use the maximum dimension
+        const maxDimension = Math.max(size.x, size.y, size.z);
+        const avgDimension = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2);
+
+        if (avgDimension === 0 || !isFinite(avgDimension)) {
+          console.warn("Invalid model size. Using default camera distance.");
+          setCameraDistance(400); // Default distance
+        } else {
+          const distance = avgDimension * 0.5; // Adjust multiplier as needed
+          console.log(`Calculated camera distance for ${modelName}:`, distance);
+          setCameraDistance(distance);
+        }
+      }, 500); // Adjust this delay if needed
     }
   }, [structure, modelName]);
 
@@ -144,7 +129,8 @@ export default function Visualisation({
   return (
     <Canvas
       camera={{
-        ...style.camera,
+        fov: 75,
+        near: 0.1,
         far: 500000,
       }}
       gl={{ alpha: true, antialias: true }}
@@ -152,7 +138,7 @@ export default function Visualisation({
       <Suspense fallback={null}>
         <CommonScene style={style}>
           <group ref={modelGroupRef}>
-            {ModelComponent && (
+            {structure.length > 0 && (
               <ModelComponent
                 structure={structure}
                 style={style}

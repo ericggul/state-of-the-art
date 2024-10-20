@@ -22,13 +22,13 @@ export function OrientationCamera({ cameraDistance = 100 }) {
   const targetZoomFactorRef = useRef(1);
   const lastAccelRef = useRef(new THREE.Vector3());
 
-  // Audio setup with minor improvements
+  // Audio setup
   const synth = useMemo(() => {
     const s = new Tone.Synth({
       oscillator: { type: "sine" },
-      envelope: { attack: 0.05, decay: 0.2, sustain: 0.4, release: 0.5 },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.5, release: 0.1 },
     }).toDestination();
-    s.volume.value = -25; // Slightly lower initial volume
+    s.volume.value = -20; // Set initial volume
     return s;
   }, []);
 
@@ -66,19 +66,19 @@ export function OrientationCamera({ cameraDistance = 100 }) {
       targetZoomFactorRef.current += zoomDelta;
       targetZoomFactorRef.current = THREE.MathUtils.clamp(
         targetZoomFactorRef.current,
-        0.01,
-        3
+        0.2,
+        5
       );
 
-      // Play sound for shake with improved frequency mapping
+      // Play sound for shake
       const shakeFrequency = THREE.MathUtils.mapLinear(
         accelMagnitude,
         0,
         2,
-        150,
-        600
+        200,
+        800
       );
-      synth.triggerAttackRelease(shakeFrequency, "32n", undefined, 0.3);
+      synth.triggerAttackRelease(shakeFrequency, "16n");
     }
     lastAccelRef.current.copy(currentAccel);
 
@@ -106,23 +106,23 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
     camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
 
-    // Update audio based on zoom factor with smoother transitions
+    // Update audio based on zoom factor
     const zoomFrequency = THREE.MathUtils.mapLinear(
       zoomFactorRef.current,
-      0.01,
-      3,
-      120,
-      800
+      0.2,
+      5,
+      100,
+      1000
     );
-    synth.frequency.rampTo(zoomFrequency, 0.2);
+    synth.frequency.rampTo(zoomFrequency, 0.1);
     const zoomVolume = THREE.MathUtils.mapLinear(
       zoomFactorRef.current,
-      0.01,
-      3,
-      -35,
-      -15
+      0.2,
+      5,
+      -30,
+      -10
     );
-    synth.volume.rampTo(zoomVolume, 0.2);
+    synth.volume.rampTo(zoomVolume, 0.1);
   });
 
   useEffect(() => {

@@ -16,9 +16,9 @@ const ANIMATION_FADE_TIME = 0.5;
 export default function Model(props) {
   const defaultProps = {
     scale: [2, 2, 2],
-    position: [0, -0.4, 74], // Keep z-position to maintain visibility
+    position: [0, -0.8, 96], // Keep z-position to maintain visibility
     //rotate just a bit
-    rotation: [Math.PI * 0.1, 0, 0],
+    rotation: [Math.PI * 0.05, 0, 0],
   };
 
   // Merge default props with passed props
