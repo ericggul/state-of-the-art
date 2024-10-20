@@ -8,9 +8,7 @@ export default function mobileSetup({ socket, io }) {
     socket.join("screen-orientation");
   });
 
-  socket.on("mobile-orientation-changed", (data) => {
-    socket
-      .to(`screen-orientation`)
-      .emit("new-mobile-orientation-changed", data);
+  socket.on("mobile-orientation-update", (data) => {
+    socket.to(`screen-orientation`).emit("new-mobile-orientation-update", data);
   });
 }

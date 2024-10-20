@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useAccelerometerStore from "@/components/mobile/store/accelerometer";
+import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
+import useMobileStore from "@/components/mobile/store"; // Import the mobile store
 
 const AccelerometerHandler = () => {
   const [orientation, setOrientation] = useState({
@@ -8,6 +10,12 @@ const AccelerometerHandler = () => {
     gamma: 0,
   });
   const { isAccelerometerActive } = useAccelerometerStore();
+  const { mobileId } = useMobileStore(); // Get the mobileId from the store
+
+  const socket = useSocketMobileOrientation({
+    mobileId,
+    isAccelerometerActive,
+  }); // Pass mobileId to the hook
 
   useEffect(() => {
     const orientationDetector = (e) => {
@@ -28,12 +36,19 @@ const AccelerometerHandler = () => {
   }, [isAccelerometerActive]);
 
   useEffect(() => {
-    if (isAccelerometerActive) {
+    if (isAccelerometerActive && socket.current) {
       console.log("Device Orientation:", orientation);
-      // Here you can implement any logic that needs to use the orientation data
-      // without affecting the ChatUI component
+      try {
+        // Send the orientation data to the server
+        socket.current.emit("mobile-orientation-update", {
+          mobileId,
+          orientation,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }, [orientation, isAccelerometerActive]);
+  }, [orientation, isAccelerometerActive, mobileId, socket]);
 
   return null; // This component doesn't render anything
 };

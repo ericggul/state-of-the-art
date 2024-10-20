@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function useSocketScreenOrientation({ handleNewMobileOrientation }) {
+export default function useSocketScreenOrientation({
+  handleNewMobileOrientation,
+}) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
@@ -23,7 +25,10 @@ export default function useSocketScreenOrientation({ handleNewMobileOrientation 
 
     socket.current.on("connect", () => {
       socket.current.emit("screen-orientation-init");
-      socket.current.on("new-mobile-orientation-changed", handleNewMobileOrientation);
+      socket.current.on(
+        "new-mobile-orientation-update",
+        handleNewMobileOrientation
+      );
     });
   };
 

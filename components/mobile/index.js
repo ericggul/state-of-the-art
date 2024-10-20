@@ -7,6 +7,8 @@ import useMobileStore from "./store";
 
 export default function Mobile() {
   const {
+    mobileId,
+    initializeMobileId,
     setMessages,
     setRecommendedResponses,
     setCurrentArchitectures,
@@ -15,6 +17,10 @@ export default function Mobile() {
     setIsWaitingForResponse,
     messages,
   } = useMobileStore();
+
+  useEffect(() => {
+    initializeMobileId();
+  }, [initializeMobileId]);
 
   const handleNewResponse = (data) => {
     console.log("New response from controller:", data);
@@ -27,7 +33,7 @@ export default function Mobile() {
   };
 
   const socket = useSocketMobile({
-    mobileId: "1",
+    mobileId,
     handleNewResponse,
   });
 
