@@ -4,6 +4,7 @@ import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
+const LERPING_FACTOR = 0.05;
 
 export function OrientationCamera() {
   const { camera } = useThree();
@@ -16,15 +17,16 @@ export function OrientationCamera() {
   const targetPositionRef = useRef(new THREE.Vector3());
   const initialLengthRef = useRef(null);
   const zoomFactorRef = useRef(1);
+  const targetZoomFactorRef = useRef(1);
+  const lastZRef = useRef(0);
 
   const handleNewMobileOrientation = (data) => {
-    console.log(data);
     sensorDataRef.current = data;
   };
 
   useSocketScreenOrientation({ handleNewMobileOrientation });
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const { orientation, acceleration } = sensorDataRef.current;
     const { alpha, beta, gamma } = orientation;
 
@@ -41,27 +43,38 @@ export function OrientationCamera() {
       initialLengthRef.current = camera.position.length();
     }
 
-    // Update zoom factor based on z-axis acceleration
-    const zoomSpeed = 0.01;
+    // Update target zoom factor based on z-axis movement
+    const zoomSpeed = 0.5;
+    const zDiff = acceleration.z - lastZRef.current;
+    if (Math.abs(zDiff) > 0.05) {
+      const zoomDelta =
+        Math.sign(zDiff) * Math.pow(Math.abs(zDiff), 1.6) * zoomSpeed;
+      targetZoomFactorRef.current += zoomDelta;
+      targetZoomFactorRef.current = THREE.MathUtils.clamp(
+        targetZoomFactorRef.current,
+        0.2,
+        5
+      );
+    }
+    lastZRef.current = acceleration.z;
+
+    // Smoothly interpolate current zoom factor towards target zoom factor
     zoomFactorRef.current = lerp(
       zoomFactorRef.current,
-      1 + acceleration.z * zoomSpeed,
-      0.1
-    );
-    zoomFactorRef.current = THREE.MathUtils.clamp(
-      zoomFactorRef.current,
-      0.5,
-      2
+      targetZoomFactorRef.current,
+      LERPING_FACTOR
     );
 
     const length = initialLengthRef.current * zoomFactorRef.current;
+
+    console.log("zoom factor", zoomFactorRef.current);
 
     targetPositionRef.current
       .set(0, 0, length)
       .applyQuaternion(quaternionRef.current);
 
     // Lerp the camera position for smooth movement
-    camera.position.lerp(targetPositionRef.current, 0.05);
+    camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
     camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
   });
 
