@@ -9,6 +9,11 @@ const AccelerometerHandler = () => {
     beta: 0,
     gamma: 0,
   });
+  const [acceleration, setAcceleration] = useState({
+    x: 0,
+    y: 0,
+    z: 0,
+  });
   const { isAccelerometerActive } = useAccelerometerStore();
   const { mobileId } = useMobileStore(); // Get the mobileId from the store
 
@@ -26,29 +31,38 @@ const AccelerometerHandler = () => {
       });
     };
 
+    const accelerationDetector = (e) => {
+      setAcceleration({
+        x: e.accelerationIncludingGravity.x,
+        y: e.accelerationIncludingGravity.y,
+        z: e.accelerationIncludingGravity.z,
+      });
+    };
+
     if (isAccelerometerActive) {
       window.addEventListener("deviceorientation", orientationDetector);
+      window.addEventListener("devicemotion", accelerationDetector);
     }
 
     return () => {
       window.removeEventListener("deviceorientation", orientationDetector);
+      window.removeEventListener("devicemotion", accelerationDetector);
     };
   }, [isAccelerometerActive]);
 
   useEffect(() => {
     if (isAccelerometerActive && socket.current) {
-      console.log("Device Orientation:", orientation);
       try {
-        // Send the orientation data to the server
         socket.current.emit("mobile-orientation-update", {
           mobileId,
           orientation,
+          acceleration,
         });
       } catch (e) {
         console.log(e);
       }
     }
-  }, [orientation, isAccelerometerActive, mobileId, socket]);
+  }, [orientation, acceleration, isAccelerometerActive, mobileId, socket]);
 
   return null; // This component doesn't render anything
 };

@@ -7,26 +7,20 @@ const lerp = (start, end, t) => start * (1 - t) + end * t;
 
 export function OrientationCamera() {
   const { camera } = useThree();
-  const sensorDataRef = useRef({
-    orientation: { alpha: 0, beta: 0, gamma: 0 },
-    acceleration: { x: 0, y: 0, z: 0 },
-  });
+  const orientationRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
   const initialLengthRef = useRef(null);
-  const zoomFactorRef = useRef(1);
 
   const handleNewMobileOrientation = (data) => {
-    console.log(data);
-    sensorDataRef.current = data;
+    orientationRef.current = data.orientation;
   };
 
   useSocketScreenOrientation({ handleNewMobileOrientation });
 
   useFrame((state) => {
-    const { orientation, acceleration } = sensorDataRef.current;
-    const { alpha, beta, gamma } = orientation;
+    const { alpha, beta, gamma } = orientationRef.current;
 
     // Convert degrees to radians for Three.js
     const alphaRad = THREE.MathUtils.degToRad(-alpha);
@@ -40,21 +34,7 @@ export function OrientationCamera() {
     if (initialLengthRef.current === null) {
       initialLengthRef.current = camera.position.length();
     }
-
-    // Update zoom factor based on z-axis acceleration
-    const zoomSpeed = 0.01;
-    zoomFactorRef.current = lerp(
-      zoomFactorRef.current,
-      1 + acceleration.z * zoomSpeed,
-      0.1
-    );
-    zoomFactorRef.current = THREE.MathUtils.clamp(
-      zoomFactorRef.current,
-      0.5,
-      2
-    );
-
-    const length = initialLengthRef.current * zoomFactorRef.current;
+    const length = initialLengthRef.current;
 
     targetPositionRef.current
       .set(0, 0, length)
