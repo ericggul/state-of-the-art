@@ -7,9 +7,13 @@ import ArchitectureUI from "@/foundations/frontend/ui";
 import { MODELS } from "@/components/controller/constant/models/v2";
 import { flattenModels, filterAndRefineModels } from "./utils";
 
+import useScreenStore from "@/components/screen/store";
+
 const CURRENT_TESTING_VERSION = "v4.2.3.4";
 
-export default function ScreenFrontend({ currentArchitectures }) {
+export default function ScreenFrontend() {
+  const { currentArchitectures } = useScreenStore();
+
   const version = useMemo(
     () =>
       currentArchitectures.length > 0 ? currentArchitectures[0].version : null,

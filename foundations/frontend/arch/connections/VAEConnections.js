@@ -73,7 +73,7 @@ function SingleLine({ from, to, style }) {
   const lineMaterialProps = {
     color: style?.colors?.connection || style?.colors?.inner || "blue",
     transparent: true,
-    opacity: style?.material?.opacity * 0.7 || 0.7,
+    opacity: style?.material?.opacity || 1,
     linewidth: style?.connection?.linewidth || 1,
   };
 

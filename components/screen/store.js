@@ -21,7 +21,7 @@ const useScreenStore = create((set) => ({
 
   handleNewSpeech: (data) => {
     console.log("New speech received:", data);
-    set({ latestSpeech: data.speech || "" });
+    set({ latestSpeech: data.text || "" });
   },
 
   handleNewVisibilityChange: (data) => {

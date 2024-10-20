@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
+
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 
@@ -33,7 +34,7 @@ export default function ScreenWrapper() {
 
   return (
     <Suspense>
-      <Frontend currentArchitectures={currentArchitectures} />
+      <Frontend />
       {/* Uncomment the following line if you want to use the Backend component */}
       {/* <Backend /> */}
     </Suspense>

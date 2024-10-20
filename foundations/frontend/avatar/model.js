@@ -26,7 +26,7 @@ export default function Model(props) {
 
   //////TEMPORARY TESTING: MESSAGE STORAGE
 
-  const { tempMessage } = useViseme();
+  const { visemeMessage } = useViseme();
   const { blink } = useBlink();
 
   const group = useRef();
@@ -49,12 +49,13 @@ export default function Model(props) {
 
   //BASIC ANIMATION CONTROL
   useEffect(() => {
-    if (tempMessage) {
+    if (visemeMessage) {
+      console.log("25", visemeMessage);
       setAnimation(Math.random() < 0.5 ? "Talking" : "Talking2");
     } else {
       setAnimation("Idle");
     }
-  }, [tempMessage]);
+  }, [visemeMessage]);
 
   //USE FRAME
   useFrame(({ camera }) => {
@@ -65,11 +66,12 @@ export default function Model(props) {
     lerpMorphTarget("eyeBlinkRight", blink ? 1 : 0, 0.2);
 
     const appliedMorphTargets = [];
-    if (tempMessage && tempMessage.visemes && tempMessage.audioPlayer) {
-      const currentTime = tempMessage.audioPlayer.currentTime * 1000;
+    if (visemeMessage && visemeMessage.visemes && visemeMessage.audioPlayer) {
+      const currentTime = visemeMessage.audioPlayer.currentTime * 1000;
 
-      for (let i = tempMessage.visemes.length - 1; i >= 0; i--) {
-        const [visemeTime, visemeId] = tempMessage.visemes[i];
+      for (let i = visemeMessage.visemes.length - 1; i >= 0; i--) {
+        console.log("26", visemeMessage.visemes[i]);
+        const [visemeTime, visemeId] = visemeMessage.visemes[i];
         if (currentTime >= visemeTime) {
           const targetMorph = VISME_TO_MORPHTARGET_MAP[visemeId];
           if (targetMorph) {

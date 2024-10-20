@@ -4,7 +4,11 @@ import { PassThrough } from "stream";
 export async function POST(req) {
   const { text } = await req.json();
 
-  const speechConfig = sdk.SpeechConfig.fromSubscription(process.env["AZURE_SPEECH_KEY"], process.env["AZURE_SPEECH_REGION"]);
+  console.log("11", text);
+  const speechConfig = sdk.SpeechConfig.fromSubscription(
+    process.env["AZURE_SPEECH_KEY"],
+    process.env["AZURE_SPEECH_REGION"]
+  );
 
   // https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
   speechConfig.speechSynthesisVoiceName = `en-GB-SoniaNeural`;
@@ -14,6 +18,8 @@ export async function POST(req) {
   speechSynthesizer.visemeReceived = function (s, e) {
     visemes.push([e.audioOffset / 10000, e.visemeId]);
   };
+
+  console.log("12", visemes);
 
   const audioStream = await new Promise((resolve, reject) => {
     speechSynthesizer.speakTextAsync(
@@ -35,6 +41,8 @@ export async function POST(req) {
       }
     );
   });
+
+  console.log("13", audioStream);
 
   const response = new Response(audioStream, {
     headers: {
