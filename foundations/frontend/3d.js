@@ -1,6 +1,7 @@
 // Visualization.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
+import { OrientationCamera } from "./utils/OrientationCamera";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
@@ -15,7 +16,7 @@ import VAELayers from "./arch/layers/VAELayers";
 import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
-import CommonScene from "./style/common-scene";
+import CommonScene from "./utils/common-scene";
 
 //current target versions
 //mcculloch v1.0
@@ -116,10 +117,17 @@ export default function Visualisation({
       }}
       gl={{ alpha: true, antialias: true }}
     >
-      <CommonScene style={style}>
-        <ModelComponent structure={structure} style={style} model={modelName} />
-        <AvatarModel />
-      </CommonScene>
+      <Suspense fallback={null}>
+        <CommonScene style={style}>
+          <ModelComponent
+            structure={structure}
+            style={style}
+            model={modelName}
+          />
+          <AvatarModel />
+          <OrientationCamera style={style} />
+        </CommonScene>
+      </Suspense>
     </Canvas>
   );
 }

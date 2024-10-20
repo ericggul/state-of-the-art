@@ -50,7 +50,6 @@ export default function Model(props) {
   //BASIC ANIMATION CONTROL
   useEffect(() => {
     if (visemeMessage) {
-      console.log("25", visemeMessage);
       setAnimation(Math.random() < 0.5 ? "Talking" : "Talking2");
     } else {
       setAnimation("Idle");
@@ -70,7 +69,6 @@ export default function Model(props) {
       const currentTime = visemeMessage.audioPlayer.currentTime * 1000;
 
       for (let i = visemeMessage.visemes.length - 1; i >= 0; i--) {
-        console.log("26", visemeMessage.visemes[i]);
         const [visemeTime, visemeId] = visemeMessage.visemes[i];
         if (currentTime >= visemeTime) {
           const targetMorph = VISME_TO_MORPHTARGET_MAP[visemeId];
