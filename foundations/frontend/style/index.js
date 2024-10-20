@@ -192,6 +192,47 @@ export const STYLE_STRATEGIES = [
     },
   },
   {
+    name: "Anish Kapoor Reflection",
+    colors: {
+      outer: "#c0c0c0", // Polished stainless steel
+      inner: "#a0a0a0", // Slightly darker for depth
+      environment: "#4a4a4a", // Urban environment reflection
+    },
+    material: {
+      metalness: 1.0,
+      roughness: 0.1,
+      envMapIntensity: 1.5,
+      transparent: false,
+    },
+    lighting: {
+      environment: "city",
+      envIntensity: 1.2,
+      directionalLight: { position: [10, 20, 10], intensity: 0.8 },
+      ambientLight: { intensity: 0.4 },
+    },
+    shadows: false,
+    emissive: false,
+    camera: {
+      position: [0, 0, 100],
+      fov: 35,
+      near: 0.1,
+    },
+    postprocessing: {
+      reflection: {
+        intensity: 1.5,
+        blur: 0.5,
+      },
+      chromaticAberration: {
+        offset: 0.005,
+      },
+    },
+    layout: {
+      layerHeight: 16,
+      encoderPosition: -65,
+      decoderPosition: 65,
+    },
+  },
+  {
     name: "Monochrome Blue",
     colors: {
       outer: "hsl(240, 100%, 50%)",

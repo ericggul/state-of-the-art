@@ -18,7 +18,7 @@ export function OrientationCamera() {
   const initialLengthRef = useRef(null);
   const zoomFactorRef = useRef(1);
   const targetZoomFactorRef = useRef(1);
-  const lastAccelRef = useRef(new THREE.Vector3());
+  const lastZRef = useRef(0);
 
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
@@ -43,19 +43,12 @@ export function OrientationCamera() {
       initialLengthRef.current = camera.position.length();
     }
 
-    // Update target zoom factor based on all acceleration axes
-    const zoomSpeed = 0.3;
-    const currentAccel = new THREE.Vector3(
-      acceleration.x,
-      acceleration.y,
-      acceleration.z
-    );
-    const accelDiff = currentAccel.sub(lastAccelRef.current);
-    const accelMagnitude = accelDiff.length();
-
-    if (accelMagnitude > 0.05) {
+    // Update target zoom factor based on z-axis movement
+    const zoomSpeed = 0.5;
+    const zDiff = acceleration.z - lastZRef.current;
+    if (Math.abs(zDiff) > 0.05) {
       const zoomDelta =
-        Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+        Math.sign(zDiff) * Math.pow(Math.abs(zDiff), 1.6) * zoomSpeed;
       targetZoomFactorRef.current += zoomDelta;
       targetZoomFactorRef.current = THREE.MathUtils.clamp(
         targetZoomFactorRef.current,
@@ -63,7 +56,7 @@ export function OrientationCamera() {
         5
       );
     }
-    lastAccelRef.current.copy(currentAccel);
+    lastZRef.current = acceleration.z;
 
     // Smoothly interpolate current zoom factor towards target zoom factor
     zoomFactorRef.current = lerp(
