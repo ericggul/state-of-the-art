@@ -1,8 +1,7 @@
 // Visualization.js
-import React, { useState, useEffect, Suspense, useRef } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
-import { Box3, Vector3 } from "three";
 
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
@@ -62,8 +61,6 @@ export default function Visualisation({
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
   const style = STYLE_STRATEGIES[styleIndex];
-  const modelGroupRef = useRef();
-  const [cameraDistance, setCameraDistance] = useState(100);
 
   useEffect(() => {
     const name = getModelNameFromVersion(version);
@@ -71,39 +68,10 @@ export default function Visualisation({
       setModelName(name);
       const modelStructure = getModelStructure(name);
       setStructure(modelStructure);
-      console.log(`Model structure for ${name}:`, modelStructure); // Debug log
     } else {
-      console.warn(`No model found for version: ${version}`);
+      console.log(`No model found for version: ${version}`);
     }
   }, [version]);
-
-  useEffect(() => {
-    if (modelGroupRef.current) {
-      const box = new Box3().setFromObject(modelGroupRef.current);
-      const size = new Vector3();
-      box.getSize(size);
-
-      // Check if size is valid
-      if (
-        !size.x ||
-        !size.y ||
-        !size.z ||
-        size.x === 0 ||
-        size.y === 0 ||
-        size.z === 0
-      ) {
-        console.warn("Model size is zero. Using default camera distance.");
-        setCameraDistance(100); // Default distance
-      } else {
-        const maxDimension1 = Math.max(size.x, size.y);
-        const maxDimension2 = Math.max(maxDimension1, size.z);
-        const maxDimension = (maxDimension1 + maxDimension2) / 2;
-        const distance = maxDimension * 1.5; // Adjust multiplier as needed
-        console.log(`Calculated camera distance for ${modelName}:`, distance); // Debug log
-        setCameraDistance(distance || 100);
-      }
-    }
-  }, [structure, modelName]);
 
   const modelConfig = LAYER_CONFIGS[modelName];
 
@@ -151,17 +119,13 @@ export default function Visualisation({
     >
       <Suspense fallback={null}>
         <CommonScene style={style}>
-          <group ref={modelGroupRef}>
-            {ModelComponent && (
-              <ModelComponent
-                structure={structure}
-                style={style}
-                model={modelName}
-              />
-            )}
-          </group>
+          <ModelComponent
+            structure={structure}
+            style={style}
+            model={modelName}
+          />
           <AvatarModel />
-          <OrientationCamera cameraDistance={cameraDistance} />
+          <OrientationCamera style={style} />
         </CommonScene>
       </Suspense>
     </Canvas>

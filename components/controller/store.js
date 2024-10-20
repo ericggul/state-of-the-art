@@ -137,7 +137,6 @@ async function fetchAssistantResponse(conversation, stage, userName, language) {
     console.error("Error fetching assistant response", e);
     return {
       content: "Sorry, something went wrong.",
-      responseType: "ask",
       currentArchitecture: [],
       recommended_responses: [],
       nextStage: stage,

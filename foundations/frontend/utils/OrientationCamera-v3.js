@@ -6,7 +6,7 @@ import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScre
 const lerp = (start, end, t) => start * (1 - t) + end * t;
 const LERPING_FACTOR = 0.03;
 
-export function OrientationCamera({ cameraDistance = 100 }) {
+export function OrientationCamera() {
   const { camera } = useThree();
   const sensorDataRef = useRef({
     orientation: { alpha: 0, beta: 0, gamma: 0 },
@@ -15,8 +15,7 @@ export function OrientationCamera({ cameraDistance = 100 }) {
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
-  const currentDistanceRef = useRef(cameraDistance);
-  const targetDistanceRef = useRef(cameraDistance);
+  const initialLengthRef = useRef(null);
   const zoomFactorRef = useRef(1);
   const targetZoomFactorRef = useRef(1);
   const lastAccelRef = useRef(new THREE.Vector3());
@@ -38,6 +37,11 @@ export function OrientationCamera({ cameraDistance = 100 }) {
 
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
+
+    // Store the initial length on the first frame
+    if (initialLengthRef.current === null) {
+      initialLengthRef.current = camera.position.length();
+    }
 
     // Update target zoom factor based on all acceleration axes
     const zoomSpeed = 0.3;
@@ -61,13 +65,6 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     }
     lastAccelRef.current.copy(currentAccel);
 
-    // Smoothly interpolate current distance towards target distance
-    currentDistanceRef.current = lerp(
-      currentDistanceRef.current,
-      targetDistanceRef.current,
-      LERPING_FACTOR
-    );
-
     // Smoothly interpolate current zoom factor towards target zoom factor
     zoomFactorRef.current = lerp(
       zoomFactorRef.current,
@@ -75,7 +72,9 @@ export function OrientationCamera({ cameraDistance = 100 }) {
       LERPING_FACTOR
     );
 
-    const length = currentDistanceRef.current * zoomFactorRef.current;
+    const length = initialLengthRef.current * zoomFactorRef.current;
+
+    console.log("zoom factor", zoomFactorRef.current);
 
     targetPositionRef.current
       .set(0, 0, length)
@@ -95,11 +94,6 @@ export function OrientationCamera({ cameraDistance = 100 }) {
       camera.rotation.copy(originalRotation);
     };
   }, [camera]);
-
-  useEffect(() => {
-    // When cameraDistance changes, update targetDistanceRef
-    targetDistanceRef.current = cameraDistance;
-  }, [cameraDistance]);
 
   return null;
 }

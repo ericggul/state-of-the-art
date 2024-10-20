@@ -53,8 +53,7 @@ Respond naturally, focusing on neural networks and the current stage. Your respo
 Explain about each architecture for only one-two times, and then move on to the next architecture.
 
 After generating your response, separately provide the following:
-- responseType: The type of response (ask, introduce, explainArch, discuss, or compare).
-- currentArchitecture: An array of current architectures being discussed, including their versions.
+- currentArchitecture: An array of current architectures being discussed, including their versions. This should strictly refer to one of the MODELS ARCHITECTURES, with the exact model name and exact version.
 - recommended_responses: Three recommended follow-up responses of users relevant to the current stage, in the specified language.
 - nextStage: The next stage of the conversation.
 - userName: The user's name, if provided or determined during the conversation.
@@ -85,9 +84,6 @@ export async function POST(req) {
 
     const schema = z.object({
       content: z.string().describe("The main response to the user's input"),
-      responseType: z
-        .enum(["ask", "introduce", "explainArch", "discuss", "compare"])
-        .describe("The type of response provided"),
       currentArchitecture: z
         .array(
           z.object({
@@ -196,23 +192,6 @@ function sanitizeAndProcessResponse(response) {
     response.content = response.content.replace(/\n/g, " ").trim();
     // Remove surrounding quotation marks if present
     response.content = response.content.replace(/^"(.*)"$/, "$1");
-  }
-
-  // Ensure responseType is valid
-  const validResponseTypes = [
-    "ask",
-    "introduce",
-    "explainArch",
-    "discuss",
-    "compare",
-  ];
-  if (!validResponseTypes.includes(response.responseType)) {
-    console.warn(
-      `Invalid responseType: ${response.responseType}. Mapping to appropriate type.`
-    );
-    // Map "checkFamiliarity" to "ask", or default to "discuss" for other unexpected types
-    response.responseType =
-      response.responseType === "checkFamiliarity" ? "ask" : "discuss";
   }
 
   // Ensure nextStage is present and valid

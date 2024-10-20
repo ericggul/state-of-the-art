@@ -26,11 +26,11 @@ export default function ScreenWrapper() {
     handleNewVisibilityChange,
   });
 
-  useEffect(() => {
-    console.log("Current architectures:", currentArchitectures);
-    console.log("Latest speech:", latestSpeech);
-    console.log("Mobile visibility:", mobileVisibility);
-  }, [currentArchitectures, latestSpeech, mobileVisibility]);
+  // useEffect(() => {
+  //   console.log("Current architectures:", currentArchitectures);
+  //   console.log("Latest speech:", latestSpeech);
+  //   console.log("Mobile visibility:", mobileVisibility);
+  // }, [currentArchitectures, latestSpeech, mobileVisibility]);
 
   return (
     <Suspense>
