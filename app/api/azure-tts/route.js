@@ -3,14 +3,16 @@ import { PassThrough } from "stream";
 
 export async function POST(req) {
   try {
+    console.log("Starting TTS process");
     const { text, rate = 1.2 } = await req.json();
-
     console.log("Received text:", text);
 
+    console.log("Creating speech config");
     const speechConfig = sdk.SpeechConfig.fromSubscription(
       process.env["AZURE_SPEECH_KEY"],
       process.env["AZURE_SPEECH_REGION"]
     );
+    console.log("Speech config created");
 
     const voiceName = "en-GB-SoniaNeural";
     speechConfig.speechSynthesisVoiceName = voiceName;
@@ -27,6 +29,7 @@ export async function POST(req) {
       visemes.push([e.audioOffset / 10000, e.visemeId]);
     };
 
+    console.log("Starting speech synthesis");
     const audioData = await new Promise((resolve, reject) => {
       speechSynthesizer.speakSsmlAsync(
         ssml,
@@ -46,6 +49,7 @@ export async function POST(req) {
         }
       );
     });
+    console.log("Speech synthesis completed");
 
     console.log("Audio data received, length:", audioData.byteLength);
 
@@ -60,10 +64,13 @@ export async function POST(req) {
       },
     });
   } catch (error) {
-    console.error("Error in TTS API:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("Detailed error in TTS API:", error);
+    return new Response(
+      JSON.stringify({ error: error.message, stack: error.stack }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

@@ -18,15 +18,22 @@ export default function useViseme() {
 
   async function getViseme({ text }) {
     try {
+      console.log("Sending request to /api/azure-tts with text:", text);
       const audioRes = await axios.post(
         "/api/azure-tts",
         { text },
         { responseType: "blob" }
       );
 
+      console.log("Response received from /api/azure-tts");
+      console.log("Response headers:", audioRes.headers);
+
       // Get audio as blob
-      const audio = audioRes.data; // Since the response is now a blob, it's stored in audioRes.data
-      const visemes = JSON.parse(audioRes.headers.visemes); // Use headers to get viseme data
+      const audio = audioRes.data;
+      console.log("Audio blob received, size:", audio.size);
+
+      const visemes = JSON.parse(audioRes.headers.visemes);
+      console.log("Visemes parsed:", visemes);
 
       // Create an audio URL
       const audioUrl = URL.createObjectURL(audio);
@@ -43,7 +50,18 @@ export default function useViseme() {
       // Update state with the message
       setVisemeMessage(message);
     } catch (e) {
-      console.log(e);
+      console.error("Error in getViseme:");
+      console.error("Error message:", e.message);
+      console.error("Error name:", e.name);
+      console.error("Error stack:", e.stack);
+      if (e.response) {
+        console.error("Response data:", e.response.data);
+        console.error("Response status:", e.response.status);
+        console.error("Response headers:", e.response.headers);
+      } else if (e.request) {
+        console.error("Request:", e.request);
+      }
+      console.error("Error config:", e.config);
     }
   }
 
