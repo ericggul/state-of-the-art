@@ -66,7 +66,12 @@ export async function POST(req) {
   } catch (error) {
     console.error("Detailed error in TTS API:", error);
     return new Response(
-      JSON.stringify({ error: error.message, stack: error.stack }),
+      JSON.stringify({
+        error: error.message,
+        stack: error.stack,
+        name: error.name,
+        // Include any other relevant error details
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json" },

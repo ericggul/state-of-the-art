@@ -55,11 +55,17 @@ export default function useViseme() {
       console.error("Error name:", e.name);
       console.error("Error stack:", e.stack);
       if (e.response) {
-        console.error("Response data:", e.response.data);
         console.error("Response status:", e.response.status);
         console.error("Response headers:", e.response.headers);
+        // Try to parse the response data if it's JSON
+        try {
+          const errorData = await e.response.data.text();
+          console.error("Response data:", JSON.parse(errorData));
+        } catch (parseError) {
+          console.error("Response data (unparsed):", e.response.data);
+        }
       } else if (e.request) {
-        console.error("Request:", e.request);
+        console.error("No response received. Request:", e.request);
       }
       console.error("Error config:", e.config);
     }

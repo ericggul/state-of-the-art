@@ -16,9 +16,7 @@ export default function ScreenFrontend() {
 
   const version = useMemo(
     () =>
-      currentArchitectures.length > 0
-        ? currentArchitectures[0].version
-        : CURRENT_TESTING_VERSION,
+      currentArchitectures.length > 0 ? currentArchitectures[0].version : null,
     [currentArchitectures]
   );
 
