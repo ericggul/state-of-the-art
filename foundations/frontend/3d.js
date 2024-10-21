@@ -45,7 +45,7 @@ function getModelNameFromVersion(version) {
 
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
-  styleIndex = 7,
+  styleIndex = 1,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
@@ -82,7 +82,7 @@ export default function Visualisation({
           console.warn("Invalid model size. Using default camera distance.");
           setCameraDistance(400); // Default distance
         } else {
-          const distance = avgDimension * 0.31;
+          const distance = avgDimension * 0.23;
           console.log(
             `Calculated camera distance for ${modelName}: `,
             distance
