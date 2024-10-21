@@ -82,8 +82,11 @@ export default function Visualisation({
           console.warn("Invalid model size. Using default camera distance.");
           setCameraDistance(400); // Default distance
         } else {
-          const distance = avgDimension * 0.51;
-          console.log(`Calculated camera distance for ${modelName}:`, distance);
+          const distance = avgDimension * 0.31;
+          console.log(
+            `Calculated camera distance for ${modelName}: `,
+            distance
+          );
           setCameraDistance(distance);
         }
       }, 500); // Adjust this delay if needed
