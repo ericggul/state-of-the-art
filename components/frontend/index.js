@@ -9,14 +9,16 @@ import { flattenModels, filterAndRefineModels } from "./utils";
 
 import useScreenStore from "@/components/screen/store";
 
-const CURRENT_TESTING_VERSION = "v4.2.3.4";
+const CURRENT_TESTING_VERSION = "v4.2.3.3";
 
 export default function ScreenFrontend() {
   const { currentArchitectures } = useScreenStore();
 
   const version = useMemo(
     () =>
-      currentArchitectures.length > 0 ? currentArchitectures[0].version : null,
+      currentArchitectures.length > 0
+        ? currentArchitectures[0].version
+        : CURRENT_TESTING_VERSION,
     [currentArchitectures]
   );
 

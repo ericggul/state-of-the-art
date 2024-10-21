@@ -45,7 +45,7 @@ function getModelNameFromVersion(version) {
 
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
-  styleIndex = 1,
+  styleIndex = 0,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
