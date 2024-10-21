@@ -3,16 +3,12 @@ import { PassThrough } from "stream";
 
 export async function POST(req) {
   try {
-    console.log("Starting TTS process");
     const { text, rate = 1.2 } = await req.json();
-    console.log("Received text:", text);
 
-    console.log("Creating speech config");
     const speechConfig = sdk.SpeechConfig.fromSubscription(
       process.env["AZURE_SPEECH_KEY"],
       process.env["AZURE_SPEECH_REGION"]
     );
-    console.log("Speech config created");
 
     const voiceName = "en-GB-SoniaNeural";
     speechConfig.speechSynthesisVoiceName = voiceName;
@@ -29,12 +25,10 @@ export async function POST(req) {
       visemes.push([e.audioOffset / 10000, e.visemeId]);
     };
 
-    console.log("Starting speech synthesis");
     const audioData = await new Promise((resolve, reject) => {
       speechSynthesizer.speakSsmlAsync(
         ssml,
         (result) => {
-          console.log("Speech synthesis result:", result);
           if (result.audioData) {
             resolve(result.audioData);
           } else {
@@ -49,9 +43,6 @@ export async function POST(req) {
         }
       );
     });
-    console.log("Speech synthesis completed");
-
-    console.log("Audio data received, length:", audioData.byteLength);
 
     const bufferStream = new PassThrough();
     bufferStream.end(Buffer.from(audioData));
