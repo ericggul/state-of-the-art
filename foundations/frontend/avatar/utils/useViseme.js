@@ -18,22 +18,15 @@ export default function useViseme() {
 
   async function getViseme({ text }) {
     try {
-      console.log("Sending request to /api/azure-tts with text:", text);
       const audioRes = await axios.post(
         "/api/azure-tts",
         { text },
         { responseType: "blob" }
       );
 
-      console.log("Response received from /api/azure-tts");
-      console.log("Response headers:", audioRes.headers);
-
       // Get audio as blob
       const audio = audioRes.data;
-      console.log("Audio blob received, size:", audio.size);
-
       const visemes = JSON.parse(audioRes.headers.visemes);
-      console.log("Visemes parsed:", visemes);
 
       // Create an audio URL
       const audioUrl = URL.createObjectURL(audio);

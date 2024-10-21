@@ -178,7 +178,6 @@ export async function POST(req) {
 
     return Response.json(response);
   } catch (e) {
-    console.error("Unhandled error:", e);
     return Response.json(
       { error: "An error occurred while processing your request" },
       { status: 500 }

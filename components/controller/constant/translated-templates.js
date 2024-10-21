@@ -3,13 +3,13 @@ import { getLanguageKey } from "./system-script";
 export const TRANSLATED_TEMPLATES = {
   en: {
     conversationStructure: `
-Strictly follow this conversation structure:
-1. Initial: Ask for the user's name.
-2. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
-3. ExplainBasics: If not familiar, explain the basics of Neural Networks Architectures.
-4. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
-5. InteractiveExperience: Continue explaining architectures, one by another. You don't have to follow the order of the architectures in the given MODELS ARCHITECTURES, however, all your explanations should be based on the given MODELS ARCHITECTURES with proper versions.
-    `,
+    Strictly follow this conversation structure:
+    1. Initial: Ask for the user's name.
+    2. CheckFamiliarity: Ask if the user is familiar with Neural Networks.
+    3. ExplainBasics: If not familiar, explain the basics of Neural Networks Architectures.
+    4. ActivateAccelerometer: After explaining the first architecture, ask the user to activate their accelerometer for an interactive voyage.
+    5. InteractiveExperience: Continue explaining architectures, one by another. You don't have to follow the order of the architectures in the given MODELS ARCHITECTURES, however, all your explanations should be based on the given MODELS ARCHITECTURES with proper versions.
+        `,
     guidelines: `
 Guidelines:
 1. Strictly adhere to the current stage.
