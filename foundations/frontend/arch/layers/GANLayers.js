@@ -48,49 +48,117 @@ export default function GANLayers({ structure, style, model }) {
 
     return scaledStructure.map((layer, index) => {
       const yPosition = positions[index] - centerOffset;
-      const zPosition = layer.stack === "discriminator" ? 100 : -100;
+      let xPosition = 0;
+      let zPosition = 0;
+
+      // Adjust positions for CycleGAN
+      if (model === "CYCLEGAN") {
+        if (layer.stack.includes("generator")) {
+          xPosition = layer.stack === "generator_A" ? -50 : 80;
+          zPosition = -50;
+        } else if (layer.stack.includes("discriminator")) {
+          xPosition = layer.stack === "discriminator_A" ? -80 : 50;
+          zPosition = 50;
+        }
+      } else {
+        zPosition = layer.stack === "discriminator" ? 100 : -100;
+      }
 
       return {
         ...layer,
-        position: [0, yPosition, zPosition],
+        position: [xPosition, yPosition, zPosition],
       };
     });
-  }, [structure, layerHeight, layerGap]);
+  }, [structure, layerHeight, layerGap, model]);
 
   console.log(layers);
 
-  const generatorLayers = layers.filter((layer) => layer.stack === "generator");
-  const discriminatorLayers = layers.filter(
-    (layer) => layer.stack === "discriminator"
-  );
+  const groupLayers = (stack) =>
+    layers.filter((layer) => layer.stack.includes(stack));
+
+  const generatorALayers = groupLayers("generator_A");
+  const generatorBLayers = groupLayers("generator_B");
+  const discriminatorALayers = groupLayers("discriminator_A");
+  const discriminatorBLayers = groupLayers("discriminator_B");
+  const generalGeneratorLayers = groupLayers("generator");
+  const generalDiscriminatorLayers = groupLayers("discriminator");
 
   return (
     <group>
-      {/* <GANConnections layers={layers} style={style} /> */}
-      {/* Generator Layers */}
-      <group name="Generator">
-        {generatorLayers.map((layer, i) => (
-          <Sublayer
-            key={`generator-${i}`}
-            position={layer.position}
-            sublayer={layer}
-            style={style}
-            model={model}
-          />
-        ))}
-      </group>
-
-      <group name="Discriminator">
-        {discriminatorLayers.map((layer, i) => (
-          <Sublayer
-            key={`discriminator-${i}`}
-            position={layer.position}
-            sublayer={layer}
-            style={style}
-            model={model}
-          />
-        ))}
-      </group>
+      <GANConnections layers={layers} style={style} />
+      {model === "CYCLEGAN" ? (
+        <>
+          <group name="Generator A">
+            {generatorALayers.map((layer, i) => (
+              <Sublayer
+                key={`generator-a-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+          <group name="Generator B">
+            {generatorBLayers.map((layer, i) => (
+              <Sublayer
+                key={`generator-b-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+          <group name="Discriminator A">
+            {discriminatorALayers.map((layer, i) => (
+              <Sublayer
+                key={`discriminator-a-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+          <group name="Discriminator B">
+            {discriminatorBLayers.map((layer, i) => (
+              <Sublayer
+                key={`discriminator-b-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+        </>
+      ) : (
+        <>
+          <group name="Generator">
+            {generalGeneratorLayers.map((layer, i) => (
+              <Sublayer
+                key={`generator-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+          <group name="Discriminator">
+            {generalDiscriminatorLayers.map((layer, i) => (
+              <Sublayer
+                key={`discriminator-${i}`}
+                position={layer.position}
+                sublayer={layer}
+                style={style}
+                model={model}
+              />
+            ))}
+          </group>
+        </>
+      )}
     </group>
   );
 }

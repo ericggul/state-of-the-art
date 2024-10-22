@@ -371,11 +371,111 @@ export const STYLEGAN = [
   },
 ];
 
-// StyleGAN2 Structure (similar to StyleGAN with some modifications)
-export const STYLEGAN2 = STYLEGAN;
+// StyleGAN2 Structure
+export const STYLEGAN2 = [
+  {
+    name: "Latent Input",
+    type: "input",
+    stack: "generator",
+    dimensions: [512, 1, 1],
+  },
+  {
+    name: "Mapping Network",
+    type: "mapping_network",
+    stack: "generator",
+    dimensions: [512, 8, 1],
+  },
+  ...Array.from({ length: 9 }, (_, i) => ({
+    name: `Style Block ${i + 1}`,
+    type: "style_block",
+    stack: "generator",
+    dimensions: [512 / 2 ** Math.min(i, 5), 2 ** (i + 2), 2 ** (i + 2)],
+  })),
+  {
+    name: "Generator Output",
+    type: "output",
+    stack: "generator",
+    dimensions: LARGE_IMAGE_DIM,
+  },
+  {
+    name: "Discriminator Input",
+    type: "input",
+    stack: "discriminator",
+    dimensions: LARGE_IMAGE_DIM,
+  },
+  ...Array.from({ length: 9 }, (_, i) => ({
+    name: `Residual Block ${9 - i}`,
+    type: "residual",
+    stack: "discriminator",
+    dimensions: [512 / 2 ** Math.min(8 - i, 5), 2 ** (10 - i), 2 ** (10 - i)],
+  })),
+  {
+    name: "Discriminator Output",
+    type: "output",
+    stack: "discriminator",
+    dimensions: [1, 1, 1],
+  },
+];
 
-// StyleGAN3 Structure (further modifications to StyleGAN2)
-export const STYLEGAN3 = STYLEGAN2;
+// StyleGAN3 Structure
+export const STYLEGAN3 = [
+  {
+    name: "Latent Input",
+    type: "input",
+    stack: "generator",
+    dimensions: [512, 1, 1],
+  },
+  {
+    name: "Mapping Network",
+    type: "mapping_network",
+    stack: "generator",
+    dimensions: [512, 14, 1],
+  },
+  {
+    name: "Constant Input",
+    type: "input",
+    stack: "generator",
+    dimensions: [512, 4, 4],
+  },
+  ...Array.from({ length: 14 }, (_, i) => ({
+    name: `Synthesis Layer ${i + 1}`,
+    type: "synthesis_layer",
+    stack: "generator",
+    dimensions: [
+      512 / 2 ** Math.min(i, 7),
+      2 ** (Math.floor(i / 2) + 2),
+      2 ** (Math.floor(i / 2) + 2),
+    ],
+  })),
+  {
+    name: "Generator Output",
+    type: "output",
+    stack: "generator",
+    dimensions: LARGE_IMAGE_DIM,
+  },
+  {
+    name: "Discriminator Input",
+    type: "input",
+    stack: "discriminator",
+    dimensions: LARGE_IMAGE_DIM,
+  },
+  ...Array.from({ length: 14 }, (_, i) => ({
+    name: `Fourier Features ${14 - i}`,
+    type: "fourier_features",
+    stack: "discriminator",
+    dimensions: [
+      512 / 2 ** Math.min(13 - i, 7),
+      2 ** (Math.floor((13 - i) / 2) + 2),
+      2 ** (Math.floor((13 - i) / 2) + 2),
+    ],
+  })),
+  {
+    name: "Discriminator Output",
+    type: "output",
+    stack: "discriminator",
+    dimensions: [1, 1, 1],
+  },
+];
 
 // Layer Configurations
 export const LAYER_CONFIGS = {
@@ -400,7 +500,7 @@ export const LAYER_CONFIGS = {
     type: "gan",
   },
   CONDITIONAL_GAN: {
-    layerHeight: 30,
+    layerHeight: 5,
     keyPrefix: "conditional_gan",
     type: "gan",
   },
@@ -410,17 +510,17 @@ export const LAYER_CONFIGS = {
     type: "gan",
   },
   STYLEGAN: {
-    layerHeight: 30,
+    layerHeight: 100,
     keyPrefix: "stylegan",
     type: "gan",
   },
   STYLEGAN2: {
-    layerHeight: 30,
+    layerHeight: 100,
     keyPrefix: "stylegan2",
     type: "gan",
   },
   STYLEGAN3: {
-    layerHeight: 30,
+    layerHeight: 100,
     keyPrefix: "stylegan3",
     type: "gan",
   },
@@ -513,7 +613,8 @@ export const GRID_CONFIGS = {
   },
   STYLEGAN2: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
+    residual: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
@@ -525,7 +626,9 @@ export const GRID_CONFIGS = {
   },
   STYLEGAN3: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
+    synthesis_layer: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
+    fourier_features: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
