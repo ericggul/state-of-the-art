@@ -15,6 +15,7 @@ import TransformerLayers from "./arch/layers/TransformerLayers";
 import RNNLayers from "./arch/layers/RNNLayers";
 import VAELayers from "./arch/layers/VAELayers";
 import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
+import GANLayers from "./arch/layers/GANLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
@@ -114,6 +115,9 @@ export default function Visualisation({
         break;
       case "self_supervised":
         ModelComponent = SelfSupervisedLayers;
+        break;
+      case "gan":
+        ModelComponent = GANLayers;
         break;
       default:
         console.warn(
