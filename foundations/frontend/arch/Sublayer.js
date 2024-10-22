@@ -2,8 +2,8 @@ import React from "react";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
 
-const INTERLAYER_MARGIN_X = 1.3;
-const INTERLAYER_MARGIN_Y = 3.0;
+export const INTERLAYER_MARGIN_X = 1.3;
+export const INTERLAYER_MARGIN_Y = 3.0;
 
 const Sublayer = ({
   position,
@@ -16,8 +16,8 @@ const Sublayer = ({
   let gridConfig = GRID_CONFIGS[model] || {};
 
   const grid = gridConfig[sublayer.type] || {
-    xCount: 1,
-    yCount: 1,
+    xCount: 3,
+    yCount: 3,
     xInterval: 10,
     yInterval: 10,
   };

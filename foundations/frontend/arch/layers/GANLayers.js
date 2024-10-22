@@ -54,10 +54,10 @@ export default function GANLayers({ structure, style, model }) {
       // Adjust positions for CycleGAN
       if (model === "CYCLEGAN") {
         if (layer.stack.includes("generator")) {
-          xPosition = layer.stack === "generator_A" ? -50 : 80;
+          xPosition = layer.stack === "generator_A" ? -150 : 150;
           zPosition = -50;
         } else if (layer.stack.includes("discriminator")) {
-          xPosition = layer.stack === "discriminator_A" ? -80 : 50;
+          xPosition = layer.stack === "discriminator_A" ? -150 : 150;
           zPosition = 50;
         }
       } else {

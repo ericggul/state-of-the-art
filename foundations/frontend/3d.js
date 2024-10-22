@@ -42,6 +42,8 @@ function getModelNameFromVersion(version) {
 //3: subtle green
 //4: subtle blue
 
+const INITIAL_CAMERA_DISTANCE = 10000;
+
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
   isTesting,
@@ -51,7 +53,7 @@ export default function Visualisation({
   const [structure, setStructure] = useState([]);
   const style = STYLE_STRATEGIES[styleIndex];
   const modelGroupRef = useRef();
-  const [cameraDistance, setCameraDistance] = useState(100);
+  const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 
   useEffect(() => {
     const name = getModelNameFromVersion(version);

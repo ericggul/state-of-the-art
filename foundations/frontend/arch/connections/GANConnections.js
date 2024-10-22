@@ -1,53 +1,43 @@
 import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
+import { GRID_CONFIGS } from "../../arch-models";
+import { INTERLAYER_MARGIN_X, INTERLAYER_MARGIN_Y } from "../Sublayer";
 
-function GANConnections({ layers, style }) {
+function GANConnections({ layers, style, model }) {
   const connections = useMemo(() => {
     if (!layers) return [];
 
     const temp = [];
-    const generatorLayers = layers.filter(
-      (layer) => layer.stack === "generator"
+    const generators = layers.filter((layer) =>
+      layer.stack.includes("generator")
     );
-    const discriminatorLayers = layers.filter(
-      (layer) => layer.stack === "discriminator"
+    const discriminators = layers.filter((layer) =>
+      layer.stack.includes("discriminator")
     );
 
-    // Connect layers within generator
-    for (let i = 0; i < generatorLayers.length - 1; i++) {
-      temp.push(
-        ...createConnectionsBetweenLayers(
-          generatorLayers[i],
-          generatorLayers[i + 1]
-        )
-      );
-    }
+    const generatorGroups = groupLayersByStack(generators);
+    const discriminatorGroups = groupLayersByStack(discriminators);
 
-    // Connect layers within discriminator
-    for (let i = 0; i < discriminatorLayers.length - 1; i++) {
-      temp.push(
-        ...createConnectionsBetweenLayers(
-          discriminatorLayers[i],
-          discriminatorLayers[i + 1]
-        )
-      );
-    }
+    Object.values(generatorGroups).forEach((group) => {
+      temp.push(...createMultipleConnections(group, model));
+    });
 
-    // Connect generator output to discriminator input
-    if (generatorLayers.length > 0 && discriminatorLayers.length > 0) {
-      temp.push(
-        ...createConnectionsBetweenLayers(
-          generatorLayers[generatorLayers.length - 1],
-          discriminatorLayers[0]
-        )
-      );
-    }
+    Object.values(discriminatorGroups).forEach((group) => {
+      temp.push(...createMultipleConnections(group, model));
+    });
+
+    connectGeneratorsToDiscriminators(
+      generatorGroups,
+      discriminatorGroups,
+      temp,
+      model
+    );
 
     return temp;
-  }, [layers]);
+  }, [layers, model]);
 
   return (
-    <Suspense fallback={<div>Loading GAN Connections...</div>}>
+    <Suspense fallback={null}>
       {connections.map((connection, i) => (
         <SingleLine
           key={i}
@@ -60,55 +50,99 @@ function GANConnections({ layers, style }) {
   );
 }
 
-function createConnectionsBetweenLayers(fromLayer, toLayer) {
+function groupLayersByStack(layers) {
+  return layers.reduce((acc, layer) => {
+    if (!acc[layer.stack]) {
+      acc[layer.stack] = [];
+    }
+    acc[layer.stack].push(layer);
+    return acc;
+  }, {});
+}
+
+function createMultipleConnections(layerGroup, model) {
   const connections = [];
-  const fromGrid = { xCount: 3, yCount: 3 }; // Adjust as needed
-  const toGrid = { xCount: 3, yCount: 3 }; // Adjust as needed
+  for (let i = 0; i < layerGroup.length - 1; i++) {
+    const fromLayer = layerGroup[i];
+    const toLayer = layerGroup[i + 1];
 
-  const fromSize = fromLayer.dimensions || [20, 8, 8];
-  const toSize = toLayer.dimensions || [20, 8, 8];
+    const fromPoints = getLayerPoints(fromLayer, model);
+    const toPoints = getLayerPoints(toLayer, model);
 
-  const fromXInterval = (fromSize[0] / fromGrid.xCount) * 1.2;
-  const fromYInterval = (fromSize[1] / fromGrid.yCount) * 1.5;
+    for (let j = 0; j < fromPoints.length; j++) {
+      connections.push({ from: fromPoints[j], to: toPoints[j] });
+    }
+  }
+  return connections;
+}
 
-  const toXInterval = (toSize[0] / toGrid.xCount) * 1.2;
-  const toYInterval = (toSize[1] / toGrid.yCount) * 1.5;
+function connectGeneratorsToDiscriminators(
+  generatorGroups,
+  discriminatorGroups,
+  temp,
+  model
+) {
+  Object.keys(generatorGroups).forEach((genKey) => {
+    const genLayers = generatorGroups[genKey];
+    const lastGenLayer = genLayers[genLayers.length - 1];
 
-  for (let fromX = 0; fromX < fromGrid.xCount; fromX++) {
-    for (let fromY = 0; fromY < fromGrid.yCount; fromY++) {
-      const fromCenter = [
-        fromLayer.position[0] +
-          (fromX - (fromGrid.xCount - 1) / 2) * fromXInterval,
-        fromLayer.position[1] +
-          (fromY - (fromGrid.yCount - 1) / 2) * fromYInterval,
-        fromLayer.position[2],
-      ];
+    let discriminatorKey = genKey.replace("generator", "discriminator");
+    if (!discriminatorGroups[discriminatorKey]) {
+      discriminatorKey = Object.keys(discriminatorGroups)[0];
+    }
+    const discLayers = discriminatorGroups[discriminatorKey];
+    const firstDiscLayer = discLayers[0];
 
-      for (let toX = 0; toX < toGrid.xCount; toX++) {
-        for (let toY = 0; toY < toGrid.yCount; toY++) {
-          const toCenter = [
-            toLayer.position[0] + (toX - (toGrid.xCount - 1) / 2) * toXInterval,
-            toLayer.position[1] + (toY - (toGrid.yCount - 1) / 2) * toYInterval,
-            toLayer.position[2],
-          ];
+    if (lastGenLayer && firstDiscLayer) {
+      const fromPoints = getLayerPoints(lastGenLayer, model);
+      const toPoints = getLayerPoints(firstDiscLayer, model);
 
-          connections.push({ from: fromCenter, to: toCenter });
-        }
+      for (let i = 0; i < fromPoints.length; i++) {
+        temp.push({ from: fromPoints[i], to: toPoints[i] });
       }
+    }
+  });
+}
+
+function getLayerPoints(layer, model) {
+  const position = layer.position || [0, 0, 0];
+  const dimensions = layer.dimensions || [1, 1, 1];
+  const gridConfig = GRID_CONFIGS[model] || {};
+  const grid = gridConfig[layer.type] || { xCount: 8, yCount: 8 };
+
+  const points = [];
+  const xCount = grid.xCount;
+  const yCount = grid.yCount;
+
+  // Calculate the size of each node
+  const nodeWidth = dimensions[0] / xCount;
+  const nodeHeight = dimensions[1] / yCount;
+
+  // Calculate intervals based on the Sublayer component logic
+  const xInterval = (dimensions[0] / xCount) * INTERLAYER_MARGIN_X;
+  const yInterval = (dimensions[1] / yCount) * INTERLAYER_MARGIN_Y;
+
+  for (let y = 0; y < yCount; y++) {
+    for (let x = 0; x < xCount; x++) {
+      const pointX = position[0] + (x - (xCount - 1) / 2) * xInterval;
+      const pointY = position[1];
+      const pointZ = position[2] + (y - (yCount - 1) / 2) * yInterval;
+      points.push([pointX, pointY, pointZ]);
     }
   }
 
-  return connections;
+  return points;
 }
 
 function SingleLine({ from, to, style }) {
   const geometry = useMemo(() => {
     if (!from || !to) return null;
 
-    const start = new THREE.Vector3().fromArray(from);
-    const end = new THREE.Vector3().fromArray(to);
+    const start = new THREE.Vector3(...from);
+    const end = new THREE.Vector3(...to);
+
     const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-    mid.z += 50; // Add some curvature
+    mid.y += 25; // Adjust curvature along Y-axis
 
     const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
     const points = curve.getPoints(50);
@@ -131,7 +165,7 @@ function SingleLine({ from, to, style }) {
 
   return (
     <line geometry={geometry}>
-      <lineBasicMaterial {...lineMaterialProps} />
+      <lineBasicMaterial attach="material" {...lineMaterialProps} />
     </line>
   );
 }

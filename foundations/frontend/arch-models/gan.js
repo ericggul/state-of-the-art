@@ -585,6 +585,7 @@ export const GRID_CONFIGS = {
   CYCLEGAN: {
     conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    residual: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     input: {
       xCount: IMAGE_DIM[0],
       yCount: IMAGE_DIM[1],
@@ -613,8 +614,8 @@ export const GRID_CONFIGS = {
   },
   STYLEGAN2: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
-    residual: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
+    residual: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
@@ -626,9 +627,9 @@ export const GRID_CONFIGS = {
   },
   STYLEGAN3: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
-    synthesis_layer: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
-    fourier_features: { xCount: 3, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
+    synthesis_layer: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
+    fourier_features: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
