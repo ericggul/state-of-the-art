@@ -142,8 +142,63 @@ export const DCGAN = [
   },
 ];
 
-// WGAN Structure (similar to DCGAN but with different loss function)
-export const WGAN = DCGAN;
+// WGAN Structure
+export const WGAN = [
+  {
+    name: "Noise Input",
+    type: "input",
+    stack: "generator",
+    dimensions: [NOISE_DIM, 1, 1],
+  },
+  {
+    name: "Dense Layer",
+    type: "dense",
+    stack: "generator",
+    dimensions: [8192, 1, 1],
+  },
+  {
+    name: "Reshape",
+    type: "reshape",
+    stack: "generator",
+    dimensions: [512, 4, 4],
+  },
+  ...Array.from({ length: 4 }, (_, i) => ({
+    name: `Deconv Layer ${i + 1}`,
+    type: "deconv",
+    stack: "generator",
+    dimensions: [256 / 2 ** i, 8 * 2 ** i, 8 * 2 ** i],
+  })),
+  {
+    name: "Generator Output",
+    type: "output",
+    stack: "generator",
+    dimensions: IMAGE_DIM,
+  },
+  {
+    name: "Image Input",
+    type: "input",
+    stack: "discriminator",
+    dimensions: IMAGE_DIM,
+  },
+  ...Array.from({ length: 4 }, (_, i) => ({
+    name: `Conv Layer ${i + 1}`,
+    type: "conv",
+    stack: "discriminator",
+    dimensions: [64 * 2 ** i, 32 / 2 ** i, 32 / 2 ** i],
+  })),
+  {
+    name: "Dense Layer",
+    type: "dense",
+    stack: "discriminator",
+    dimensions: [1024, 1, 1],
+  },
+  {
+    name: "Critic Output",
+    type: "output",
+    stack: "discriminator",
+    dimensions: [1, 1, 1],
+  },
+];
 
 // Progressive GAN Structure
 export const PROGRESSIVE_GAN = [
@@ -552,6 +607,7 @@ export const GRID_CONFIGS = {
   WGAN: {
     conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    dense: { xCount: 10, yCount: 10, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: IMAGE_DIM[0],
@@ -559,6 +615,7 @@ export const GRID_CONFIGS = {
       xInterval: 1,
       yInterval: 1,
     },
+    reshape: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
   },
   PROGRESSIVE_GAN: {
     progressive_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },

@@ -88,12 +88,15 @@ function connectGeneratorsToDiscriminators(
 
     let discriminatorKey = genKey.replace("generator", "discriminator");
     if (!discriminatorGroups[discriminatorKey]) {
+      discriminatorKey = genKey.replace("generator", "critic");
+    }
+    if (!discriminatorGroups[discriminatorKey]) {
       discriminatorKey = Object.keys(discriminatorGroups)[0];
     }
     const discLayers = discriminatorGroups[discriminatorKey];
-    const firstDiscLayer = discLayers[0];
 
-    if (lastGenLayer && firstDiscLayer) {
+    if (lastGenLayer && discLayers && discLayers.length > 0) {
+      const firstDiscLayer = discLayers[0];
       const fromPoints = getLayerPoints(lastGenLayer, model);
       const toPoints = getLayerPoints(firstDiscLayer, model);
 
