@@ -547,7 +547,7 @@ export const MODELS = {
     "v5.1": {
       name: "Diffusion Models",
       "v5.1.1": {
-        name: "Denoising Diffusion Probabilistic Models (DDPM)",
+        name: "DDPM",
         year: 2020,
         place: "Jonathan Ho, Ajay Jain, Pieter Abbeel",
         citation: 3400,
@@ -869,7 +869,7 @@ export const ARRAY = [
   "StyleGAN",
   "StyleGAN2",
   "StyleGAN3",
-  "Denoising Diffusion Probabilistic Models (DDPM)",
+  "DDPM",
   "Stable Diffusion",
   "Neural Radiance Fields (NeRF)",
   "Show and Tell",
@@ -1139,7 +1139,7 @@ export const OBJECT_ARRAY = [
     version: "v5.0.4.3",
   },
   {
-    name: "Denoising Diffusion Probabilistic Models (DDPM)",
+    name: "DDPM",
     version: "v5.1.1",
   },
   {

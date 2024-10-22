@@ -1,10 +1,15 @@
 //multi-modal here // Constants for multimodal models
 const IMAGE_INPUT_DIM = [224, 224, 3]; // Typical image input dimensions
-const TEXT_INPUT_DIM = [77]; // Tokenized text length
+const TEXT_INPUT_DIM = [77, 1, 1]; // Tokenized text length
 const VISUAL_EMBED_DIM = [1, 1, 512];
 const TEXT_EMBED_DIM = [1, 1, 512];
 const NUM_VIT_LAYERS = 12; // For ViT-B/32
 const NUM_TEXT_TRANSFORMER_LAYERS = 12;
+const NUM_TRANSFORMER_LAYERS = 12;
+const NUM_PRIOR_TRANSFORMER_LAYERS = 12;
+const NUM_UNET_BLOCKS = 8;
+const NUM_UNET_ATTENTION_LAYERS = 4;
+const IMAGE_EMBED_DIM = [1, 1, 16384];
 
 // Model definitions
 

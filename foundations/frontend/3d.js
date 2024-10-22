@@ -16,6 +16,7 @@ import RNNLayers from "./arch/layers/RNNLayers";
 import VAELayers from "./arch/layers/VAELayers";
 import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
 import GANLayers from "./arch/layers/GANLayers";
+import DiffusionLayers from "./arch/layers/DiffusionLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
@@ -120,6 +121,9 @@ export default function Visualisation({
       case "gan":
         ModelComponent = GANLayers;
         break;
+      case "diffusion":
+        ModelComponent = DiffusionLayers;
+        break;
       default:
         console.warn(
           `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`
@@ -132,6 +136,8 @@ export default function Visualisation({
     );
     ModelComponent = BasicNNLayers;
   }
+
+  console.log(structure);
 
   return (
     <Canvas

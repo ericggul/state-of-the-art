@@ -225,7 +225,7 @@ export const LAYER_CONFIGS = {
     type: "diffusion",
   },
   STABLE_DIFFUSION: {
-    layerHeight: 60,
+    layerHeight: 5,
     keyPrefix: "stable_diffusion",
     type: "diffusion",
   },
