@@ -1,32 +1,53 @@
 import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
 import GANConnections from "../connections/GANConnections";
+
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
 export default function GANLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];
   const layerHeight = modelConfig.layerHeight || 60;
+  const layerGap = 10; // Gap between layers
 
-  const { generator, discriminator } = structure;
+  const layers = useMemo(() => {
+    // Calculate heights for all layers
+    const layerHeights = structure.map((layer) => layer.dimensions[1]);
 
-  // Positioning layers for generator and discriminator
-  const generatorLayers = useMemo(() => {
-    return generator.map((layer, index) => ({
-      ...layer,
-      position: [0, index * -layerHeight, 0],
-    }));
-  }, [generator, layerHeight]);
+    // Calculate cumulative positions
+    const positions = [];
+    let cumulativeHeight = 0;
+    for (let i = 0; i < layerHeights.length; i++) {
+      if (i > 0) {
+        cumulativeHeight +=
+          (layerHeights[i - 1] + layerHeights[i]) / 2 + layerGap;
+      }
+      positions.push(cumulativeHeight);
+    }
 
-  const discriminatorLayers = useMemo(() => {
-    const offsetX = modelConfig.discriminatorOffset || 200; // Offset to separate discriminator visually
-    return discriminator.map((layer, index) => ({
-      ...layer,
-      position: [offsetX, index * -layerHeight, 0],
-    }));
-  }, [discriminator, layerHeight, modelConfig]);
+    // Calculate total height and center offset
+    const totalHeight =
+      cumulativeHeight + layerHeights[layerHeights.length - 1];
+    const centerOffset = totalHeight / 2;
+
+    return structure.map((layer, index) => {
+      const yPosition = positions[index] - centerOffset;
+      const zPosition = layer.stack === "discriminator" ? 100 : -100;
+
+      return {
+        ...layer,
+        position: [0, yPosition, zPosition],
+      };
+    });
+  }, [structure, layerHeight, layerGap]);
+
+  const generatorLayers = layers.filter((layer) => layer.stack === "generator");
+  const discriminatorLayers = layers.filter(
+    (layer) => layer.stack === "discriminator"
+  );
 
   return (
     <group>
+      {/* <GANConnections layers={layers} style={style} /> */}
       {/* Generator Layers */}
       <group name="Generator">
         {generatorLayers.map((layer, i) => (
@@ -52,13 +73,6 @@ export default function GANLayers({ structure, style, model }) {
           />
         ))}
       </group>
-
-      {/* Connections */}
-      {/* <GANConnections
-        generatorLayers={generatorLayers}
-        discriminatorLayers={discriminatorLayers}
-        style={style}
-      /> */}
     </group>
   );
 }

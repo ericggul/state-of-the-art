@@ -59,7 +59,6 @@ export default function Visualisation({
       setModelName(name);
       const modelStructure = getModelStructure(name);
       setStructure(modelStructure);
-      console.log(`Model structure for ${name}:`, modelStructure); // Debug log
     } else {
       console.warn(`No model found for version: ${version}`);
     }

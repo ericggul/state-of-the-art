@@ -7,13 +7,13 @@ import * as SELF_SUPERVISED from "./self_supervised";
 import * as GAN from "./gan";
 
 export const MODELS = {
-  ...CNN.MODELS,
-  ...TRANSFORMER.MODELS,
-  ...BASIC_NN.MODELS,
-  ...RNN.MODELS,
-  ...VAE.MODELS,
-  ...SELF_SUPERVISED.MODELS,
-  ...GAN.MODELS,
+  ...CNN,
+  ...TRANSFORMER,
+  ...BASIC_NN,
+  ...RNN,
+  ...VAE,
+  ...SELF_SUPERVISED,
+  ...GAN,
 };
 
 export const LAYER_CONFIGS = {

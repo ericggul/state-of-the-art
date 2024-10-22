@@ -22,6 +22,8 @@ const Sublayer = ({
     yInterval: 10,
   };
 
+  console.log(grid, size);
+
   return (
     <group position={position}>
       <InstancedNodes
