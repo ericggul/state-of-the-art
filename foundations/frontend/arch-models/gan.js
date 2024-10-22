@@ -1,7 +1,8 @@
 // Constants for model configurations
 const NOISE_DIM = 100;
 const IMAGE_DIM = [64, 64, 3]; // Output image size for most GANs
-const LARGE_IMAGE_DIM = [1024, 1024, 3]; // For Progressive GAN and StyleGANs
+// const LARGE_IMAGE_DIM = [1024, 1024, 3]; // For Progressive GAN and StyleGANs
+const LARGE_IMAGE_DIM = [128, 128, 3]; // For Progressive GAN and StyleGANs
 const NUM_CHANNELS = 3;
 
 // Basic GAN Structure
@@ -379,47 +380,47 @@ export const STYLEGAN3 = STYLEGAN2;
 // Layer Configurations
 export const LAYER_CONFIGS = {
   GENERATIVE_ADVERSARIAL_NETWORKS_GANS: {
-    layerHeight: 60,
+    layerHeight: 10,
     keyPrefix: "gan",
     type: "gan",
   },
   DCGAN: {
-    layerHeight: 60,
+    layerHeight: 10,
     keyPrefix: "dcgan",
     type: "gan",
   },
   WGAN: {
-    layerHeight: 60,
+    layerHeight: 10,
     keyPrefix: "wgan",
     type: "gan",
   },
   PROGRESSIVE_GAN: {
-    layerHeight: 60,
+    layerHeight: 20,
     keyPrefix: "progressive_gan",
     type: "gan",
   },
   CONDITIONAL_GAN: {
-    layerHeight: 60,
+    layerHeight: 30,
     keyPrefix: "conditional_gan",
     type: "gan",
   },
   CYCLEGAN: {
-    layerHeight: 60,
+    layerHeight: 30,
     keyPrefix: "cyclegan",
     type: "gan",
   },
   STYLEGAN: {
-    layerHeight: 60,
+    layerHeight: 30,
     keyPrefix: "stylegan",
     type: "gan",
   },
   STYLEGAN2: {
-    layerHeight: 60,
+    layerHeight: 30,
     keyPrefix: "stylegan2",
     type: "gan",
   },
   STYLEGAN3: {
-    layerHeight: 60,
+    layerHeight: 30,
     keyPrefix: "stylegan3",
     type: "gan",
   },
