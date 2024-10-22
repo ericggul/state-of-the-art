@@ -5,6 +5,9 @@ import * as RNN from "./rnn";
 import * as VAE from "./vae";
 import * as SELF_SUPERVISED from "./self_supervised";
 import * as GAN from "./gan";
+import * as COORDINATE from "./coordinate";
+import * as DIFFUSION from "./diffusion";
+import * as MULTI_MODAL from "./multi_modal";
 
 export const MODELS = {
   ...CNN,
@@ -14,6 +17,9 @@ export const MODELS = {
   ...VAE,
   ...SELF_SUPERVISED,
   ...GAN,
+  ...COORDINATE,
+  ...DIFFUSION,
+  ...MULTI_MODAL,
 };
 
 export const LAYER_CONFIGS = {
@@ -24,6 +30,9 @@ export const LAYER_CONFIGS = {
   ...VAE.LAYER_CONFIGS,
   ...SELF_SUPERVISED.LAYER_CONFIGS,
   ...GAN.LAYER_CONFIGS,
+  ...COORDINATE.LAYER_CONFIGS,
+  ...DIFFUSION.LAYER_CONFIGS,
+  ...MULTI_MODAL.LAYER_CONFIGS,
 };
 
 export const GRID_CONFIGS = {
@@ -34,6 +43,9 @@ export const GRID_CONFIGS = {
   ...VAE.GRID_CONFIGS,
   ...SELF_SUPERVISED.GRID_CONFIGS,
   ...GAN.GRID_CONFIGS,
+  ...COORDINATE.GRID_CONFIGS,
+  ...DIFFUSION.GRID_CONFIGS,
+  ...MULTI_MODAL.GRID_CONFIGS,
 };
 
 // Function to get model structure based on model name

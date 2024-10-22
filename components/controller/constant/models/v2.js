@@ -627,14 +627,6 @@ export const MODELS = {
         explanation:
           "Improved version of DALL-E with higher resolution and greater photorealism.",
       },
-      "v6.2.3": {
-        name: "Stable Diffusion",
-        year: 2022,
-        place: "Robin Rombach et al., LMU Munich and Stability AI",
-        citation: 800,
-        explanation:
-          "A latent diffusion model capable of generating high-quality images from text prompts.",
-      },
     },
     "v6.3": {
       name: "Advanced Multimodal Models",
@@ -885,7 +877,6 @@ export const ARRAY = [
   "CLIP",
   "DALL-E",
   "DALL-E 2",
-  "Stable Diffusion",
   "PaLM-E",
   "GPT-4V",
   "Deep Q-Network (DQN)",
@@ -1179,10 +1170,7 @@ export const OBJECT_ARRAY = [
     name: "DALL-E 2",
     version: "v6.2.2",
   },
-  {
-    name: "Stable Diffusion",
-    version: "v6.2.3",
-  },
+
   {
     name: "PaLM-E",
     version: "v6.3.1",
