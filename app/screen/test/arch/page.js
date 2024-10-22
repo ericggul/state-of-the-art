@@ -5,12 +5,12 @@ import { Suspense } from "react";
 
 const Frontend = dynamic(() => import("@/components/frontend"));
 
-const CURRENT_TESTING_VERSION = "v1.0";
+const CURRENT_TESTING_VERSION = "v4.3.5";
 
 export default function ScreenWrapper() {
   return (
     <Suspense>
-      <Screen />
+      <Screen isTesting={true} />
     </Suspense>
   );
 }
@@ -18,7 +18,7 @@ export default function ScreenWrapper() {
 function Screen() {
   return (
     <>
-      <Frontend version={CURRENT_TESTING_VERSION} />
+      <Frontend isTesting={true} initVersion={CURRENT_TESTING_VERSION} />
     </>
   );
 }

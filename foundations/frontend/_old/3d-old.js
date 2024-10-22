@@ -1,22 +1,22 @@
 // Visualization.js
 import React, { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrientationCamera } from "./utils/OrientationCamera";
+import { OrientationCamera } from "../utils/OrientationCamera";
 
 // Import styles and structures
-import { STYLE_STRATEGIES } from "./style";
-import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
+import { STYLE_STRATEGIES } from "../style";
+import { LAYER_CONFIGS, getModelStructure } from "../arch-models/_structure";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 
-import BasicNNLayers from "./arch/layers/BasicNNLayers";
-import CNNLayers from "./arch/layers/CNNLayers";
-import TransformerLayers from "./arch/layers/TransformerLayers";
-import RNNLayers from "./arch/layers/RNNLayers";
-import VAELayers from "./arch/layers/VAELayers";
-import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
+import BasicNNLayers from "../arch/layers/BasicNNLayers";
+import CNNLayers from "../arch/layers/CNNLayers";
+import TransformerLayers from "../arch/layers/TransformerLayers";
+import RNNLayers from "../arch/layers/RNNLayers";
+import VAELayers from "../arch/layers/VAELayers";
+import SelfSupervisedLayers from "../arch/layers/SelfSupervisedLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
-import CommonScene from "./utils/CommonScene";
+import CommonScene from "../utils/CommonScene";
 
 //current target versions
 //mcculloch v1.0

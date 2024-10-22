@@ -20,8 +20,6 @@ import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
 
 const CURRENT_TESTING_VERSION = "v4.0.3";
-const VERSION_TO_MORPH = "v3.2.2";
-
 // Utility function to convert model name to variable name
 function convertToVariableName(name) {
   return name
@@ -45,7 +43,8 @@ function getModelNameFromVersion(version) {
 
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
-  styleIndex = 0,
+  isTesting,
+  styleIndex = 4,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
@@ -150,7 +149,7 @@ export default function Visualisation({
             )}
           </group>
           <AvatarModel />
-          <OrientationCamera cameraDistance={cameraDistance} />
+          {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
         </CommonScene>
       </Suspense>
     </Canvas>
