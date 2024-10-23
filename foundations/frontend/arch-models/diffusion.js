@@ -1,9 +1,14 @@
 // Constants for model configurations
-const IMAGE_DIM = [64, 64, 3]; // Input image dimensions
+const IMAGE_DIM = [64, 64, 3]; // Input image dimensions for DDPM and GLIDE
 const LATENT_DIM = [8, 8, 4]; // Latent space dimensions for Stable Diffusion
+const HIGH_RES_IMAGE_DIM = [256, 256, 3]; // Higher resolution for Imagen
 const NUM_UNET_BLOCKS = 4; // Number of downsampling/upsampling blocks
+const NUM_GLIDE_BLOCKS = 4; // Similar structure for GLIDE
+const NUM_IMAGEN_UNET_BLOCKS = 4; // Number of UNet blocks in Imagen
+const TEXT_EMBED_DIM_CLIP = 768; // Text embedding dimension for CLIP in GLIDE
+const TEXT_EMBED_DIM_T5 = 1024; // Text embedding dimension for T5 in Imagen
+const NUM_T5_ENCODER_BLOCKS = 24; // Number of T5 encoder layers in Imagen
 
-// Diffusion Model Structures
 export const DDPM = [
   { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
   { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
@@ -217,16 +222,497 @@ export const STABLE_DIFFUSION = [
   },
 ];
 
+// GLIDE Model Structure
+export const GLIDE = [
+  { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
+  {
+    name: "Text Encoder (CLIP)",
+    type: "text_encoder",
+    sublayers: [
+      {
+        name: "Embedding Layer",
+        type: "embedding",
+        dimensions: [77, TEXT_EMBED_DIM_CLIP],
+      },
+      // CLIP Transformer layers
+      ...Array.from({ length: 12 }, (_, i) => ({
+        name: `CLIP Transformer Block ${i + 1}`,
+        type: "transformer_block",
+        sublayers: [
+          {
+            name: `Self-Attention ${i + 1}`,
+            type: "attention",
+            dimensions: [77, TEXT_EMBED_DIM_CLIP],
+          },
+          {
+            name: `Feed Forward ${i + 1}`,
+            type: "ffn",
+            dimensions: [77, TEXT_EMBED_DIM_CLIP * 4],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
+  {
+    name: "UNet",
+    type: "unet_glide",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_GLIDE_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}.1`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** i,
+              IMAGE_DIM[1] / 2 ** i,
+              64 * 2 ** i,
+            ],
+          },
+          {
+            name: `Cross Attention ${i + 1}`,
+            type: "cross_attention",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** i,
+              IMAGE_DIM[1] / 2 ** i,
+              TEXT_EMBED_DIM_CLIP,
+            ],
+          },
+          {
+            name: `ResNet ${i + 1}.2`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** i,
+              IMAGE_DIM[1] / 2 ** i,
+              64 * 2 ** i,
+            ],
+          },
+          {
+            name: `Downsample ${i + 1}`,
+            type: "downsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Bottleneck",
+        type: "resnet_block",
+        dimensions: [IMAGE_DIM[0] / 16, IMAGE_DIM[1] / 16, 1024],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_GLIDE_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_GLIDE_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `ResNet ${NUM_GLIDE_BLOCKS - i}.1`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              64 * 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Cross Attention ${NUM_GLIDE_BLOCKS - i}`,
+            type: "cross_attention",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              TEXT_EMBED_DIM_CLIP,
+            ],
+          },
+          {
+            name: `ResNet ${NUM_GLIDE_BLOCKS - i}.2`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+              64 * 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Upsample ${NUM_GLIDE_BLOCKS - i}`,
+            type: "upsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_GLIDE_BLOCKS - i - 2),
+              IMAGE_DIM[1] / 2 ** (NUM_GLIDE_BLOCKS - i - 2),
+              64 * 2 ** (NUM_GLIDE_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Output Convolution", type: "conv", dimensions: IMAGE_DIM },
+  { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
+];
+
+// Imagen Model Structure
+export const IMAGEN = [
+  { name: "Input Noise", type: "input", dimensions: [64, 64, 3] },
+  {
+    name: "Text Encoder (T5-XXL)",
+    type: "text_encoder",
+    sublayers: [
+      {
+        name: "Input Embedding",
+        type: "embedding",
+        dimensions: [77, TEXT_EMBED_DIM_T5],
+      },
+      // T5 Encoder layers
+      ...Array.from({ length: NUM_T5_ENCODER_BLOCKS }, (_, i) => ({
+        name: `T5 Encoder Block ${i + 1}`,
+        type: "t5_encoder_block",
+        sublayers: [
+          {
+            name: `Self-Attention ${i + 1}`,
+            type: "attention",
+            dimensions: [77, TEXT_EMBED_DIM_T5],
+          },
+          {
+            name: `Feed Forward ${i + 1}`,
+            type: "ffn",
+            dimensions: [77, TEXT_EMBED_DIM_T5 * 4],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 512] },
+  {
+    name: "UNet (64x64)",
+    type: "unet_imagen",
+    sublayers: createUNetBlocks(64, TEXT_EMBED_DIM_T5),
+  },
+  { name: "Output (64x64)", type: "output", dimensions: [64, 64, 3] },
+  {
+    name: "Super-Resolution UNet (256x256)",
+    type: "unet_imagen_sr",
+    sublayers: createSuperResolutionUNetBlocks(64, 256, TEXT_EMBED_DIM_T5),
+  },
+  { name: "Output (256x256)", type: "output", dimensions: [256, 256, 3] },
+];
+
+function createUNetBlocks(resolution, textEmbedDim) {
+  return [
+    // Downsampling path
+    ...Array.from({ length: NUM_IMAGEN_UNET_BLOCKS }, (_, i) => ({
+      name: `Down Block ${i + 1}`,
+      type: "down_block",
+      sublayers: [
+        {
+          name: `ResNet ${i + 1}.1`,
+          type: "resnet_block",
+          dimensions: [resolution / 2 ** i, resolution / 2 ** i, 256 * 2 ** i],
+        },
+        {
+          name: `Attention ${i + 1}`,
+          type: "attention",
+          dimensions: [resolution / 2 ** i, resolution / 2 ** i, 256 * 2 ** i],
+        },
+        {
+          name: `Cross Attention ${i + 1}`,
+          type: "cross_attention",
+          dimensions: [resolution / 2 ** i, resolution / 2 ** i, textEmbedDim],
+        },
+        {
+          name: `ResNet ${i + 1}.2`,
+          type: "resnet_block",
+          dimensions: [resolution / 2 ** i, resolution / 2 ** i, 256 * 2 ** i],
+        },
+        {
+          name: `Downsample ${i + 1}`,
+          type: "downsample",
+          dimensions: [
+            resolution / 2 ** (i + 1),
+            resolution / 2 ** (i + 1),
+            256 * 2 ** i,
+          ],
+        },
+      ],
+    })),
+    // Bottleneck
+    {
+      name: "Bottleneck",
+      type: "resnet_block",
+      dimensions: [resolution / 16, resolution / 16, 256 * 16],
+    },
+    {
+      name: "Bottleneck Attention",
+      type: "attention",
+      dimensions: [resolution / 16, resolution / 16, 256 * 16],
+    },
+    {
+      name: "Bottleneck Cross Attention",
+      type: "cross_attention",
+      dimensions: [resolution / 16, resolution / 16, textEmbedDim],
+    },
+    // Upsampling path
+    ...Array.from({ length: NUM_IMAGEN_UNET_BLOCKS }, (_, i) => ({
+      name: `Up Block ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+      type: "up_block",
+      sublayers: [
+        {
+          name: `ResNet ${NUM_IMAGEN_UNET_BLOCKS - i}.1`,
+          type: "resnet_block",
+          dimensions: [
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            256 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `Attention ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "attention",
+          dimensions: [
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            256 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `Cross Attention ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "cross_attention",
+          dimensions: [
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            textEmbedDim,
+          ],
+        },
+        {
+          name: `ResNet ${NUM_IMAGEN_UNET_BLOCKS - i}.2`,
+          type: "resnet_block",
+          dimensions: [
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            256 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `Upsample ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "upsample",
+          dimensions: [
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 2),
+            resolution / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 2),
+            256 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+      ],
+    })),
+    {
+      name: "Output Convolution",
+      type: "conv",
+      dimensions: [resolution, resolution, 3],
+    },
+  ];
+}
+
+function createSuperResolutionUNetBlocks(inputRes, outputRes, textEmbedDim) {
+  const scaleFactor = outputRes / inputRes;
+  return [
+    // Downsampling path
+    ...Array.from({ length: NUM_IMAGEN_UNET_BLOCKS }, (_, i) => ({
+      name: `SR Down Block ${i + 1}`,
+      type: "down_block",
+      sublayers: [
+        {
+          name: `SR ResNet ${i + 1}.1`,
+          type: "resnet_block",
+          dimensions: [outputRes / 2 ** i, outputRes / 2 ** i, 128 * 2 ** i],
+        },
+        {
+          name: `SR Attention ${i + 1}`,
+          type: "attention",
+          dimensions: [outputRes / 2 ** i, outputRes / 2 ** i, 128 * 2 ** i],
+        },
+        {
+          name: `SR Cross Attention ${i + 1}`,
+          type: "cross_attention",
+          dimensions: [outputRes / 2 ** i, outputRes / 2 ** i, textEmbedDim],
+        },
+        {
+          name: `SR ResNet ${i + 1}.2`,
+          type: "resnet_block",
+          dimensions: [outputRes / 2 ** i, outputRes / 2 ** i, 128 * 2 ** i],
+        },
+        {
+          name: `SR Downsample ${i + 1}`,
+          type: "downsample",
+          dimensions: [
+            outputRes / 2 ** (i + 1),
+            outputRes / 2 ** (i + 1),
+            128 * 2 ** i,
+          ],
+        },
+      ],
+    })),
+    // Bottleneck
+    {
+      name: "SR Bottleneck",
+      type: "resnet_block",
+      dimensions: [outputRes / 16, outputRes / 16, 128 * 16],
+    },
+    {
+      name: "SR Bottleneck Attention",
+      type: "attention",
+      dimensions: [outputRes / 16, outputRes / 16, 128 * 16],
+    },
+    {
+      name: "SR Bottleneck Cross Attention",
+      type: "cross_attention",
+      dimensions: [outputRes / 16, outputRes / 16, textEmbedDim],
+    },
+    // Upsampling path
+    ...Array.from({ length: NUM_IMAGEN_UNET_BLOCKS }, (_, i) => ({
+      name: `SR Up Block ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+      type: "up_block",
+      sublayers: [
+        {
+          name: `SR ResNet ${NUM_IMAGEN_UNET_BLOCKS - i}.1`,
+          type: "resnet_block",
+          dimensions: [
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            128 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `SR Attention ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "attention",
+          dimensions: [
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            128 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `SR Cross Attention ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "cross_attention",
+          dimensions: [
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            textEmbedDim,
+          ],
+        },
+        {
+          name: `SR ResNet ${NUM_IMAGEN_UNET_BLOCKS - i}.2`,
+          type: "resnet_block",
+          dimensions: [
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+            128 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+        {
+          name: `SR Upsample ${NUM_IMAGEN_UNET_BLOCKS - i}`,
+          type: "upsample",
+          dimensions: [
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 2),
+            outputRes / 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 2),
+            128 * 2 ** (NUM_IMAGEN_UNET_BLOCKS - i - 1),
+          ],
+        },
+      ],
+    })),
+    {
+      name: "SR Output Convolution",
+      type: "conv",
+      dimensions: [outputRes, outputRes, 3],
+    },
+  ];
+}
+
+// Consistency Models Structure
+export const CONSISTENCY_MODELS = [
+  { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
+  {
+    name: "UNet Generator",
+    type: "unet_consistency",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_UNET_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** i,
+              IMAGE_DIM[1] / 2 ** i,
+              64 * 2 ** i,
+            ],
+          },
+          {
+            name: `Downsample ${i + 1}`,
+            type: "downsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Bottleneck",
+        type: "resnet_block",
+        dimensions: [IMAGE_DIM[0] / 16, IMAGE_DIM[1] / 16, 512],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_UNET_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_UNET_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `ResNet ${NUM_UNET_BLOCKS - i}`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_UNET_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_UNET_BLOCKS - i - 1),
+              64 * 2 ** (NUM_UNET_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Upsample ${NUM_UNET_BLOCKS - i}`,
+            type: "upsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_UNET_BLOCKS - i - 2),
+              IMAGE_DIM[1] / 2 ** (NUM_UNET_BLOCKS - i - 2),
+              64 * 2 ** (NUM_UNET_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Output Convolution", type: "conv", dimensions: IMAGE_DIM },
+  { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
+];
+
 // Layer configurations for diffusion models
 export const LAYER_CONFIGS = {
-  DDPM: {
-    layerHeight: 60,
-    keyPrefix: "ddpm",
-    type: "diffusion",
-  },
+  DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
   STABLE_DIFFUSION: {
     layerHeight: 5,
     keyPrefix: "stable_diffusion",
+    type: "diffusion",
+  },
+  GLIDE: { layerHeight: 60, keyPrefix: "glide", type: "diffusion" },
+  IMAGEN: { layerHeight: 80, keyPrefix: "imagen", type: "diffusion" },
+  CONSISTENCY_MODELS: {
+    layerHeight: 60,
+    keyPrefix: "consistency_models",
     type: "diffusion",
   },
 };
@@ -254,5 +740,38 @@ export const GRID_CONFIGS = {
     down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
     up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
     resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  GLIDE: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 4, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  IMAGEN: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    // output: { xCount: 256, yCount: 256, xInterval: 0.25, yInterval: 0.25 },
+    output: { xCount: 64, yCount: 64, xInterval: 0.25, yInterval: 0.25 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    t5_encoder_block: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 8, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  CONSISTENCY_MODELS: {
+    input: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    output: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
   },
 };

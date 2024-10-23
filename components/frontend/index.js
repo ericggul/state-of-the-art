@@ -36,10 +36,10 @@ function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
     [flattenedModels, version]
   );
 
-  // console.log(
-  //   refinedFlattend,
-  //   refinedFlattend.map((model) => model.name)
-  // );
+  console.log(
+    refinedFlattened,
+    refinedFlattened.map((model) => model.name)
+  );
 
   return (
     <S.Container>

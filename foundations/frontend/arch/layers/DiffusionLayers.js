@@ -37,12 +37,12 @@ export default function DiffusionLayers({ structure, style, model }) {
 
       return {
         ...layer,
-        position: [0, y, 0],
+        position: [0, cumulativeHeight, 0],
         sublayers: sublayersWithPositions,
       };
     });
 
-    const totalHeight = cumulativeHeight - layerGap;
+    const totalHeight = cumulativeHeight;
     const centerOffset = totalHeight / 2;
 
     return layersWithPositions.map((layer) => ({

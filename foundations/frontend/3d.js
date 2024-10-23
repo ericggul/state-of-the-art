@@ -124,6 +124,7 @@ export default function Visualisation({
       case "diffusion":
         ModelComponent = DiffusionLayers;
         break;
+
       default:
         console.warn(
           `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`

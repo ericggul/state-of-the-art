@@ -5,7 +5,7 @@ const MLP_HIDDEN_DIM = [1, 1, 256]; // Hidden layer size
 const NUM_MLP_LAYERS = 8;
 
 // NeRF Model Structure
-export const NERF = [
+export const NEURAL_RADIANCE_FIELDS_NERF = [
   { name: "Coordinate Input", type: "input", dimensions: INPUT_DIM },
   {
     name: "Positional Encoding",
@@ -26,7 +26,7 @@ export const NERF = [
 
 // Layer configurations for coordinate-based models
 export const LAYER_CONFIGS = {
-  NERF: {
+  NEURAL_RADIANCE_FIELDS_NERF: {
     layerHeight: 30,
     keyPrefix: "nerf",
     type: "coordinate_based",
@@ -35,7 +35,7 @@ export const LAYER_CONFIGS = {
 
 // Grid configurations for coordinate-based models
 export const GRID_CONFIGS = {
-  NERF: {
+  NEURAL_RADIANCE_FIELDS_NERF: {
     input: { xCount: 5, yCount: 1, xInterval: 2, yInterval: 2 },
     positional_encoding: {
       xCount: 63,

@@ -565,16 +565,29 @@ export const MODELS = {
             "An efficient diffusion model operating in latent space, enabling high-resolution image synthesis with reduced computational cost.",
         },
       },
-    },
-    "v5.2": {
-      name: "Neural Rendering and 3D Models",
-      "v5.2.1": {
-        name: "Neural Radiance Fields (NeRF)",
-        year: 2020,
-        place: "Ben Mildenhall et al., UC Berkeley",
-        citation: 5600,
+      "v5.1.3": {
+        name: "GLIDE",
+        year: 2021,
+        place: "Alex Nichol et al., OpenAI",
+        citation: 700,
         explanation:
-          "A method for representing 3D scenes using neural networks, enabling novel view synthesis from 2D images.",
+          "Text-guided diffusion model for image generation and editing, predecessor to DALL-E 2.",
+      },
+      "v5.1.4": {
+        name: "Imagen",
+        year: 2022,
+        place: "Chitwan Saharia et al., Google Brain",
+        citation: 1200,
+        explanation:
+          "Text-to-image diffusion model that achieved state-of-the-art results in image generation from text descriptions.",
+      },
+      "v5.1.5": {
+        name: "Consistency Models",
+        year: 2023,
+        place: "Yang Song et al., Google DeepMind",
+        citation: 100,
+        explanation:
+          "A new family of generative models that can generate high-quality samples in one step, bridging GANs and diffusion models.",
       },
     },
   },
@@ -871,7 +884,9 @@ export const ARRAY = [
   "StyleGAN3",
   "DDPM",
   "Stable Diffusion",
-  "Neural Radiance Fields (NeRF)",
+  "GLIDE",
+  "Imagen",
+  "Consistency Models",
   "Show and Tell",
   "Visual Question Answering (VQA) Models",
   "CLIP",
@@ -1147,8 +1162,16 @@ export const OBJECT_ARRAY = [
     version: "v5.1.2.1",
   },
   {
-    name: "Neural Radiance Fields (NeRF)",
-    version: "v5.2.1",
+    name: "GLIDE",
+    version: "v5.1.3",
+  },
+  {
+    name: "Imagen",
+    version: "v5.1.4",
+  },
+  {
+    name: "Consistency Models",
+    version: "v5.1.5",
   },
   {
     name: "Show and Tell",
@@ -1170,7 +1193,6 @@ export const OBJECT_ARRAY = [
     name: "DALL-E 2",
     version: "v6.2.2",
   },
-
   {
     name: "PaLM-E",
     version: "v6.3.1",
