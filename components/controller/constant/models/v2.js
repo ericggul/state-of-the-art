@@ -642,16 +642,43 @@ export const MODELS = {
       },
     },
     "v6.3": {
-      name: "Advanced Multimodal Models",
+      name: "Advanced Vision-Language Models",
       "v6.3.1": {
+        name: "FLAMINGO",
+        year: 2022,
+        place: "Jean-Baptiste Alayrac et al., DeepMind",
+        citation: 500,
+        explanation:
+          "A visual language model with few-shot learning capabilities in multimodal contexts.",
+      },
+      "v6.3.2": {
+        name: "BLIP-2",
+        year: 2023,
+        place: "Junnan Li et al., Salesforce Research",
+        citation: 300,
+        explanation:
+          "Bootstrapping Language-Image Pre-training with frozen image encoders and LLMs.",
+      },
+    },
+    "v6.4": {
+      name: "Multimodal Large Language Models",
+      "v6.4.1": {
+        name: "LLaVA",
+        year: 2023,
+        place: "Haotian Liu et al., Microsoft",
+        citation: 200,
+        explanation:
+          "Large Language and Vision Assistant, combining GPT-style language models with visual understanding.",
+      },
+      "v6.4.2": {
         name: "PaLM-E",
         year: 2023,
-        place: "Google Research",
+        place: "Danny Driess et al., Google Research",
         citation: 50,
         explanation:
           "An embodied multimodal language model combining vision and language for robotic control.",
       },
-      "v6.3.2": {
+      "v6.4.3": {
         name: "GPT-4V",
         year: 2023,
         place: "OpenAI",
@@ -910,6 +937,9 @@ export const ARRAY = [
   "Capsule Networks (CapsNet)",
   "ELMo",
   "ULMFiT",
+  "FLAMINGO",
+  "BLIP-2",
+  "LLaVA",
 ];
 
 export const OBJECT_ARRAY = [
@@ -1194,12 +1224,24 @@ export const OBJECT_ARRAY = [
     version: "v6.2.2",
   },
   {
-    name: "PaLM-E",
+    name: "FLAMINGO",
     version: "v6.3.1",
   },
   {
-    name: "GPT-4V",
+    name: "BLIP-2",
     version: "v6.3.2",
+  },
+  {
+    name: "LLaVA",
+    version: "v6.4.1",
+  },
+  {
+    name: "PaLM-E",
+    version: "v6.4.2",
+  },
+  {
+    name: "GPT-4V",
+    version: "v6.4.3",
   },
   {
     name: "Deep Q-Network (DQN)",
