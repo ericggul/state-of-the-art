@@ -4,7 +4,7 @@ import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models/multi_modal";
 
 export default function MultiModalLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model] || {};
-  const layerGap = 3; // Adjust this value to change the gap between layers
+  const layerGap = 10; // Adjust this value to change the gap between layers
 
   // Separate layers into different modalities if applicable
   const { imageLayers, textLayers, fusionLayers } = useMemo(() => {
@@ -59,29 +59,33 @@ export default function MultiModalLayers({ structure, style, model }) {
 
   // Function to calculate positions for a set of layers
   const positionLayers = (layers) => {
-    const layerGap = 10; // Reduced gap between layers
-    let cumulativeY = 0;
+    let cumulativeX = 0;
+    const maxHeight = Math.max(
+      ...layers.map((layer) => layer.dimensions[1] || 20)
+    );
 
     const layersWithPositions = layers.map((layer) => {
-      const layerHeight = Math.min(layer.dimensions[1] || 20, 40); // Cap the layer height
-      const y = cumulativeY + layerHeight / 2;
-      cumulativeY += layerHeight + layerGap;
+      const layerWidth = layer.dimensions[0] || 20;
+      const layerHeight = layer.dimensions[1] || 20;
+      const x = cumulativeX + layerWidth / 2;
+      const y = (maxHeight - layerHeight) / 2; // Center vertically within the stream
+      cumulativeX += layerWidth + layerGap;
 
       return {
         ...layer,
-        position: [0, y, 0],
+        position: [x, y, 0],
       };
     });
 
-    // Center the layers vertically
-    const totalHeight = cumulativeY - layerGap;
-    const centerOffset = totalHeight / 2;
+    // Center the layers horizontally
+    const totalWidth = cumulativeX - layerGap;
+    const centerOffset = totalWidth / 2;
 
     return layersWithPositions.map((layer) => ({
       ...layer,
       position: [
-        layer.position[0],
-        layer.position[1] - centerOffset,
+        layer.position[0] - centerOffset,
+        layer.position[1],
         layer.position[2],
       ],
     }));
@@ -100,15 +104,40 @@ export default function MultiModalLayers({ structure, style, model }) {
     [fusionLayers]
   );
 
+  // Calculate the overall structure dimensions
+  const structureWidth =
+    Math.max(
+      ...positionedImageLayers.map(
+        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
+      ),
+      ...positionedTextLayers.map(
+        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
+      ),
+      ...positionedFusionLayers.map(
+        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
+      )
+    ) * 2;
+
+  const structureHeight =
+    100 * 2 +
+    Math.max(
+      Math.max(...positionedImageLayers.map((l) => l.dimensions[1] || 20)),
+      Math.max(...positionedTextLayers.map((l) => l.dimensions[1] || 20)),
+      Math.max(...positionedFusionLayers.map((l) => l.dimensions[1] || 20))
+    );
+
   // Define positions for different modality streams
-  const imageStreamPositionX = -100; // Adjust as needed
-  const textStreamPositionX = 100; // Adjust as needed
-  const fusionStreamPositionX = 0;
+  const streamGap = 100; // Adjust as needed
+  const imageStreamPositionY = streamGap;
+  const textStreamPositionY = 0;
+  const fusionStreamPositionY = -streamGap;
 
   return (
-    <group>
+    <group position={[0, -textStreamPositionY, 0]}>
+      {" "}
+      {/* Center vertically */}
       {/* Image Stream */}
-      <group position={[imageStreamPositionX, 0, 0]}>
+      <group position={[0, imageStreamPositionY, 0]}>
         {positionedImageLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-image-${layer.name}-${i}`}
@@ -120,9 +149,8 @@ export default function MultiModalLayers({ structure, style, model }) {
           />
         ))}
       </group>
-
       {/* Text Stream */}
-      <group position={[textStreamPositionX, 0, 0]}>
+      <group position={[0, textStreamPositionY, 0]}>
         {positionedTextLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-text-${layer.name}-${i}`}
@@ -134,9 +162,8 @@ export default function MultiModalLayers({ structure, style, model }) {
           />
         ))}
       </group>
-
       {/* Fusion Layers */}
-      <group position={[fusionStreamPositionX, 0, 0]}>
+      <group position={[0, fusionStreamPositionY, 0]}>
         {positionedFusionLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-fusion-${layer.name}-${i}`}
