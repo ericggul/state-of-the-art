@@ -148,86 +148,44 @@ export const GOOGLENET = [
   { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
 ];
 
-export const RESNET = [
-  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
-  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
-  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
-  ...Array.from({ length: NUM_RESNET_LAYERS }, (_, i) => ({
-    name: `Residual Block ${i + 1}`,
-    type: "residual_block",
-    dimensions: [56, 56, 256], // Adjust per block
-    zSpan: [16, 16],
-    sublayers: [
-      {
-        name: "Conv1x1 Downsample",
-        type: "conv",
-        dimensions: [56, 56, 64],
-        zSpan: [8, 8],
-      },
-      {
-        name: "Conv3x3",
-        type: "conv",
-        dimensions: [56, 56, 64],
-        zSpan: [8, 8],
-      },
-      {
-        name: "Conv1x1",
-        type: "conv",
-        dimensions: [56, 56, 256],
-        zSpan: [16, 16],
-      },
-    ],
-  })),
-  {
-    name: "Global Average Pool",
-    type: "pool",
-    dimensions: [1, 1, 512],
-    zSpan: [16, 16],
-  },
-  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
-];
-
-export const DENSENET = [
-  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
-  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
-  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
-  ...Array.from({ length: NUM_DENSENET_BLOCKS }, (_, blockIndex) => [
-    {
-      name: `Dense Block ${blockIndex + 1}`,
-      type: "dense_block",
-      dimensions: [56, 56, 128], // Adjust per block
-      zSpan: [16, 16],
-      sublayers: Array.from({ length: 6 }, (_, i) => ({
-        name: `Bottleneck Layer ${i + 1}`,
-        type: "bottleneck",
-        dimensions: [56, 56, 32],
-        zSpan: [8, 8],
-      })),
-    },
-    {
-      name: `Transition Layer ${blockIndex + 1}`,
-      type: "transition",
-      dimensions: [28, 28, 64], // Adjust per transition
-      zSpan: [8, 8],
-    },
-  ]).flat(),
-  {
-    name: "Global Average Pool",
-    type: "pool",
-    dimensions: [1, 1, 1024],
-    zSpan: [32, 32],
-  },
-  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+// EfficientNet-B0 configuration
+const EFFICIENTNET_B0_CONFIG = [
+  // [output_channels, kernel_size, stride, expansion_ratio, se_ratio, repeats]
+  [16, 3, 1, 1, 0.25, 1], // MBConv1
+  [24, 3, 2, 6, 0.25, 2], // MBConv6
+  [40, 5, 2, 6, 0.25, 2], // MBConv6
+  [80, 3, 2, 6, 0.25, 3], // MBConv6
+  [112, 5, 1, 6, 0.25, 3], // MBConv6
+  [192, 5, 2, 6, 0.25, 4], // MBConv6
+  [320, 3, 1, 6, 0.25, 1], // MBConv6
 ];
 
 export const EFFICIENTNET = [
   { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
-  ...Array.from({ length: NUM_EFFICIENTNET_BLOCKS }, (_, i) => ({
-    name: `MBConv Block ${i + 1}`,
-    type: "mbconv",
-    dimensions: [224 / 2 ** i, 224 / 2 ** i, 16 * 2 ** i],
-    zSpan: [8, 8],
-  })),
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 32], zSpan: [8, 8] },
+  ...EFFICIENTNET_B0_CONFIG.flatMap((config, blockIndex) => {
+    const [
+      outputChannels,
+      kernelSize,
+      stride,
+      expansionRatio,
+      seRatio,
+      repeats,
+    ] = config;
+    return Array.from({ length: repeats }, (_, repeatIndex) => ({
+      name: `MBConv${expansionRatio} Block ${blockIndex + 1}_${
+        repeatIndex + 1
+      }`,
+      type: "mbconv",
+      dimensions: [
+        224 / 2 ** (blockIndex + 1),
+        224 / 2 ** (blockIndex + 1),
+        outputChannels,
+      ],
+      zSpan: [8, 8],
+    }));
+  }),
+  { name: "Conv2", type: "conv", dimensions: [7, 7, 1280], zSpan: [32, 32] },
   {
     name: "Global Average Pool",
     type: "pool",
@@ -295,43 +253,144 @@ export const SEGNET = [
   },
 ];
 
-export const YOLO_YOU_ONLY_LOOK_ONCE = [
-  { name: "Input", type: "input", dimensions: [448, 448, 3], zSpan: [3, 1] },
-  { name: "Conv1", type: "conv", dimensions: [224, 224, 64], zSpan: [8, 8] },
-  { name: "MaxPool1", type: "pool", dimensions: [112, 112, 64], zSpan: [8, 8] },
-  ...Array.from({ length: NUM_YOLO_LAYERS - 7 }, (_, i) => {
-    const layerIndex = i + 2;
-    const isEven = layerIndex % 2 === 0;
-    return {
-      name: `Conv${layerIndex}`,
-      type: "conv",
+// Improve ResNet (ResNet-50 implementation)
+export const RESNET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
+  ...Array.from({ length: 3 }, (_, i) => ({
+    name: `Residual Block 1_${i + 1}`,
+    type: "residual_block",
+    dimensions: [56, 56, 256],
+    zSpan: [16, 16],
+  })),
+  ...Array.from({ length: 4 }, (_, i) => ({
+    name: `Residual Block 2_${i + 1}`,
+    type: "residual_block",
+    dimensions: [28, 28, 512],
+    zSpan: [24, 24],
+  })),
+  ...Array.from({ length: 6 }, (_, i) => ({
+    name: `Residual Block 3_${i + 1}`,
+    type: "residual_block",
+    dimensions: [14, 14, 1024],
+    zSpan: [32, 32],
+  })),
+  ...Array.from({ length: 3 }, (_, i) => ({
+    name: `Residual Block 4_${i + 1}`,
+    type: "residual_block",
+    dimensions: [7, 7, 2048],
+    zSpan: [32, 32],
+  })),
+  {
+    name: "Global Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 2048],
+    zSpan: [32, 32],
+  },
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+// Improve DenseNet (DenseNet-121 implementation)
+const DENSE_BLOCK_CONFIG = [6, 12, 24, 16];
+
+export const DENSENET = [
+  { name: "Input", type: "input", dimensions: [224, 224, 3], zSpan: [3, 1] },
+  { name: "Conv1", type: "conv", dimensions: [112, 112, 64], zSpan: [8, 8] },
+  { name: "MaxPool1", type: "pool", dimensions: [56, 56, 64], zSpan: [8, 8] },
+  ...DENSE_BLOCK_CONFIG.flatMap((numLayers, blockIndex) => [
+    {
+      name: `Dense Block ${blockIndex + 1}`,
+      type: "dense_block",
       dimensions: [
-        112 / Math.pow(2, Math.floor(i / 4)),
-        112 / Math.pow(2, Math.floor(i / 4)),
-        isEven ? 256 : 512,
+        56 / 2 ** blockIndex,
+        56 / 2 ** blockIndex,
+        64 + numLayers * 32,
       ],
-      zSpan: isEven ? [16, 16] : [24, 24],
-    };
-  }),
+      zSpan: [16, 16],
+    },
+    blockIndex < DENSE_BLOCK_CONFIG.length - 1
+      ? {
+          name: `Transition Layer ${blockIndex + 1}`,
+          type: "transition",
+          dimensions: [
+            28 / 2 ** blockIndex,
+            28 / 2 ** blockIndex,
+            (64 + numLayers * 32) / 2,
+          ],
+          zSpan: [8, 8],
+        }
+      : null,
+  ]).filter(Boolean),
   {
-    name: "ConvFinal",
-    type: "conv",
-    dimensions: [7, 7, 1024],
+    name: "Global Average Pool",
+    type: "pool",
+    dimensions: [1, 1, 1024],
     zSpan: [32, 32],
   },
-  {
-    name: "ConvFC1",
+  { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
+];
+
+// Improve YOLO (YOLOv3 implementation)
+const YOLO_LAYERS = [
+  // [out_channels, kernel_size, stride]
+  [32, 3, 1],
+  [64, 3, 2],
+  [32, 1, 1],
+  [64, 3, 1],
+  [128, 3, 2],
+  [64, 1, 1],
+  [128, 3, 1],
+  [256, 3, 2],
+  [128, 1, 1],
+  [256, 3, 1],
+  [512, 3, 2],
+  [256, 1, 1],
+  [512, 3, 1],
+  [256, 1, 1],
+  [512, 3, 1],
+  [256, 1, 1],
+  [512, 3, 1],
+  [1024, 3, 2],
+  [512, 1, 1],
+  [1024, 3, 1],
+  [512, 1, 1],
+  [1024, 3, 1],
+  [512, 1, 1],
+  [1024, 3, 1],
+];
+
+export const YOLO_YOU_ONLY_LOOK_ONCE = [
+  { name: "Input", type: "input", dimensions: [416, 416, 3], zSpan: [3, 1] },
+  ...YOLO_LAYERS.map((layer, index) => ({
+    name: `Conv${index + 1}`,
     type: "conv",
-    dimensions: [7, 7, 1024],
-    zSpan: [32, 32],
-  },
-  {
-    name: "ConvFC2",
-    type: "conv",
-    dimensions: [7, 7, 30],
+    dimensions: [
+      416 / 2 ** Math.floor(index / 5),
+      416 / 2 ** Math.floor(index / 5),
+      layer[0],
+    ],
     zSpan: [8, 8],
+  })),
+  // YOLO output layers
+  {
+    name: "YOLO Layer 1",
+    type: "yolo",
+    dimensions: [13, 13, 255],
+    zSpan: [16, 16],
   },
-  { name: "Output", type: "output", dimensions: [7, 7, 30], zSpan: [8, 8] },
+  {
+    name: "YOLO Layer 2",
+    type: "yolo",
+    dimensions: [26, 26, 255],
+    zSpan: [16, 16],
+  },
+  {
+    name: "YOLO Layer 3",
+    type: "yolo",
+    dimensions: [52, 52, 255],
+    zSpan: [16, 16],
+  },
 ];
 
 export const LAYER_CONFIGS = {
