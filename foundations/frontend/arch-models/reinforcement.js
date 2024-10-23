@@ -13,6 +13,15 @@ const NUM_RESIDUAL_BLOCKS_ALPHAGO = 13; // AlphaGo uses 13 residual blocks
 const NUM_RESIDUAL_BLOCKS_ALPHAZERO = 19; // AlphaZero uses 19-40 residual blocks
 const NUM_LSTM_UNITS = 256; // For A3C LSTM layer
 
+const INPUT_DIM_MUJOCO = [17, 1, 1]; // Input dimensions for MuJoCo Humanoid task
+const ACTION_DIM_MUJOCO = [17, 1, 1]; // Action dimensions for MuJoCo Humanoid task
+
+// Constants for AlphaStar
+const INPUT_DIM_ALPHASTAR = [512, 512, 13]; // Spatial dimensions (512x512) with 13 feature layers
+const ACTION_DIM_ALPHASTAR = 1000000; // Approximate number of possible actions in StarCraft II
+const NUM_ACTION_TYPES = 20; // Approximate number of action types in StarCraft II
+const NUM_ARGUMENT_TYPES = 13; // Number of different argument types for actions
+
 // Model definitions
 
 /** Deep Q-Network (DQN) **/
@@ -684,6 +693,87 @@ export const MUZERO = [
   },
 ];
 
+// Model definitions
+
+/** AlphaStar **/
+export const ALPHASTAR = [
+  {
+    name: "Input",
+    type: "input",
+    dimensions: INPUT_DIM_ALPHASTAR,
+  },
+  // Encoder Network
+  {
+    name: "Encoder",
+    type: "encoder",
+    sublayers: [
+      {
+        name: "Transformer Encoder",
+        type: "transformer_encoder",
+        dimensions: [512, 512, 512],
+        parameters: {
+          num_layers: 4,
+          num_heads: 8,
+          d_model: 512,
+        },
+      },
+    ],
+  },
+  // Core LSTM
+  {
+    name: "Core LSTM",
+    type: "lstm",
+    dimensions: [1, 1, 1024],
+    parameters: {
+      units: 1024,
+    },
+  },
+  // Policy Head
+  {
+    name: "Policy Head",
+    type: "policy_head",
+    sublayers: [
+      {
+        name: "Action Type Logits",
+        type: "dense",
+        dimensions: [1, 1, NUM_ACTION_TYPES],
+        activation: "linear",
+      },
+      {
+        name: "Argument Heads",
+        type: "argument_heads",
+        sublayers: Array.from({ length: NUM_ARGUMENT_TYPES }, (_, i) => ({
+          name: `Argument Head ${i + 1}`,
+          type: "pointer_network",
+          dimensions: [1, 1, 512],
+          parameters: {
+            num_pointers: 1,
+          },
+        })),
+      },
+    ],
+  },
+  // Value Head
+  {
+    name: "Value Head",
+    type: "value_head",
+    sublayers: [
+      {
+        name: "Dense Layer",
+        type: "dense",
+        dimensions: [1, 1, 256],
+        activation: "relu",
+      },
+      {
+        name: "Scalar Output",
+        type: "dense",
+        dimensions: [1, 1, 1],
+        activation: "linear",
+      },
+    ],
+  },
+];
+
 // Layer configurations for reinforcement models
 export const LAYER_CONFIGS = {
   DEEP_Q_NETWORK_DQN: {
@@ -709,6 +799,12 @@ export const LAYER_CONFIGS = {
   MUZERO: {
     layerHeight: 150,
     keyPrefix: "muzero",
+    type: "reinforcement",
+  },
+
+  ALPHASTAR: {
+    layerWidth: 150,
+    keyPrefix: "alphastar",
     type: "reinforcement",
   },
 };
@@ -793,5 +889,62 @@ export const GRID_CONFIGS = {
       yInterval: 0.5,
     },
     value_head: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+
+  ALPHASTAR: {
+    input: {
+      xCount: 64,
+      yCount: 64,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    encoder: {
+      xCount: 512,
+      yCount: 512,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    transformer_encoder: {
+      xCount: 128,
+      yCount: 128,
+      xInterval: 0.5,
+      yInterval: 0.5,
+    },
+    lstm: {
+      xCount: 1024,
+      yCount: 1,
+      xInterval: 0.5,
+      yInterval: 0.5,
+    },
+    policy_head: {
+      xCount: NUM_ACTION_TYPES,
+      yCount: 1,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    argument_heads: {
+      xCount: NUM_ARGUMENT_TYPES,
+      yCount: 1,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    pointer_network: {
+      xCount: 512,
+      yCount: 1,
+      xInterval: 0.5,
+      yInterval: 0.5,
+    },
+    value_head: {
+      xCount: 1,
+      yCount: 1,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    dense: {
+      xCount: 256,
+      yCount: 1,
+      xInterval: 0.5,
+      yInterval: 0.5,
+    },
   },
 };

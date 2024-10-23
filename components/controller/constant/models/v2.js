@@ -690,49 +690,56 @@ export const MODELS = {
   },
   "v7.x - Reinforcement Learning and Advanced AI Systems": {
     "v7.0": {
-      name: "Deep Reinforcement Learning",
+      name: "General Reinforcement Learning Algorithms",
       "v7.0.1": {
         name: "Deep Q-Network (DQN)",
         year: 2015,
         place: "Volodymyr Mnih et al., DeepMind",
-        citation: 33000,
+        citation: 31000,
         explanation:
-          "Combined Q-learning with deep neural networks to play Atari games directly from pixels.",
+          "Introduced deep learning to Q-learning, achieving human-level performance on Atari games.",
       },
       "v7.0.2": {
         name: "A3C",
         year: 2016,
         place: "Volodymyr Mnih et al., DeepMind",
-        citation: 10000,
+        citation: 7000,
         explanation:
-          "Introduced a parallelized approach to training RL agents, improving stability and speed.",
+          "Asynchronous Advantage Actor-Critic, a policy gradient method that uses asynchronous updates.",
       },
     },
     "v7.1": {
-      name: "Mastery in Complex Games",
+      name: "Game-Playing AI",
       "v7.1.1": {
         name: "AlphaGo",
         year: 2016,
         place: "David Silver et al., DeepMind",
-        citation: 13000,
-        explanation:
-          "First program to defeat a professional human Go player, combining deep neural networks and tree search.",
+        citation: 11000,
+        explanation: "First AI to defeat a world champion in the game of Go.",
       },
       "v7.1.2": {
         name: "AlphaZero",
         year: 2017,
         place: "David Silver et al., DeepMind",
-        citation: 8000,
+        citation: 7000,
         explanation:
-          "Generalized AlphaGo to learn without human data, mastering chess, shogi, and Go.",
+          "Generalized AlphaGo to chess and shogi, learning solely through self-play.",
       },
       "v7.1.3": {
         name: "MuZero",
         year: 2019,
         place: "Julian Schrittwieser et al., DeepMind",
-        citation: 2100,
+        citation: 2000,
         explanation:
-          "Learned a model of the environment dynamics, achieving superhuman performance in games without knowing the rules.",
+          "Mastered Go, chess, shogi, and Atari without knowledge of the game rules.",
+      },
+      "v7.1.4": {
+        name: "AlphaStar",
+        year: 2019,
+        place: "Oriol Vinyals et al., DeepMind",
+        citation: 1500,
+        explanation:
+          "First AI to defeat top professional players in StarCraft II, a complex real-time strategy game.",
       },
     },
   },
@@ -919,13 +926,18 @@ export const ARRAY = [
   "CLIP",
   "DALL-E",
   "DALL-E 2",
+  "FLAMINGO",
+  "BLIP-2",
+  "LLaVA",
   "PaLM-E",
   "GPT-4V",
   "Deep Q-Network (DQN)",
   "A3C",
+  ,
   "AlphaGo",
   "AlphaZero",
   "MuZero",
+  "AlphaStar",
   "MobileNet",
   "EfficientNet",
   "SimCLR",
@@ -937,9 +949,6 @@ export const ARRAY = [
   "Capsule Networks (CapsNet)",
   "ELMo",
   "ULMFiT",
-  "FLAMINGO",
-  "BLIP-2",
-  "LLaVA",
 ];
 
 export const OBJECT_ARRAY = [
@@ -1251,6 +1260,7 @@ export const OBJECT_ARRAY = [
     name: "A3C",
     version: "v7.0.2",
   },
+
   {
     name: "AlphaGo",
     version: "v7.1.1",
@@ -1262,6 +1272,10 @@ export const OBJECT_ARRAY = [
   {
     name: "MuZero",
     version: "v7.1.3",
+  },
+  {
+    name: "AlphaStar",
+    version: "v7.1.4",
   },
   {
     name: "MobileNet",
