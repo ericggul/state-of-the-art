@@ -1,5 +1,5 @@
-//multi-modal here // Constants for multimodal models
-const IMAGE_INPUT_DIM = [224, 224, 3]; // Typical image input dimensions
+//multi-modal here // Constants for multi_modal models
+const IMAGE_INPUT_DIM = [96, 96, 3]; // Typical image input dimensions
 const TEXT_INPUT_DIM = [77, 1, 1]; // Tokenized text length
 const VISUAL_EMBED_DIM = [1, 1, 512];
 const TEXT_EMBED_DIM = [1, 1, 512];
@@ -46,7 +46,7 @@ export const SHOW_AND_TELL = [
   },
 ];
 
-export const VQA = [
+export const VISUAL_QUESTION_ANSWERING_VQA = [
   {
     name: "Image Input",
     type: "input",
@@ -90,7 +90,6 @@ export const VQA = [
 ];
 
 export const CLIP = [
-  // Image Encoder Path
   {
     name: "Image Input",
     type: "input",
@@ -99,29 +98,37 @@ export const CLIP = [
   },
   {
     name: "Patch Embedding",
-    type: "patch_embedding",
-    dimensions: [1, 49, 768],
+    type: "embedding",
+    dimensions: [14, 14, 768],
     stream: "image",
   },
-  ...Array.from({ length: NUM_VIT_LAYERS }, (_, i) => ({
-    name: `Visual Transformer Layer ${i + 1}`,
-    type: "transformer_layer",
-    dimensions: [1, 49, 768],
-    stream: "image",
-    sublayers: [
-      { name: `Layer Norm`, type: "layernorm", dimensions: [1, 49, 768] },
-      { name: `Self-Attention`, type: "attention", dimensions: [1, 49, 768] },
-      { name: `MLP`, type: "mlp", dimensions: [1, 49, 768] },
-    ],
-  })),
   {
-    name: "Visual Embedding",
-    type: "embedding",
+    name: "Vision Transformer",
+    type: "vision_transformer",
+    stream: "image",
+    sublayers: Array.from({ length: NUM_VIT_LAYERS }, (_, i) => ({
+      name: `ViT Layer ${i + 1}`,
+      type: "transformer_layer",
+      sublayers: [
+        {
+          name: `Self-Attention ${i + 1}`,
+          type: "attention",
+          dimensions: [14, 14, 768],
+        },
+        {
+          name: `Feed Forward ${i + 1}`,
+          type: "ffn",
+          dimensions: [14, 14, 3072],
+        },
+      ],
+    })),
+  },
+  {
+    name: "Image Projection",
+    type: "dense",
     dimensions: VISUAL_EMBED_DIM,
     stream: "image",
   },
-
-  // Text Encoder Path
   {
     name: "Text Input",
     type: "input",
@@ -129,37 +136,44 @@ export const CLIP = [
     stream: "text",
   },
   {
-    name: "Token Embeddings",
-    type: "embedding",
-    dimensions: [1, 77, 512],
-    stream: "text",
-  },
-  {
-    name: "Positional Embeddings",
-    type: "embedding",
-    dimensions: [1, 77, 512],
-    stream: "text",
-  },
-  ...Array.from({ length: NUM_TEXT_TRANSFORMER_LAYERS }, (_, i) => ({
-    name: `Text Transformer Layer ${i + 1}`,
-    type: "transformer_layer",
-    dimensions: [1, 77, 512],
-    stream: "text",
-    sublayers: [
-      { name: `Layer Norm`, type: "layernorm", dimensions: [1, 77, 512] },
-      { name: `Self-Attention`, type: "attention", dimensions: [1, 77, 512] },
-      { name: `MLP`, type: "mlp", dimensions: [1, 77, 512] },
-    ],
-  })),
-  {
     name: "Text Embedding",
     type: "embedding",
+    dimensions: [77, 512],
+    stream: "text",
+  },
+  {
+    name: "Text Transformer",
+    type: "text_transformer",
+    stream: "text",
+    sublayers: Array.from({ length: NUM_TEXT_TRANSFORMER_LAYERS }, (_, i) => ({
+      name: `Text Layer ${i + 1}`,
+      type: "transformer_layer",
+      sublayers: [
+        {
+          name: `Self-Attention ${i + 1}`,
+          type: "attention",
+          dimensions: [77, 512],
+        },
+        {
+          name: `Feed Forward ${i + 1}`,
+          type: "ffn",
+          dimensions: [77, 2048],
+        },
+      ],
+    })),
+  },
+  {
+    name: "Text Projection",
+    type: "dense",
     dimensions: TEXT_EMBED_DIM,
     stream: "text",
   },
-
-  // Contrastive Loss
-  { name: "Contrastive Loss", type: "loss", dimensions: [1, 1, 1] },
+  {
+    name: "Contrastive Loss",
+    type: "loss",
+    dimensions: [1, 1, 1],
+    stream: "fusion",
+  },
 ];
 
 export const DALL_E = [
@@ -354,44 +368,44 @@ export const DALL_E_2 = [
   },
 ];
 
-// Layer configurations for multimodal models
+// Layer configurations for multi_modal models
 export const LAYER_CONFIGS = {
   SHOW_AND_TELL: {
-    layerHeight: 40,
-    type: "multimodal",
+    layerHeight: 10,
+    type: "multi_modal",
   },
-  VQA: {
-    layerHeight: 40,
-    type: "multimodal",
+  VISUAL_QUESTION_ANSWERING_VQA: {
+    layerHeight: 10,
+    type: "multi_modal",
   },
   CLIP: {
-    layerHeight: 50,
+    layerHeight: 5,
     keyPrefix: "clip",
-    type: "multimodal",
+    type: "multi_modal",
   },
   DALL_E: {
     layerHeight: 60,
     keyPrefix: "dalle",
-    type: "multimodal",
+    type: "multi_modal",
   },
   DALL_E_2: {
     layerHeight: 60,
     keyPrefix: "dalle2",
-    type: "multimodal",
+    type: "multi_modal",
   },
 };
 
-// Grid configurations for multimodal models
+// Grid configurations for multi_modal models
 export const GRID_CONFIGS = {
   SHOW_AND_TELL: {
-    input: { xCount: 224, yCount: 224, xInterval: 1, yInterval: 1 },
+    input: { xCount: 96, yCount: 96, xInterval: 1.5, yInterval: 1.5 },
     cnn_encoder: { xCount: 7, yCount: 7, xInterval: 2, yInterval: 2 },
     rnn_decoder: { xCount: 30, yCount: 1, xInterval: 1, yInterval: 1 },
-    output: { xCount: 30, yCount: 1, xInterval: 1, yInterval: 1 },
+    output: { xCount: 512, yCount: 1, xInterval: 1, yInterval: 1 },
     dense: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
-  VQA: {
-    input: { xCount: 224, yCount: 224, xInterval: 1, yInterval: 1 },
+  VISUAL_QUESTION_ANSWERING_VQA: {
+    input: { xCount: 96, yCount: 96, xInterval: 1.5, yInterval: 1.5 },
     cnn_encoder: { xCount: 7, yCount: 7, xInterval: 2, yInterval: 2 },
     text_encoder: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     fusion: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
@@ -399,13 +413,15 @@ export const GRID_CONFIGS = {
     output: { xCount: 1000, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
   CLIP: {
-    input: { xCount: 224, yCount: 224, xInterval: 1, yInterval: 1 },
-    embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    input: { xCount: 96, yCount: 96, xInterval: 1.5, yInterval: 1.5 },
+    embedding: { xCount: 14, yCount: 14, xInterval: 2, yInterval: 2 },
+    vision_transformer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    text_transformer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
     attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    mlp: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    loss: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 2, yInterval: 5 },
+    dense: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    loss: { xCount: 5, yCount: 5, xInterval: 4, yInterval: 4 },
   },
   DALL_E: {
     input: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
@@ -420,12 +436,23 @@ export const GRID_CONFIGS = {
   },
   DALL_E_2: {
     input: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-    clip_text_encoder: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    diffusion_prior: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+
+    clip_text_encoder: {
+      xCount: NUM_TEXT_TRANSFORMER_LAYERS,
+      yCount: 1,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    diffusion_prior: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    transformer_layer: {
+      xCount: NUM_PRIOR_TRANSFORMER_LAYERS,
+      yCount: 1,
+      xInterval: 2,
+      yInterval: 2,
+    },
     attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    mlp: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 768, yCount: 1, xInterval: 1, yInterval: 1 },
     dense: { xCount: 768, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     decoder_diffusion: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     unet: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },

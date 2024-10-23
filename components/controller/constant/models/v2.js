@@ -603,7 +603,7 @@ export const MODELS = {
           "An image captioning model combining CNNs and RNNs to generate descriptive sentences from images.",
       },
       "v6.0.2": {
-        name: "Visual Question Answering (VQA) Models",
+        name: "Visual Question Answering (VQA)",
         year: 2015,
         place: "Aishwarya Agrawal et al., Virginia Tech",
         citation: 5200,
@@ -888,7 +888,7 @@ export const ARRAY = [
   "Imagen",
   "Consistency Models",
   "Show and Tell",
-  "Visual Question Answering (VQA) Models",
+  "Visual Question Answering (VQA)",
   "CLIP",
   "DALL-E",
   "DALL-E 2",
@@ -1178,7 +1178,7 @@ export const OBJECT_ARRAY = [
     version: "v6.0.1",
   },
   {
-    name: "Visual Question Answering (VQA) Models",
+    name: "Visual Question Answering (VQA)",
     version: "v6.0.2",
   },
   {

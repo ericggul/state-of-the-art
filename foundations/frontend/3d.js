@@ -17,6 +17,7 @@ import VAELayers from "./arch/layers/VAELayers";
 import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
 import GANLayers from "./arch/layers/GANLayers";
 import DiffusionLayers from "./arch/layers/DiffusionLayers";
+import MultiModalLayers from "./arch/layers/MultiModalLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
@@ -123,6 +124,9 @@ export default function Visualisation({
         break;
       case "diffusion":
         ModelComponent = DiffusionLayers;
+        break;
+      case "multi_modal":
+        ModelComponent = MultiModalLayers;
         break;
 
       default:
