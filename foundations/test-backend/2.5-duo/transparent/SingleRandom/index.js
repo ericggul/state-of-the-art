@@ -13,9 +13,21 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible, timeUnit }) {
-  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
-  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
+const X_RANGE = 1.5;
+const Y_RANGE = 20;
+
+function SingleRandom({
+  newInputEmbeddings,
+  newOutputEmbeddings,
+  isblack,
+  range,
+  visible,
+  timeUnit,
+}) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } =
+    newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } =
+    newOutputEmbeddings;
 
   const crossSimilarityMatrix = useComputeCrossSimlarity({
     newInputEmbeddings,
@@ -23,50 +35,41 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
   });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [xRange, setXRange] = useState(0);
-  const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Update ranges and animation state based on `isblack` and `visible` only when necessary
+  // Update animation state based on `isblack` and `visible`
   useEffect(() => {
-    if (isblack) {
-      setXRange(1.5);
-      setYRange(18);
-    } else {
-      setXRange(0);
-      setYRange(0);
-    }
     setIsAnimating(isblack && visible);
   }, [isblack, visible]);
 
   // Use a memoized callback to update the bezier parameters
   const updateBezierParams = useCallback(() => {
-    if (!visible) return;
+    if (!visible || !isAnimating) return;
     setBezierParams({
-      controlX1Factor: getRandom(-xRange, xRange),
-      controlX2Factor: getRandom(0.7 - xRange, 0.7 + xRange),
-      controlY1Factor: getRandom(10 - yRange, 10 + yRange),
-      controlY2Factor: getRandom(10 - yRange, 10 + yRange),
+      controlX1Factor: getRandom(-X_RANGE, X_RANGE),
+      controlX2Factor: getRandom(0.7 - X_RANGE, 0.7 + X_RANGE),
+      controlY1Factor: getRandom(10 - Y_RANGE, 10 + Y_RANGE),
+      controlY2Factor: getRandom(10 - Y_RANGE, 10 + Y_RANGE),
     });
-  }, [xRange, yRange, visible]);
+  }, [visible, isAnimating]);
 
   // Use the custom interval hook to call the bezier update within the given time range
   useRandomInterval(updateBezierParams, 5 * timeUnit, 70 * timeUnit, visible);
 
   const inputPosCalc = usePosCalc({
     tokens: inputTokens,
-    type: "input",
     isAnimating,
     range,
     timeUnit,
+    type: "input",
   });
 
   const outputPosCalc = usePosCalc({
     tokens: outputTokens,
-    type: "output",
     isAnimating,
     range,
     timeUnit,
+    type: "output",
   });
 
   // Memoized bezier path creation to avoid recalculations
@@ -77,11 +80,17 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
       }
 
       const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
-      const controlY1 = y1 + inputPosCalc.yMargin * bezierParams.controlY1Factor;
+      const controlY1 =
+        y1 + inputPosCalc.yMargin * bezierParams.controlY1Factor;
       const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
-      const controlY2 = y2 - outputPosCalc.yMargin * bezierParams.controlY2Factor;
+      const controlY2 =
+        y2 - outputPosCalc.yMargin * bezierParams.controlY2Factor;
 
-      return `M${x1},${y1 + inputPosCalc.yMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputPosCalc.yMargin}`;
+      return `M${x1},${
+        y1 + inputPosCalc.yMargin
+      } C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${
+        y2 - outputPosCalc.yMargin
+      }`;
     },
     [bezierParams, inputPosCalc.yMargin, outputPosCalc.yMargin]
   );
@@ -96,13 +105,27 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
             const d = createBezierPath(x1, y1, x2, y2);
-            return <path key={`arc-${i}-${j}`} d={d} fill="none" strokeWidth={Math.pow(similarity, 3) * 4} />;
+            return (
+              <path
+                key={`arc-${i}-${j}`}
+                d={d}
+                fill="none"
+                strokeWidth={Math.pow(similarity, 3) * 4}
+              />
+            );
           }
           return null;
         })
         .filter(Boolean); // Filter out null values
     });
-  }, [inputTokens, outputTokens, crossSimilarityMatrix, inputPosCalc, outputPosCalc, createBezierPath]);
+  }, [
+    inputTokens,
+    outputTokens,
+    crossSimilarityMatrix,
+    inputPosCalc,
+    outputPosCalc,
+    createBezierPath,
+  ]);
 
   return (
     <S.Container
@@ -111,13 +134,27 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
         opacity: visible ? 1 : 0,
       }}
     >
-      {inputTokens.map((token, i) => (
-        <TokenComponent key={`input-${i}`} i={i} token={token} wordPosCalc={inputPosCalc.wordPosCalc} wordInterval={inputPosCalc.wordInterval} />
-      ))}
+      <div>
+        {inputTokens.map((token, i) => (
+          <TokenComponent
+            key={`input-${i}`}
+            i={i}
+            token={token}
+            wordPosCalc={inputPosCalc.wordPosCalc}
+            wordInterval={inputPosCalc.wordInterval}
+          />
+        ))}
 
-      {outputTokens.map((token, i) => (
-        <TokenComponent key={`output-${i}`} i={i} token={token} wordPosCalc={outputPosCalc.wordPosCalc} wordInterval={outputPosCalc.wordInterval} />
-      ))}
+        {outputTokens.map((token, i) => (
+          <TokenComponent
+            key={`output-${i}`}
+            i={i}
+            token={token}
+            wordPosCalc={outputPosCalc.wordPosCalc}
+            wordInterval={outputPosCalc.wordInterval}
+          />
+        ))}
+      </div>
 
       <S.Pic>{paths}</S.Pic>
     </S.Container>
@@ -125,7 +162,12 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
 }
 
 // Single reusable Token component for both input and output tokens
-const TokenComponent = React.memo(function TokenComponent({ i, wordPosCalc, wordInterval, token }) {
+const TokenComponent = React.memo(function TokenComponent({
+  i,
+  wordPosCalc,
+  wordInterval,
+  token,
+}) {
   return (
     <S.Token
       style={{

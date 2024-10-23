@@ -13,8 +13,8 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-const X_RANGE = 0.5;
-const Y_RANGE = 10;
+const X_RANGE = 1.5;
+const Y_RANGE = 20;
 
 function SingleRandom({
   newInputEmbeddings,
