@@ -64,9 +64,10 @@ export default function DiffusionLayers({ structure, style, model }) {
   }, [structure, model]);
 
   return (
-    <group position={[0, 0, 0]}>
-      {" "}
-      {/* Center the entire group */}
+    <group
+      position={[0, 0, 0]}
+      // rotation={[Math.PI / 2, 0, 0]}
+    >
       {layers.map((layer, i) => (
         <React.Fragment key={`${model}-${layer.name}-${i}`}>
           {layer.sublayers && layer.sublayers.length > 0 ? (

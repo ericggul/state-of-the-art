@@ -700,7 +700,7 @@ export const MODELS = {
           "Combined Q-learning with deep neural networks to play Atari games directly from pixels.",
       },
       "v7.0.2": {
-        name: "Asynchronous Advantage Actor-Critic (A3C)",
+        name: "A3C",
         year: 2016,
         place: "Volodymyr Mnih et al., DeepMind",
         citation: 10000,
@@ -922,7 +922,7 @@ export const ARRAY = [
   "PaLM-E",
   "GPT-4V",
   "Deep Q-Network (DQN)",
-  "Asynchronous Advantage Actor-Critic (A3C)",
+  "A3C",
   "AlphaGo",
   "AlphaZero",
   "MuZero",
@@ -1248,7 +1248,7 @@ export const OBJECT_ARRAY = [
     version: "v7.0.1",
   },
   {
-    name: "Asynchronous Advantage Actor-Critic (A3C)",
+    name: "A3C",
     version: "v7.0.2",
   },
   {

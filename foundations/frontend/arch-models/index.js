@@ -7,6 +7,7 @@ import * as SELF_SUPERVISED from "./self_supervised";
 import * as GAN from "./gan";
 import * as DIFFUSION from "./diffusion";
 import * as MULTI_MODAL from "./multi_modal";
+import * as REINFORCEMENT from "./reinforcement";
 
 export const MODELS = {
   ...CNN,
@@ -18,6 +19,7 @@ export const MODELS = {
   ...GAN,
   ...DIFFUSION,
   ...MULTI_MODAL,
+  ...REINFORCEMENT,
 };
 
 export const LAYER_CONFIGS = {
@@ -30,6 +32,7 @@ export const LAYER_CONFIGS = {
   ...GAN.LAYER_CONFIGS,
   ...DIFFUSION.LAYER_CONFIGS,
   ...MULTI_MODAL.LAYER_CONFIGS,
+  ...REINFORCEMENT.LAYER_CONFIGS,
 };
 
 export const GRID_CONFIGS = {
@@ -42,6 +45,7 @@ export const GRID_CONFIGS = {
   ...GAN.GRID_CONFIGS,
   ...DIFFUSION.GRID_CONFIGS,
   ...MULTI_MODAL.GRID_CONFIGS,
+  ...REINFORCEMENT.GRID_CONFIGS,
 };
 
 // Function to get model structure based on model name
