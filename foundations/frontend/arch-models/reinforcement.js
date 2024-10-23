@@ -687,22 +687,22 @@ export const MUZERO = [
 // Layer configurations for reinforcement models
 export const LAYER_CONFIGS = {
   DEEP_Q_NETWORK_DQN: {
-    layerHeight: 40,
+    layerHeight: 20,
     keyPrefix: "dqn",
     type: "reinforcement",
   },
   A3C: {
-    layerHeight: 50,
+    layerHeight: 20,
     keyPrefix: "a3c",
     type: "reinforcement",
   },
   ALPHAGO: {
-    layerHeight: 90,
+    layerHeight: 80,
     keyPrefix: "alphago",
     type: "reinforcement",
   },
   ALPHAZERO: {
-    layerHeight: 120,
+    layerHeight: 80,
     keyPrefix: "alphazero",
     type: "reinforcement",
   },
