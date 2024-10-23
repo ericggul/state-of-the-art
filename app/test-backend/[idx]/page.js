@@ -22,6 +22,10 @@ const Embeddings252 = dynamic(() =>
   import("@/foundations/test-backend/2.5-duo/2")
 );
 
+const Embeddings253 = dynamic(() =>
+  import("@/foundations/test-backend/2.5-duo/3")
+);
+
 const Embeddings25Glich = dynamic(() =>
   import("@/foundations/test-backend/2.5-duo/glitch")
 );
@@ -42,6 +46,7 @@ export default function RelationPage() {
       {idx == "2.5-0" && <Embeddings250 />}
       {idx == "2.5-1" && <Embeddings251 />}
       {idx == "2.5-2" && <Embeddings252 />}
+      {idx == "2.5-3" && <Embeddings253 />}
 
       {idx == "2.5-glitch" && <Embeddings25Glich />}
       {idx == "2.5-" && <Embeddings25Store />}

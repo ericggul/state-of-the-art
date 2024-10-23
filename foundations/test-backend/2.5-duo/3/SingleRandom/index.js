@@ -13,6 +13,9 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
+// const X_RANGE = 1;
+// const Y_RANGE = 12;
+
 const X_RANGE = 0.5;
 const Y_RANGE = 10;
 
@@ -136,7 +139,7 @@ function SingleRandom({
     >
       <div
         style={{
-          opacity: isblack ? 0 : 1,
+          // opacity: isblack ? 0 : 1,
           transition: "opacity 0.5s",
           transitionDelay: ".1s",
         }}

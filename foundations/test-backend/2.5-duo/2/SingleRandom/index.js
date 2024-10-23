@@ -13,6 +13,24 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
+const getWeightedRandom = (min, max) => {
+  const range = max - min;
+  const mid = (min + max) / 2;
+
+  // Generate a random number between 0 and 1
+  const r = Math.random();
+
+  // Use the inverse cumulative distribution function of a triangular distribution
+  let result;
+  if (r < 0.5) {
+    result = min + Math.sqrt(r * range * (mid - min));
+  } else {
+    result = max - Math.sqrt((1 - r) * range * (max - mid));
+  }
+
+  return result;
+};
+
 const useBezierParams = (
   inputTokens,
   outputTokens,
@@ -32,10 +50,10 @@ const useBezierParams = (
       outputTokens.forEach((_, j) => {
         const key = `${i}-${j}`;
         newParams[key] = {
-          controlX1Factor: getRandom(-xRange, xRange),
-          controlX2Factor: getRandom(0.7 - xRange, 0.7 + xRange),
-          controlY1Factor: getRandom(10 - yRange, 10 + yRange),
-          controlY2Factor: getRandom(10 - yRange, 10 + yRange),
+          controlX1Factor: getWeightedRandom(-xRange, xRange),
+          controlX2Factor: getWeightedRandom(0.7 - xRange, 0.7 + xRange),
+          controlY1Factor: getWeightedRandom(10 - yRange, 10 + yRange),
+          controlY2Factor: getWeightedRandom(10 - yRange, 10 + yRange),
         };
       });
     });
@@ -72,15 +90,8 @@ function SingleRandom({
 
   // Update ranges and animation state based on `isblack` and `visible` only when necessary
   useEffect(() => {
-    if (isblack) {
-      setXRange(1.5);
-      setYRange(18);
-    } else {
-      // setXRange(0);
-      // setYRange(0);
-      setXRange(1.5);
-      setYRange(18);
-    }
+    setXRange(1.5);
+    setYRange(18);
     setIsAnimating(isblack && visible);
   }, [isblack, visible]);
 
