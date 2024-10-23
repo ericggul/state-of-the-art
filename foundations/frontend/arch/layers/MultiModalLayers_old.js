@@ -59,13 +59,12 @@ export default function MultiModalLayers({ structure, style, model }) {
 
   // Function to calculate positions for a set of layers
   const positionLayers = (layers) => {
-    const layerGap = 10; // Reduced gap between layers
-    let cumulativeY = 0;
+    let cumulativeHeight = 0;
 
     const layersWithPositions = layers.map((layer) => {
-      const layerHeight = Math.min(layer.dimensions[1] || 20, 40); // Cap the layer height
-      const y = cumulativeY + layerHeight / 2;
-      cumulativeY += layerHeight + layerGap;
+      const layerHeight = layer.dimensions[1] || 20; // Default height if not specified
+      const y = cumulativeHeight + layerHeight / 2;
+      cumulativeHeight += layerHeight + layerGap;
 
       return {
         ...layer,
@@ -74,7 +73,7 @@ export default function MultiModalLayers({ structure, style, model }) {
     });
 
     // Center the layers vertically
-    const totalHeight = cumulativeY - layerGap;
+    const totalHeight = cumulativeHeight - layerGap;
     const centerOffset = totalHeight / 2;
 
     return layersWithPositions.map((layer) => ({

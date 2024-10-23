@@ -59,32 +59,18 @@ export default function MultiModalLayers({ structure, style, model }) {
 
   // Function to calculate positions for a set of layers
   const positionLayers = (layers) => {
-    const layerGap = 10; // Reduced gap between layers
-    let cumulativeY = 0;
+    const layerGap = 20; // Adjust this value to change the gap between layers
+    let cumulativeX = 0;
 
-    const layersWithPositions = layers.map((layer) => {
-      const layerHeight = Math.min(layer.dimensions[1] || 20, 40); // Cap the layer height
-      const y = cumulativeY + layerHeight / 2;
-      cumulativeY += layerHeight + layerGap;
+    return layers.map((layer, index) => {
+      const x = cumulativeX;
+      cumulativeX += layerGap;
 
       return {
         ...layer,
-        position: [0, y, 0],
+        position: [x, 0, 0],
       };
     });
-
-    // Center the layers vertically
-    const totalHeight = cumulativeY - layerGap;
-    const centerOffset = totalHeight / 2;
-
-    return layersWithPositions.map((layer) => ({
-      ...layer,
-      position: [
-        layer.position[0],
-        layer.position[1] - centerOffset,
-        layer.position[2],
-      ],
-    }));
   };
 
   const positionedImageLayers = useMemo(
@@ -101,14 +87,14 @@ export default function MultiModalLayers({ structure, style, model }) {
   );
 
   // Define positions for different modality streams
-  const imageStreamPositionX = -100; // Adjust as needed
-  const textStreamPositionX = 100; // Adjust as needed
-  const fusionStreamPositionX = 0;
+  const imageStreamPositionY = 100; // Adjust as needed
+  const textStreamPositionY = -100; // Adjust as needed
+  const fusionStreamPositionY = 0;
 
   return (
     <group>
       {/* Image Stream */}
-      <group position={[imageStreamPositionX, 0, 0]}>
+      <group position={[0, imageStreamPositionY, 0]}>
         {positionedImageLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-image-${layer.name}-${i}`}
@@ -122,7 +108,7 @@ export default function MultiModalLayers({ structure, style, model }) {
       </group>
 
       {/* Text Stream */}
-      <group position={[textStreamPositionX, 0, 0]}>
+      <group position={[0, textStreamPositionY, 0]}>
         {positionedTextLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-text-${layer.name}-${i}`}
@@ -136,7 +122,7 @@ export default function MultiModalLayers({ structure, style, model }) {
       </group>
 
       {/* Fusion Layers */}
-      <group position={[fusionStreamPositionX, 0, 0]}>
+      <group position={[0, fusionStreamPositionY, 0]}>
         {positionedFusionLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-fusion-${layer.name}-${i}`}

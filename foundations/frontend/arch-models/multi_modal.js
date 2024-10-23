@@ -415,11 +415,11 @@ export const GRID_CONFIGS = {
   CLIP: {
     input: { xCount: 96, yCount: 96, xInterval: 1.5, yInterval: 1.5 },
     embedding: { xCount: 14, yCount: 14, xInterval: 2, yInterval: 2 },
-    vision_transformer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    text_transformer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    transformer_layer: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    ffn: { xCount: 24, yCount: 4, xInterval: 2, yInterval: 5 },
+    vision_transformer: { xCount: 12, yCount: 1, xInterval: 25, yInterval: 2 },
+    text_transformer: { xCount: 12, yCount: 1, xInterval: 20, yInterval: 2 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 15, yInterval: 10 },
+    attention: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 15 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 6, yInterval: 6 },
     dense: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     loss: { xCount: 5, yCount: 5, xInterval: 4, yInterval: 4 },
   },
@@ -431,7 +431,7 @@ export const GRID_CONFIGS = {
     mlp: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     layernorm: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     concat: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    dense: { xCount: 16384, yCount: 1, xInterval: 0.1, yInterval: 0.1 },
+    dense: { xCount: 512, yCount: 1, xInterval: 0.1, yInterval: 0.1 },
     output: { xCount: 32, yCount: 32, xInterval: 1, yInterval: 1 },
   },
   DALL_E_2: {
@@ -460,6 +460,6 @@ export const GRID_CONFIGS = {
     cross_attention: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
     time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
     conv: { xCount: 3, yCount: 1, xInterval: 1, yInterval: 1 },
-    output: { xCount: 256, yCount: 256, xInterval: 1, yInterval: 1 },
+    output: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
   },
 };
