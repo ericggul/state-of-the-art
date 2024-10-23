@@ -7,10 +7,7 @@ import useConversation from "./useConversation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-import {
-  INPUT_EMBEDDINGS,
-  OUTPUT_EMBEDDINGS,
-} from "@/foundations/test/1-relation/utils/constant-conversation";
+import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
 
 export default function Wrapper() {
   const [isblack, setIsblack] = useState(true);
@@ -30,31 +27,18 @@ export default function Wrapper() {
   const [length, setLength] = useState(10);
 
   useEffect(() => {
-    if (!isblack) {
-      let inputEmbeddingsData = INPUT_EMBEDDINGS;
-      let outputEmbeddingsData = OUTPUT_EMBEDDINGS;
+    if (!isblack && embeddings.length > 0) {
+      const lastIndex = embeddings.length - 1;
+      const inputData = lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
+      const outputData = embeddings[lastIndex];
 
-      if (embeddings.length >= 2) {
-        // Use the last two embeddings
-        inputEmbeddingsData = embeddings[embeddings.length - 2];
-        outputEmbeddingsData = embeddings[embeddings.length - 1];
-      } else if (embeddings.length === 1) {
-        // Only one embedding available
-        inputEmbeddingsData = INPUT_EMBEDDINGS;
-        outputEmbeddingsData = embeddings[0];
-      }
-
-      setInputEmbeddings(inputEmbeddingsData);
-      setOutputEmbeddings(outputEmbeddingsData);
-      setLength(
-        inputEmbeddingsData.tokens.length + outputEmbeddingsData.tokens.length
-      );
+      setInputEmbeddings(inputData);
+      setOutputEmbeddings(outputData);
+      setLength(inputData.tokens.length + outputData.tokens.length);
     }
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
-
-  console.log(conversations);
 
   return (
     <S.Container
@@ -62,6 +46,14 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 12}
+        timeUnit={1}
+      />
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
@@ -86,22 +78,8 @@ export default function Wrapper() {
         visible={isblack && length <= 28}
         timeUnit={1}
       />
-      <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0, 1], y: [0, 1] }}
-        visible={isblack && length <= 38}
-        timeUnit={1}
-      />
-      <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0.1, 0.9], y: [0.1, 0.9] }}
-        visible={true}
-        timeUnit={1}
-      />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack && length <= 38} timeUnit={1} />
+      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} timeUnit={1} />
     </S.Container>
   );
 }

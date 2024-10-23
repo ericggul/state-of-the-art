@@ -4,13 +4,25 @@ import { useState, useEffect } from "react";
 import useSocket from "@/utils/socket/on-off/useSocketScreen";
 
 import dynamic from "next/dynamic";
-import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS, MULTI_LAYERS_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
+import {
+  INPUT_EMBEDDINGS,
+  OUTPUT_EMBEDDINGS,
+  MULTI_LAYERS_EMBEDDINGS,
+} from "@/foundations/test/1-relation/utils/constant-conversation";
 
-const Yakitori4 = dynamic(() => import("@/foundations/test-frontend/yakitori/0/0-4"));
-const Random26 = dynamic(() => import("@/foundations/test/1-relation/random/2/2-6"));
+const Yakitori4 = dynamic(() =>
+  import("@/foundations/test-frontend/yakitori/0/0-4")
+);
+const Random26 = dynamic(() =>
+  import("@/foundations/test/1-relation/random/2/2-6")
+);
 
-const Preview = dynamic(() => import("@/foundations/test-frontend/product-preview/ui"));
-const Embeddings250 = dynamic(() => import("@/foundations/test-backend/2.5-duo/0"));
+const Preview = dynamic(() =>
+  import("@/foundations/test-frontend/product-preview/ui")
+);
+const Embeddings250 = dynamic(() =>
+  import("@/foundations/test-backend/2.5-duo/2")
+);
 
 export default function El() {
   const socket = useSocket({
@@ -48,7 +60,10 @@ export default function El() {
           opacity: !visible ? 1 : 0,
         }}
       >
-        <Embeddings250 newInputEmbeddings={INPUT_EMBEDDINGS} newOutputEmbeddings={OUTPUT_EMBEDDINGS} />
+        <Embeddings250
+          newInputEmbeddings={INPUT_EMBEDDINGS}
+          newOutputEmbeddings={OUTPUT_EMBEDDINGS}
+        />
       </S.Container>
     </>
   );
