@@ -763,41 +763,7 @@ export const MODELS = {
           "Scaled networks using a compound coefficient to balance network depth, width, and resolution.",
       },
     },
-    "v8.1": {
-      name: "Self-Supervised Vision Models",
-      "v8.1.1": {
-        name: "SimCLR",
-        year: 2020,
-        place: "Ting Chen et al., Google Research",
-        citation: 4900,
-        explanation:
-          "Contrastive self-supervised learning method using data augmentations to learn representations.",
-      },
-      "v8.1.2": {
-        name: "MoCo",
-        year: 2020,
-        place: "Kaiming He et al., Facebook AI Research",
-        citation: 4300,
-        explanation:
-          "Contrastive learning method using a momentum encoder and queue for large dictionaries.",
-      },
-      "v8.1.3": {
-        name: "DINO",
-        year: 2021,
-        place: "Mathilde Caron et al., Facebook AI Research",
-        citation: 1500,
-        explanation:
-          "Self-supervised method using knowledge distillation without labels to learn visual features.",
-      },
-      "v8.1.4": {
-        name: "DINOv2",
-        year: 2023,
-        place: "Meta AI Research",
-        citation: 100,
-        explanation:
-          "An improved version of DINO for self-supervised learning on larger datasets.",
-      },
-    },
+
     "v8.2": {
       name: "Other Specialized Models",
       "v8.2.1": {
@@ -940,10 +906,7 @@ export const ARRAY = [
   "AlphaStar",
   "MobileNet",
   "EfficientNet",
-  "SimCLR",
-  "MoCo",
-  "DINO",
-  "DINOv2",
+
   "Neural Architecture Search (NAS) Models",
   "Graph Neural Networks (GNNs)",
   "Capsule Networks (CapsNet)",
@@ -1285,22 +1248,7 @@ export const OBJECT_ARRAY = [
     name: "EfficientNet",
     version: "v8.0.2",
   },
-  {
-    name: "SimCLR",
-    version: "v8.1.1",
-  },
-  {
-    name: "MoCo",
-    version: "v8.1.2",
-  },
-  {
-    name: "DINO",
-    version: "v8.1.3",
-  },
-  {
-    name: "DINOv2",
-    version: "v8.1.4",
-  },
+
   {
     name: "Neural Architecture Search (NAS) Models",
     version: "v8.2.1",
