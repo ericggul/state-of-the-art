@@ -58,30 +58,7 @@ export default function Wrapper() {
         visible={isblack && length <= 15}
         timeUnit={1}
       />
-      {/* <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
-        visible={isblack && length <= 20}
-        timeUnit={1}
-      /> */}
-      {/* <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
-        visible={isblack && length <= 28}
-        timeUnit={1}
-      /> */}
-      {/* <SingleRandom
-        newInputEmbeddings={inputEmbeddings}
-        newOutputEmbeddings={outputEmbeddings}
-        isblack={isblack}
-        range={{ x: [0, 1], y: [0, 1] }}
-        visible={isblack && length <= 38}
-        timeUnit={1}
-      /> */}
+
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}

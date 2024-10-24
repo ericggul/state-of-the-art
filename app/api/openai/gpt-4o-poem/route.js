@@ -20,7 +20,7 @@ export async function POST(req) {
           content: text,
         },
       ],
-      max_tokens: 15,
+      max_tokens: 30,
       logprobs: true,
       top_logprobs: 20,
       ...params,
