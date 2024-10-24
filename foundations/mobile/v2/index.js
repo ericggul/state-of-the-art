@@ -9,7 +9,7 @@ import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models/v2";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 
-export default function Mobile() {
+export default function Mobile({ socket }) {
   // Flatten and refine the MODELS object into an array
   const modelsArray = useMemo(() => {
     const flattened = flattenModels(MODELS);
@@ -18,14 +18,14 @@ export default function Mobile() {
 
   return (
     <S.Container>
-      <ModelList initialModels={modelsArray} />
+      <ModelList initialModels={modelsArray} socket={socket} />
     </S.Container>
   );
 }
 
-function ModelList({ initialModels }) {
+function ModelList({ initialModels, socket }) {
   const [models, setModels] = useState(initialModels);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(null);
   const itemRefs = useRef([]);
   const listRef = useRef(null);
   const observerRef = useRef(null);
@@ -85,7 +85,7 @@ function ModelList({ initialModels }) {
       entries.forEach((entry) => {
         const index = Number(entry.target.getAttribute("data-index"));
         if (entry.isIntersecting) {
-          setActiveIndex(index);
+          setCurrentIndex(index);
         }
       });
     };
@@ -106,6 +106,20 @@ function ModelList({ initialModels }) {
     };
   }, [models]);
 
+  useEffect(() => {
+    console.log(currentIndex);
+    if (currentIndex !== null && socket && socket.current) {
+      console.log(models[currentIndex]);
+      try {
+        socket.current.emit("mobile-new-architecture", {
+          currentArchitectures: [models[currentIndex]],
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [currentIndex, models, socket]);
+
   return (
     <S.ModelList ref={listRef}>
       {models.map((model, index) => (
@@ -113,10 +127,10 @@ function ModelList({ initialModels }) {
           key={`${model.name}-${index}`}
           ref={(el) => (itemRefs.current[index] = el)}
           data-index={index}
-          isActive={activeIndex === index}
+          $isCurrent={currentIndex === index}
         >
           <S.ModelName>{model.name}</S.ModelName>
-          {activeIndex === index && (
+          {currentIndex === index && (
             <S.ModelDetails>
               {model.explanation && <p>{model.explanation}</p>}
               {model.year && <p>Year: {model.year}</p>}

@@ -14,16 +14,18 @@ export default function ScreenWrapper() {
     currentArchitectures,
     latestSpeech,
     mobileVisibility,
-    handleNewArchitectures,
+    handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
+    handleNewMobileArchitecture,
   } = useScreenStore();
 
   const socket = useSocketScreen({
     layerIdx: 0,
-    handleNewArchitectures,
+    handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
+    handleNewMobileArchitecture,
   });
 
   // useEffect(() => {

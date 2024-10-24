@@ -10,7 +10,7 @@ const AccelerometerWrapper = ({ socket }) => {
 
   return (
     <>
-      <UI />
+      <UI socket={socket} />
       <AccelerometerHandler />
     </>
   );

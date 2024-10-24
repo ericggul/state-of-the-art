@@ -19,6 +19,7 @@ export default function mobileSetup({ socket, io }) {
   });
 
   //controller -> screen
+  //v1 logic
   socket.on("controller-new-architectures", (data) => {
     socket.to("screen").emit("new-controller-architectures", data);
   });
@@ -34,6 +35,13 @@ export default function mobileSetup({ socket, io }) {
 
   socket.on("mobile-new-response", (data) => {
     socket.to("controller").emit("new-mobile-response", data);
+  });
+
+  ///////TEMPORARY WITHOUT CONTROLLER/////
+  //v2 logic
+  socket.on("mobile-new-architecture", (data) => {
+    socket.to("controller").emit("new-mobile-architecture", data);
+    socket.to("screen").emit("new-mobile-architecture", data);
   });
 
   //front <-> back visibiltiy change

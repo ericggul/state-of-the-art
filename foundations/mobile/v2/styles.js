@@ -29,10 +29,10 @@ export const ModelItem = styled.div`
   ${FlexCenterStyle}
   flex-direction: column;
   width: 100%;
-  min-height: ${({ isActive }) => (isActive ? "50vh" : "7rem")};
-  max-height: ${({ isActive }) => (isActive ? "50vh" : "7rem")};
+  min-height: ${({ $isCurrent }) => ($isCurrent ? "50vh" : "7rem")};
+  max-height: ${({ $isCurrent }) => ($isCurrent ? "50vh" : "7rem")};
   transition: all 0.3s ease;
-  background-color: ${({ isActive }) => (isActive ? "#222" : "#000")};
+  background-color: ${({ $isCurrent }) => ($isCurrent ? "#222" : "#000")};
   color: #fff;
   padding: 1rem;
   box-sizing: border-box;
