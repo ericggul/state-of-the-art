@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import useAccelerometerStore from "@/components/mobile/store/accelerometer";
+import useAccelerometerStore from "@/components/mobile/v1/store/accelerometer";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
-import useMobileStore from "@/components/mobile/store"; // Import the mobile store
+import useMobileStore from "@/components/mobile/v1/store"; // Import the mobile store
 
 const AccelerometerHandler = () => {
   const [orientation, setOrientation] = useState({

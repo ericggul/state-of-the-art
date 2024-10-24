@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as S from "./styles";
 import { Message } from "./message";
-import useMobileStore from "@/components/mobile/store";
-import useAccelerometerStore from "@/components/mobile/store/accelerometer";
+import useMobileStore from "@/components/mobile/v1/store";
+import useAccelerometerStore from "@/components/mobile/v1/store/accelerometer";
 
 const ChatUI = ({
   supportsDeviceOrientation,

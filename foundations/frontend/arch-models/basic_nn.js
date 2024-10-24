@@ -1,13 +1,13 @@
 export const MCCULLOCH_PITTS_NEURON = [
   { name: "Inputs", type: "input", neurons: 2 },
-  { name: "McCulloch-Pitts Neuron", type: "neuron", neurons: 1 },
-  { name: "Output", type: "output", neurons: 1 },
+  { name: "McCulloch-Pitts Neuron", type: "neuron", neurons: 3 },
+  { name: "Output", type: "output", neurons: 2 },
 ];
 
 export const PERCEPTRON = [
   { name: "Inputs", type: "input", neurons: 3 },
   { name: "Weights", type: "weights", neurons: 3 },
-  { name: "Perceptron", type: "neuron", neurons: 1 },
+  { name: "Perceptron", type: "neuron", neurons: 2 },
   { name: "Output", type: "output", neurons: 1 },
 ];
 

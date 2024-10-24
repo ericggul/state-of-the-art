@@ -2,8 +2,8 @@ import React from "react";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import ChatUI from "./index";
 import AccelerometerHandler from "./accelrometer/handler";
-import useMobileStore from "@/components/mobile/store";
-import useAccelerometerStore from "@/components/mobile/store/accelerometer";
+import useMobileStore from "@/components/mobile/v1/store";
+import useAccelerometerStore from "@/components/mobile/v1/store/accelerometer";
 
 const AccelerometerWrapper = ({ socket }) => {
   const { supportsDeviceOrientation, permission, requestAccess } =

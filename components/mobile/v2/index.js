@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import MobileEl from "@/foundations/mobile/wrapper";
+import MobileEl from "@/foundations/mobile/v1/wrapper";
 import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileStore from "./store";
 
@@ -17,6 +17,7 @@ export default function Mobile() {
     setIsWaitingForResponse,
     messages,
   } = useMobileStore();
+  console.log("MobileV2");
 
   useEffect(() => {
     initializeMobileId();
