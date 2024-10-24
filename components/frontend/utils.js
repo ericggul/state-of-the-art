@@ -34,3 +34,13 @@ export const filterAndRefineModels = (models) =>
           model.explanation !== "")
     )
     .map((model) => ({ name: model.name, version: model.version }));
+
+export const filterModels = (models) =>
+  models.filter(
+    (model) =>
+      model.name !== "" &&
+      (model.year !== "" ||
+        model.place !== "" ||
+        model.citation !== "" ||
+        model.explanation !== "")
+  );
