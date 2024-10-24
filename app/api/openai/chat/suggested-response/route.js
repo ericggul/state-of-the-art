@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { SYSTEM_DESCRIPTION } from "@/foundations/mobile/_old/constant/v1";
+import { SYSTEM_DESCRIPTION } from "@/foundations/mobile/v1/_old/constant/v1";
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
