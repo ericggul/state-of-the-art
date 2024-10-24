@@ -1,17 +1,14 @@
 import React from "react";
-import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
-import AccelerometerHandler from "./accelrometer/handler";
+
+import AccelerometerHandler from "./accelrometer";
 
 import UI from "./index";
 
-const AccelerometerWrapper = ({ socket }) => {
-  const { supportsDeviceOrientation, permission, requestAccess } =
-    useAccelerometer();
-
+const AccelerometerWrapper = ({ socket, mobileId }) => {
   return (
     <>
       <UI socket={socket} />
-      <AccelerometerHandler />
+      <AccelerometerHandler mobileId={mobileId} />
     </>
   );
 };

@@ -1,26 +1,40 @@
-import React, { useEffect, useState } from "react";
-import useAccelerometerStore from "@/components/mobile/v1/store/accelerometer";
+import React, { useEffect, useState, useCallback } from "react";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
-import useMobileStore from "@/components/mobile/v1/store"; // Import the mobile store
+import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
+import { AccelerometerContainer, ActivateButton } from "./styles";
 
-const AccelerometerHandler = () => {
+const AccelerometerHandler = ({ mobileId }) => {
   const [orientation, setOrientation] = useState({
     alpha: 0,
     beta: 0,
     gamma: 0,
   });
-  const [acceleration, setAcceleration] = useState({
-    x: 0,
-    y: 0,
-    z: 0,
-  });
-  const { isAccelerometerActive } = useAccelerometerStore();
-  const { mobileId } = useMobileStore(); // Get the mobileId from the store
+  const [acceleration, setAcceleration] = useState({ x: 0, y: 0, z: 0 });
+  const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
+  const [showContainer, setShowContainer] = useState(true);
+
+  const { supportsDeviceOrientation, permission, requestAccess } =
+    useAccelerometer();
 
   const socket = useSocketMobileOrientation({
     mobileId,
     isAccelerometerActive,
-  }); // Pass mobileId to the hook
+  });
+
+  const activateAccelerometer = useCallback(async () => {
+    if (supportsDeviceOrientation) {
+      const granted = await requestAccess();
+      if (granted) {
+        setIsAccelerometerActive(true);
+        setShowContainer(false);
+      } else {
+        alert("Permission denied for accelerometer access");
+      }
+    } else {
+      setIsAccelerometerActive(true);
+      setShowContainer(false);
+    }
+  }, [supportsDeviceOrientation, requestAccess]);
 
   useEffect(() => {
     const orientationDetector = (e) => {
@@ -59,12 +73,21 @@ const AccelerometerHandler = () => {
           acceleration,
         });
       } catch (e) {
-        console.log(e);
+        console.error("Error emitting orientation update:", e);
       }
     }
   }, [orientation, acceleration, isAccelerometerActive, mobileId, socket]);
 
-  return null; // This component doesn't render anything
+  return (
+    <AccelerometerContainer show={showContainer}>
+      <ActivateButton
+        onClick={activateAccelerometer}
+        disabled={!supportsDeviceOrientation && permission}
+      >
+        Activate Accelerometer
+      </ActivateButton>
+    </AccelerometerContainer>
+  );
 };
 
 export default AccelerometerHandler;

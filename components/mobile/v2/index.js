@@ -20,7 +20,7 @@ export default function Mobile() {
 
   return (
     <>
-      <MobileEl socket={socket} />
+      <MobileEl mobileId={mobileId} socket={socket} />
     </>
   );
 }
