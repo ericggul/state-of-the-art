@@ -4,13 +4,13 @@ import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
 const MobileElV1 = dynamic(() =>
-  import("@/foundations/mobile/_old/langchain/v1")
+  import("@/foundations/mobile/v1/_old/langchain/v1")
 );
 const MobileElV2 = dynamic(() =>
-  import("@/foundations/mobile/_old/langchain/v2")
+  import("@/foundations/mobile/v1/_old/langchain/v2")
 );
 const MobileElV3 = dynamic(() =>
-  import("@/foundations/mobile/_old/langchain/v3")
+  import("@/foundations/mobile/v1/_old/langchain/v3")
 );
 
 const versionMap = {

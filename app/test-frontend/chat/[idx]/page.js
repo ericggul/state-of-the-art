@@ -2,9 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-const Chat = dynamic(() => import("@/foundations/mobile/_old/vanilla-gpt"));
+const Chat = dynamic(() => import("@/foundations/mobile/v1/_old/vanilla-gpt"));
 const ChatStream = dynamic(() =>
-  import("@/foundations/mobile/_old/vanilla-gpt/stream")
+  import("@/foundations/mobile/v1/_old/vanilla-gpt/stream")
 );
 
 import { useParams } from "next/navigation";
