@@ -9,7 +9,7 @@ import {
 import { TRANSLATED_TEMPLATES } from "@/components/controller/constant/translated-templates";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
 
-import { LANGUAGE_MAP } from "@/foundations/mobile/constant/language-map";
+import { LANGUAGE_MAP } from "@/foundations/mobile/v1/constant/language-map";
 
 export const dynamic = "force-dynamic";
 
