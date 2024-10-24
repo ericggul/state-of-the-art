@@ -20,7 +20,7 @@ export async function POST(req) {
           content: text,
         },
       ],
-      max_tokens: 30,
+      max_tokens: 40,
       logprobs: true,
       top_logprobs: 20,
       temperature: 1.3,

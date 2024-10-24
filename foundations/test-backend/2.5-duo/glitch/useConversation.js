@@ -3,7 +3,12 @@ import { useEffect, useRef } from "react";
 
 const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
 
-export default function useConversation({ conversations, setConversations, setEmbeddings, setIsblack }) {
+export default function useConversation({
+  conversations,
+  setConversations,
+  setEmbeddings,
+  setIsblack,
+}) {
   const embeddingsCache = useRef({});
   const isMountedRef = useRef(true);
 
@@ -36,7 +41,11 @@ export default function useConversation({ conversations, setConversations, setEm
           text,
         });
 
-        if (!response.data || !response.data.message.content || !response.data.logprobs.content) {
+        if (
+          !response.data ||
+          !response.data.message.content ||
+          !response.data.logprobs.content
+        ) {
           throw new Error("No response data or message content");
         }
 
@@ -103,7 +112,9 @@ export default function useConversation({ conversations, setConversations, setEm
 
   async function getEmbeddingsForTokens(tokens) {
     const embeddings = {};
-    const tokensToFetch = tokens.filter((token) => !embeddingsCache.current[token]);
+    const tokensToFetch = tokens.filter(
+      (token) => !embeddingsCache.current[token]
+    );
 
     const CONCURRENT_REQUESTS_LIMIT = 8;
 
@@ -122,7 +133,9 @@ export default function useConversation({ conversations, setConversations, setEm
             throw new Error("Invalid response data from embeddings API");
           }
 
-          const embedding = response.data[0].embedding.map((el) => parseFloat(el.toFixed(6)));
+          const embedding = response.data[0].embedding.map((el) =>
+            parseFloat(el.toFixed(6))
+          );
           embeddingsCache.current[token] = embedding;
           embeddings[token] = embedding;
         } catch (e) {
