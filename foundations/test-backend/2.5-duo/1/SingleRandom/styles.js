@@ -28,7 +28,7 @@ export const MidRow = styled.div`
 `;
 
 export const Token = styled.div`
-  font-size: 1vw;
+  font-size: 0.7vw;
   font-weight: 500;
   color: white;
 

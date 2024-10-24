@@ -50,7 +50,7 @@ const INITIAL_CAMERA_DISTANCE = 10000;
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
   isTesting,
-  styleIndex = 4,
+  styleIndex = 0,
 }) {
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);

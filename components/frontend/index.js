@@ -45,6 +45,7 @@ function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
     <S.Container>
       <Architecture3D version={version} isTesting={isTesting} />
       {relevantModel && <ArchitectureUI model={relevantModel} />}
+      {/* <S.Overlay /> */}
     </S.Container>
   );
 }

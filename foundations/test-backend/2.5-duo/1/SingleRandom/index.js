@@ -3,6 +3,7 @@ import * as S from "./styles";
 import usePosCalc from "./usePosCalc";
 import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import useResize from "@/utils/hooks/useResize";
 
 const BEZIER_DEFAULT = {
   controlX1Factor: 0,
@@ -13,7 +14,7 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-const X_RANGE = 1.5;
+const X_RANGE = 2.5;
 const Y_RANGE = 20;
 
 function SingleRandom({
@@ -54,7 +55,7 @@ function SingleRandom({
   }, [X_RANGE, Y_RANGE, visible, isAnimating]);
 
   // Use the custom interval hook to call the bezier update within the given time range
-  useRandomInterval(updateBezierParams, 5 * timeUnit, 70 * timeUnit, visible);
+  useRandomInterval(updateBezierParams, 1 * timeUnit, 10 * timeUnit, visible);
 
   const inputPosCalc = usePosCalc({
     tokens: inputTokens,
@@ -94,6 +95,7 @@ function SingleRandom({
     },
     [bezierParams, inputPosCalc.yMargin, outputPosCalc.yMargin]
   );
+  const [windowWidth, windowHeight] = useResize();
 
   // Memoized paths to reduce re-renders
   const paths = useMemo(() => {
@@ -110,7 +112,7 @@ function SingleRandom({
                 key={`arc-${i}-${j}`}
                 d={d}
                 fill="none"
-                strokeWidth={Math.pow(similarity, 3) * 4}
+                strokeWidth={Math.pow(similarity, 4) * windowWidth * 0.003}
               />
             );
           }
