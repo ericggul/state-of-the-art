@@ -61,7 +61,7 @@ export default function Wrapper() {
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
-        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
         visible={true}
         timeUnit={1}
       />

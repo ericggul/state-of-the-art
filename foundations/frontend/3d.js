@@ -23,6 +23,7 @@ import ReinforcementLayers from "./arch/layers/ReinforcementLayers";
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
+import PositionalAudio from "./utils/PositionalAudio";
 
 const CURRENT_TESTING_VERSION = "v4.0.3";
 // Utility function to convert model name to variable name
@@ -172,6 +173,7 @@ export default function Visualisation({
           <AvatarModel />
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
           <PostProcessing />
+          <PositionalAudio distance={cameraDistance * 0.2} volume={2} />
         </CommonScene>
       </Suspense>
     </Canvas>
