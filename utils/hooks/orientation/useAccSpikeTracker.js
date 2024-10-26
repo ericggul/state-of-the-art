@@ -5,7 +5,7 @@ const COOLDOWN_PERIOD = 5000; // 5 seconds cooldown between shakes
 
 export default function useAccDataSpikeTracker({ accData, socket }) {
   const [spikeCount, setSpikeCount] = useState(0);
-
+  const spikeCountRef = useRef(0);
   const lastShakeTime = useRef(0);
 
   useEffect(() => {
@@ -23,11 +23,11 @@ export default function useAccDataSpikeTracker({ accData, socket }) {
 
     // Check if the acceleration magnitude exceeds the threshold
     if (totalAcceleration > THRESHOLD) {
-      // Update the spike count (ensure it's an integer)
-      setSpikeCount((prevCount) => {
-        const newCount = prevCount + 1;
-        return Number.isInteger(newCount) ? newCount : Math.floor(newCount);
-      });
+      // Increment the spike count
+      spikeCountRef.current += 1;
+
+      // Update the state (this will trigger a re-render)
+      setSpikeCount(spikeCountRef.current);
 
       lastShakeTime.current = now;
 
@@ -35,14 +35,14 @@ export default function useAccDataSpikeTracker({ accData, socket }) {
       if (socket?.current) {
         try {
           socket.current.emit("mobile-orientation-spike", {
-            spikeCount: spikeCount + 1, // Increment spikeCount for accurate emission
+            spikeCount: spikeCountRef.current,
           });
         } catch (e) {
           console.error(e);
         }
       }
     }
-  }, [accData, socket, spikeCount]);
+  }, [accData, socket]);
 
   return { spikeCount };
 }

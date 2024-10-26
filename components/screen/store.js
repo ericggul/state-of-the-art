@@ -39,7 +39,7 @@ const useScreenStore = create((set) => ({
 
   handleNewMobileOrientationSpike: (data) => {
     console.log("New mobile orientation spike received:", data);
-    set({ styleIndex: Math.floor(data.spikeCount) % 8 });
+    set({ styleIndex: Math.floor(data.spikeCount) % 15 });
   },
 }));
 

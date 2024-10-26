@@ -2,7 +2,10 @@ import React from "react";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
 
-export const INTERLAYER_MARGIN_X = 1.3;
+// export const INTERLAYER_MARGIN_X = 1.3;
+// export const INTERLAYER_MARGIN_Y = 3.0;
+
+export const INTERLAYER_MARGIN_X = 1.6;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
 const Sublayer = ({
