@@ -1,21 +1,21 @@
 // Expanded styling strategies
 export const STYLE_STRATEGIES = [
   {
-    name: "Subtle Red",
+    name: "Wireframe Blue",
     colors: {
-      outer: "hsl(355, 65%, 28%)", // Deep, rich red
-      inner: "hsl(355, 70%, 35%)", // Slightly brighter red
-      plane: "hsl(355, 50%, 15%)", // Dark, muted red
+      outer: "hsl(240, 65%, 28%)", // Deep, rich red
+      inner: "hsl(240, 70%, 35%)", // Slightly brighter red
+      plane: "hsl(240, 50%, 15%)", // Dark, muted red
     },
     material: {
       metalness: 0.6, // Kept the same
       roughness: 0.4, // Kept the same
       transparent: true,
-      opacity: 0.6,
+      opacity: 1,
       wireframe: true,
     },
     lighting: {
-      environment: "studio", // Kept 'studio' for the gallery-like feel
+      environment: "apartment", // Kept 'studio' for the gallery-like feel
       envIntensity: 0.5, // Further reduced for a more subdued look
       pointLight: { position: [0, 200, 0], intensity: 0.7 },
       directionalLight: { position: [0, 150, -100], intensity: 0.5 },

@@ -1,62 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function useVisibilityCheck({
   socket,
   mobileId,
-
-  requestVisibilityCheck,
-  setRequestVisibilityCheck,
   isTrackingVisibility = true,
 } = {}) {
   const [isVisible, setIsVisible] = useState(true);
+
+  const emitVisibilityChange = useCallback(() => {
+    if (socket && socket.current) {
+      try {
+        socket.current.emit("on-off-visibility-change", {
+          isVisible,
+          mobileId,
+        });
+      } catch (e) {
+        console.error("Error emitting visibility change:", e);
+      }
+    }
+  }, [socket, isVisible, mobileId]);
 
   useEffect(() => {
     if (!isTrackingVisibility) return;
 
     const handleVisibilityChange = () => {
-      // console.log("10 visibility change", document.hidden, document.hasFocus(), !document.hidden && document.hasFocus());
-      // setIsVisible(!document.hidden && document.hasFocus());
+      const newVisibility = !document.hidden && document.hasFocus();
+      setIsVisible(newVisibility);
     };
 
-    const handleFocus = () => {
-      console.log("14 focus");
-      setIsVisible(true);
-    };
-
-    const handleBlur = () => {
-      console.log("20 blur");
-      setIsVisible(false);
-    };
-
-    // Add event listeners
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("focus", handleFocus);
-    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", () => setIsVisible(true));
+    window.addEventListener("blur", () => setIsVisible(false));
 
-    // Cleanup event listeners on unmount
+    // Initial check
+    handleVisibilityChange();
+
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("focus", handleFocus);
-      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", () => setIsVisible(true));
+      window.removeEventListener("blur", () => setIsVisible(false));
     };
   }, [isTrackingVisibility]);
 
-  //socket operation
   useEffect(() => {
-    if (!socket || !socket.current) return;
-
-    if (requestVisibilityCheck) {
-      setRequestVisibilityCheck(false);
-      return;
-    }
-
-    try {
-      console.log("firing 52");
-      socket.current.emit("on-off-visibility-change", { isVisible, mobileId });
-    } catch (e) {
-      console.log(e);
-    }
-  }, [isVisible, requestVisibilityCheck]);
+    emitVisibilityChange();
+  }, [emitVisibilityChange]);
 
   return isVisible;
 }
