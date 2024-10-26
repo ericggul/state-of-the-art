@@ -26,6 +26,7 @@ export default function Mobile({ socket }) {
 function ModelList({ initialModels, socket }) {
   const [models, setModels] = useState(initialModels);
   const [currentIndex, setCurrentIndex] = useState(null);
+  const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
   const itemRefs = useRef([]);
   const listRef = useRef(null);
   const observerRef = useRef(null);
@@ -86,6 +87,8 @@ function ModelList({ initialModels, socket }) {
         const index = Number(entry.target.getAttribute("data-index"));
         if (entry.isIntersecting) {
           setCurrentIndex(index);
+          // Reset manually selected index when scrolling
+          setManuallySelectedIndex(null);
         }
       });
     };
@@ -108,17 +111,27 @@ function ModelList({ initialModels, socket }) {
 
   useEffect(() => {
     console.log(currentIndex);
-    if (currentIndex !== null && socket && socket.current) {
-      console.log(models[currentIndex]);
+    const activeIndex =
+      manuallySelectedIndex !== null ? manuallySelectedIndex : currentIndex;
+    if (activeIndex !== null && socket && socket.current) {
+      console.log(models[activeIndex]);
       try {
         socket.current.emit("mobile-new-architecture", {
-          currentArchitectures: [models[currentIndex]],
+          currentArchitectures: [models[activeIndex]],
         });
       } catch (e) {
         console.log(e);
       }
     }
-  }, [currentIndex, models, socket]);
+  }, [currentIndex, manuallySelectedIndex, models, socket]);
+
+  const handleItemClick = (index) => {
+    if (manuallySelectedIndex === index) {
+      setManuallySelectedIndex(null);
+    } else {
+      setManuallySelectedIndex(index);
+    }
+  };
 
   return (
     <S.ModelList ref={listRef}>
@@ -127,10 +140,15 @@ function ModelList({ initialModels, socket }) {
           key={`${model.name}-${index}`}
           ref={(el) => (itemRefs.current[index] = el)}
           data-index={index}
-          $isCurrent={currentIndex === index}
+          $isCurrent={
+            manuallySelectedIndex === index ||
+            (manuallySelectedIndex === null && currentIndex === index)
+          }
+          onClick={() => handleItemClick(index)}
         >
           <S.ModelName>{model.name}</S.ModelName>
-          {currentIndex === index && (
+          {(manuallySelectedIndex === index ||
+            (manuallySelectedIndex === null && currentIndex === index)) && (
             <S.ModelDetails>
               {model.explanation && <p>{model.explanation}</p>}
               {model.year && <p>Year: {model.year}</p>}
