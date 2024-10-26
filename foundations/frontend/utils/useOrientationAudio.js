@@ -1,82 +1,87 @@
-import { useMemo, useCallback } from "react";
-import * as Tone from "tone";
+import { useMemo, useCallback, useEffect, useState } from "react";
 import * as THREE from "three";
 
+const AUDIO_FILE = "/audio/daisy/1.mp3";
+
 export function useOrientationAudio() {
-  const synth = useMemo(() => {
-    const s = new Tone.PolySynth(Tone.FMSynth, {
-      harmonicity: 3,
-      modulationIndex: 10,
-      oscillator: { type: "sine" },
-      envelope: {
-        attack: 0.01,
-        decay: 0.2,
-        sustain: 0.1,
-        release: 0.3,
-      },
-      modulation: { type: "square" },
-      modulationEnvelope: {
-        attack: 0.5,
-        decay: 0,
-        sustain: 1,
-        release: 0.5,
-      },
-    }).toDestination();
-    s.volume.value = 10; // Adjust initial volume
-    return s;
+  const [audio, setAudio] = useState(null);
+  const [audioContext, setAudioContext] = useState(null);
+  const [gainNode, setGainNode] = useState(null);
+
+  useEffect(() => {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = context.createGain();
+    gain.connect(context.destination);
+    gain.gain.setValueAtTime(0.1, context.currentTime); // Set initial gain to 10%
+    setAudioContext(context);
+    setGainNode(gain);
+
+    fetch(AUDIO_FILE)
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
+      .then((audioBuffer) => {
+        setAudio(audioBuffer);
+      })
+      .catch((error) => console.error("Error loading audio:", error));
+
+    return () => {
+      context.close();
+    };
   }, []);
 
   const playShakeSound = useCallback(
     (accelMagnitude) => {
-      const baseFrequency = THREE.MathUtils.mapLinear(
-        accelMagnitude,
-        0,
-        2,
-        300,
-        1200
-      );
-      try {
-        synth.triggerAttackRelease(
-          [baseFrequency, baseFrequency * 1.5],
-          "16n",
-          undefined,
-          0.3
+      if (audioContext && audio && gainNode) {
+        const source = audioContext.createBufferSource();
+        source.buffer = audio;
+
+        const playbackRate = THREE.MathUtils.mapLinear(
+          accelMagnitude,
+          0,
+          2,
+          0.5,
+          1.5
         );
-      } catch (e) {
-        console.log(e);
+        source.playbackRate.value = playbackRate;
+
+        const volume = THREE.MathUtils.mapLinear(
+          accelMagnitude,
+          0,
+          2,
+          0.05,
+          0.2
+        );
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+
+        source.connect(gainNode);
+        source.start();
+        source.stop(audioContext.currentTime + 0.5); // Limit sound duration to 0.5 seconds
       }
     },
-    [synth]
+    [audioContext, audio, gainNode]
   );
 
   const updateZoomAudio = useCallback(
     (zoomFactor) => {
-      const zoomFrequency = THREE.MathUtils.mapLinear(
-        zoomFactor,
-        0.01,
-        3,
-        240,
-        1600
-      );
-      synth.set({
-        frequency: zoomFrequency,
-        harmonicity: THREE.MathUtils.mapLinear(zoomFactor, 0.01, 3, 1, 5),
-      });
-      const zoomVolume = THREE.MathUtils.mapLinear(
-        zoomFactor,
-        0.01,
-        3,
-        -30,
-        -10
-      );
-      synth.volume.rampTo(zoomVolume, 0.1);
+      if (gainNode) {
+        const volume = THREE.MathUtils.mapLinear(
+          zoomFactor,
+          0.01,
+          3,
+          0.02,
+          0.15
+        );
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+      }
     },
-    [synth]
+    [gainNode, audioContext]
   );
 
   const cleanup = useCallback(() => {
-    synth.dispose();
-  }, [synth]);
+    if (audioContext) {
+      audioContext.close();
+    }
+  }, [audioContext]);
 
-  return { synth, playShakeSound, updateZoomAudio, cleanup };
+  return { playShakeSound, updateZoomAudio, cleanup };
 }

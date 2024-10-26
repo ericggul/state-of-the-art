@@ -1,24 +1,31 @@
 // Expanded styling strategies
 export const STYLE_STRATEGIES = [
   {
-    name: "Wireframe Blue",
+    name: "Wireframe Blue with HAL",
     colors: {
-      outer: "hsl(240, 65%, 28%)", // Deep, rich red
-      inner: "hsl(240, 70%, 35%)", // Slightly brighter red
-      plane: "hsl(240, 50%, 15%)", // Dark, muted red
+      outer: "hsl(240, 65%, 28%)", // Deep, rich blue
+      inner: "hsl(240, 70%, 35%)", // Slightly brighter blue
+      plane: "hsl(240, 50%, 15%)", // Dark, muted blue
     },
     material: {
-      metalness: 0.6, // Kept the same
-      roughness: 0.4, // Kept the same
+      metalness: 0.6,
+      roughness: 0.4,
       transparent: true,
       opacity: 1,
     },
     lighting: {
-      environment: "apartment", // Kept 'studio' for the gallery-like feel
-      envIntensity: 0.5, // Further reduced for a more subdued look
-      pointLight: { position: [0, 200, 0], intensity: 0.7 },
-      directionalLight: { position: [0, 150, -100], intensity: 0.5 },
-      ambientLight: { intensity: 0.3 },
+      environment: "apartment",
+      envIntensity: 0.3, // Reduced to make the red light more prominent
+      pointLight: { position: [0, 200, 0], intensity: 0.5 }, // Reduced intensity
+      directionalLight: { position: [0, 150, -100], intensity: 0.3 }, // Reduced intensity
+      ambientLight: { intensity: 0.2 }, // Reduced intensity
+      pointLight: {
+        position: [0, 0, 0], // Center of the scene
+        color: 0xff0000, // Bright red
+        intensity: 200, // Strong intensity
+        distance: 10000, // Adjust based on your scene size
+        decay: 1.5, // Quadratic light falloff
+      },
     },
     shadows: true,
     emissive: false,
@@ -413,6 +420,42 @@ export const STYLE_STRATEGIES = [
     },
     layout: {
       layerHeight: 10,
+    },
+  },
+  {
+    name: "Wireframe Blue with HAL",
+    colors: {
+      outer: "hsl(240, 65%, 28%)", // Deep, rich blue
+      inner: "hsl(240, 70%, 35%)", // Slightly brighter blue
+      plane: "hsl(240, 50%, 15%)", // Dark, muted blue
+    },
+    material: {
+      metalness: 0.6,
+      roughness: 0.4,
+      transparent: true,
+      opacity: 1,
+    },
+    lighting: {
+      environment: "apartment",
+      envIntensity: 0.3, // Reduced to make the red light more prominent
+      pointLight: { position: [0, 200, 0], intensity: 0.5 }, // Reduced intensity
+      directionalLight: { position: [0, 150, -100], intensity: 0.3 }, // Reduced intensity
+      ambientLight: { intensity: 0.2 }, // Reduced intensity
+      halLight: {
+        // New HAL-9000 inspired light
+        position: [0, 0, 0], // Center of the scene
+        color: 0xff0000, // Bright red
+        intensity: 2, // Strong intensity
+        distance: 100, // Adjust based on your scene size
+        decay: 2, // Quadratic light falloff
+      },
+    },
+    shadows: true,
+    emissive: false,
+    camera: {
+      position: [0, 0, 80],
+      fov: 50,
+      near: 0.1,
     },
   },
 ];

@@ -173,7 +173,7 @@ export default function Visualisation({
           <AvatarModel />
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
           <PostProcessing />
-          <PositionalAudio distance={cameraDistance * 0.2} volume={2} />
+          <PositionalAudio distance={cameraDistance * 0.2} />
         </CommonScene>
       </Suspense>
     </Canvas>

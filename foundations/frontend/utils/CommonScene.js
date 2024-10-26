@@ -4,6 +4,14 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
+const HAL_9000_LIGHT = {
+  position: [0, 0, 0], // Center of the scene
+  color: 0xff0000, // Bright red
+  intensity: 200, // Strong intensity
+  distance: 10000, // Adjust based on your scene size
+  decay: 1.5, // Quadratic light falloff
+};
+
 export default function CommonScene({ style, children }) {
   return (
     <>
@@ -28,6 +36,7 @@ export default function CommonScene({ style, children }) {
       {style.lighting.ambientLight && (
         <ambientLight {...style.lighting.ambientLight} />
       )}
+      <pointLight {...HAL_9000_LIGHT} />
       {children}
       <OrbitControls enablePan={true} />
       <EffectComposer>
