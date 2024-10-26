@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
+import useAccSpikeTracker from "@/utils/hooks/orientation/useAccSpikeTracker";
 import { AccelerometerContainer, ActivateButton } from "./styles";
 
 const AccelerometerHandler = ({ mobileId }) => {
@@ -19,6 +20,11 @@ const AccelerometerHandler = ({ mobileId }) => {
   const socket = useSocketMobileOrientation({
     mobileId,
     isAccelerometerActive,
+  });
+
+  const { spike, spikeCount } = useAccSpikeTracker({
+    accData: acceleration,
+    socket,
   });
 
   const activateAccelerometer = useCallback(async () => {

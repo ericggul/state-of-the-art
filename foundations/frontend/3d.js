@@ -4,6 +4,8 @@ import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
 import { Box3, Vector3 } from "three";
 
+import useScreenStore from "@/components/screen/store";
+
 // Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
 import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
@@ -52,8 +54,9 @@ const INITIAL_CAMERA_DISTANCE = 10000;
 export default function Visualisation({
   version = CURRENT_TESTING_VERSION,
   isTesting,
-  styleIndex = 0,
 }) {
+  const { styleIndex } = useScreenStore();
+
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
   const style = STYLE_STRATEGIES[styleIndex];

@@ -19,13 +19,6 @@ export const STYLE_STRATEGIES = [
       pointLight: { position: [0, 200, 0], intensity: 0.5 }, // Reduced intensity
       directionalLight: { position: [0, 150, -100], intensity: 0.3 }, // Reduced intensity
       ambientLight: { intensity: 0.2 }, // Reduced intensity
-      pointLight: {
-        position: [0, 0, 0], // Center of the scene
-        color: 0xff0000, // Bright red
-        intensity: 200, // Strong intensity
-        distance: 10000, // Adjust based on your scene size
-        decay: 1.5, // Quadratic light falloff
-      },
     },
     shadows: true,
     emissive: false,

@@ -4,6 +4,7 @@ const useScreenStore = create((set) => ({
   currentArchitectures: [],
   latestSpeech: "",
   mobileVisibility: true,
+  styleIndex: 0,
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
@@ -34,6 +35,11 @@ const useScreenStore = create((set) => ({
   handleNewVisibilityChange: (data) => {
     console.log("New visibility change received:", data);
     set({ mobileVisibility: data.isVisible });
+  },
+
+  handleNewMobileOrientationSpike: (data) => {
+    console.log("New mobile orientation spike received:", data);
+    set({ styleIndex: Math.floor(Math.random() * 8) });
   },
 }));
 

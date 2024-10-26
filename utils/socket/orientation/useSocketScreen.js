@@ -3,6 +3,7 @@ import io from "socket.io-client";
 
 export default function useSocketScreenOrientation({
   handleNewMobileOrientation,
+  handleNewMobileOrientationSpike,
 }) {
   const socket = useRef(null);
   const initialized = useRef(false);
@@ -28,6 +29,10 @@ export default function useSocketScreenOrientation({
       socket.current.on(
         "new-mobile-orientation-update",
         handleNewMobileOrientation
+      );
+      socket.current.on(
+        "new-mobile-orientation-spike",
+        handleNewMobileOrientationSpike
       );
     });
   };

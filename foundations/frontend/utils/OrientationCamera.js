@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
+import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
@@ -31,8 +32,12 @@ export function OrientationCamera({ cameraDistance = 100 }) {
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
   };
+  const { handleNewMobileOrientationSpike } = useScreenStore();
 
-  useSocketScreenOrientation({ handleNewMobileOrientation });
+  useSocketScreenOrientation({
+    handleNewMobileOrientation,
+    handleNewMobileOrientationSpike,
+  });
 
   useFrame((state, delta) => {
     const { orientation, acceleration } = sensorDataRef.current;
