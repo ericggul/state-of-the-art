@@ -34,6 +34,8 @@ export default function Wrapper() {
         lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
       const outputData = embeddings[lastIndex];
 
+      console.log(inputData, outputData);
+
       setInputEmbeddings(inputData);
       setOutputEmbeddings(outputData);
       setLength(inputData.tokens.length + outputData.tokens.length);

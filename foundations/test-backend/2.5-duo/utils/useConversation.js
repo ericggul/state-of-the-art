@@ -53,6 +53,7 @@ export default function useConversation({
 
       // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
+
       fetchEmbedding({ tokens });
     } catch (e) {
       console.log(e, "get gpt response error");
@@ -63,7 +64,7 @@ export default function useConversation({
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 3500));
+    await new Promise((r) => setTimeout(r, 4500));
     hasFetchedText.current = false;
     setGetNewText(true);
   }
@@ -85,6 +86,9 @@ export default function useConversation({
       };
 
       setEmbeddings((ebd) => [...ebd, result]);
+      //dummy delay 2s
+      await new Promise((r) => setTimeout(r, 2000));
+
       setIsblack(false);
 
       //after 5s set is black true and
@@ -112,7 +116,7 @@ export default function useConversation({
         const promises = batch.map(async (token) => {
           const response = await axios.post("/api/openai/embeddings", {
             text: token,
-            dim: 256,
+            dim: 128,
           });
 
           if (!response.data || !Array.isArray(response.data)) {
@@ -151,6 +155,7 @@ export default function useConversation({
           embeddings[token] = embeddingsCache.current[token];
         }
       }
+      console.log(embeddings);
       return embeddings;
     } catch (e) {
       console.error("Failed to fetch embeddings for tokens:", e);
