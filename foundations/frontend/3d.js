@@ -76,7 +76,7 @@ export default function Visualisation({
         const box = new Box3().setFromObject(modelGroupRef.current);
         const size = new Vector3();
         box.getSize(size);
-        console.log("size", size);
+        // console.log("size", size);
 
         // Use the maximum dimension
         const maxDimension = Math.max(size.x, size.y, size.z);
@@ -87,10 +87,10 @@ export default function Visualisation({
           setCameraDistance(400); // Default distance
         } else {
           const distance = avgDimension * 0.23;
-          console.log(
-            `Calculated camera distance for ${modelName}: `,
-            distance
-          );
+          // console.log(
+          //   `Calculated camera distance for ${modelName}: `,
+          //   distance
+          // );
           setCameraDistance(distance);
         }
       }, 500); // Adjust this delay if needed
@@ -146,7 +146,7 @@ export default function Visualisation({
     ModelComponent = BasicNNLayers;
   }
 
-  console.log(structure);
+  // console.log(structure);
 
   return (
     <Canvas

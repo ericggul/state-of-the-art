@@ -24,7 +24,7 @@ export default function ScreenFrontend({ isTesting, initVersion = null }) {
     [currentArchitectures, initVersion]
   );
 
-  console.log(version, currentArchitectures);
+  // console.log(version, currentArchitectures);
 
   return <Architecture version={version} isTesting={isTesting} />;
 }
@@ -42,10 +42,10 @@ function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
 
   const debouncedVersion = useDebounce(version, DEBOUNCE_DELAY);
 
-  console.log(
-    refinedFlattened,
-    refinedFlattened.map((model) => model.name)
-  );
+  // console.log(
+  //   refinedFlattened,
+  //   refinedFlattened.map((model) => model.name)
+  // );
 
   return (
     <S.Container>

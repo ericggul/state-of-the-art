@@ -5,7 +5,7 @@ export default function useAudio({ isblack }) {
 
   // Load the audio file when the component mounts
   useEffect(() => {
-    audioRef.current = new Audio("/audio/test.wav");
+    audioRef.current = new Audio("/audio/test3.wav");
 
     // Ensure audio is preloaded
     audioRef.current.load();

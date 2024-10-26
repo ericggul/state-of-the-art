@@ -35,11 +35,5 @@ export default function ScreenWrapper() {
   //   console.log("Mobile visibility:", mobileVisibility);
   // }, [currentArchitectures, latestSpeech, mobileVisibility]);
 
-  return (
-    <Suspense>
-      <Frontend />
-      {/* Uncomment the following line if you want to use the Backend component */}
-      {/* <Backend /> */}
-    </Suspense>
-  );
+  return <Suspense>{mobileVisibility ? <Frontend /> : <Backend />}</Suspense>;
 }

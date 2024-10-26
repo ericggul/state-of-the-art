@@ -71,8 +71,6 @@ export default function GANLayers({ structure, style, model }) {
     });
   }, [structure, layerHeight, layerGap, model]);
 
-  console.log(layers);
-
   const groupLayers = (stack) =>
     layers.filter((layer) => layer.stack.includes(stack));
 

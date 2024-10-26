@@ -1,7 +1,13 @@
 // index.js
 
 import * as S from "./styles";
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import useLogProbs from "./useLogProbs";
 import usePosCalc from "./usePosCalc";
 
@@ -36,7 +42,7 @@ export default function Layer3({ newResponse }) {
   });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [isblack, setIsblack] = useState(false);
+  const [isblack, setIsblack] = useState(true);
   const timeRef = useRef(0);
   const animationFrameRef = useRef(null);
 
@@ -50,8 +56,12 @@ export default function Layer3({ newResponse }) {
       const time = Date.now();
       timeRef.current = time;
 
-      const x1 = getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
-      const y1 = getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY1Factor) + getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
+      const x1 =
+        getCyclicalValue(time, -0.5, 1.5, CYCLE_DURATIONS.controlX1Factor) +
+        getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
+      const y1 =
+        getCyclicalValue(time, -4.5, 4.5, CYCLE_DURATIONS.controlY1Factor) +
+        getRandom(-RANDOM_FACTOR, RANDOM_FACTOR);
 
       setBezierParams((prevParams) => ({
         controlX1Factor: x1,
@@ -60,7 +70,8 @@ export default function Layer3({ newResponse }) {
         controlY2Factor: y1,
       }));
 
-      if (isblack) animationFrameRef.current = requestAnimationFrame(updateBezierParams);
+      if (isblack)
+        animationFrameRef.current = requestAnimationFrame(updateBezierParams);
     };
 
     if (isblack) {
@@ -79,13 +90,21 @@ export default function Layer3({ newResponse }) {
 
   return (
     <S.Container isblack={!isblack && "true"}>
-      <SVGComp logProbs={logProbs} wordPosCalc={wordPosCalc} bezierParams={bezierParams} />
+      <SVGComp
+        logProbs={logProbs}
+        wordPosCalc={wordPosCalc}
+        bezierParams={bezierParams}
+      />
       <Tokens logProbs={logProbs} wordPosCalc={wordPosCalc} />
     </S.Container>
   );
 }
 
-const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParams }) {
+const SVGComp = React.memo(function SVGComp({
+  logProbs,
+  wordPosCalc,
+  bezierParams,
+}) {
   const createBezierPath = useCallback(
     (x1, y1, x2, y2) => {
       const params = Math.random() < 1.0 ? bezierParams : BEZIER_DEFAULT;
@@ -107,8 +126,14 @@ const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParam
             return [];
           }
 
-          const startTopLogProbs = startLogProb.top_logprobs.length > 0 ? startLogProb.top_logprobs : [{ token: startLogProb.token, percentage: 100 }];
-          const endTopLogProbs = endLogProb.top_logprobs.length > 0 ? endLogProb.top_logprobs : [{ token: endLogProb.token, percentage: 100 }];
+          const startTopLogProbs =
+            startLogProb.top_logprobs.length > 0
+              ? startLogProb.top_logprobs
+              : [{ token: startLogProb.token, percentage: 100 }];
+          const endTopLogProbs =
+            endLogProb.top_logprobs.length > 0
+              ? endLogProb.top_logprobs
+              : [{ token: endLogProb.token, percentage: 100 }];
 
           return startTopLogProbs.flatMap((start, i) =>
             endTopLogProbs.map(
@@ -130,14 +155,30 @@ const SVGComp = React.memo(function SVGComp({ logProbs, wordPosCalc, bezierParam
   return (
     <S.Pic>
       {paths.map((pathProps, idx) => (
-        <SinglePath key={idx} {...pathProps} wordPosCalc={wordPosCalc} createBezierPath={createBezierPath} />
+        <SinglePath
+          key={idx}
+          {...pathProps}
+          wordPosCalc={wordPosCalc}
+          createBezierPath={createBezierPath}
+        />
       ))}
     </S.Pic>
   );
 });
 
-const SinglePath = React.memo(function SinglePath({ startIdx, endIdx, wordPosCalc, createBezierPath, i, j, strokeWidth }) {
-  const d = createBezierPath(...wordPosCalc(startIdx, i - 1), ...wordPosCalc(endIdx, j - 1));
+const SinglePath = React.memo(function SinglePath({
+  startIdx,
+  endIdx,
+  wordPosCalc,
+  createBezierPath,
+  i,
+  j,
+  strokeWidth,
+}) {
+  const d = createBezierPath(
+    ...wordPosCalc(startIdx, i - 1),
+    ...wordPosCalc(endIdx, j - 1)
+  );
   return <path d={d} fill="none" opacity={1} strokeWidth={strokeWidth} />;
 });
 
@@ -145,16 +186,34 @@ const Tokens = React.memo(function Tokens({ logProbs, wordPosCalc }) {
   return (
     <S.Tokens>
       {logProbs.map((token, i) => (
-        <Token key={i} xIdx={i} token={token.token} logprobs={token.top_logprobs} wordPosCalc={wordPosCalc} />
+        <Token
+          key={i}
+          xIdx={i}
+          token={token.token}
+          logprobs={token.top_logprobs}
+          wordPosCalc={wordPosCalc}
+        />
       ))}
     </S.Tokens>
   );
 });
 
-const Token = React.memo(function Token({ xIdx, token, logprobs, wordPosCalc }) {
+const Token = React.memo(function Token({
+  xIdx,
+  token,
+  logprobs,
+  wordPosCalc,
+}) {
   return (
     <>
-      <S.Candidate style={{ left: wordPosCalc(xIdx, -1)[0], top: wordPosCalc(xIdx, -1)[1] }}>{token}</S.Candidate>
+      <S.Candidate
+        style={{
+          left: wordPosCalc(xIdx, -1)[0],
+          top: wordPosCalc(xIdx, -1)[1],
+        }}
+      >
+        {token}
+      </S.Candidate>
       {logprobs.map((target, yIdx) => (
         <S.Candidate
           key={yIdx}

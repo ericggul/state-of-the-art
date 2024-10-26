@@ -2,12 +2,15 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
-import useAudio from "./useAudio";
-import useConversation from "./useConversation";
+import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
+import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-import { INPUT_EMBEDDINGS, OUTPUT_EMBEDDINGS } from "@/foundations/test/1-relation/utils/constant-conversation";
+import {
+  INPUT_EMBEDDINGS,
+  OUTPUT_EMBEDDINGS,
+} from "@/foundations/test/1-relation/utils/constant-conversation";
 
 export default function Wrapper() {
   const [isblack, setIsblack] = useState(true);
@@ -29,7 +32,8 @@ export default function Wrapper() {
   useEffect(() => {
     if (!isblack && embeddings.length > 0) {
       const lastIndex = embeddings.length - 1;
-      const inputData = lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
+      const inputData =
+        lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
       const outputData = embeddings[lastIndex];
 
       setInputEmbeddings(inputData);
@@ -78,8 +82,22 @@ export default function Wrapper() {
         visible={isblack && length <= 28}
         timeUnit={1}
       />
-      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0, 1], y: [0, 1] }} visible={isblack && length <= 38} timeUnit={1} />
-      <SingleRandom newInputEmbeddings={inputEmbeddings} newOutputEmbeddings={outputEmbeddings} isblack={isblack} range={{ x: [0.1, 0.9], y: [0.1, 0.9] }} visible={true} timeUnit={1} />
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0, 1], y: [0, 1] }}
+        visible={isblack && length <= 38}
+        timeUnit={1}
+      />
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.1, 0.9], y: [0.1, 0.9] }}
+        visible={true}
+        timeUnit={1}
+      />
     </S.Container>
   );
 }

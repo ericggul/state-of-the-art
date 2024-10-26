@@ -2,10 +2,8 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
-import useAudio from "./useAudio";
-import useConversation from "./useConversation";
-
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
+import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
 
 import {
   INPUT_EMBEDDINGS,
