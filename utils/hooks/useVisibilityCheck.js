@@ -10,7 +10,8 @@ export default function useVisibilityCheck({
   const emitVisibilityChange = useCallback(() => {
     if (socket && socket.current) {
       try {
-        socket.current.emit("on-off-visibility-change", {
+        console.log("emitVisibilityChange", isVisible);
+        socket.current.emit("mobile-new-visibility-change", {
           isVisible,
           mobileId,
         });

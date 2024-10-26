@@ -79,7 +79,7 @@ const AccelerometerHandler = ({ mobileId }) => {
   }, [orientation, acceleration, isAccelerometerActive, mobileId, socket]);
 
   return (
-    <AccelerometerContainer show={showContainer}>
+    <AccelerometerContainer $show={showContainer}>
       <ActivateButton
         onClick={activateAccelerometer}
         disabled={!supportsDeviceOrientation && permission}

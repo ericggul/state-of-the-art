@@ -11,8 +11,8 @@ export const AccelerometerContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: opacity 0.3s ease-in-out;
-  opacity: ${({ show }) => (show ? "1" : "0")};
-  pointer-events: ${({ show }) => (show ? "auto" : "none")};
+  opacity: ${({ $show }) => ($show ? "1" : "0")};
+  pointer-events: ${({ $show }) => ($show ? "auto" : "none")};
 `;
 
 export const ActivateButton = styled.button`

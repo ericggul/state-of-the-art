@@ -33,7 +33,7 @@ const useScreenStore = create((set) => ({
 
   handleNewVisibilityChange: (data) => {
     console.log("New visibility change received:", data);
-    set({ mobileVisibility: data.visibility });
+    set({ mobileVisibility: data.isVisible });
   },
 }));
 

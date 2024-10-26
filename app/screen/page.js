@@ -27,6 +27,7 @@ export default function ScreenWrapper() {
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
   });
+  console.log("mobile", mobileVisibility);
 
   // useEffect(() => {
   //   console.log("Current architectures:", currentArchitectures);
