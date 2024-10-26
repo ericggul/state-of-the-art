@@ -1,41 +1,45 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
+
+const audioFiles = [
+  "/audio/test.wav",
+  "/audio/test2.wav",
+  "/audio/test3.wav",
+  "/audio/test4.wav",
+];
 
 export default function useAudio({ isblack }) {
   const audioRef = useRef(null);
 
-  // Load the audio file when the component mounts
+  const getRandomAudioFile = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * audioFiles.length);
+    return audioFiles[randomIndex];
+  }, []);
+
+  // Load a random audio file when isblack changes to true
   useEffect(() => {
-    audioRef.current = new Audio("/audio/test3.wav");
+    if (isblack) {
+      const newAudioFile = getRandomAudioFile();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      audioRef.current = new Audio(newAudioFile);
+      audioRef.current.loop = true; // Ensure looping
+      audioRef.current.load();
+      audioRef.current
+        .play()
+        .catch((error) => console.error("Audio playback failed:", error));
+    } else if (audioRef.current) {
+      audioRef.current.pause();
+    }
 
-    // Ensure audio is preloaded
-    audioRef.current.load();
-
-    // Cleanup the audio when the component unmounts
+    // Cleanup the audio when the effect re-runs or component unmounts
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
     };
-  }, []);
+  }, [isblack, getRandomAudioFile]);
 
-  // Play or pause the audio based on the `isblack` state
-  useEffect(() => {
-    const audio = audioRef.current;
-    audio.loop = true;
-    if (audio) {
-      if (isblack) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-    }
-
-    // Cleanup function to pause the audio when the component unmounts
-    return () => {
-      if (audio) {
-        audio.pause();
-      }
-    };
-  }, [isblack]);
+  return null;
 }
