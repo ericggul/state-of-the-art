@@ -12,7 +12,6 @@ export const STYLE_STRATEGIES = [
       roughness: 0.4, // Kept the same
       transparent: true,
       opacity: 1,
-      wireframe: true,
     },
     lighting: {
       environment: "apartment", // Kept 'studio' for the gallery-like feel

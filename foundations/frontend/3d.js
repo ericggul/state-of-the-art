@@ -22,6 +22,7 @@ import ReinforcementLayers from "./arch/layers/ReinforcementLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
+import PostProcessing from "./utils/PostProcessing";
 
 const CURRENT_TESTING_VERSION = "v4.0.3";
 // Utility function to convert model name to variable name
@@ -170,6 +171,7 @@ export default function Visualisation({
           </group>
           <AvatarModel />
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
+          <PostProcessing />
         </CommonScene>
       </Suspense>
     </Canvas>
