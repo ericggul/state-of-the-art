@@ -15,6 +15,7 @@ const useScreenStore = create((set) => ({
 
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
+    set({ mobileVisibility: true });
     set((state) => ({
       currentArchitectures: data.currentArchitectures || [],
     }));
@@ -22,6 +23,7 @@ const useScreenStore = create((set) => ({
 
   handleNewMobileArchitecture: (data) => {
     console.log("New mobile architecture received:", data);
+    set({ mobileVisibility: true });
     set((state) => ({
       currentArchitectures: data.currentArchitectures || [],
     }));

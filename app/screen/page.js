@@ -58,7 +58,7 @@ function useShowLogic({ mobileVisibility }) {
       timeoutRef1.current = setTimeout(() => {
         setShowBackend(true);
       }, 2000);
-      timeoutRef1.current = setTimeout(() => {
+      timeoutRef2.current = setTimeout(() => {
         setShowFrontend(false);
       }, 5000);
     }
