@@ -12,44 +12,30 @@ export default function TypewriterText({ text, speed = 50 }) {
   const [displayText, setDisplayText] = useState("");
   const previousText = useRef("");
   const timeoutRef = useRef(null);
-  const typingSynthRef = useRef(null);
-  const erasingSynthRef = useRef(null);
+  const synthRef = useRef(null);
 
   useEffect(() => {
-    // Initialize Tone.js and create synths only on client-side
+    // Initialize Tone.js and create synth only on client-side
     if (typeof window !== "undefined") {
-      typingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      typingSynthRef.current.volume.value = -10;
-
-      erasingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      erasingSynthRef.current.volume.value = -12;
+      synthRef.current = new Tone.MembraneSynth().toDestination();
     }
 
     return () => {
-      if (typingSynthRef.current) typingSynthRef.current.dispose();
-      if (erasingSynthRef.current) erasingSynthRef.current.dispose();
+      if (synthRef.current) {
+        synthRef.current.dispose();
+      }
     };
   }, []);
 
-  const playTypingSound = () => {
-    if (typingSynthRef.current) {
+  useEffect(() => {
+    if (displayText.length % 3 === 0 && synthRef.current) {
       try {
-        typingSynthRef.current.triggerAttackRelease("C2", "16n");
+        synthRef.current.triggerAttackRelease("C2", "16n");
       } catch (e) {
         console.log(e);
       }
     }
-  };
-
-  const playErasingSound = () => {
-    if (erasingSynthRef.current) {
-      try {
-        erasingSynthRef.current.triggerAttackRelease("A1", "16n");
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+  }, [displayText]);
 
   useEffect(() => {
     if (text === previousText.current) return;
@@ -57,9 +43,6 @@ export default function TypewriterText({ text, speed = 50 }) {
     const typeWriter = (fullText, index = 0) => {
       if (index <= fullText.length) {
         setDisplayText(fullText.substring(0, index));
-        if (index > previousText.current.length) {
-          playTypingSound();
-        }
         timeoutRef.current = setTimeout(
           () => typeWriter(fullText, index + 1),
           speed
@@ -73,7 +56,6 @@ export default function TypewriterText({ text, speed = 50 }) {
       const eraseWriter = (index = previousText.current.length) => {
         if (index > 0) {
           setDisplayText(previousText.current.substring(0, index));
-          playErasingSound();
           timeoutRef.current = setTimeout(
             () => eraseWriter(index - 1),
             speed / 2
