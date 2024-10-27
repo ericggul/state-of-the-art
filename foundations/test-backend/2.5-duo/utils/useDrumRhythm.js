@@ -9,11 +9,9 @@ export default function useDrumRhythm({ text }) {
   const patternRef = useRef(null);
 
   const setupToneContext = useCallback(async () => {
-    console.log("Setting up Tone context");
     if (!kickRef.current) {
       try {
         await Tone.start();
-        console.log("Tone started");
 
         // Load drum samples
         kickRef.current = new Tone.Player(
@@ -26,14 +24,12 @@ export default function useDrumRhythm({ text }) {
           "/audio/drum/hat.wav"
         ).toDestination();
 
-        console.log("Players created, waiting for samples to load");
         await Promise.all([
           kickRef.current.loaded,
           snareRef.current.loaded,
           hiHatRef.current.loaded,
         ]);
 
-        console.log("All samples loaded");
         setIsReady(true);
       } catch (error) {
         console.error("Error in setupToneContext:", error);
@@ -41,35 +37,44 @@ export default function useDrumRhythm({ text }) {
     }
   }, []);
 
-  const createChaoticPatternFromText = useCallback((text) => {
-    const length = 16; // Increased pattern length to 16 steps for more complexity
-    const pattern = [];
+  const createPatternFromText = useCallback((text) => {
+    const baseKickPattern = [1, 0, 0, 0, 1, 0, 0, 0]; // Simple rock beat
+    const baseSnarePattern = [0, 0, 1, 0, 0, 0, 1, 0];
+    const baseHiHatPattern = [1, 1, 1, 1, 1, 1, 1, 1];
+
+    const kickPattern = [...baseKickPattern];
+    const snarePattern = [...baseSnarePattern];
+    const hiHatPattern = [...baseHiHatPattern];
+
+    // Modify patterns based on text
     const charCodes = [...text].map((char) => char.charCodeAt(0));
+    const sumCharCodes = charCodes.reduce((sum, code) => sum + code, 0);
 
-    // Generate a chaotic pattern with randomness
-    for (let i = 0; i < length; i++) {
-      const charCode = charCodes[i % charCodes.length];
-      const isKick = Math.random() < 0.7 || charCode % 2 === 0; // 70% chance to play a kick
-      const isSnare = Math.random() < 0.5 || charCode % 3 === 0; // 50% chance to play a snare
-      const isHiHat = Math.random() < 0.8 || charCode % 5 === 0; // 80% chance to play a hi-hat
+    // Shift patterns based on the sum of character codes
+    const shift = sumCharCodes % kickPattern.length;
 
-      pattern.push({
-        kick: isKick,
-        snare: isSnare,
-        hiHat: isHiHat,
-      });
+    function shiftArray(arr, shift) {
+      return arr.slice(shift).concat(arr.slice(0, shift));
     }
+
+    const finalKickPattern = shiftArray(kickPattern, shift);
+    const finalSnarePattern = shiftArray(snarePattern, shift);
+    const finalHiHatPattern = shiftArray(hiHatPattern, shift);
+
+    const pattern = finalKickPattern.map((_, i) => ({
+      kick: finalKickPattern[i],
+      snare: finalSnarePattern[i],
+      hiHat: finalHiHatPattern[i],
+    }));
 
     return pattern;
   }, []);
 
   const playDrumPattern = useCallback(
     (text) => {
-      console.log("Attempting to play drum pattern, isReady:", isReady);
       if (!isReady) return;
 
-      const pattern = createChaoticPatternFromText(text);
-      console.log("Created pattern:", pattern);
+      const pattern = createPatternFromText(text);
 
       if (patternRef.current) {
         patternRef.current.dispose();
@@ -77,39 +82,25 @@ export default function useDrumRhythm({ text }) {
 
       patternRef.current = new Tone.Sequence(
         (time, step) => {
-          console.log("Playing step:", step);
-
-          // Increase chaos with random fills and stutters
-          if (Math.random() < 0.2) {
-            if (pattern[step].kick) kickRef.current.start(time);
-            if (pattern[step].snare)
-              snareRef.current.start(time + Math.random() * 0.05);
-            if (pattern[step].hiHat)
-              hiHatRef.current.start(time + Math.random() * 0.1);
-          } else {
-            if (pattern[step].kick) kickRef.current.start(time);
-            if (pattern[step].snare) snareRef.current.start(time);
-            if (pattern[step].hiHat) hiHatRef.current.start(time);
-          }
+          if (pattern[step].kick) kickRef.current.start(time);
+          if (pattern[step].snare) snareRef.current.start(time);
+          if (pattern[step].hiHat) hiHatRef.current.start(time);
         },
         Array.from({ length: pattern.length }, (_, i) => i),
-        "16n" // 16th-note subdivision for faster, dense patterns
+        "8n" // Eighth-note subdivision
       ).start(0);
 
-      // Set higher BPM and start the Transport
-      Tone.Transport.bpm.value = 160; // Increased BPM for a faster feel
+      // Set a moderate BPM
+      Tone.Transport.bpm.value = 120;
       Tone.Transport.start();
-      console.log("Tone Transport started");
     },
-    [isReady, createChaoticPatternFromText]
+    [isReady, createPatternFromText]
   );
 
   useEffect(() => {
-    console.log("Setting up Tone context (useEffect)");
     setupToneContext();
 
     return () => {
-      console.log("Cleaning up");
       if (patternRef.current) {
         patternRef.current.dispose();
       }
@@ -118,7 +109,6 @@ export default function useDrumRhythm({ text }) {
   }, [setupToneContext]);
 
   useEffect(() => {
-    console.log("Text or isReady changed. Text:", text, "isReady:", isReady);
     if (text && isReady) {
       playDrumPattern(text);
     }

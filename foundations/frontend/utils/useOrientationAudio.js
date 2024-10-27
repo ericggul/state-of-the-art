@@ -1,87 +1,160 @@
-import { useMemo, useCallback, useEffect, useState } from "react";
+import { useMemo, useCallback, useRef } from "react";
+import * as Tone from "tone";
 import * as THREE from "three";
 
-const AUDIO_FILE = "/audio/daisy/1.mp3";
-
 export function useOrientationAudio() {
-  const [audio, setAudio] = useState(null);
-  const [audioContext, setAudioContext] = useState(null);
-  const [gainNode, setGainNode] = useState(null);
+  const synthRef = useRef(null);
+  const reverbRef = useRef(null);
+  const delayRef = useRef(null);
 
-  useEffect(() => {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
-    const gain = context.createGain();
-    gain.connect(context.destination);
-    gain.gain.setValueAtTime(0.1, context.currentTime); // Set initial gain to 10%
-    setAudioContext(context);
-    setGainNode(gain);
+  useMemo(() => {
+    // Create a more complex, ambient synthesizer
+    const synth = new Tone.PolySynth(Tone.AMSynth, {
+      oscillator: {
+        type: "sine",
+      },
+      envelope: {
+        attack: 0.1,
+        decay: 0.2,
+        sustain: 1,
+        release: 3,
+      },
+      modulation: {
+        type: "square",
+      },
+      modulationEnvelope: {
+        attack: 0.5,
+        decay: 0,
+        sustain: 1,
+        release: 0.5,
+      },
+    });
 
-    fetch(AUDIO_FILE)
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
-      .then((audioBuffer) => {
-        setAudio(audioBuffer);
-      })
-      .catch((error) => console.error("Error loading audio:", error));
+    // Create effects
+    const reverb = new Tone.Reverb({
+      decay: 5,
+      wet: 0.6,
+    });
 
-    return () => {
-      context.close();
-    };
+    const delay = new Tone.FeedbackDelay({
+      delayTime: 0.3,
+      feedback: 0.4,
+      wet: 0.3,
+    });
+
+    // Connect synth to effects chain
+    synth.chain(delay, reverb, Tone.Destination);
+
+    // Set initial volume
+    synth.volume.value = -5;
+
+    synthRef.current = synth;
+    reverbRef.current = reverb;
+    delayRef.current = delay;
   }, []);
 
-  const playShakeSound = useCallback(
-    (accelMagnitude) => {
-      if (audioContext && audio && gainNode) {
-        const source = audioContext.createBufferSource();
-        source.buffer = audio;
+  const playShakeSound = useCallback((accelMagnitude) => {
+    const synth = synthRef.current;
+    if (!synth) return;
 
-        const playbackRate = THREE.MathUtils.mapLinear(
-          accelMagnitude,
-          0,
-          2,
-          0.5,
-          1.5
-        );
-        source.playbackRate.value = playbackRate;
+    // Map acceleration magnitude to frequency
+    const minFreq = 150;
+    const maxFreq = 350;
+    const frequency = THREE.MathUtils.mapLinear(
+      accelMagnitude,
+      0,
+      2,
+      minFreq,
+      maxFreq
+    );
 
-        const volume = THREE.MathUtils.mapLinear(
-          accelMagnitude,
-          0,
-          2,
-          0.05,
-          0.2
-        );
-        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+    // Map acceleration magnitude to modulation frequency
+    const minModFreq = 0.5;
+    const maxModFreq = 2;
+    const modFreq = THREE.MathUtils.mapLinear(
+      accelMagnitude,
+      0,
+      2,
+      minModFreq,
+      maxModFreq
+    );
 
-        source.connect(gainNode);
-        source.start();
-        source.stop(audioContext.currentTime + 0.5); // Limit sound duration to 0.5 seconds
-      }
-    },
-    [audioContext, audio, gainNode]
-  );
+    try {
+      // Trigger a chord with the calculated frequency
+      synth.triggerAttackRelease(
+        [frequency, frequency * 1.25, frequency * 1.5],
+        "4n"
+      );
+      synth.set({
+        modulation: {
+          frequency: modFreq,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
-  const updateZoomAudio = useCallback(
-    (zoomFactor) => {
-      if (gainNode) {
-        const volume = THREE.MathUtils.mapLinear(
-          zoomFactor,
-          0.01,
-          3,
-          0.02,
-          0.15
-        );
-        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-      }
-    },
-    [gainNode, audioContext]
-  );
+  const updateZoomAudio = useCallback((zoomFactor) => {
+    const synth = synthRef.current;
+    const reverb = reverbRef.current;
+    const delay = delayRef.current;
+    if (!synth || !reverb || !delay) return;
+
+    // Map zoom factor to reverb decay
+    const minDecay = 1;
+    const maxDecay = 10;
+    const reverbDecay = THREE.MathUtils.mapLinear(
+      zoomFactor,
+      0.01,
+      3,
+      minDecay,
+      maxDecay
+    );
+    reverb.decay = reverbDecay;
+
+    // Map zoom factor to delay feedback
+    const minFeedback = 0.2;
+    const maxFeedback = 0.6;
+    const delayFeedback = THREE.MathUtils.mapLinear(
+      zoomFactor,
+      0.01,
+      3,
+      minFeedback,
+      maxFeedback
+    );
+    delay.feedback.rampTo(delayFeedback, 0.1);
+
+    // Adjust harmonicity based on zoom
+    const minHarmonicity = 0.5;
+    const maxHarmonicity = 2;
+    const harmonicity = THREE.MathUtils.mapLinear(
+      zoomFactor,
+      0.01,
+      3,
+      minHarmonicity,
+      maxHarmonicity
+    );
+    synth.set({ harmonicity });
+
+    // Adjust volume based on zoom
+    const minVolume = -20;
+    const maxVolume = -5;
+    const volume = THREE.MathUtils.mapLinear(
+      zoomFactor,
+      0.01,
+      3,
+      minVolume,
+      maxVolume
+    );
+    synth.volume.rampTo(volume, 0.1);
+  }, []);
 
   const cleanup = useCallback(() => {
-    if (audioContext) {
-      audioContext.close();
-    }
-  }, [audioContext]);
+    if (synthRef.current) synthRef.current.dispose();
+    if (reverbRef.current) reverbRef.current.dispose();
+    if (delayRef.current) delayRef.current.dispose();
+  }, []);
 
   return { playShakeSound, updateZoomAudio, cleanup };
 }

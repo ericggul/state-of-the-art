@@ -35,15 +35,15 @@ export default function useAudio({ isblack }) {
         .catch((error) => console.error("Main audio playback failed:", error));
 
       // Robot audio
-      if (robotAudioRef.current) {
-        robotAudioRef.current.pause();
-      }
-      robotAudioRef.current = new Audio(ROBOT);
-      robotAudioRef.current.loop = true;
-      robotAudioRef.current.load();
-      robotAudioRef.current
-        .play()
-        .catch((error) => console.error("Robot audio playback failed:", error));
+      // if (robotAudioRef.current) {
+      //   robotAudioRef.current.pause();
+      // }
+      // robotAudioRef.current = new Audio(ROBOT);
+      // robotAudioRef.current.loop = true;
+      // robotAudioRef.current.load();
+      // robotAudioRef.current
+      //   .play()
+      //   .catch((error) => console.error("Robot audio playback failed:", error));
     } else {
       // Pause both audio tracks when isblack is false
       if (mainAudioRef.current) {
