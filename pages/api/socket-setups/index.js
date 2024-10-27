@@ -44,6 +44,11 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-mobile-architecture", data);
   });
 
+  socket.on("controller-new-speech", (data) => {
+    socket.to("screen").emit("new-controller-speech", data);
+  });
+
+  //////VISIBILITY////
   //front <-> back visibiltiy change
   socket.on("mobile-new-visibility-change", (data) => {
     socket.to("controller").emit("new-mobile-visibility-change", data);
