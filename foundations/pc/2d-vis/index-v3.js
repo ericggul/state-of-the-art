@@ -48,8 +48,8 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = 1920;
-    const height = 1080;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
     svg
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -59,21 +59,9 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
 
     const colorScale = d3
       .scaleOrdinal()
-      .range([
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-      ]);
+      .range(["#00ffff", "#0080ff", "#ff00ff", "#8000ff", "#ff8000"]);
 
     const maxDepth = getMaxDepth(layers);
-
     const layerWidth = width / (maxDepth + 1);
 
     function getMaxDepth(layers, depth = 0) {
@@ -92,19 +80,20 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
         .append("rect")
         .attr("width", width)
         .attr("height", height)
-        .attr("fill", colorScale(layer.type))
-        .attr("stroke", "#333")
-        .attr("stroke-width", 1)
-        .attr("rx", 5)
-        .attr("ry", 5);
+        .attr("fill", "rgba(0, 128, 255, 0.1)")
+        .attr("stroke", colorScale(layer.type))
+        .attr("stroke-width", 2)
+        .attr("rx", 10)
+        .attr("ry", 10);
 
       group
         .append("text")
         .attr("x", width / 2)
-        .attr("y", 20)
+        .attr("y", 25)
         .attr("text-anchor", "middle")
-        .attr("font-size", 14)
-        .attr("fill", "#fff")
+        .attr("font-size", "14px")
+        .attr("fill", "#00ffff")
+        .attr("font-family", "'Orbitron', sans-serif")
         .text(layer.name);
 
       if (layer.sublayers) {
@@ -116,21 +105,28 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
             sublayer,
             x + layerWidth,
             y + i * sublayerHeight,
-            width,
-            sublayerHeight,
+            width * 0.9,
+            sublayerHeight * 0.9,
             depth + 1
           );
         });
 
         // Connect parent to sublayers
         layer.sublayers.forEach((sublayer, i) => {
-          g.append("line")
-            .attr("x1", x + width)
-            .attr("y1", y + height / 2)
-            .attr("x2", x + layerWidth + 0)
-            .attr("y2", y + i * sublayerHeight + sublayerHeight / 2)
-            .attr("stroke", "#ccc")
-            .attr("stroke-width", 1);
+          g.append("path")
+            .attr(
+              "d",
+              `M${x + width},${y + height / 2} C${x + width + layerWidth / 2},${
+                y + height / 2
+              } ${x + layerWidth / 2},${
+                y + i * sublayerHeight + sublayerHeight / 2
+              } ${x + layerWidth},${
+                y + i * sublayerHeight + sublayerHeight / 2
+              }`
+            )
+            .attr("stroke", colorScale(layer.type))
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
         });
       }
     }
@@ -138,13 +134,17 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
     const layerHeight = height / layers.length;
 
     layers.forEach((layer, i) => {
-      drawLayer(layer, 0, i * layerHeight, layerWidth, layerHeight, 0);
+      drawLayer(layer, 0, i * layerHeight, layerWidth, layerHeight * 0.9, 0);
     });
   }, [layers, config]);
 
   if (!layers.length || !config) {
-    return <div>No valid data available for visualization</div>;
+    return (
+      <S.NoDataMessage>
+        No valid data available for visualization
+      </S.NoDataMessage>
+    );
   }
 
-  return <svg ref={svgRef} style={{ width: "100%", height: "100vh" }}></svg>;
+  return <S.SVGContainer ref={svgRef}></S.SVGContainer>;
 };

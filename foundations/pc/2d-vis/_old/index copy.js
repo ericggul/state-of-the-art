@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { MODELS, LAYER_CONFIGS } from "@/foundations/frontend/arch-models";
 import useScreenStore from "@/components/screen/store";
-import * as S from "./styles";
+import * as S from "../styles";
 
 export default function ArchitectureVis() {
   const { currentArchitectures } = useScreenStore();

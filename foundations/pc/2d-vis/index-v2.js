@@ -48,42 +48,21 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = 1920;
-    const height = 1080;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const width = viewportWidth - margin.left - margin.right;
+    const height = viewportHeight - margin.top - margin.bottom;
 
     svg
-      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("viewBox", `0 0 ${viewportWidth} ${viewportHeight}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    const g = svg.append("g");
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const colorScale = d3
-      .scaleOrdinal()
-      .range([
-        "#1f77b4",
-        "#ff7f0e",
-        "#2ca02c",
-        "#d62728",
-        "#9467bd",
-        "#8c564b",
-        "#e377c2",
-        "#7f7f7f",
-        "#bcbd22",
-        "#17becf",
-      ]);
-
-    const maxDepth = getMaxDepth(layers);
-
-    const layerWidth = width / (maxDepth + 1);
-
-    function getMaxDepth(layers, depth = 0) {
-      return layers.reduce((max, layer) => {
-        const currentDepth = layer.sublayers
-          ? getMaxDepth(layer.sublayers, depth + 1)
-          : depth;
-        return Math.max(max, currentDepth);
-      }, depth);
-    }
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
     function drawLayer(layer, x, y, width, height, depth = 0) {
       const group = g.append("g").attr("transform", `translate(${x},${y})`);
@@ -93,53 +72,59 @@ const ArchitectureVisualization = ({ currentArchitecture }) => {
         .attr("width", width)
         .attr("height", height)
         .attr("fill", colorScale(layer.type))
-        .attr("stroke", "#333")
-        .attr("stroke-width", 1)
-        .attr("rx", 5)
-        .attr("ry", 5);
+        .attr("stroke", "black")
+        .attr("stroke-width", 1);
 
       group
         .append("text")
         .attr("x", width / 2)
         .attr("y", 20)
         .attr("text-anchor", "middle")
-        .attr("font-size", 14)
-        .attr("fill", "#fff")
+        .attr("font-size", "12px")
         .text(layer.name);
 
-      if (layer.sublayers) {
-        const sublayerCount = layer.sublayers.length;
-        const sublayerHeight = height / sublayerCount;
+      if (layer.dimensions) {
+        group
+          .append("text")
+          .attr("x", width / 2)
+          .attr("y", 40)
+          .attr("text-anchor", "middle")
+          .attr("font-size", "10px")
+          .text(`Dim: ${layer.dimensions.join("x")}`);
+      }
 
+      if (layer.sublayers) {
+        const sublayerHeight = (height - 60) / layer.sublayers.length;
         layer.sublayers.forEach((sublayer, i) => {
           drawLayer(
             sublayer,
-            x + layerWidth,
-            y + i * sublayerHeight,
-            width,
-            sublayerHeight,
+            10,
+            60 + i * sublayerHeight,
+            width - 20,
+            sublayerHeight - 5,
             depth + 1
           );
         });
-
-        // Connect parent to sublayers
-        layer.sublayers.forEach((sublayer, i) => {
-          g.append("line")
-            .attr("x1", x + width)
-            .attr("y1", y + height / 2)
-            .attr("x2", x + layerWidth + 0)
-            .attr("y2", y + i * sublayerHeight + sublayerHeight / 2)
-            .attr("stroke", "#ccc")
-            .attr("stroke-width", 1);
-        });
       }
+
+      return height;
     }
 
-    const layerHeight = height / layers.length;
+    const layerWidth = width / layers.length;
+    let maxHeight = 0;
 
     layers.forEach((layer, i) => {
-      drawLayer(layer, 0, i * layerHeight, layerWidth, layerHeight, 0);
+      const layerHeight = drawLayer(
+        layer,
+        i * layerWidth,
+        0,
+        layerWidth - 10,
+        height
+      );
+      maxHeight = Math.max(maxHeight, layerHeight);
     });
+
+    svg.attr("height", maxHeight + margin.top + margin.bottom);
   }, [layers, config]);
 
   if (!layers.length || !config) {
