@@ -27,8 +27,12 @@ const data = {
     {
       label: "Perplexity",
       data: [18, 15, 12, 10],
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
+      borderColor: "#00ffff",
+      backgroundColor: "rgba(0, 255, 255, 0.2)",
+      pointBackgroundColor: "#00ffff",
+      pointBorderColor: "#000000",
+      pointHoverBackgroundColor: "#ffffff",
+      pointHoverBorderColor: "#00ffff",
     },
   ],
 };
@@ -38,10 +42,46 @@ const options = {
   plugins: {
     legend: {
       position: "top",
+      labels: {
+        color: "#00ffff",
+        font: {
+          family: "'Orbitron', sans-serif",
+          size: 12,
+        },
+      },
     },
     title: {
       display: true,
       text: "Model Performance",
+      color: "#00ffff",
+      font: {
+        family: "'Orbitron', sans-serif",
+        size: 16,
+      },
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        color: "rgba(0, 255, 255, 0.1)",
+      },
+      ticks: {
+        color: "#00ffff",
+        font: {
+          family: "'Orbitron', sans-serif",
+        },
+      },
+    },
+    y: {
+      grid: {
+        color: "rgba(0, 255, 255, 0.1)",
+      },
+      ticks: {
+        color: "#00ffff",
+        font: {
+          family: "'Orbitron', sans-serif",
+        },
+      },
     },
   },
 };

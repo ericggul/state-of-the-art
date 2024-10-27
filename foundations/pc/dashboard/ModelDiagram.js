@@ -5,26 +5,29 @@ const DiagramContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 1vw;
 `;
 
 const Layer = styled.div`
-  width: 100px;
-  height: 30px;
-  background-color: #0f3460;
-  color: white;
+  width: 10vw;
+  height: 3vw;
+  background-color: rgba(0, 128, 255, 0.2);
+  color: #00ffff;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
+  border: 1px solid #00ffff;
+  font-size: 0.9vw;
+  text-shadow: 0 0 5px #00ffff;
 `;
 
 const Arrow = styled.div`
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #0f3460;
+  border-left: 1vw solid transparent;
+  border-right: 1vw solid transparent;
+  border-top: 1vw solid #00ffff;
 `;
 
 export default function ModelDiagram({ modelName }) {

@@ -7,14 +7,16 @@ const PaperList = styled.ul`
 `;
 
 const PaperItem = styled.li`
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
 `;
 
 const PaperLink = styled.a`
-  color: #e94560;
+  color: #00ffff;
   text-decoration: none;
+  font-size: 0.9vw;
   &:hover {
     text-decoration: underline;
+    text-shadow: 0 0 5px #00ffff;
   }
 `;
 
