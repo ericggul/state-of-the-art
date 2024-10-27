@@ -27,8 +27,7 @@ export default function useAudio({ isblack }) {
       }
       mainAudioRef.current = new Audio(newAudioFile);
       mainAudioRef.current.loop = true;
-      //0.5 volume
-      mainAudioRef.current.volume = 0.5;
+
       mainAudioRef.current.load();
       mainAudioRef.current
         .play()

@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { PositionalAudio as DreiPositionalAudio } from "@react-three/drei";
 import useScreenStore from "@/components/screen/store";
+import * as THREE from "three";
 
 const AUDIO_FILE = "/audio/daisy/1.mp3";
 
@@ -13,6 +14,7 @@ export default function PositionalAudio({
   const sound = useRef();
   const { camera } = useThree();
   const { mobileVisibility } = useScreenStore();
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (sound.current) {
@@ -22,9 +24,17 @@ export default function PositionalAudio({
     }
   }, [mobileVisibility, distance]);
 
+  useEffect(() => {
+    if (sound.current && !isPlaying) {
+      sound.current.play();
+      setIsPlaying(true);
+    }
+  }, [isPlaying]);
+
   const handleLoad = () => {
     if (sound.current) {
       sound.current.play();
+      setIsPlaying(true);
     }
   };
 
