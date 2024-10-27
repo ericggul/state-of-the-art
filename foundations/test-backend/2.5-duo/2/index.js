@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
 import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
+import useTTS from "@/foundations/test-backend/2.5-duo/utils/useTTS";
 import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
 
 import {
@@ -43,6 +44,7 @@ export default function Wrapper() {
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
+  // useTTS({ text: outputEmbeddings.tokens.join(" ") });
 
   return (
     <S.Container

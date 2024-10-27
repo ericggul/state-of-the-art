@@ -7,7 +7,6 @@ const openai = new OpenAI({
 
 export async function POST(req) {
   const { text, dim = 128 } = await req.json();
-  console.log("10", text);
 
   try {
     const embedding = await openai.embeddings.create({
@@ -15,7 +14,6 @@ export async function POST(req) {
       input: text,
       dimensions: dim,
     });
-    console.log("18");
 
     return Response.json(embedding.data);
   } catch (error) {

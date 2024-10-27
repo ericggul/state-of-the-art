@@ -7,36 +7,62 @@ const audioFiles = [
   "/audio/test4.wav",
 ];
 
+const ROBOT = "/audio/robot/test.m4a";
+
 export default function useAudio({ isblack }) {
-  const audioRef = useRef(null);
+  const mainAudioRef = useRef(null);
+  const robotAudioRef = useRef(null);
 
   const getRandomAudioFile = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * audioFiles.length);
     return audioFiles[randomIndex];
   }, []);
 
-  // Load a random audio file when isblack changes to true
   useEffect(() => {
     if (isblack) {
+      // Main audio (random from audioFiles)
       const newAudioFile = getRandomAudioFile();
-      if (audioRef.current) {
-        audioRef.current.pause();
+      if (mainAudioRef.current) {
+        mainAudioRef.current.pause();
       }
-      audioRef.current = new Audio(newAudioFile);
-      audioRef.current.loop = true; // Ensure looping
-      audioRef.current.load();
-      audioRef.current
+      mainAudioRef.current = new Audio(newAudioFile);
+      mainAudioRef.current.loop = true;
+      //0.5 volume
+      mainAudioRef.current.volume = 0.5;
+      mainAudioRef.current.load();
+      mainAudioRef.current
         .play()
-        .catch((error) => console.error("Audio playback failed:", error));
-    } else if (audioRef.current) {
-      audioRef.current.pause();
+        .catch((error) => console.error("Main audio playback failed:", error));
+
+      // Robot audio
+      if (robotAudioRef.current) {
+        robotAudioRef.current.pause();
+      }
+      robotAudioRef.current = new Audio(ROBOT);
+      robotAudioRef.current.loop = true;
+      robotAudioRef.current.load();
+      robotAudioRef.current
+        .play()
+        .catch((error) => console.error("Robot audio playback failed:", error));
+    } else {
+      // Pause both audio tracks when isblack is false
+      if (mainAudioRef.current) {
+        mainAudioRef.current.pause();
+      }
+      if (robotAudioRef.current) {
+        robotAudioRef.current.pause();
+      }
     }
 
-    // Cleanup the audio when the effect re-runs or component unmounts
+    // Cleanup function
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
+      if (mainAudioRef.current) {
+        mainAudioRef.current.pause();
+        mainAudioRef.current = null;
+      }
+      if (robotAudioRef.current) {
+        robotAudioRef.current.pause();
+        robotAudioRef.current = null;
       }
     };
   }, [isblack, getRandomAudioFile]);
