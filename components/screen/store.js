@@ -22,7 +22,6 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewMobileArchitecture: (data) => {
-    console.log("New mobile architecture received:", data);
     set({ mobileVisibility: true });
     set((state) => ({
       currentArchitectures: data.currentArchitectures || [],
@@ -30,7 +29,6 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewSpeech: (data) => {
-    console.log("New speech received:", data);
     set({ latestSpeech: data.text || "" });
   },
 
@@ -40,7 +38,6 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewMobileOrientationSpike: (data) => {
-    console.log("New mobile orientation spike received:", data);
     set({ styleIndex: Math.floor(data.spikeCount) % 15 });
   },
 }));

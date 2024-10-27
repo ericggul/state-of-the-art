@@ -7,16 +7,17 @@ import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
-const AvatarWrapper = dynamic(() =>
-  import("@/foundations/frontend/avatar/wrapper")
-);
+// 컴포넌트 매핑 객체
+const COMPONENTS = {
+  0: dynamic(() => import("@/foundations/frontend/avatar/wrapper")),
+  1: dynamic(() => import("@/foundations/pc/dashboard")),
+};
 
 const Backend = dynamic(() => import("@/components/backend"));
 
 export default function RelationPage() {
   const { idx } = useParams();
 
-  ///state mngmt
   const {
     currentArchitectures,
     latestSpeech,
@@ -39,16 +40,13 @@ export default function RelationPage() {
     mobileVisibility,
   });
 
-  //Chnl idx 0: Avatar
+  // 동적으로 컴포넌트 선택
+  const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);
 
   return (
     <>
-      {idx == "0" && (
-        <>
-          {showFrontend && <AvatarWrapper />}
-          {showBackend && <Backend showBackend={showBackend} />}
-        </>
-      )}
+      {showFrontend && <FrontendComponent />}
+      {showBackend && <Backend showBackend={showBackend} />}
     </>
   );
 }
