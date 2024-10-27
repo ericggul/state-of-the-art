@@ -4,6 +4,7 @@ import SingleRandom from "./SingleRandom";
 
 import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
 import useTTS from "@/foundations/test-backend/2.5-duo/utils/useTTS";
+import useDrumRhythm from "@/foundations/test-backend/2.5-duo/utils/useDrumRhythm";
 import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
 
 import {
@@ -44,6 +45,7 @@ export default function Wrapper() {
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
+  // useDrumRhythm({ text: outputEmbeddings.tokens.join(" ") });
   // useTTS({ text: outputEmbeddings.tokens.join(" ") });
 
   return (
