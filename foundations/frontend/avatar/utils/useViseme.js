@@ -2,19 +2,23 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import useScreenStore from "@/components/screen/store";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 export default function useViseme() {
   const { latestSpeech } = useScreenStore();
 
   const [visemeMessage, setVisemeMessage] = useState({});
 
+  // 500ms 디바운스 적용
+  const debouncedSpeech = useDebounce(latestSpeech, 1000);
+
   useEffect(() => {
-    if (latestSpeech && latestSpeech.length > 0) {
+    if (debouncedSpeech && debouncedSpeech.length > 0) {
       getViseme({
-        text: latestSpeech,
+        text: debouncedSpeech,
       });
     }
-  }, [latestSpeech]);
+  }, [debouncedSpeech]);
 
   async function getViseme({ text }) {
     try {

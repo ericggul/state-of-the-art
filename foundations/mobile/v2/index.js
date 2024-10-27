@@ -122,6 +122,16 @@ function ModelList({ initialModels, socket }) {
       } catch (e) {
         console.log(e);
       }
+
+      /////TEMPORARY TESTING WITHOUT CONTROLLER: SPEECH////////////////////////////////
+      if (models[activeIndex].explanation) {
+        const text =
+          models[activeIndex].name + " " + models[activeIndex].explanation;
+        socket.current.emit("mobile-new-speech", {
+          text,
+        });
+      }
+      //////////////////////////////////////////////////////////////
     }
   }, [currentIndex, manuallySelectedIndex, models, socket]);
 

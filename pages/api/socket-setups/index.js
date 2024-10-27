@@ -44,7 +44,7 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-mobile-architecture", data);
   });
 
-  socket.on("controller-new-speech", (data) => {
+  socket.on("mobile-new-speech", (data) => {
     socket.to("screen").emit("new-controller-speech", data);
   });
 
