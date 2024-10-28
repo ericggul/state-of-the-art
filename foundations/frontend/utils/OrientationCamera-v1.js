@@ -62,27 +62,22 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     const accelMagnitude = accelDiff.length();
 
     if (accelMagnitude > 0.05) {
-      // Only use significant z-axis movement
-      if (Math.abs(accelDiff.z) > 1.0) {
-        const zoomDelta =
-          Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+      const zoomDelta =
+        Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+      targetZoomFactorRef.current += zoomDelta;
+      targetZoomFactorRef.current = THREE.MathUtils.clamp(
+        targetZoomFactorRef.current,
+        0.01,
+        3
+      );
 
-        // Add hysteresis to prevent rapid flipping
-        if (
-          (zoomDelta > 0 && targetZoomFactorRef.current < 1.5) ||
-          (zoomDelta < 0 && targetZoomFactorRef.current > 1.5)
-        ) {
-          targetZoomFactorRef.current += zoomDelta;
-        }
+      playShakeSound(accelMagnitude);
 
-        targetZoomFactorRef.current = THREE.MathUtils.clamp(
-          targetZoomFactorRef.current,
-          0.01,
-          3
-        );
-
-        playShakeSound(accelMagnitude);
-      }
+      console.log(
+        accelMagnitude.toFixed(2),
+        zoomDelta.toFixed(2),
+        targetZoomFactorRef.current
+      );
     }
 
     lastAccelRef.current.copy(currentAccel);

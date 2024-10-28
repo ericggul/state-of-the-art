@@ -52,40 +52,52 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     quaternionRef.current.setFromEuler(eulerRef.current);
 
     // Update target zoom factor based on all acceleration axes
-    const zoomSpeed = 0.3;
-    const currentAccel = new THREE.Vector3(
-      acceleration.x,
-      acceleration.y,
-      acceleration.z
-    );
-    const accelDiff = currentAccel.sub(lastAccelRef.current);
+    const zoomSpeed = 0.2; // Increased from 0.1
+    const accelPower = 1.4; // Increased from 1.2 for more dramatic changes
+
+    const { x, y, z } = acceleration;
+    const accelDiff = new THREE.Vector3(x, y, z).sub(lastAccelRef.current);
     const accelMagnitude = accelDiff.length();
 
     if (accelMagnitude > 0.05) {
-      // Only use significant z-axis movement
-      if (Math.abs(accelDiff.z) > 1.0) {
-        const zoomDelta =
-          Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+      // Increase sensitivity
+      const zoomDelta =
+        Math.sign(accelDiff.z) *
+        Math.pow(accelMagnitude, accelPower) *
+        zoomSpeed;
 
-        // Add hysteresis to prevent rapid flipping
-        if (
-          (zoomDelta > 0 && targetZoomFactorRef.current < 1.5) ||
-          (zoomDelta < 0 && targetZoomFactorRef.current > 1.5)
-        ) {
-          targetZoomFactorRef.current += zoomDelta;
-        }
+      // Add larger increments to current zoom
+      targetZoomFactorRef.current += zoomDelta;
 
-        targetZoomFactorRef.current = THREE.MathUtils.clamp(
-          targetZoomFactorRef.current,
-          0.01,
-          3
-        );
+      // Less resistance at the edges
+      const minZoom = 0.1; // Changed from 0.01 for better control
+      const maxZoom = 3;
+      const easingFactor = 0.6; // Increased from 0.3 for less resistance at extremes
 
-        playShakeSound(accelMagnitude);
+      if (targetZoomFactorRef.current > maxZoom - 0.5) {
+        const excess = targetZoomFactorRef.current - (maxZoom - 0.5);
+        targetZoomFactorRef.current = maxZoom - 0.5 + excess * easingFactor;
+      } else if (targetZoomFactorRef.current < minZoom + 0.5) {
+        const excess = minZoom + 0.5 - targetZoomFactorRef.current;
+        targetZoomFactorRef.current = minZoom + 0.5 - excess * easingFactor;
       }
+
+      targetZoomFactorRef.current = THREE.MathUtils.clamp(
+        targetZoomFactorRef.current,
+        minZoom,
+        maxZoom
+      );
+
+      playShakeSound(accelMagnitude);
+
+      console.log(
+        accelMagnitude.toFixed(2),
+        zoomDelta.toFixed(2),
+        targetZoomFactorRef.current.toFixed(3)
+      );
     }
 
-    lastAccelRef.current.copy(currentAccel);
+    lastAccelRef.current.copy(acceleration);
 
     // Smoothly interpolate current distance towards target distance
     currentDistanceRef.current = lerp(

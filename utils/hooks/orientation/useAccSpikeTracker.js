@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const THRESHOLD = 8; // 스파이크 감지를 위한 임계값 증가
+const THRESHOLD = 5; // 스파이크 감지를 위한 임계값 증가
 const COOLDOWN_PERIOD = 500; // 연속 스파이크 방지를 위한 쿨다운 시간 감소 (밀리초)
 const WINDOW_SIZE = 5; // 이동 평균을 위한 윈도우 크기
 
