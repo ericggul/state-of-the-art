@@ -1949,5 +1949,620 @@ export const DATA_NODES_LINKS = {
       value: 9,
       relation: "multimodal AI capabilities",
     },
+    {
+      id: 311,
+      source: 28,
+      target: 20,
+      value: 10,
+      relation: "architectural foundation for vision transformers",
+    },
+    {
+      id: 312,
+      source: 28,
+      target: 66,
+      value: 9,
+      relation: "enabled image-text attention",
+    },
+    {
+      id: 313,
+      source: 28,
+      target: 62,
+      value: 8,
+      relation: "transformer in diffusion models",
+    },
+    {
+      id: 314,
+      source: 33,
+      target: 68,
+      value: 9,
+      relation: "language understanding foundation",
+    },
+    {
+      id: 315,
+      source: 33,
+      target: 73,
+      value: 8,
+      relation: "instruction tuning basis",
+    },
+    {
+      id: 316,
+      source: 17,
+      target: 28,
+      value: 8,
+      relation: "deep architecture principles",
+    },
+    {
+      id: 317,
+      source: 17,
+      target: 23,
+      value: 7,
+      relation: "backbone for segmentation",
+    },
+    {
+      id: 318,
+      source: 20,
+      target: 69,
+      value: 8,
+      relation: "vision-language integration",
+    },
+    {
+      id: 319,
+      source: 20,
+      target: 73,
+      value: 7,
+      relation: "visual instruction understanding",
+    },
+    {
+      id: 320,
+      source: 61,
+      target: 69,
+      value: 9,
+      relation: "text-guided image generation",
+    },
+    {
+      id: 321,
+      source: 61,
+      target: 58,
+      value: 7,
+      relation: "generative modeling evolution",
+    },
+    {
+      id: 322,
+      source: 14,
+      target: 28,
+      value: 6,
+      relation: "spatial processing insights",
+    },
+    {
+      id: 323,
+      source: 33,
+      target: 62,
+      value: 8,
+      relation: "text conditioning in diffusion",
+    },
+    {
+      id: 324,
+      source: 33, // BERT
+      target: 71, // Visual-Language Models
+      value: 9,
+      relation: "language understanding for vision",
+    },
+    {
+      id: 325,
+      source: 28, // Transformer
+      target: 75, // Multimodal Models
+      value: 10,
+      relation: "foundation for multimodal architectures",
+    },
+    {
+      id: 326,
+      source: 45, // GPT
+      target: 69, // Text-to-Image Models
+      value: 8,
+      relation: "language generation principles",
+    },
+
+    // Vision -> Language
+    {
+      id: 327,
+      source: 17, // ResNet
+      target: 66, // Image Captioning
+      value: 7,
+      relation: "visual feature extraction",
+    },
+    {
+      id: 328,
+      source: 20, // ViT
+      target: 72, // Vision-Language Models
+      value: 9,
+      relation: "unified vision-language processing",
+    },
+
+    // 2. MODEL FAMILY CONNECTIONS
+    // Transformer Family
+    {
+      id: 329,
+      source: 28, // Original Transformer
+      target: 33, // BERT
+      value: 10,
+      relation: "bidirectional encoding",
+    },
+    {
+      id: 330,
+      source: 28,
+      target: 45, // GPT
+      value: 10,
+      relation: "autoregressive decoding",
+    },
+    {
+      id: 331,
+      source: 33, // BERT
+      target: 48, // RoBERTa
+      value: 8,
+      relation: "optimized training",
+    },
+
+    // Vision Family
+    {
+      id: 332,
+      source: 14, // Early CNNs
+      target: 20, // ViT
+      value: 7,
+      relation: "spatial processing evolution",
+    },
+    {
+      id: 333,
+      source: 17, // ResNet
+      target: 21, // Swin Transformer
+      value: 8,
+      relation: "hierarchical feature processing",
+    },
+
+    // Generative Family
+    {
+      id: 334,
+      source: 52, // GANs
+      target: 61, // Diffusion
+      value: 8,
+      relation: "generative modeling evolution",
+    },
+    {
+      id: 335,
+      source: 58, // StyleGAN
+      target: 62, // Stable Diffusion
+      value: 7,
+      relation: "style-based generation",
+    },
+
+    // 3. TEMPORAL INFLUENCE CHAINS
+    // Early -> Modern Evolution
+    {
+      id: 336,
+      source: 12, // AlexNet
+      target: 17, // ResNet
+      value: 9,
+      relation: "deep CNN evolution",
+    },
+    {
+      id: 337,
+      source: 17, // ResNet
+      target: 20, // ViT
+      value: 8,
+      relation: "vision architecture evolution",
+    },
+
+    // Language Model Evolution
+    {
+      id: 338,
+      source: 33, // BERT
+      target: 45, // GPT
+      value: 8,
+      relation: "transformer application evolution",
+    },
+    {
+      id: 339,
+      source: 45, // GPT
+      target: 73, // Instruction Tuning
+      value: 9,
+      relation: "language model capabilities",
+    },
+
+    // Multimodal Evolution
+    {
+      id: 340,
+      source: 66, // Image Captioning
+      target: 68, // CLIP
+      value: 8,
+      relation: "vision-language alignment",
+    },
+    {
+      id: 341,
+      source: 68, // CLIP
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "multimodal understanding",
+    },
+
+    // 4. TECHNICAL CAPABILITY FLOWS
+    {
+      id: 342,
+      source: 28, // Transformer
+      target: 62, // Stable Diffusion
+      value: 8,
+      relation: "attention in generation",
+    },
+    {
+      id: 343,
+      source: 17, // ResNet
+      target: 69, // Text-to-Image
+      value: 7,
+      relation: "visual quality foundation",
+    },
+    {
+      id: 344,
+      source: 33, // BERT
+      target: 74, // Embodied AI
+      value: 8,
+      relation: "language understanding in robotics",
+    },
+    {
+      id: 345,
+      source: 45, // GPT
+      target: 62, // Stable Diffusion
+      value: 9,
+      relation: "language conditioning in image generation",
+    },
+    {
+      id: 346,
+      source: 20, // ViT
+      target: 48, // RoBERTa
+      value: 7,
+      relation: "cross-attention mechanisms",
+    },
+    {
+      id: 347,
+      source: 68, // CLIP
+      target: 71, // Visual-Language Models
+      value: 9,
+      relation: "zero-shot transfer learning",
+    },
+    {
+      id: 348,
+      source: 17, // ResNet
+      target: 45, // GPT
+      value: 7,
+      relation: "deep architecture scaling",
+    },
+    {
+      id: 349,
+      source: 33, // BERT
+      target: 69, // Text-to-Image
+      value: 8,
+      relation: "text understanding in generation",
+    },
+    {
+      id: 350,
+      source: 45, // GPT
+      target: 71, // Visual-Language Models
+      value: 9,
+      relation: "large-scale pre-training",
+    },
+    {
+      id: 351,
+      source: 20, // ViT
+      target: 74, // Embodied AI
+      value: 8,
+      relation: "visual perception in robotics",
+    },
+    {
+      id: 352,
+      source: 14, // Early CNNs
+      target: 23, // Segmentation Models
+      value: 7,
+      relation: "feature hierarchy principles",
+    },
+    {
+      id: 353,
+      source: 21, // Swin Transformer
+      target: 69, // Text-to-Image
+      value: 8,
+      relation: "hierarchical image generation",
+    },
+    {
+      id: 354,
+      source: 12, // AlexNet
+      target: 28, // Transformer
+      value: 7,
+      relation: "deep learning foundation",
+    },
+    {
+      id: 355,
+      source: 28, // Transformer
+      target: 68, // CLIP
+      value: 9,
+      relation: "multimodal architecture evolution",
+    },
+    {
+      id: 356,
+      source: 68, // CLIP
+      target: 73, // Instruction Tuning
+      value: 8,
+      relation: "vision-language alignment progression",
+    },
+    {
+      id: 357,
+      source: 61, // Diffusion Models
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "generative multimodal synthesis",
+    },
+    {
+      id: 358,
+      source: 17, // ResNet
+      target: 62, // Stable Diffusion
+      value: 7,
+      relation: "image quality enhancement",
+    },
+    {
+      id: 359,
+      source: 33, // BERT
+      target: 70, // Advanced Text-to-Image
+      value: 8,
+      relation: "semantic understanding in generation",
+    },
+    {
+      id: 360,
+      source: 45, // GPT
+      target: 74, // Embodied AI
+      value: 9,
+      relation: "language planning in robotics",
+    },
+    {
+      id: 361,
+      source: 68, // CLIP
+      target: 72, // Vision-Language Models
+      value: 9,
+      relation: "multimodal representation learning",
+    },
+    {
+      id: 362,
+      source: 20, // ViT
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "unified perception architecture",
+    },
+    {
+      id: 363,
+      source: 61, // Diffusion Models
+      target: 73, // Instruction Tuning
+      value: 8,
+      relation: "controlled generation capabilities",
+    },
+    {
+      id: 364,
+      source: 48, // RoBERTa
+      target: 71, // Visual-Language Models
+      value: 8,
+      relation: "robust feature extraction",
+    },
+    {
+      id: 365,
+      source: 21, // Swin Transformer
+      target: 74, // Embodied AI
+      value: 8,
+      relation: "hierarchical visual understanding",
+    },
+    // Add connections for newer emergent relationships
+    {
+      id: 366,
+      source: 75, // Advanced Multimodal
+      target: 74, // Embodied AI
+      value: 10,
+      relation: "multimodal robotic control",
+    },
+    {
+      id: 367,
+      source: 62, // Stable Diffusion
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "visual synthesis in multimodal systems",
+    },
+    {
+      id: 368,
+      source: 35, // GPT-3
+      target: 74, // Embodied AI
+      value: 9,
+      relation: "language planning in robotics",
+    },
+    {
+      id: 369,
+      source: 68, // CLIP
+      target: 78, // AlphaGo
+      value: 7,
+      relation: "visual reasoning in games",
+    },
+    {
+      id: 370,
+      source: 33, // BERT
+      target: 80, // MuZero
+      value: 7,
+      relation: "language understanding in planning",
+    },
+    {
+      id: 371,
+      source: 35, // GPT-3
+      target: 62, // Stable Diffusion
+      value: 8,
+      relation: "large-scale conditioning",
+    },
+    {
+      id: 372,
+      source: 68, // CLIP
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "zero-shot transfer in multimodal",
+    },
+    {
+      id: 373,
+      source: 14, // Early CNNs
+      target: 28, // Transformer
+      value: 7,
+      relation: "spatial to sequential processing",
+    },
+    {
+      id: 374,
+      source: 27, // LSTM
+      target: 28, // Transformer
+      value: 8,
+      relation: "sequential modeling evolution",
+    },
+    {
+      id: 375,
+      source: 1, // Early Neural Networks
+      target: 28, // Transformer
+      value: 6,
+      relation: "neural computation principles",
+    },
+    {
+      id: 376,
+      source: 2, // Perceptron
+      target: 20, // ViT
+      value: 5,
+      relation: "pattern recognition fundamentals",
+    },
+    {
+      id: 377,
+      source: 4, // Backpropagation
+      target: 61, // Diffusion Models
+      value: 7,
+      relation: "gradient-based optimization",
+    },
+    {
+      id: 378,
+      source: 8, // SVMs
+      target: 33, // BERT
+      value: 6,
+      relation: "feature space transformation",
+    },
+
+    // 2. Cross-Domain Influence Links
+    {
+      id: 379,
+      source: 78, // AlphaGo
+      target: 74, // Embodied AI
+      value: 8,
+      relation: "decision making in physical space",
+    },
+    {
+      id: 380,
+      source: 68, // CLIP
+      target: 80, // MuZero
+      value: 8,
+      relation: "visual understanding in RL",
+    },
+    {
+      id: 381,
+      source: 45, // GPT
+      target: 78, // AlphaGo
+      value: 7,
+      relation: "sequential decision making",
+    },
+    {
+      id: 382,
+      source: 17, // ResNet
+      target: 80, // MuZero
+      value: 7,
+      relation: "deep representation learning",
+    },
+
+    // 3. Foundational Techniques to Modern Models
+    {
+      id: 383,
+      source: 4, // Backpropagation
+      target: 75, // Advanced Multimodal
+      value: 9,
+      relation: "end-to-end learning foundation",
+    },
+    {
+      id: 384,
+      source: 27, // LSTM
+      target: 62, // Stable Diffusion
+      value: 7,
+      relation: "sequential generation principles",
+    },
+    {
+      id: 385,
+      source: 14, // Early CNNs
+      target: 71, // Visual-Language Models
+      value: 8,
+      relation: "hierarchical feature learning",
+    },
+
+    // 4. Competing Approaches Relationships
+    {
+      id: 386,
+      source: 52, // GANs
+      target: 61, // Diffusion Models
+      value: 9,
+      relation: "competing generative paradigms",
+    },
+    {
+      id: 387,
+      source: 33, // BERT
+      target: 45, // GPT
+      value: 8,
+      relation: "competing pre-training approaches",
+    },
+    {
+      id: 388,
+      source: 20, // ViT
+      target: 21, // Swin Transformer
+      value: 7,
+      relation: "competing vision architectures",
+    },
+    {
+      id: 389,
+      source: 68, // CLIP
+      target: 69, // Text-to-Image
+      value: 8,
+      relation: "competing multimodal approaches",
+    },
+
+    // 5. Evaluation Metrics and Benchmarks Influence
+    {
+      id: 390,
+      source: 12, // AlexNet
+      target: 17, // ResNet
+      value: 8,
+      relation: "ImageNet benchmark evolution",
+    },
+    {
+      id: 391,
+      source: 33, // BERT
+      target: 48, // RoBERTa
+      value: 7,
+      relation: "GLUE benchmark optimization",
+    },
+    {
+      id: 392,
+      source: 68, // CLIP
+      target: 70, // Advanced Text-to-Image
+      value: 8,
+      relation: "zero-shot evaluation impact",
+    },
+    {
+      id: 393,
+      source: 45, // GPT
+      target: 73, // Instruction Tuning
+      value: 9,
+      relation: "human evaluation influence",
+    },
+    {
+      id: 394,
+      source: 74, // Embodied AI
+      target: 75, // Advanced Multimodal
+      value: 8,
+      relation: "real-world performance metrics",
+    },
   ],
 };

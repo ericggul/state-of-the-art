@@ -4,6 +4,7 @@ import * as S from "./styles";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome";
 import forceBoundary from "d3-force-boundary";
 import useScreenStore from "@/components/screen/store";
+import * as Tone from "tone";
 
 const DURATION = 300;
 
@@ -16,6 +17,30 @@ export default function Rhizome() {
   const simulationRef = useRef(null);
   const nodesRef = useRef(null);
   const linksRef = useRef(null);
+  const synthRef = useRef(null);
+
+  // Initialize Tone.js synth
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      synthRef.current = new Tone.MembraneSynth().toDestination();
+      synthRef.current.volume.value = -5;
+    }
+
+    return () => {
+      if (synthRef.current) synthRef.current.dispose();
+    };
+  }, []);
+
+  // Play sound when currentArchitectures changes
+  useEffect(() => {
+    if (synthRef.current && currentArchitectures?.length) {
+      try {
+        synthRef.current.triggerAttackRelease("C3", "16n");
+      } catch (e) {
+        console.error("Error playing sound:", e);
+      }
+    }
+  }, [currentArchitectures]);
 
   // Transform data once, not on every render
   const data = useMemo(
@@ -42,12 +67,16 @@ export default function Rhizome() {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
+    // Calculate boundaries (80% of dimensions)
+    const boundaryWidth = dimensions.width * 0.4;
+    const boundaryHeight = dimensions.height * 0.4;
+
     // Set up SVG with larger viewBox
     svg.attr("viewBox", [
-      -dimensions.width * 0.4,
-      -dimensions.height * 0.4,
-      dimensions.width * 0.8,
-      dimensions.height * 0.8,
+      -boundaryWidth,
+      -boundaryHeight,
+      boundaryWidth * 2,
+      boundaryHeight * 2,
     ]);
 
     // Create simulation with stronger forces and continuous motion
@@ -61,9 +90,12 @@ export default function Rhizome() {
           .distance(100)
       )
       .force("charge", d3.forceManyBody().strength(-200))
-      .force("center", d3.forceCenter())
+      .force("center", d3.forceCenter(0, 0).strength(0.1))
       .force("collision", d3.forceCollide().radius(50))
-      // Add a small continuous force to keep the graph moving
+      // Add boundary forces
+      .force("x", d3.forceX(0).strength(0.1))
+      .force("y", d3.forceY(0).strength(0.1))
+      // Keep graph moving
       .velocityDecay(0.4)
       .alphaMin(0.001)
       .alphaDecay(0.001);
@@ -149,18 +181,25 @@ export default function Rhizome() {
     if (!nodeToHighlight.empty()) {
       const d = nodeToHighlight.datum();
 
-      // Create a gentle centering force
-      const centeringForce = d3.forceX(0).strength(0.1).initialize(data.nodes);
-
-      const centeringForceY = d3.forceY(0).strength(0.1).initialize(data.nodes);
-
-      // Apply the centering force only to the target node
-      simulation.force("centerX", (alpha) => {
-        const k = alpha * 0.1;
+      // Strong centering force for highlighted node
+      simulation.force("centerHighlighted", (alpha) => {
+        const k = alpha * 0.5; // Increased strength
         data.nodes.forEach((node) => {
           if (node === d) {
-            node.vx -= node.x * k;
-            node.vy -= node.y * k;
+            // Move towards center (0,0)
+            const dx = 0 - node.x;
+            const dy = 0 - node.y;
+            node.vx += dx * k;
+            node.vy += dy * k;
+          } else {
+            // Push other nodes away from center slightly
+            const dist = Math.hypot(node.x, node.y);
+            if (dist < 100) {
+              // Minimum distance from center
+              const angle = Math.atan2(node.y, node.x);
+              node.vx += Math.cos(angle) * k * 10;
+              node.vy += Math.sin(angle) * k * 10;
+            }
           }
         });
       });
@@ -180,10 +219,7 @@ export default function Rhizome() {
         .attr("fill", "white");
 
       // Gently restart simulation
-      simulation
-        .alpha(0.3)
-        .alphaTarget(0.1) // Keep some continuous motion
-        .restart();
+      simulation.alpha(0.3).alphaTarget(0.1).restart();
     }
   }, [currentArchitectures]);
 
