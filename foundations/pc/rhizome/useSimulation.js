@@ -13,17 +13,14 @@ export const useSimulation = (svgRef, dimensions, data) => {
   useEffect(() => {
     if (!svgRef.current || !dimensions.width || !dimensions.height) return;
 
-    // Clear existing SVG content
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    // Calculate and store boundary dimensions
     boundaryRef.current = {
       width: dimensions.width * 0.9,
       height: dimensions.height * 0.9,
     };
 
-    // Create container group and apply zoom
     const g = svg
       .append("g")
       .attr(
@@ -31,14 +28,17 @@ export const useSimulation = (svgRef, dimensions, data) => {
         `translate(${dimensions.width / 2}, ${dimensions.height / 2})`
       );
 
-    // Create the simulation with forces
+    // Performance-optimized simulation
     const simulation = d3
       .forceSimulation(data.nodes)
       .force(
         "link",
-        d3.forceLink(data.links).id((d) => d.name)
+        d3
+          .forceLink(data.links)
+          .id((d) => d.name)
+          .distance(40)
       )
-      .force("charge", d3.forceManyBody().strength(-400))
+      .force("charge", d3.forceManyBody().strength(-200))
       .force(
         "boundary",
         forceBoundary(
@@ -48,76 +48,66 @@ export const useSimulation = (svgRef, dimensions, data) => {
           boundaryRef.current.height / 1.5
         )
       )
-      .alphaDecay(0.01)
-      .velocityDecay(0.3);
+      .alphaDecay(0.03)
+      .velocityDecay(0.45);
 
-    // Add links
+    // Simplified, performance-focused links
     const links = g
       .append("g")
+      .attr("class", "links")
       .selectAll("path")
       .data(data.links)
       .join("path")
       .attr("stroke", (d) => {
         const sourceNode = data.nodes.find((n) => n.name === d.source.name);
         const targetNode = data.nodes.find((n) => n.name === d.target.name);
-        if (sourceNode.majorVersion === targetNode.majorVersion) {
-          return getVersionColor(sourceNode.majorVersion);
-        }
-        return "rgba(255, 255, 255, 0.5)";
+        return sourceNode.majorVersion === targetNode.majorVersion
+          ? getVersionColor(sourceNode.majorVersion)
+          : "rgba(255, 255, 255, 0.2)";
       })
-      .attr("stroke-width", (d) => {
-        const sourceNode = data.nodes.find((n) => n.name === d.source.name);
-        const targetNode = data.nodes.find((n) => n.name === d.target.name);
-        return sourceNode.majorVersion === targetNode.majorVersion ? 1.5 : 1;
-      })
-      .attr("opacity", 0.27)
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.4)
       .attr("fill", "none");
 
-    // Add nodes
+    // Simplified, performance-focused nodes
     const nodes = g
       .append("g")
+      .attr("class", "nodes")
       .selectAll("g")
       .data(data.nodes)
       .join("g")
       .call(drag(simulation));
 
-    // Add circles to nodes
     nodes
       .append("circle")
-      .attr("r", 5)
+      .attr("r", 3.5)
       .attr("id", (d) => `circle-${d.id}`)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
-      .attr("opacity", 0.7)
-      .attr("stroke", (d) =>
-        d.majorVersion
-          ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
-          : "none"
-      )
-      .attr("stroke-width", 1);
+      .attr("opacity", 0.9)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 0.5);
 
-    // Add labels to nodes
+    // Simplified text
     nodes
       .append("text")
       .text((d) => d.text)
-      .attr("x", 12)
-      .attr("y", 10)
-      .attr("font-size", "0.8vw")
-      .attr("fill", "rgba(255, 255, 255, 0.2)");
+      .attr("x", 6)
+      .attr("y", 4)
+      .attr("font-size", "0.65vw")
+      .attr("fill", "rgba(255, 255, 255, 0.8)")
+      .style("pointer-events", "none");
 
-    // Update positions on tick
+    // Optimized tick function
     simulation.on("tick", () => {
       links.attr("d", linkArc);
       nodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
 
-    // Store refs
     simulationRef.current = simulation;
     nodesRef.current = nodes;
     linksRef.current = links;
 
-    return () => {
-      if (simulation) simulation.stop();
-    };
+    return () => simulation.stop();
   }, [dimensions, data]);
 
   return { simulationRef, nodesRef, linksRef, boundaryRef };

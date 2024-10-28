@@ -182,18 +182,19 @@ export default function Rhizome() {
           .select("circle")
           .transition()
           .duration(DURATION)
-          .attr("fill", (d) => d3.color(d.color).brighter(1.5))
+          .attr("fill", (d) => d3.color(d.color).brighter(1.2))
           .attr("opacity", 1)
           .attr("r", 8)
-          .attr("stroke", "white")
-          .attr("stroke-width", 2);
+          .attr("stroke", "rgba(255, 255, 255, 0.9)")
+          .attr("stroke-width", 2.5);
 
         nodeToHighlight
           .select("text")
           .transition()
           .duration(DURATION)
           .attr("font-size", "1.5vw")
-          .attr("fill", "rgba(255, 255, 255, 1)");
+          .attr("fill", "rgba(255, 255, 255, 0.95)")
+          .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
         // Increase both alpha and alphaTarget for more continuous movement
         simulation.alpha(0.3).alphaTarget(0.4).restart();
