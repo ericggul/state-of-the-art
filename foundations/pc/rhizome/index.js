@@ -10,7 +10,6 @@ const DURATION = 300;
 
 export default function Rhizome() {
   const { currentArchitectures } = useScreenStore();
-  console.log(currentArchitectures);
   const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [currentTarget, setCurrentTarget] = useState(null);
@@ -47,72 +46,114 @@ export default function Rhizome() {
     () => ({
       nodes: DATA_NODES_LINKS.nodes.map((node) => ({
         ...node,
+        // Use name as the unique identifier consistently
         id: node.name,
         text: node.name,
+        majorVersion: node.version
+          ? parseInt(node.version.match(/v(\d+)/)?.[1]) || null
+          : null,
+        color: node.version
+          ? getVersionColor(parseInt(node.version.match(/v(\d+)/)?.[1]) || null)
+          : "rgba(255, 255, 255, 0.7)",
       })),
-      links: DATA_NODES_LINKS.links.map((link) => ({
-        source: DATA_NODES_LINKS.nodes[link.source - 1].name,
-        target: DATA_NODES_LINKS.nodes[link.target - 1].name,
-        value: link.value,
-        isCycle: false,
-      })),
+      links: DATA_NODES_LINKS.links.map((link) => {
+        // Find the actual node names for source and target
+        const sourceNode = DATA_NODES_LINKS.nodes[link.source - 1];
+        const targetNode = DATA_NODES_LINKS.nodes[link.target - 1];
+        return {
+          ...link,
+          source: sourceNode.name, // Use name instead of index
+          target: targetNode.name, // Use name instead of index
+          value: link.value,
+          isCycle: false,
+        };
+      }),
     }),
     []
   );
 
-  // Initial setup of the graph
+  // Add resize observer to get dimensions
   useEffect(() => {
-    if (!dimensions.width || !dimensions.height) return;
+    if (!svgRef.current) return;
 
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
+      }
+    });
+
+    resizeObserver.observe(svgRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Don't initialize D3 until we have dimensions
+  useEffect(() => {
+    if (!svgRef.current || !dimensions.width || !dimensions.height) return;
+
+    // Clear existing SVG content
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    // Calculate boundaries (80% of dimensions)
-    const boundaryWidth = dimensions.width * 0.4;
-    const boundaryHeight = dimensions.height * 0.4;
+    // Calculate boundary dimensions as a percentage of the SVG size
+    const boundaryWidth = dimensions.width * 0.9; // 90% of SVG width
+    const boundaryHeight = dimensions.height * 0.9; // 90% of SVG height
 
-    // Set up SVG with larger viewBox
-    svg.attr("viewBox", [
-      -boundaryWidth,
-      -boundaryHeight,
-      boundaryWidth * 2,
-      boundaryHeight * 2,
-    ]);
+    // Create container group and apply zoom
+    const g = svg.append("g");
 
-    // Create simulation with stronger forces and continuous motion
+    // Create the simulation with forces
     const simulation = d3
       .forceSimulation(data.nodes)
       .force(
         "link",
-        d3
-          .forceLink(data.links)
-          .id((d) => d.text)
-          .distance(100)
+        d3.forceLink(data.links).id((d) => d.name)
       )
-      .force("charge", d3.forceManyBody().strength(-200))
-      .force("center", d3.forceCenter(0, 0).strength(0.1))
-      .force("collision", d3.forceCollide().radius(50))
-      // Add boundary forces
-      .force("x", d3.forceX(0).strength(0.1))
-      .force("y", d3.forceY(0).strength(0.1))
-      // Keep graph moving
-      .velocityDecay(0.4)
-      .alphaMin(0.001)
-      .alphaDecay(0.001);
+      .force("charge", d3.forceManyBody().strength(-400))
+      .force("center", d3.forceCenter(0, 0)) // Center at (0,0)
+      .force(
+        "boundary",
+        forceBoundary(
+          -boundaryWidth / 2, // x0
+          -boundaryHeight / 2, // y0
+          boundaryWidth / 2, // x1
+          boundaryHeight / 2 // y1
+        )
+      );
 
-    // Create links
-    const links = svg
+    // Transform the container to center of SVG
+    g.attr(
+      "transform",
+      `translate(${dimensions.width / 2}, ${dimensions.height / 2})`
+    );
+
+    // Add links after nodes are initialized
+    simulation.force("link").links(data.links);
+
+    // Add links
+    const links = g
       .append("g")
       .selectAll("path")
       .data(data.links)
       .join("path")
-      .attr("stroke", "hsl(180, 100%, 70%)")
-      .attr("stroke-width", 1) // Fixed thin width
+      .attr("stroke", (d) => {
+        const sourceNode = data.nodes.find((n) => n.name === d.source.name);
+        const targetNode = data.nodes.find((n) => n.name === d.target.name);
+        if (sourceNode.majorVersion === targetNode.majorVersion) {
+          return getVersionColor(sourceNode.majorVersion);
+        }
+        return "rgba(255, 255, 255, 0.27)";
+      })
+      .attr("stroke-width", (d) => {
+        const sourceNode = data.nodes.find((n) => n.name === d.source.name);
+        const targetNode = data.nodes.find((n) => n.name === d.target.name);
+        return sourceNode.majorVersion === targetNode.majorVersion ? 1.5 : 1;
+      })
       .attr("opacity", 0.27)
       .attr("fill", "none");
 
-    // Create nodes group
-    const nodes = svg
+    // Add nodes
+    const nodes = g
       .append("g")
       .selectAll("g")
       .data(data.nodes)
@@ -123,13 +164,19 @@ export default function Rhizome() {
     nodes
       .append("circle")
       .attr("r", 5)
-      .attr("id", (d) => `circle-${d.id}`)
-      .attr("fill", "rgba(255, 255, 255, 0.7)");
+      .attr("id", (d) => `circle-${d.name}`)
+      .attr("fill", (d) => getVersionColor(d.majorVersion))
+      .attr("stroke", (d) =>
+        d.majorVersion
+          ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
+          : "none"
+      )
+      .attr("stroke-width", 1);
 
-    // Add text labels to nodes
+    // Add text labels
     nodes
       .append("text")
-      .text((d) => d.text)
+      .text((d) => d.name)
       .attr("x", 8)
       .attr("y", "0.31em")
       .attr("font-size", "1.2vw")
@@ -145,6 +192,39 @@ export default function Rhizome() {
     nodesRef.current = nodes;
     linksRef.current = links;
     simulationRef.current = simulation;
+
+    // Add version legend with correct positioning
+    const legend = svg
+      .append("g")
+      .attr("class", "legend")
+      .attr(
+        "transform",
+        `translate(${-boundaryWidth * 0.9}, ${-boundaryHeight * 0.9})`
+      );
+
+    const versions = Array.from(
+      new Set(data.nodes.map((n) => n.majorVersion).filter(Boolean))
+    );
+    versions.sort((a, b) => a - b);
+
+    versions.forEach((version, i) => {
+      const legendItem = legend
+        .append("g")
+        .attr("transform", `translate(0, ${i * 20})`);
+
+      legendItem
+        .append("circle")
+        .attr("r", 5)
+        .attr("fill", getVersionColor(version));
+
+      legendItem
+        .append("text")
+        .attr("x", 15)
+        .attr("y", 5)
+        .attr("fill", "white")
+        .attr("opacity", 0.7)
+        .text(`Version ${version}.x`);
+    });
   }, [dimensions, data]);
 
   // Handle currentArchitectures changes
@@ -159,19 +239,13 @@ export default function Rhizome() {
     const currentNode = currentArchitectures[0].name;
     const simulation = simulationRef.current;
 
-    // Reset all nodes to default style
+    // Reset all nodes to their version-based colors
     nodesRef.current
       .selectAll("circle")
       .transition()
       .duration(DURATION)
-      .attr("fill", "rgba(255, 255, 255, 0.7)");
-
-    nodesRef.current
-      .selectAll("text")
-      .transition()
-      .duration(DURATION)
-      .attr("font-size", "1.2vw")
-      .attr("fill", "rgba(255, 255, 255, 0.5)");
+      .attr("fill", (d) => d.color)
+      .attr("opacity", 0.7);
 
     // Find and highlight the current node
     const nodeToHighlight = nodesRef.current.filter(
@@ -209,14 +283,8 @@ export default function Rhizome() {
         .select("circle")
         .transition()
         .duration(DURATION)
-        .attr("fill", "hsl(180, 100%, 93%)");
-
-      nodeToHighlight
-        .select("text")
-        .transition()
-        .duration(DURATION)
-        .attr("font-size", "3vw")
-        .attr("fill", "white");
+        .attr("fill", (d) => d3.color(d.color).brighter(1))
+        .attr("opacity", 1);
 
       // Gently restart simulation
       simulation.alpha(0.3).alphaTarget(0.1).restart();
@@ -289,4 +357,25 @@ function drag(simulation) {
     .on("start", dragstarted)
     .on("drag", dragged)
     .on("end", dragended);
+}
+
+// Add these helper functions at the bottom of the file
+function getMajorVersion(version) {
+  if (!version) return null;
+  const match = version.match(/v(\d+)/);
+  return match ? parseInt(match[1]) : null;
+}
+
+function getVersionColor(majorVersion) {
+  const colorScale = d3.scaleOrdinal().domain([1, 2, 3, 4, 5, 6, 7, 8]).range([
+    "hsl(180, 100%, 70%)", // v1 - Teal
+    "hsl(120, 100%, 70%)", // v2 - Green
+    "hsl(60, 100%, 70%)", // v3 - Yellow
+    "hsl(0, 100%, 70%)", // v4 - Red
+    "hsl(240, 100%, 70%)", // v5 - Blue
+    "hsl(300, 100%, 70%)", // v6 - Purple
+    "hsl(30, 100%, 70%)", // v7 - Orange
+    "hsl(150, 100%, 70%)", // v8 - Turquoise
+  ]);
+  return majorVersion ? colorScale(majorVersion) : "rgba(255, 255, 255, 0.7)";
 }

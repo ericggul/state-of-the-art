@@ -1,9 +1,14 @@
 import { OBJECT_ARRAY } from "./v2";
 
 export const DATA_NODES_LINKS = {
+  // Update nodes to include version information
   nodes: OBJECT_ARRAY.map((model, index) => ({
     id: index + 1,
     name: model.name,
+    version: model.version,
+    majorVersion: model.version
+      ? parseInt(model.version.match(/v(\d+)/)[1])
+      : null,
   })),
   links: [
     { id: 1, source: 1, target: 2, value: 9, relation: "direct predecessor" },
@@ -1943,13 +1948,6 @@ export const DATA_NODES_LINKS = {
       relation: "embodied AI with language",
     },
     {
-      id: 310,
-      source: 74,
-      target: 75,
-      value: 9,
-      relation: "multimodal AI capabilities",
-    },
-    {
       id: 311,
       source: 28,
       target: 20,
@@ -2565,4 +2563,37 @@ export const DATA_NODES_LINKS = {
       relation: "real-world performance metrics",
     },
   ],
+};
+
+// Add version-based grouping helper
+export const getVersionColor = (majorVersion) => {
+  const colorScale = {
+    1: "hsl(180, 100%, 70%)", // Foundation Models
+    2: "hsl(120, 100%, 70%)", // Memory-Based and Unsupervised
+    3: "hsl(60, 100%, 70%)", // Computer Vision
+    4: "hsl(0, 100%, 70%)", // Sequence Models
+    5: "hsl(240, 100%, 70%)", // Generative Models
+    6: "hsl(300, 100%, 70%)", // Multimodal
+    7: "hsl(30, 100%, 70%)", // Reinforcement Learning
+    8: "hsl(150, 100%, 70%)", // Efficient/Specialized
+    9: "hsl(270, 100%, 70%)", // Advanced NLP
+  };
+  return majorVersion ? colorScale[majorVersion] : "rgba(255, 255, 255, 0.7)";
+};
+
+// Add version grouping helper
+export const getModelFamily = (version) => {
+  const families = {
+    1: "Foundation Models",
+    2: "Memory-Based and Unsupervised",
+    3: "Computer Vision",
+    4: "Sequence Models and Transformers",
+    5: "Generative Models",
+    6: "Multimodal Models",
+    7: "Reinforcement Learning",
+    8: "Efficient/Specialized Architectures",
+    9: "Advanced NLP",
+  };
+  const majorVersion = version ? parseInt(version.match(/v(\d+)/)[1]) : null;
+  return majorVersion ? families[majorVersion] : "Unknown";
 };
