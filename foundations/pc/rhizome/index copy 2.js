@@ -117,14 +117,14 @@ export default function Rhizome() {
         "link",
         d3.forceLink(data.links).id((d) => d.name)
       )
-      .force("charge", d3.forceManyBody().strength(-400)) // Increased repulsion
+      .force("charge", d3.forceManyBody().strength(-200))
       .force(
         "boundary",
         forceBoundary(
           -boundaryRef.current.width / 2,
-          -boundaryRef.current.height / 1.5, // Increased vertical space
+          -boundaryRef.current.height / 2,
           boundaryRef.current.width / 2,
-          boundaryRef.current.height / 1.5
+          boundaryRef.current.height / 2
         )
       )
       .alphaDecay(0.01)
@@ -272,17 +272,15 @@ export default function Rhizome() {
         simulation.force("centerHighlighted", (alpha) => {
           const k = alpha * 0.3;
           const highlightedNode = nodeToHighlight.datum();
-          const targetX = boundaryWidth / 1.0;
+          const targetX = -boundaryWidth / 2.5; // More to the left (was /4)
 
           data.nodes.forEach((node) => {
             if (node === highlightedNode) {
-              // Move highlighted node far right with some vertical spread
+              // Move highlighted node far left
               const dx = targetX - node.x;
-              const dy =
-                ((Math.random() - 0.5) * boundaryRef.current.height) / 2 -
-                node.y; // Add vertical variation
+              const dy = 0 - node.y;
               node.vx += dx * k;
-              node.vy += dy * k * 0.2; // Gentler vertical force
+              node.vy += dy * k;
             } else {
               const isConnected = data.links.some(
                 (link) =>
@@ -291,21 +289,17 @@ export default function Rhizome() {
               );
 
               if (isConnected) {
-                // Connected nodes in the middle-right with vertical spread
-                const dx = targetX - boundaryWidth / 3 - node.x;
-                const dy =
-                  ((Math.random() - 0.5) * boundaryRef.current.height) / 2 -
-                  node.y;
+                // Connected nodes in the middle-left
+                const dx = targetX + boundaryWidth / 2.2 - node.x;
+                const dy = 0 - node.y;
                 node.vx += dx * k * 0.5;
-                node.vy += dy * k * 0.2;
+                node.vy += dy * k * 0.5;
               } else {
-                // Push unconnected nodes far left with vertical spread
-                const dx = -boundaryWidth * 0.8 - node.x;
-                const dy =
-                  ((Math.random() - 0.5) * boundaryRef.current.height) / 2 -
-                  node.y;
-                node.vx += dx * k * 0.5;
-                node.vy += dy * k * 0.2;
+                // Push unconnected nodes far right
+                const dx = boundaryWidth / 2 - node.x; // More to the right
+                const dy = 0 - node.y;
+                node.vx += dx * k * 0.3;
+                node.vy += dy * k * 0.3;
               }
             }
           });
