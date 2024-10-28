@@ -46,7 +46,7 @@ export function useOrientationAudio() {
     synth.chain(delay, reverb, Tone.Destination);
 
     // Set initial volume
-    synth.volume.value = -5;
+    synth.volume.value = -10;
 
     synthRef.current = synth;
     reverbRef.current = reverb;
@@ -139,7 +139,7 @@ export function useOrientationAudio() {
 
     // Adjust volume based on zoom
     const minVolume = -20;
-    const maxVolume = -5;
+    const maxVolume = -10;
     const volume = THREE.MathUtils.mapLinear(
       zoomFactor,
       0.01,

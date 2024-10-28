@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import forceBoundary from "d3-force-boundary";
-import { linkArc, drag } from "./d3utils";
+import { linkArc, drag } from "./utils";
 import { getVersionColor } from "./constants";
 
 export const useSimulation = (svgRef, dimensions, data) => {
@@ -63,7 +63,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
         if (sourceNode.majorVersion === targetNode.majorVersion) {
           return getVersionColor(sourceNode.majorVersion);
         }
-        return "rgba(255, 255, 255, 0.27)";
+        return "rgba(255, 255, 255, 0.5)";
       })
       .attr("stroke-width", (d) => {
         const sourceNode = data.nodes.find((n) => n.name === d.source.name);
@@ -99,10 +99,10 @@ export const useSimulation = (svgRef, dimensions, data) => {
     nodes
       .append("text")
       .text((d) => d.text)
-      .attr("x", 8)
-      .attr("y", 3)
-      .attr("font-size", "1.2vw")
-      .attr("fill", "rgba(255, 255, 255, 0.5)");
+      .attr("x", 12)
+      .attr("y", 10)
+      .attr("font-size", "0.8vw")
+      .attr("fill", "rgba(255, 255, 255, 0.2)");
 
     // Update positions on tick
     simulation.on("tick", () => {

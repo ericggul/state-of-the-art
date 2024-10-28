@@ -89,24 +89,12 @@ export default function Rhizome() {
     const simulation = simulationRef.current;
     const { width: boundaryWidth } = boundaryRef.current;
 
-    // Add continuous wiggle force
-    simulation.force("wiggle", (alpha) => {
-      const time = Date.now() * 0.001; // Current time in seconds
-      data.nodes.forEach((node) => {
-        // Create organic movement using sine waves with different frequencies
-        const wiggleX = Math.sin(time + node.x * 0.01) * 0.3;
-        const wiggleY = Math.cos(time + node.y * 0.01) * 0.3;
-        node.vx += wiggleX * alpha;
-        node.vy += wiggleY * alpha;
-      });
-    });
-
-    // Reset nodes state
+    // First, reset ALL nodes to their default state
     nodesRef.current
       .selectAll("circle")
       .transition()
       .duration(DURATION)
-      .attr("fill", (d) => getVersionColor(d.majorVersion))
+      .attr("fill", (d) => getVersionColor(d.majorVersion)) // Changed from d.color
       .attr("opacity", 0.7)
       .attr("r", 5)
       .attr("stroke", (d) =>
@@ -132,10 +120,9 @@ export default function Rhizome() {
 
       if (!nodeToHighlight.empty()) {
         simulation.force("centerHighlighted", (alpha) => {
-          const k = alpha * 0.5;
+          const k = alpha * 0.3;
           const highlightedNode = nodeToHighlight.datum();
-          // Move highlighted node more towards center-right
-          const targetX = boundaryWidth * 0.75; // Brought in from 0.9
+          const targetX = boundaryWidth / 1.0;
           const verticalSpread = boundaryRef.current.height / 3;
 
           data.nodes.forEach((node) => {
@@ -146,13 +133,12 @@ export default function Rhizome() {
               );
             }
             const targetY = nodePositionsRef.current.get(node.id);
-            const jitter = (Math.random() - 0.5) * 0.5;
 
             if (node === highlightedNode) {
-              const dx = targetX - node.x + jitter;
-              const dy = targetY - node.y + jitter;
+              const dx = targetX - node.x;
+              const dy = targetY - node.y;
               node.vx += dx * k;
-              node.vy += dy * k * 0.1;
+              node.vy += dy * k * 0.08;
             } else {
               const isConnected = data.links.some(
                 (link) =>
@@ -161,17 +147,15 @@ export default function Rhizome() {
               );
 
               if (isConnected) {
-                // Connected nodes more towards center
-                const dx = boundaryWidth * 0.55 - node.x + jitter;
-                const dy = targetY - node.y + jitter;
-                node.vx += dx * k * 0.6;
-                node.vy += dy * k * 0.1;
+                const dx = targetX - boundaryWidth / 3 - node.x;
+                const dy = targetY - node.y;
+                node.vx += dx * k * 0.5;
+                node.vy += dy * k * 0.08;
               } else {
-                // Much more extreme left positioning
-                const dx = boundaryWidth * -0.5 - node.x + jitter;
-                const dy = targetY - node.y + jitter;
-                node.vx += dx * k * 0.6;
-                node.vy += dy * k * 0.1;
+                const dx = -boundaryWidth * 0.8 - node.x;
+                const dy = targetY - node.y;
+                node.vx += dx * k * 0.5;
+                node.vy += dy * k * 0.08;
               }
             }
           });
@@ -195,12 +179,10 @@ export default function Rhizome() {
           .attr("font-size", "1.5vw")
           .attr("fill", "rgba(255, 255, 255, 1)");
 
-        // Increase both alpha and alphaTarget for more continuous movement
-        simulation.alpha(0.3).alphaTarget(0.4).restart();
+        // simulation.alpha(0.3).alphaTarget(0.05).restart();
+
+        simulation.alpha(0.1).alphaTarget(0.3).restart();
       }
-    } else {
-      // When no node is selected, maintain some movement
-      simulation.alpha(0.2).alphaTarget(0.2).restart();
     }
   }, [currentArchitectures, dimensions, data]);
 
