@@ -37,6 +37,9 @@ export const GridWrapper = styled.div`
 
 export const GridItem = styled.div`
   background-color: ${(props) => (props.$isHighlighted ? "#0f03" : "#0f01")};
+  box-shadow: ${(props) => (props.$isHighlighted ? "0 0 1vw #0f0" : "none")};
+  opacity: ${(props) => (props.$isHighlighted ? 1 : 0.8)};
+
   border: 0.05vw solid #0f0;
   padding: 0.5vw;
   border-radius: 0.25vw;
