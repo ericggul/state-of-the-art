@@ -94,7 +94,7 @@ export default function Rhizome() {
       .selectAll("circle")
       .transition()
       .duration(DURATION)
-      .attr("fill", (d) => d.color)
+      .attr("fill", (d) => getVersionColor(d.majorVersion)) // Changed from d.color
       .attr("opacity", 0.7)
       .attr("r", 5)
       .attr("stroke", (d) =>

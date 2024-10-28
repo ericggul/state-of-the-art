@@ -85,7 +85,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
     nodes
       .append("circle")
       .attr("r", 5)
-      .attr("id", (d) => `circle-${d.name}`)
+      .attr("id", (d) => `circle-${d.id}`)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
       .attr("opacity", 0.7)
       .attr("stroke", (d) =>
