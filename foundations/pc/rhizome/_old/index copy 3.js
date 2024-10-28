@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
-import * as S from "./styles";
+import * as S from "../styles";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome";
 import forceBoundary from "d3-force-boundary";
 import useScreenStore from "@/components/screen/store";
@@ -117,14 +117,14 @@ export default function Rhizome() {
         "link",
         d3.forceLink(data.links).id((d) => d.name)
       )
-      .force("charge", d3.forceManyBody().strength(-200))
+      .force("charge", d3.forceManyBody().strength(-400)) // Increased repulsion
       .force(
         "boundary",
         forceBoundary(
           -boundaryRef.current.width / 2,
-          -boundaryRef.current.height / 2,
+          -boundaryRef.current.height / 1.5, // Increased vertical space
           boundaryRef.current.width / 2,
-          boundaryRef.current.height / 2
+          boundaryRef.current.height / 1.5
         )
       )
       .alphaDecay(0.01)
@@ -272,15 +272,21 @@ export default function Rhizome() {
         simulation.force("centerHighlighted", (alpha) => {
           const k = alpha * 0.3;
           const highlightedNode = nodeToHighlight.datum();
-          const targetX = -boundaryWidth / 2.5; // More to the left (was /4)
+          const targetX = boundaryWidth / 1.0;
 
-          data.nodes.forEach((node) => {
+          // Create a stable vertical offset based on node index
+          const verticalSpread = boundaryRef.current.height / 3; // Reduced from /2 for less extreme spread
+
+          data.nodes.forEach((node, index) => {
+            // Create a stable vertical position based on node index
+            const verticalPosition = ((index % 5) - 2) * (verticalSpread / 5);
+
             if (node === highlightedNode) {
-              // Move highlighted node far left
+              // Move highlighted node right, maintain stable Y
               const dx = targetX - node.x;
-              const dy = 0 - node.y;
+              const dy = verticalPosition - node.y;
               node.vx += dx * k;
-              node.vy += dy * k;
+              node.vy += dy * k * 0.1; // Reduced vertical force (was 0.2)
             } else {
               const isConnected = data.links.some(
                 (link) =>
@@ -289,17 +295,17 @@ export default function Rhizome() {
               );
 
               if (isConnected) {
-                // Connected nodes in the middle-left
-                const dx = targetX + boundaryWidth / 2.2 - node.x;
-                const dy = 0 - node.y;
+                // Connected nodes in middle-right
+                const dx = targetX - boundaryWidth / 3 - node.x;
+                const dy = verticalPosition - node.y;
                 node.vx += dx * k * 0.5;
-                node.vy += dy * k * 0.5;
+                node.vy += dy * k * 0.1; // Reduced vertical force
               } else {
-                // Push unconnected nodes far right
-                const dx = boundaryWidth / 2 - node.x; // More to the right
-                const dy = 0 - node.y;
-                node.vx += dx * k * 0.3;
-                node.vy += dy * k * 0.3;
+                // Unconnected nodes to far left
+                const dx = -boundaryWidth * 0.8 - node.x;
+                const dy = verticalPosition - node.y;
+                node.vx += dx * k * 0.5;
+                node.vy += dy * k * 0.1; // Reduced vertical force
               }
             }
           });

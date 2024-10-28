@@ -17,6 +17,8 @@ export default function Rhizome() {
   const nodesRef = useRef(null);
   const linksRef = useRef(null);
   const synthRef = useRef(null);
+  const boundaryRef = useRef({ width: 0, height: 0 }); // Add this ref to store boundary dimensions
+  const nodePositionsRef = useRef(new Map());
 
   // Initialize Tone.js synth
   useEffect(() => {
@@ -95,12 +97,19 @@ export default function Rhizome() {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    // Calculate boundary dimensions as a percentage of the SVG size
-    const boundaryWidth = dimensions.width * 0.9; // 90% of SVG width
-    const boundaryHeight = dimensions.height * 0.9; // 90% of SVG height
+    // Calculate and store boundary dimensions
+    boundaryRef.current = {
+      width: dimensions.width * 0.9,
+      height: dimensions.height * 0.9,
+    };
 
     // Create container group and apply zoom
-    const g = svg.append("g");
+    const g = svg
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${dimensions.width / 2}, ${dimensions.height / 2})`
+      );
 
     // Create the simulation with forces
     const simulation = d3
@@ -109,23 +118,18 @@ export default function Rhizome() {
         "link",
         d3.forceLink(data.links).id((d) => d.name)
       )
-      .force("charge", d3.forceManyBody().strength(-400))
-      .force("center", d3.forceCenter(0, 0)) // Center at (0,0)
+      .force("charge", d3.forceManyBody().strength(-400)) // Increased repulsion
       .force(
         "boundary",
         forceBoundary(
-          -boundaryWidth / 2, // x0
-          -boundaryHeight / 2, // y0
-          boundaryWidth / 2, // x1
-          boundaryHeight / 2 // y1
+          -boundaryRef.current.width / 2,
+          -boundaryRef.current.height / 1.5, // Increased vertical space
+          boundaryRef.current.width / 2,
+          boundaryRef.current.height / 1.5
         )
-      );
-
-    // Transform the container to center of SVG
-    g.attr(
-      "transform",
-      `translate(${dimensions.width / 2}, ${dimensions.height / 2})`
-    );
+      )
+      .alphaDecay(0.01)
+      .velocityDecay(0.3);
 
     // Add links after nodes are initialized
     simulation.force("link").links(data.links);
@@ -199,7 +203,9 @@ export default function Rhizome() {
       .attr("class", "legend")
       .attr(
         "transform",
-        `translate(${-boundaryWidth * 0.9}, ${-boundaryHeight * 0.9})`
+        `translate(${-boundaryRef.current.width * 0.9}, ${
+          -boundaryRef.current.height * 0.9
+        })`
       );
 
     const versions = Array.from(
@@ -231,7 +237,10 @@ export default function Rhizome() {
   useEffect(() => {
     if (!simulationRef.current || !nodesRef.current) return;
 
-    // Reset all nodes to their default state
+    const simulation = simulationRef.current;
+    const { width: boundaryWidth } = boundaryRef.current;
+
+    // First, reset ALL nodes to their default state
     nodesRef.current
       .selectAll("circle")
       .transition()
@@ -239,10 +248,13 @@ export default function Rhizome() {
       .attr("fill", (d) => d.color)
       .attr("opacity", 0.7)
       .attr("r", 5)
-      .attr("stroke", "none")
-      .attr("stroke-width", 0);
+      .attr("stroke", (d) =>
+        d.majorVersion
+          ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
+          : "none"
+      )
+      .attr("stroke-width", 1);
 
-    // Reset all text labels
     nodesRef.current
       .selectAll("text")
       .transition()
@@ -253,32 +265,52 @@ export default function Rhizome() {
     // Only proceed with highlighting if there's a selected architecture
     if (currentArchitectures?.length) {
       const currentNode = currentArchitectures[0].name;
-      const simulation = simulationRef.current;
-
-      // Find and highlight the current node
       const nodeToHighlight = nodesRef.current.filter(
         (d) => d.text === currentNode
       );
 
       if (!nodeToHighlight.empty()) {
-        // Strong centering force for highlighted node
         simulation.force("centerHighlighted", (alpha) => {
-          const k = alpha * 1.0; // Increased strength for better centering
+          const k = alpha * 0.3;
+          const highlightedNode = nodeToHighlight.datum();
+          const targetX = boundaryWidth / 1.0;
+          const verticalSpread = boundaryRef.current.height / 3;
+
           data.nodes.forEach((node) => {
-            if (node === nodeToHighlight.datum()) {
-              // Move towards center (0,0)
-              const dx = 0 - node.x;
-              const dy = 0 - node.y;
+            // Initialize or get vertical position for this node
+            if (!nodePositionsRef.current.has(node.id)) {
+              nodePositionsRef.current.set(
+                node.id,
+                (Math.random() - 0.5) * verticalSpread
+              );
+            }
+            const targetY = nodePositionsRef.current.get(node.id);
+
+            if (node === highlightedNode) {
+              // Move highlighted node right
+              const dx = targetX - node.x;
+              const dy = targetY - node.y;
               node.vx += dx * k;
-              node.vy += dy * k;
+              node.vy += dy * k * 0.08; // Even gentler vertical force
             } else {
-              // Push other nodes away from center more aggressively
-              const dist = Math.hypot(node.x, node.y);
-              if (dist < 150) {
-                // Increased minimum distance
-                const angle = Math.atan2(node.y, node.x);
-                node.vx += Math.cos(angle) * k * 15;
-                node.vy += Math.sin(angle) * k * 15;
+              const isConnected = data.links.some(
+                (link) =>
+                  (link.source === highlightedNode && link.target === node) ||
+                  (link.target === highlightedNode && link.source === node)
+              );
+
+              if (isConnected) {
+                // Connected nodes in middle-right
+                const dx = targetX - boundaryWidth / 3 - node.x;
+                const dy = targetY - node.y;
+                node.vx += dx * k * 0.5;
+                node.vy += dy * k * 0.08;
+              } else {
+                // Unconnected nodes to far left
+                const dx = -boundaryWidth * 0.8 - node.x;
+                const dy = targetY - node.y;
+                node.vx += dx * k * 0.5;
+                node.vy += dy * k * 0.08;
               }
             }
           });
@@ -291,11 +323,10 @@ export default function Rhizome() {
           .duration(DURATION)
           .attr("fill", (d) => d3.color(d.color).brighter(1.5))
           .attr("opacity", 1)
-          .attr("r", 8) // Increase size
+          .attr("r", 8)
           .attr("stroke", "white")
           .attr("stroke-width", 2);
 
-        // Highlight connected text
         nodeToHighlight
           .select("text")
           .transition()
@@ -303,10 +334,14 @@ export default function Rhizome() {
           .attr("font-size", "1.5vw")
           .attr("fill", "rgba(255, 255, 255, 1)");
 
-        // Gently restart simulation
-        simulation.alpha(0.5).alphaTarget(0.2).restart();
+        simulation.alpha(0.3).alphaTarget(0.05).restart();
       }
     }
+  }, [currentArchitectures, dimensions]);
+
+  // Clear positions when selection changes
+  useEffect(() => {
+    nodePositionsRef.current.clear();
   }, [currentArchitectures]);
 
   // Window resize handler
