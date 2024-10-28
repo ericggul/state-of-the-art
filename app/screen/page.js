@@ -28,7 +28,6 @@ export default function ScreenWrapper() {
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
   });
-  console.log("mobile", mobileVisibility);
 
   const { showFrontend, showBackend } = useScreenVisibility({
     mobileVisibility,

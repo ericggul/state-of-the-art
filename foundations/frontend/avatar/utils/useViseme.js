@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 import useScreenStore from "@/components/screen/store";
@@ -8,15 +8,31 @@ export default function useViseme() {
   const { latestSpeech } = useScreenStore();
 
   const [visemeMessage, setVisemeMessage] = useState({});
+  const previousAudioRef = useRef(null);
 
   // 500ms 디바운스 적용
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
 
+  const fadeOutAudio = (audio, duration = 1000) => {
+    const startVolume = audio.volume;
+    const steps = 15; // Number of steps for smooth transition
+    const volumeStep = startVolume / steps;
+    const intervalTime = duration / steps;
+
+    const fadeInterval = setInterval(() => {
+      if (audio.volume > volumeStep) {
+        audio.volume = Math.max(0, audio.volume - volumeStep);
+      } else {
+        clearInterval(fadeInterval);
+        audio.pause();
+        audio.volume = startVolume; // Reset volume for potential reuse
+      }
+    }, intervalTime);
+  };
+
   useEffect(() => {
     if (debouncedSpeech && debouncedSpeech.length > 0) {
-      getViseme({
-        text: debouncedSpeech,
-      });
+      getViseme({ text: debouncedSpeech });
     }
   }, [debouncedSpeech]);
 
@@ -28,45 +44,51 @@ export default function useViseme() {
         { responseType: "blob" }
       );
 
-      // Get audio as blob
+      // Fade out previous audio if exists
+      if (previousAudioRef.current) {
+        fadeOutAudio(previousAudioRef.current);
+      }
+
       const audio = audioRes.data;
       const visemes = JSON.parse(audioRes.headers.visemes);
-
-      // Create an audio URL
       const audioUrl = URL.createObjectURL(audio);
       const audioPlayer = new Audio(audioUrl);
 
-      // Set visemes and audio player into message
-      let message = {};
-      message.visemes = visemes;
-      message.audioPlayer = audioPlayer;
+      // Clean up old audio URL when creating new one
+      if (previousAudioRef.current?.src) {
+        URL.revokeObjectURL(previousAudioRef.current.src);
+      }
 
-      message.audioPlayer.currentTime = 0;
-      message.audioPlayer.play();
+      let message = {
+        visemes,
+        audioPlayer,
+      };
 
-      // Update state with the message
+      // Play new audio after fade-out duration
+      setTimeout(() => {
+        message.audioPlayer.currentTime = 0;
+        message.audioPlayer.volume = 1;
+        message.audioPlayer.play();
+      }, 1000);
+
+      previousAudioRef.current = message.audioPlayer;
       setVisemeMessage(message);
     } catch (e) {
-      console.error("Error in getViseme:");
-      console.error("Error message:", e.message);
-      console.error("Error name:", e.name);
-      console.error("Error stack:", e.stack);
-      if (e.response) {
-        console.error("Response status:", e.response.status);
-        console.error("Response headers:", e.response.headers);
-        // Try to parse the response data if it's JSON
-        try {
-          const errorData = await e.response.data.text();
-          console.error("Response data:", JSON.parse(errorData));
-        } catch (parseError) {
-          console.error("Response data (unparsed):", e.response.data);
-        }
-      } else if (e.request) {
-        console.error("No response received. Request:", e.request);
-      }
-      console.error("Error config:", e.config);
+      console.error("TTS Error:", e.message);
     }
   }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (previousAudioRef.current) {
+        previousAudioRef.current.pause();
+        if (previousAudioRef.current.src) {
+          URL.revokeObjectURL(previousAudioRef.current.src);
+        }
+      }
+    };
+  }, []);
 
   return { visemeMessage };
 }
