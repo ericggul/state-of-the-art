@@ -108,7 +108,7 @@ export default function Rhizome() {
       .duration(DURATION)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
       .attr("opacity", 0.7)
-      .attr("r", 5)
+      .attr("r", 3)
       .attr("stroke", (d) =>
         d.majorVersion
           ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
@@ -121,7 +121,7 @@ export default function Rhizome() {
       .transition()
       .duration(DURATION)
       .attr("font-size", "0.8vw")
-      .attr("fill", "rgba(255, 255, 255, 0.2)");
+      .attr("fill", "hsla(180, 100%, 50%, 0.2)");
 
     // Only proceed with highlighting if there's a selected architecture
     if (currentArchitectures?.length) {
@@ -134,15 +134,14 @@ export default function Rhizome() {
         simulation.force("centerHighlighted", (alpha) => {
           const k = alpha * 0.5;
           const highlightedNode = nodeToHighlight.datum();
-          // Move highlighted node more towards center-right
-          const targetX = boundaryWidth * 0.75; // Brought in from 0.9
-          const verticalSpread = boundaryRef.current.height / 3;
+          const targetX = boundaryWidth * 0.75;
+          const verticalSpread = boundaryRef.current.height / 1.8; // Changed from /2 to /1.8 for more spread
 
           data.nodes.forEach((node) => {
             if (!nodePositionsRef.current.has(node.id)) {
               nodePositionsRef.current.set(
                 node.id,
-                (Math.random() - 0.5) * verticalSpread
+                (Math.random() - 0.5) * verticalSpread * 2 // Increased multiplier from 1.8 to 2
               );
             }
             const targetY = nodePositionsRef.current.get(node.id);
@@ -193,7 +192,7 @@ export default function Rhizome() {
           .transition()
           .duration(DURATION)
           .attr("font-size", "1.5vw")
-          .attr("fill", "rgba(255, 255, 255, 0.95)")
+          .attr("fill", "hsla(180, 100%, 50%, 0.95)")
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
         // Increase both alpha and alphaTarget for more continuous movement

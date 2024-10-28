@@ -18,7 +18,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
 
     boundaryRef.current = {
       width: dimensions.width * 0.9,
-      height: dimensions.height * 0.9,
+      height: dimensions.height * 0.95, // Increased from 0.9 to use more vertical space
     };
 
     const g = svg
@@ -36,16 +36,16 @@ export const useSimulation = (svgRef, dimensions, data) => {
         d3
           .forceLink(data.links)
           .id((d) => d.name)
-          .distance(40)
+          .distance(80) // Increased from 60 to spread links more
       )
-      .force("charge", d3.forceManyBody().strength(-200))
+      .force("charge", d3.forceManyBody().strength(-400)) // Increased repulsion from -300
       .force(
         "boundary",
         forceBoundary(
           -boundaryRef.current.width / 2,
-          -boundaryRef.current.height / 1.5,
+          -boundaryRef.current.height / 1.1, // Changed from 1.2 to 1.1 for more vertical space
           boundaryRef.current.width / 2,
-          boundaryRef.current.height / 1.5
+          boundaryRef.current.height / 1.1 // Changed from 1.2 to 1.1 for more vertical space
         )
       )
       .alphaDecay(0.03)
@@ -63,7 +63,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
         const targetNode = data.nodes.find((n) => n.name === d.target.name);
         return sourceNode.majorVersion === targetNode.majorVersion
           ? getVersionColor(sourceNode.majorVersion)
-          : "rgba(255, 255, 255, 0.2)";
+          : "hsla(180, 100%, 50%, 0.5)";
       })
       .attr("stroke-width", 1)
       .attr("opacity", 0.4)
@@ -80,7 +80,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
 
     nodes
       .append("circle")
-      .attr("r", 3.5)
+      .attr("r", 0.5)
       .attr("id", (d) => `circle-${d.id}`)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
       .attr("opacity", 0.9)
@@ -92,10 +92,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
       .append("text")
       .text((d) => d.text)
       .attr("x", 6)
-      .attr("y", 4)
-      .attr("font-size", "0.65vw")
-      .attr("fill", "rgba(255, 255, 255, 0.8)")
-      .style("pointer-events", "none");
+      .attr("y", 4);
 
     // Optimized tick function
     simulation.on("tick", () => {
