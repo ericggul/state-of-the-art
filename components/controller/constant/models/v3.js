@@ -548,6 +548,33 @@ export const MODELS = {
         citation: 1800,
         explanation:
           "More sample-efficient pretraining method for language models, uses a discriminative model to predict whether tokens are original or replaced.",
+        "v4.2.3.1": {
+          // Added as sub-version of ELECTRA
+          name: "Longformer",
+          year: 2020,
+          place: "Iz Beltagy et al., Allen Institute for AI",
+          citation: 1900,
+          explanation:
+            "Extended transformer with efficient attention pattern for processing very long documents.",
+        },
+        "v4.2.3.2": {
+          // Added as sub-version of ELECTRA
+          name: "Reformer",
+          year: 2020,
+          place: "Nikita Kitaev et al., Google Research",
+          citation: 1500,
+          explanation:
+            "Efficient transformer using locality-sensitive hashing and reversible layers.",
+        },
+        "v4.2.3.3": {
+          // Added as sub-version of ELECTRA
+          name: "BigBird",
+          year: 2020,
+          place: "Manzil Zaheer et al., Google Research",
+          citation: 1200,
+          explanation:
+            "Transformer with sparse attention patterns for processing longer sequences.",
+        },
       },
       "v4.2.4": {
         name: "Switch Transformer",
@@ -1172,6 +1199,9 @@ export const ARRAY = [
   "Transformer-XL",
   "XLNet",
   "ELECTRA",
+  "Longformer",
+  "Reformer",
+  "BigBird",
   "Switch Transformer",
   "ALBERT",
   "DistilBERT",
@@ -1480,6 +1510,18 @@ export const OBJECT_ARRAY = [
   {
     name: "ELECTRA",
     version: "v4.2.3",
+  },
+  {
+    name: "Longformer",
+    version: "v4.2.3.1",
+  },
+  {
+    name: "Reformer",
+    version: "v4.2.3.2",
+  },
+  {
+    name: "BigBird",
+    version: "v4.2.3.3",
   },
   {
     name: "Switch Transformer",

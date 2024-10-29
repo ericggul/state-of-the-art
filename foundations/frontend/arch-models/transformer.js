@@ -518,25 +518,36 @@ export const FALCON_LLM = [
 export const TRANSFORMER_XL = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
   { name: "Segment Embeddings", type: "segment", stack: "encoder" },
-  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  { name: "Memory Cache", type: "memory_cache", stack: "encoder" },
   ...Array.from({ length: NUM_TRANSFORMER_XL_LAYERS }, (_, i) => ({
     name: `Layer ${i + 1}`,
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [1024, 1, 1] },
       {
-        name: `Multi-Scale Self-Attention ${i + 1}`,
-        type: "attention",
-        dimensions: [768, 12, 64],
+        name: `Relative Multi-Head Attention ${i + 1}`,
+        type: "relative_attention",
+        dimensions: [1024, 16, 64],
+        memory_length: 512,
+        relative_attention_num_buckets: 32,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Segment-Level Recurrence ${i + 1}`,
+        type: "segment_recurrence",
+        dimensions: [1024, 16, 1],
+        segment_length: 512,
       },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
-        dimensions: [3072, 1, 1],
+        dimensions: [4096, 16, 1],
       },
     ],
   })),
-  { name: "Output Layer", type: "output", stack: "encoder" },
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "encoder" },
+  { name: "Output", type: "output", stack: "encoder" },
 ];
 
 export const XLNET = [
@@ -544,7 +555,7 @@ export const XLNET = [
   { name: "Segment Embeddings", type: "segment", stack: "encoder" },
   {
     name: "Relative Positional Encoding",
-    type: "positional",
+    type: "relative_positional",
     stack: "encoder",
   },
   ...Array.from({ length: NUM_XLNET_LAYERS }, (_, i) => ({
@@ -552,19 +563,29 @@ export const XLNET = [
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [1024, 1, 1] },
       {
-        name: `Relative Multi-Head Attention ${i + 1}`,
-        type: "attention",
-        dimensions: [768, 12, 64],
+        name: `Content Stream ${i + 1}`,
+        type: "content_stream_attention",
+        dimensions: [1024, 16, 64],
+        permutation_mask: true,
       },
+      {
+        name: `Query Stream ${i + 1}`,
+        type: "query_stream_attention",
+        dimensions: [1024, 16, 64],
+        permutation_mask: true,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [1024, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
-        dimensions: [3072, 1, 1],
+        dimensions: [4096, 16, 1],
       },
     ],
   })),
-  { name: "Output Layer", type: "output", stack: "encoder" },
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "encoder" },
+  { name: "Output", type: "output", stack: "encoder" },
 ];
 
 export const ELECTRA = [
@@ -1725,12 +1746,66 @@ export const GRID_CONFIGS = {
     reduced: true,
   },
   TRANSFORMER_XL: {
-    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
-    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+    relative_attention: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+      relative_attention_num_buckets: 32,
+    },
+    segment_recurrence: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 4,
+      yInterval: 4,
+      segment_length: 512,
+    },
+    memory_cache: {
+      xCount: 24,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    ffn: {
+      xCount: 48,
+      yCount: 8,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
   },
   XLNET: {
-    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
-    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+    content_stream_attention: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+      permutation_mask: true,
+    },
+    query_stream_attention: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+      permutation_mask: true,
+    },
+    ffn: {
+      xCount: 48,
+      yCount: 8,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
   },
   ELECTRA: {
     attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
