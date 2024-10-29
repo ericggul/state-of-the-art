@@ -40,6 +40,14 @@ const NUM_DEIT_LAYERS = 12; // DeiT-base has 12 layers
 // Add constant
 const NUM_EVA_LAYERS = 24; // EVA-g has 24 layers
 
+// Add constants
+const NUM_SAM_SEGMENT_ANYTHING_MODEL_LAYERS = 12; // Image encoder layers
+const NUM_SEEM_LAYERS = 12; // SEEM uses similar depth
+
+// Add constants
+const NUM_MEGATRON_LAYERS = 52; // Megatron-LM 530B
+const NUM_DEBERTA_LAYERS = 24; // DeBERTa v3 large
+
 export const VIDEOGEN = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -860,6 +868,115 @@ export const EVA = [
   { name: "Classification Head", type: "output", stack: "encoder" },
 ];
 
+// SAM_SEGMENT_ANYTHING_MODEL structure
+export const SAM_SEGMENT_ANYTHING_MODEL = [
+  { name: "Patch + Position Embedding", type: "embedding", stack: "encoder" },
+  { name: "Image Encoder", type: "token", stack: "encoder" },
+  ...Array.from({ length: NUM_SAM_SEGMENT_ANYTHING_MODEL_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [1280, 1, 1] },
+      {
+        name: `Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1280, 16, 80], // 1280 hidden size, 16 heads
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [1280, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [5120, 1, 1], // 4x hidden size
+      },
+    ],
+  })),
+  { name: "Prompt Encoder", type: "encoder", stack: "encoder" },
+  { name: "Mask Decoder", type: "decoder", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// SEEM structure
+export const SEEM = [
+  { name: "Patch + Position Embedding", type: "embedding", stack: "encoder" },
+  { name: "Text Encoder", type: "token", stack: "encoder" },
+  ...Array.from({ length: NUM_SEEM_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1024, 16, 64], // 1024 hidden size, 16 heads
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [4096, 1, 1], // 4x hidden size
+      },
+    ],
+  })),
+  { name: "Segment Decoder", type: "decoder", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Megatron-LM structure
+export const MEGATRON_LM = [
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  ...Array.from({ length: NUM_MEGATRON_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [20480, 1, 1] },
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [20480, 128, 128],
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [20480, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [81920, 1, 1],
+      },
+    ],
+  })),
+  { name: "Final Layer Norm", type: "layernorm", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// DeBERTa structure
+export const DEBERTA = [
+  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
+  { name: "Relative Position Encoding", type: "positional", stack: "encoder" },
+  ...Array.from({ length: NUM_DEBERTA_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Disentangled Attention ${i + 1}`,
+        type: "disentangled_attention",
+        dimensions: [1024, 16, 64],
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [4096, 1, 1],
+      },
+    ],
+  })),
+  { name: "Final Layer Norm", type: "layernorm", stack: "encoder" },
+  { name: "Output", type: "output", stack: "encoder" },
+];
+
 ///////NOTE////////////////////////////////
 //LAYER HEIGHT is not important, it is calculated automatically in TransformerLayers.js
 
@@ -1008,6 +1125,26 @@ export const LAYER_CONFIGS = {
     type: "transformer",
     keyPrefix: "eva",
     layerHeight: 10,
+  },
+  SAM_SEGMENT_ANYTHING_MODEL: {
+    type: "transformer",
+    keyPrefix: "sam",
+    layerHeight: 10,
+  },
+  SEEM: {
+    type: "transformer",
+    keyPrefix: "seem",
+    layerHeight: 10,
+  },
+  MEGATRON_LM: {
+    type: "transformer",
+    keyPrefix: "megatron",
+    layerHeight: 60,
+  },
+  DEBERTA: {
+    type: "transformer",
+    keyPrefix: "deberta",
+    layerHeight: 60,
   },
 };
 export const GRID_CONFIGS = {
@@ -1170,5 +1307,27 @@ export const GRID_CONFIGS = {
   EVA: {
     attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
     ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  SAM_SEGMENT_ANYTHING_MODEL: {
+    attention: { xCount: 16, yCount: 16, xInterval: 80, yInterval: 80 },
+    ffn: { xCount: 32, yCount: 4, xInterval: 160, yInterval: 5 },
+  },
+  SEEM: {
+    attention: { xCount: 16, yCount: 16, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  MEGATRON_LM: {
+    attention: { xCount: 32, yCount: 10, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 64, yCount: 4, xInterval: 1, yInterval: 3 },
+    reduced: true, // Following pattern of other large models
+  },
+  DEBERTA: {
+    disentangled_attention: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 64,
+      yInterval: 64,
+    },
+    ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
   },
 };
