@@ -393,6 +393,26 @@ export const YOLO_YOU_ONLY_LOOK_ONCE = [
   },
 ];
 
+// Add after LENET_1 and before GOOGLENET
+export const NEOCOGNITRON = [
+  { name: "Input", type: "input", dimensions: [32, 32, 1], zSpan: [1, 1] },
+
+  // First S/C Layer Pair
+  { name: "S1", type: "conv", dimensions: [28, 28, 12], zSpan: [3, 2] },
+  { name: "C1", type: "pool", dimensions: [14, 14, 12], zSpan: [3, 2] },
+
+  // Second S/C Layer Pair
+  { name: "S2", type: "conv", dimensions: [10, 10, 24], zSpan: [4, 4] },
+  { name: "C2", type: "pool", dimensions: [5, 5, 24], zSpan: [4, 4] },
+
+  // Third S/C Layer Pair
+  { name: "S3", type: "conv", dimensions: [3, 3, 36], zSpan: [8, 6] },
+  { name: "C3", type: "pool", dimensions: [1, 1, 36], zSpan: [8, 6] },
+
+  // Output Layer
+  { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
+];
+
 export const LAYER_CONFIGS = {
   VGGNET: {
     layerHeight: 60,
@@ -449,6 +469,11 @@ export const LAYER_CONFIGS = {
     keyPrefix: "yolo",
     type: "cnn",
   },
+  NEOCOGNITRON: {
+    layerHeight: 60,
+    keyPrefix: "neocognitron",
+    type: "cnn",
+  },
 };
 
 export const GRID_CONFIGS = {
@@ -500,5 +525,9 @@ export const GRID_CONFIGS = {
     conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     pool: { xCount: 4, yCount: 4, xInterval: 6, yInterval: 6 },
     fc: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  NEOCOGNITRON: {
+    conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
+    pool: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
   },
 };

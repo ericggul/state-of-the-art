@@ -237,14 +237,6 @@ export const MODELS = {
         explanation:
           "Large-scale vision foundation model with strong transfer learning capabilities.",
       },
-      "v3.3.5": {
-        name: "DINOv2",
-        year: 2023,
-        place: "Meta AI Research",
-        citation: 300,
-        explanation:
-          "Self-supervised vision model with state-of-the-art performance across various tasks.",
-      },
     },
     "v3.4": {
       name: "Advanced CNN Architectures",
@@ -728,14 +720,6 @@ export const MODELS = {
           explanation:
             "An efficient diffusion model operating in latent space, enabling high-resolution image synthesis with reduced computational cost.",
         },
-        "v5.1.3.2": {
-          name: "Stable Diffusion XL",
-          year: 2023,
-          place: "Stability AI",
-          citation: 200,
-          explanation:
-            "Enhanced version of Stable Diffusion with improved image quality and better text understanding.",
-        },
       },
       "v5.1.4": {
         name: "Advanced Image Diffusion",
@@ -816,14 +800,6 @@ export const MODELS = {
           citation: 200,
           explanation:
             "Generative model for textured 3D meshes from text descriptions.",
-        },
-        "v5.1.6.3": {
-          name: "Point·E",
-          year: 2023,
-          place: "Google DeepMind",
-          citation: 150,
-          explanation:
-            "Advanced 3D point cloud generation with improved geometry understanding.",
         },
       },
     },
@@ -1161,7 +1137,6 @@ export const ARRAY = [
   "Swin Transformer",
   "DeiT",
   "EVA",
-  "DINOv2",
   "U-Net",
   "SegNet",
   "YOLO (You Only Look Once)",
@@ -1217,7 +1192,6 @@ export const ARRAY = [
   "Improved DDPM",
   "Stable Diffusion",
   "Stable Diffusion XL",
-  "Stable Diffusion XL",
   "SDXL Turbo",
   "IP-Adapter",
   "Stable Video Diffusion",
@@ -1226,7 +1200,6 @@ export const ARRAY = [
   "Gen-2",
   "Point-E",
   "GET3D",
-  "Point·E",
   "Show and Tell",
   "Visual Question Answering (VQA)",
   "CLIP",
@@ -1367,10 +1340,6 @@ export const OBJECT_ARRAY = [
   {
     name: "EVA",
     version: "v3.3.4",
-  },
-  {
-    name: "DINOv2",
-    version: "v3.3.5",
   },
   {
     name: "U-Net",
@@ -1590,10 +1559,6 @@ export const OBJECT_ARRAY = [
   },
   {
     name: "Stable Diffusion XL",
-    version: "v5.1.3.2",
-  },
-  {
-    name: "Stable Diffusion XL",
     version: "v5.1.4.1",
   },
   {
@@ -1627,10 +1592,6 @@ export const OBJECT_ARRAY = [
   {
     name: "GET3D",
     version: "v5.1.6.2",
-  },
-  {
-    name: "Point·E",
-    version: "v5.1.6.3",
   },
   {
     name: "Show and Tell",

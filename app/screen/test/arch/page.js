@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 const Frontend = dynamic(() => import("@/components/frontend"));
 
-const CURRENT_TESTING_VERSION = "v1.1";
+const CURRENT_TESTING_VERSION = "v3.3.4";
 
 export default function ScreenWrapper() {
   return (
