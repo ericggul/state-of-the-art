@@ -1478,21 +1478,241 @@ export const STABLE_VIDEO_DIFFUSION = [
     type: "temporal_encoder",
     sublayers: [
       {
-        name: "Frame Sequence",
+        name: "Frame Conditioning",
         type: "frame_condition",
-        dimensions: [NUM_FRAMES * 8, NUM_FRAMES * 8, 3],
+        sublayers: [
+          {
+            name: "Frame Embeddings",
+            type: "embedding",
+            dimensions: [NUM_FRAMES, SDXL_LATENT_DIM[0], SDXL_LATENT_DIM[1], 4],
+          },
+          {
+            name: "Temporal Position",
+            type: "temporal_embedding",
+            dimensions: [NUM_FRAMES, 1280],
+          },
+        ],
       },
       {
-        name: "Motion Processing",
-        type: "motion_bucket",
-        dimensions: [NUM_FRAMES * 4, MOTION_BUCKET_SIZE, 64],
-      },
-      {
-        name: "Temporal Features",
-        type: "temporal_attention",
-        dimensions: [NUM_FRAMES * 4, TEMPORAL_ENCODER_DIM, 64],
+        name: "Motion Module",
+        type: "motion_module",
+        sublayers: [
+          {
+            name: "Motion Buckets",
+            type: "motion_bucket",
+            dimensions: [NUM_FRAMES, MOTION_BUCKET_SIZE],
+          },
+          {
+            name: "Motion Tokens",
+            type: "motion_tokens",
+            dimensions: [NUM_FRAMES, 1280],
+          },
+        ],
       },
     ],
   },
-  // ... continuing with the rest of the structure
+  {
+    name: "UNet",
+    type: "unet",
+    sublayers: [
+      // Time embedding
+      {
+        name: "Time Embedding",
+        type: "time_embedding",
+        sublayers: [
+          { name: "SinCos Embedding", type: "sincos", dimensions: [1280] },
+          { name: "Linear 1", type: "linear", dimensions: [2560] },
+          { name: "SiLU", type: "activation" },
+          { name: "Linear 2", type: "linear", dimensions: [2560] },
+        ],
+      },
+      // Downsampling path with temporal components
+      ...Array.from({ length: NUM_SDXL_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}`,
+            type: "temporal_resnet",
+            sublayers: [
+              { name: "GroupNorm", type: "norm", dimensions: [320 * 2 ** i] },
+              { name: "SiLU", type: "activation" },
+              { name: "Conv3D", type: "conv3d", dimensions: [320 * 2 ** i] },
+              {
+                name: "Temporal GroupNorm",
+                type: "norm",
+                dimensions: [320 * 2 ** i],
+              },
+              {
+                name: "Temporal Conv",
+                type: "temporal_conv",
+                dimensions: [320 * 2 ** i],
+              },
+            ],
+          },
+          {
+            name: `Temporal Attention ${i + 1}`,
+            type: "temporal_attention",
+            sublayers: [
+              {
+                name: "LayerNorm",
+                type: "norm",
+                dimensions: [NUM_FRAMES, 1280],
+              },
+              {
+                name: "Frame Attention",
+                type: "attention",
+                dimensions: [NUM_FRAMES, NUM_FRAMES, 1280],
+              },
+              {
+                name: "Motion Attention",
+                type: "motion_attention",
+                dimensions: [NUM_FRAMES, MOTION_BUCKET_SIZE, 1280],
+              },
+            ],
+          },
+          {
+            name: `Motion Cross Attention ${i + 1}`,
+            type: "temporal_cross_attention",
+            sublayers: [
+              { name: "LayerNorm", type: "norm", dimensions: [1280] },
+              {
+                name: "Cross Frame Attention",
+                type: "attention",
+                dimensions: [NUM_FRAMES, NUM_FRAMES, 1280],
+              },
+              { name: "Motion MLP", type: "mlp", dimensions: [5120, 1280] },
+            ],
+          },
+          {
+            name: `Downsample ${i + 1}`,
+            type: "downsample",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** (i + 1),
+              SDXL_LATENT_DIM[1] / 2 ** (i + 1),
+              320 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck with temporal processing
+      {
+        name: "Temporal Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Motion Modulation",
+            type: "motion_modulation",
+            dimensions: [NUM_FRAMES, 1280],
+          },
+          {
+            name: "Temporal ResNet",
+            type: "temporal_resnet",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 16,
+              SDXL_LATENT_DIM[1] / 16,
+              1280,
+            ],
+          },
+          {
+            name: "Frame Integration",
+            type: "temporal_integration",
+            dimensions: [NUM_FRAMES, 1280],
+          },
+        ],
+      },
+      // Upsampling path with temporal components
+      ...Array.from({ length: NUM_SDXL_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_SDXL_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `Temporal ResNet ${NUM_SDXL_BLOCKS - i}`,
+            type: "temporal_resnet",
+            sublayers: [
+              {
+                name: "GroupNorm",
+                type: "norm",
+                dimensions: [320 * 2 ** (NUM_SDXL_BLOCKS - i - 1)],
+              },
+              { name: "SiLU", type: "activation" },
+              {
+                name: "Conv3D",
+                type: "conv3d",
+                dimensions: [320 * 2 ** (NUM_SDXL_BLOCKS - i - 1)],
+              },
+              {
+                name: "Temporal GroupNorm",
+                type: "norm",
+                dimensions: [320 * 2 ** (NUM_SDXL_BLOCKS - i - 1)],
+              },
+              {
+                name: "Temporal Conv",
+                type: "temporal_conv",
+                dimensions: [320 * 2 ** (NUM_SDXL_BLOCKS - i - 1)],
+              },
+            ],
+          },
+          {
+            name: `Temporal Attention ${NUM_SDXL_BLOCKS - i}`,
+            type: "temporal_attention",
+            sublayers: [
+              {
+                name: "LayerNorm",
+                type: "norm",
+                dimensions: [NUM_FRAMES, 1280],
+              },
+              {
+                name: "Frame Attention",
+                type: "attention",
+                dimensions: [NUM_FRAMES, NUM_FRAMES, 1280],
+              },
+              {
+                name: "Motion Integration",
+                type: "motion_attention",
+                dimensions: [NUM_FRAMES, MOTION_BUCKET_SIZE, 1280],
+              },
+            ],
+          },
+          {
+            name: `Motion Cross Attention ${NUM_SDXL_BLOCKS - i}`,
+            type: "temporal_cross_attention",
+            sublayers: [
+              { name: "LayerNorm", type: "norm", dimensions: [1280] },
+              {
+                name: "Cross Frame Attention",
+                type: "attention",
+                dimensions: [NUM_FRAMES, NUM_FRAMES, 1280],
+              },
+              { name: "Motion MLP", type: "mlp", dimensions: [5120, 1280] },
+            ],
+          },
+          {
+            name: `Upsample ${NUM_SDXL_BLOCKS - i}`,
+            type: "upsample",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** (NUM_SDXL_BLOCKS - i - 2),
+              SDXL_LATENT_DIM[1] / 2 ** (NUM_SDXL_BLOCKS - i - 2),
+              320 * 2 ** (NUM_SDXL_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "VAE Decoder",
+    type: "vae_decoder",
+    sublayers: [
+      { name: "Dense Layer", type: "dense", dimensions: [2048, 1, 1] },
+      { name: "ResBlock 1", type: "resnet_block", dimensions: [256, 256, 512] },
+      { name: "ResBlock 2", type: "resnet_block", dimensions: [512, 512, 256] },
+      { name: "Output Conv", type: "conv", dimensions: SDXL_IMAGE_DIM },
+    ],
+  },
+  {
+    name: "Output Video",
+    type: "output",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
 ];
