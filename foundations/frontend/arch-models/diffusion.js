@@ -26,6 +26,13 @@ const NUM_FRAMES = 14; // Default number of frames to generate
 const TEMPORAL_ENCODER_DIM = 1024;
 const MOTION_BUCKET_SIZE = 127;
 
+// Add SORA-specific constants
+const NUM_SORA_BLOCKS = 8; // More blocks for higher capacity
+const SORA_PATCH_SIZE = 14;
+const SORA_TEMPORAL_LAYERS = 32;
+const SORA_SPATIAL_LAYERS = 24;
+const SORA_EMBED_DIM = 2048;
+
 export const DDPM = [
   { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
   { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
@@ -1068,6 +1075,11 @@ export const LAYER_CONFIGS = {
     keyPrefix: "svd",
     type: "diffusion",
   },
+  SORA: {
+    layerHeight: 5,
+    keyPrefix: "sora",
+    type: "diffusion",
+  },
 };
 
 // Grid configurations for diffusion models
@@ -1210,6 +1222,40 @@ export const GRID_CONFIGS = {
     down_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     up_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  SORA: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    spatiotemporal_attention: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    world_state: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    physics_model: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_gate: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_refine: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    world_consistency: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    world_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    conv3d: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    spatiotemporal_synthesis: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    global_context: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    patch_embed: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    temporal_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    spatial_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
   },
 };
 
@@ -1708,6 +1754,186 @@ export const STABLE_VIDEO_DIFFUSION = [
       { name: "ResBlock 1", type: "resnet_block", dimensions: [256, 256, 512] },
       { name: "ResBlock 2", type: "resnet_block", dimensions: [512, 512, 256] },
       { name: "Output Conv", type: "conv", dimensions: SDXL_IMAGE_DIM },
+    ],
+  },
+  {
+    name: "Output Video",
+    type: "output",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+];
+
+// SORA Implementation
+export const SORA = [
+  {
+    name: "Input Video",
+    type: "input",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+  {
+    name: "Spatiotemporal VAE Encoder",
+    type: "vae_encoder",
+    sublayers: [
+      {
+        name: "Patch Embedding",
+        type: "patch_embed",
+        dimensions: [
+          NUM_FRAMES / SORA_PATCH_SIZE,
+          SDXL_IMAGE_DIM[0] / SORA_PATCH_SIZE,
+          SORA_EMBED_DIM,
+        ],
+      },
+      {
+        name: "Temporal Processing",
+        type: "temporal_encoder",
+        sublayers: Array.from({ length: SORA_TEMPORAL_LAYERS }, (_, i) => ({
+          name: `Temporal Block ${i + 1}`,
+          type: "temporal_block",
+          sublayers: [
+            {
+              name: "Frame Attention",
+              type: "temporal_attention",
+              dimensions: [NUM_FRAMES, NUM_FRAMES, SORA_EMBED_DIM],
+            },
+            {
+              name: "Motion MLP",
+              type: "mlp",
+              dimensions: [SORA_EMBED_DIM * 4, SORA_EMBED_DIM],
+            },
+          ],
+        })),
+      },
+      {
+        name: "Spatial Processing",
+        type: "spatial_encoder",
+        sublayers: Array.from({ length: SORA_SPATIAL_LAYERS }, (_, i) => ({
+          name: `Spatial Block ${i + 1}`,
+          type: "spatial_block",
+          sublayers: [
+            {
+              name: "Self Attention",
+              type: "self_attention",
+              dimensions: [
+                (SDXL_IMAGE_DIM[0] * SDXL_IMAGE_DIM[1]) /
+                  (SORA_PATCH_SIZE * SORA_PATCH_SIZE),
+                SORA_EMBED_DIM,
+              ],
+            },
+            {
+              name: "Spatial MLP",
+              type: "mlp",
+              dimensions: [SORA_EMBED_DIM * 4, SORA_EMBED_DIM],
+            },
+          ],
+        })),
+      },
+    ],
+  },
+  {
+    name: "Diffusion UNet",
+    type: "unet",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_SORA_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `Spatiotemporal Attention ${i + 1}`,
+            type: "spatiotemporal_attention",
+            sublayers: [
+              {
+                name: "Space-Time Attention",
+                type: "attention",
+                dimensions: [
+                  (NUM_FRAMES * SDXL_IMAGE_DIM[0] * SDXL_IMAGE_DIM[1]) / 4 ** i,
+                  SORA_EMBED_DIM * 2 ** i,
+                ],
+              },
+              {
+                name: "Global Context",
+                type: "global_context",
+                dimensions: [SORA_EMBED_DIM * 2 ** i],
+              },
+            ],
+          },
+          {
+            name: `Motion Gating ${i + 1}`,
+            type: "motion_gate",
+            dimensions: [SORA_EMBED_DIM * 2 ** i],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "World Model Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "World State Encoding",
+            type: "world_state",
+            dimensions: [SORA_EMBED_DIM * 16],
+          },
+          {
+            name: "Physical Dynamics",
+            type: "physics_model",
+            dimensions: [SORA_EMBED_DIM * 16],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_SORA_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_SORA_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `Spatiotemporal Synthesis ${NUM_SORA_BLOCKS - i}`,
+            type: "spatiotemporal_synthesis",
+            sublayers: [
+              {
+                name: "Space-Time Generation",
+                type: "attention",
+                dimensions: [
+                  (NUM_FRAMES * SDXL_IMAGE_DIM[0] * SDXL_IMAGE_DIM[1]) /
+                    4 ** (NUM_SORA_BLOCKS - i - 1),
+                  SORA_EMBED_DIM * 2 ** (NUM_SORA_BLOCKS - i - 1),
+                ],
+              },
+              {
+                name: "Motion Refinement",
+                type: "motion_refine",
+                dimensions: [SORA_EMBED_DIM * 2 ** (NUM_SORA_BLOCKS - i - 1)],
+              },
+            ],
+          },
+          {
+            name: `World Consistency ${NUM_SORA_BLOCKS - i}`,
+            type: "world_consistency",
+            dimensions: [SORA_EMBED_DIM * 2 ** (NUM_SORA_BLOCKS - i - 1)],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "Spatiotemporal VAE Decoder",
+    type: "vae_decoder",
+    sublayers: [
+      {
+        name: "World Integration",
+        type: "world_decode",
+        dimensions: [SORA_EMBED_DIM * 2],
+      },
+      {
+        name: "Motion Synthesis",
+        type: "motion_decode",
+        dimensions: [SORA_EMBED_DIM],
+      },
+      {
+        name: "Final Generation",
+        type: "conv3d",
+        dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+      },
     ],
   },
   {
