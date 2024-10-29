@@ -5,6 +5,9 @@ const NUM_EFFICIENTNET_BLOCKS = 7; // EfficientNet-B0
 const NUM_U_NET_LEVELS = 4; // U-Net depth
 const NUM_GOOGLENET_INCEPTIONS = 9; // Number of Inception modules in GoogLeNet
 const NUM_YOLO_LAYERS = 31; // This can be adjusted based on the specific YOLO version
+const NUM_MOBILENETV1_BLOCKS = 13; // 13 layers of depthwise+pointwise convs
+const NUM_MOBILENETV2_BLOCKS = 17; // 17 bottleneck blocks
+const NUM_MOBILENETV3_BLOCKS = 15; // 15 blocks for MobileNetV3-Large
 
 // AlexNet structure definition
 export const ALEXNET = [
@@ -413,6 +416,104 @@ export const NEOCOGNITRON = [
   { name: "Output", type: "output", dimensions: [10, 1, 1], zSpan: [1, 1] },
 ];
 
+// MobileNetV1
+export const MOBILENETV1 = [
+  { name: "Input", dimensions: [224, 224, 3], zSpan: [3, 1], type: "input" },
+  { name: "Conv1", dimensions: [112, 112, 32], zSpan: [8, 4], type: "conv" },
+  ...Array.from({ length: NUM_MOBILENETV1_BLOCKS }, (_, i) => {
+    const channels = [
+      64, 128, 128, 256, 256, 512, 512, 512, 512, 512, 512, 1024, 1024,
+    ][i];
+    return [
+      {
+        name: `Depthwise ${i + 1}`,
+        dimensions: [
+          112 / 2 ** Math.floor(i / 2),
+          112 / 2 ** Math.floor(i / 2),
+          channels,
+        ],
+        zSpan: [8 * 2 ** Math.floor(i / 2), 4 * 2 ** Math.floor(i / 2)],
+        type: "depthwise",
+      },
+      {
+        name: `Pointwise ${i + 1}`,
+        dimensions: [
+          112 / 2 ** Math.floor(i / 2),
+          112 / 2 ** Math.floor(i / 2),
+          channels,
+        ],
+        zSpan: [8 * 2 ** Math.floor(i / 2), 4 * 2 ** Math.floor(i / 2)],
+        type: "pointwise",
+      },
+    ];
+  }).flat(),
+  { name: "Pool", dimensions: [7, 7, 1024], zSpan: [64, 32], type: "pool" },
+  { name: "Output", dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
+];
+
+// MobileNetV2
+export const MOBILENETV2 = [
+  { name: "Input", dimensions: [224, 224, 3], zSpan: [3, 1], type: "input" },
+  { name: "Conv1", dimensions: [112, 112, 32], zSpan: [8, 4], type: "conv" },
+  ...Array.from({ length: NUM_MOBILENETV2_BLOCKS }, (_, i) => {
+    const channels = [16, 24, 32, 64, 96, 160, 320][Math.floor(i / 3)];
+    const expansion = channels === 16 ? 1 : 6;
+    return {
+      name: `Inverted Bottleneck ${i + 1}`,
+      dimensions: [
+        112 / 2 ** Math.floor(i / 3),
+        112 / 2 ** Math.floor(i / 3),
+        channels,
+      ],
+      zSpan: [8 * 2 ** Math.floor(i / 3), 4 * 2 ** Math.floor(i / 3)],
+      type: "inverted_bottleneck",
+      expansion: expansion,
+    };
+  }),
+  { name: "Conv2", dimensions: [7, 7, 1280], zSpan: [64, 32], type: "conv1x1" },
+  { name: "Pool", dimensions: [1, 1, 1280], zSpan: [64, 32], type: "pool" },
+  { name: "Output", dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
+];
+
+// MobileNetV3-Large
+export const MOBILENETV3 = [
+  { name: "Input", dimensions: [224, 224, 3], zSpan: [3, 1], type: "input" },
+  { name: "Conv1", dimensions: [112, 112, 16], zSpan: [4, 2], type: "conv" },
+  ...Array.from({ length: NUM_MOBILENETV3_BLOCKS }, (_, i) => {
+    const configs = [
+      { c: 16, k: 3, s: 1 }, // Block 1
+      { c: 24, k: 3, s: 2 }, // Block 2
+      { c: 24, k: 3, s: 1 },
+      { c: 40, k: 5, s: 2 }, // Block 3
+      { c: 40, k: 5, s: 1 },
+      { c: 40, k: 5, s: 1 },
+      { c: 80, k: 3, s: 2 }, // Block 4
+      { c: 80, k: 3, s: 1 },
+      { c: 80, k: 3, s: 1 },
+      { c: 80, k: 3, s: 1 },
+      { c: 112, k: 3, s: 1 }, // Block 5
+      { c: 112, k: 3, s: 1 },
+      { c: 160, k: 5, s: 2 }, // Block 6
+      { c: 160, k: 5, s: 1 },
+      { c: 160, k: 5, s: 1 }, // Block 7
+    ][i];
+    return {
+      name: `SE-Block ${i + 1}`,
+      dimensions: [
+        112 / 2 ** Math.floor(i / 2),
+        112 / 2 ** Math.floor(i / 2),
+        configs.c,
+      ],
+      zSpan: [8 * 2 ** Math.floor(i / 2), 4 * 2 ** Math.floor(i / 2)],
+      type: "bneck_se",
+    };
+  }),
+  { name: "Conv2", dimensions: [7, 7, 960], zSpan: [48, 24], type: "conv" },
+  { name: "Pool", dimensions: [1, 1, 960], zSpan: [48, 24], type: "pool" },
+  { name: "Conv3", dimensions: [1, 1, 1280], zSpan: [64, 32], type: "conv" },
+  { name: "Output", dimensions: [1000, 1, 1], zSpan: [1, 1], type: "output" },
+];
+
 export const LAYER_CONFIGS = {
   VGGNET: {
     layerHeight: 60,
@@ -474,6 +575,21 @@ export const LAYER_CONFIGS = {
     keyPrefix: "neocognitron",
     type: "cnn",
   },
+  MOBILENETV1: {
+    type: "cnn",
+    keyPrefix: "mobilenetv1",
+    layerHeight: 60,
+  },
+  MOBILENETV2: {
+    type: "cnn",
+    keyPrefix: "mobilenetv2",
+    layerHeight: 60,
+  },
+  MOBILENETV3: {
+    type: "cnn",
+    keyPrefix: "mobilenetv3",
+    layerHeight: 60,
+  },
 };
 
 export const GRID_CONFIGS = {
@@ -529,5 +645,15 @@ export const GRID_CONFIGS = {
   NEOCOGNITRON: {
     conv: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
     pool: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  MOBILENETV1: {
+    depthwise: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    pointwise: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+  },
+  MOBILENETV2: {
+    inverted_bottleneck: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+  },
+  MOBILENETV3: {
+    bneck_se: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
   },
 };

@@ -37,6 +37,9 @@ const NUM_SWIN_LAYERS_PER_STAGE = 2; // Swin Transformer Base
 // Add this constant
 const NUM_DEIT_LAYERS = 12; // DeiT-base has 12 layers
 
+// Add constant
+const NUM_EVA_LAYERS = 24; // EVA-g has 24 layers
+
 export const VIDEOGEN = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -830,6 +833,33 @@ export const DEIT = [
   { name: "Distillation Head", type: "output", stack: "encoder" },
 ];
 
+// Add EVA structure
+export const EVA = [
+  { name: "Patch + Position Embedding", type: "embedding", stack: "encoder" },
+  { name: "CLS Token", type: "token", stack: "encoder" },
+  ...Array.from({ length: NUM_EVA_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [1408, 1, 1] },
+      {
+        name: `Multi-Head Attention ${i + 1}`,
+        type: "attention",
+        dimensions: [1408, 16, 88], // 1408 hidden size, 16 heads
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [1408, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "ffn",
+        dimensions: [5632, 1, 1], // 4x hidden size
+      },
+    ],
+  })),
+  { name: "Layer Norm", type: "layernorm", stack: "encoder" },
+  { name: "Classification Head", type: "output", stack: "encoder" },
+];
+
 ///////NOTE////////////////////////////////
 //LAYER HEIGHT is not important, it is calculated automatically in TransformerLayers.js
 
@@ -973,6 +1003,11 @@ export const LAYER_CONFIGS = {
     layerHeight: 10,
     keyPrefix: "deit",
     type: "transformer",
+  },
+  EVA: {
+    type: "transformer",
+    keyPrefix: "eva",
+    layerHeight: 10,
   },
 };
 export const GRID_CONFIGS = {
@@ -1129,6 +1164,10 @@ export const GRID_CONFIGS = {
     patch_merging: { xCount: 8, yCount: 8, xInterval: 32, yInterval: 32 },
   },
   DEIT: {
+    attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+  },
+  EVA: {
     attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
     ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
