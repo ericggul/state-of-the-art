@@ -6,7 +6,6 @@ import { Box3, Vector3 } from "three";
 
 import useScreenStore from "@/components/screen/store";
 
-// Import styles and structures
 import { STYLE_STRATEGIES } from "./style";
 import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
