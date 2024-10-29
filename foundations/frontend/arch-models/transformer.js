@@ -733,9 +733,22 @@ export const BIGBIRD = [
     sublayers: [
       { name: `Layer Norm 1`, type: "layernorm" },
       {
-        name: `BigBird Attention ${i + 1}`,
-        type: "bigbird_attention",
+        name: `Global Attention ${i + 1}`,
+        type: "global_attention",
         dimensions: [768, 12, 64],
+        num_global_tokens: 2,
+      },
+      {
+        name: `Random Attention ${i + 1}`,
+        type: "random_attention",
+        dimensions: [768, 12, 64],
+        num_random_blocks: 3,
+      },
+      {
+        name: `Window Attention ${i + 1}`,
+        type: "window_attention",
+        dimensions: [768, 12, 64],
+        window_size: 3,
       },
       { name: `Layer Norm 2`, type: "layernorm" },
       {
@@ -750,26 +763,31 @@ export const BIGBIRD = [
 
 export const REFORMER = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
-  { name: "Positional Embeddings", type: "positional", stack: "encoder" },
+  { name: "Sinusoidal Position", type: "positional", stack: "encoder" },
   ...Array.from({ length: NUM_REFORMER_LAYERS }, (_, i) => ({
-    name: `Layer ${i + 1}`,
-    type: "encoder_layer",
+    name: `Reversible Layer ${i + 1}`,
+    type: "reversible_layer",
     stack: "encoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm" },
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [512, 1, 1] },
       {
-        name: `LSH Self-Attention ${i + 1}`,
+        name: `LSH Attention ${i + 1}`,
         type: "lsh_attention",
         dimensions: [512, 8, 64],
+        num_hash_functions: 8,
+        bucket_size: 64,
+        num_buckets: 32,
       },
-      { name: `Layer Norm 2`, type: "layernorm" },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [512, 1, 1] },
       {
-        name: `Reversible Feed Forward ${i + 1}`,
-        type: "reversible_ffn",
-        dimensions: [2048, 1, 1],
+        name: `Chunked Feed Forward ${i + 1}`,
+        type: "chunked_ffn",
+        dimensions: [2048, 8, 1],
+        chunk_size: 64,
       },
     ],
   })),
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "encoder" },
   { name: "Output Layer", type: "output", stack: "encoder" },
 ];
 
@@ -781,13 +799,20 @@ export const LONGFORMER = [
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm" },
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [768, 1, 1] },
       {
-        name: `Longformer Attention ${i + 1}`,
-        type: "longformer_attention",
+        name: `Local Attention ${i + 1}`,
+        type: "sliding_window_attention",
         dimensions: [768, 12, 64],
+        window_size: 512,
       },
-      { name: `Layer Norm 2`, type: "layernorm" },
+      {
+        name: `Global Attention ${i + 1}`,
+        type: "global_attention",
+        dimensions: [768, 12, 64],
+        num_global_tokens: 8,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [768, 1, 1] },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -795,6 +820,7 @@ export const LONGFORMER = [
       },
     ],
   })),
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "encoder" },
   { name: "Output Layer", type: "output", stack: "encoder" },
 ];
 
@@ -1828,17 +1854,45 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
   REFORMER: {
-    lsh_attention: { xCount: 8, yCount: 8, xInterval: 64, yInterval: 64 },
-    reversible_ffn: { xCount: 16, yCount: 4, xInterval: 128, yInterval: 5 },
+    lsh_attention: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+      num_hash_functions: 8,
+      bucket_size: 64,
+    },
+    chunked_ffn: {
+      xCount: 24,
+      yCount: 12,
+      xInterval: 4,
+      yInterval: 4,
+      chunk_size: 64,
+    },
+    reversible_residual: { xCount: 8, yCount: 2, xInterval: 16, yInterval: 8 },
+    rmsnorm: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
+    reduced: true,
   },
   LONGFORMER: {
-    longformer_attention: {
-      xCount: 12,
-      yCount: 12,
-      xInterval: 64,
-      yInterval: 64,
+    sliding_window_attention: {
+      xCount: 48,
+      yCount: 24,
+      xInterval: 2,
+      yInterval: 2,
+      window_size: 512,
+      stride: 256,
     },
-    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
+    global_attention: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 8,
+      yInterval: 8,
+      num_global_tokens: 8,
+    },
+    global_local_fusion: { xCount: 24, yCount: 12, xInterval: 4, yInterval: 4 },
+    ffn: { xCount: 32, yCount: 8, xInterval: 2, yInterval: 2 },
+    rmsnorm: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
+    reduced: true,
   },
   ERNIE: {
     attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
@@ -2230,6 +2284,56 @@ export const GRID_CONFIGS = {
       xInterval: 2,
       yInterval: 2,
     },
+    reduced: true,
+  },
+  REFORMER: {
+    lsh_attention: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 4,
+      yInterval: 4,
+      num_hash_functions: 8,
+      bucket_size: 64,
+    },
+    chunked_ffn: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 8,
+      yInterval: 4,
+      chunk_size: 64,
+    },
+    reversible_layer: {
+      xCount: 2,
+      yCount: 1,
+      xInterval: 32,
+      yInterval: 1,
+    },
+    reduced: true,
+  },
+  BIGBIRD: {
+    global_attention: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 4,
+      yInterval: 4,
+      num_global_tokens: 2,
+    },
+    random_attention: {
+      xCount: 24,
+      yCount: 4,
+      xInterval: 3,
+      yInterval: 3,
+      num_random_blocks: 3,
+    },
+    window_attention: {
+      xCount: 28,
+      yCount: 7,
+      xInterval: 2,
+      yInterval: 2,
+      window_size: 3,
+    },
+    ffn: { xCount: 48, yCount: 8, xInterval: 2, yInterval: 4 },
+    layernorm: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
     reduced: true,
   },
 };
