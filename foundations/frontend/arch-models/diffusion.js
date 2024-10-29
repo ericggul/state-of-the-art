@@ -18,6 +18,14 @@ const SDXL_LATENT_DIM = [128, 128, 4];
 const NUM_SDXL_BLOCKS = 6; // More blocks than base SD
 const TEXT_EMBED_DIM_SDXL = 2048; // Larger text embedding
 
+// Add constant for IP-Adapter
+const IMAGE_ENCODER_DIM = 1024; // CLIP ViT-L image encoder dimension
+
+// Add constants for SVD
+const NUM_FRAMES = 14; // Default number of frames to generate
+const TEMPORAL_ENCODER_DIM = 1024;
+const MOTION_BUCKET_SIZE = 127;
+
 export const DDPM = [
   { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
   { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
@@ -828,129 +836,6 @@ export const IMPROVED_DDPM = [
   { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
 ];
 
-// Layer configurations for diffusion models
-export const LAYER_CONFIGS = {
-  DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
-  STABLE_DIFFUSION: {
-    layerHeight: 5,
-    keyPrefix: "stable_diffusion",
-    type: "diffusion",
-  },
-  GLIDE: { layerHeight: 60, keyPrefix: "glide", type: "diffusion" },
-  IMAGEN: { layerHeight: 80, keyPrefix: "imagen", type: "diffusion" },
-  CONSISTENCY_MODELS: {
-    layerHeight: 60,
-    keyPrefix: "consistency_models",
-    type: "diffusion",
-  },
-  IMPROVED_DDPM: {
-    layerHeight: 60,
-    keyPrefix: "improved_ddpm",
-    type: "diffusion",
-  },
-  STABLE_DIFFUSION_XL: {
-    layerHeight: 5,
-    keyPrefix: "sdxl",
-    type: "diffusion",
-  },
-  SDXL_TURBO: {
-    layerHeight: 5,
-    keyPrefix: "sdxl_turbo",
-    type: "diffusion",
-  },
-};
-
-// Grid configurations for diffusion models
-export const GRID_CONFIGS = {
-  DDPM: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  STABLE_DIFFUSION: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    unet_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  GLIDE: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 4, yCount: 1, xInterval: 1, yInterval: 1 },
-  },
-  IMAGEN: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    // output: { xCount: 256, yCount: 256, xInterval: 0.25, yInterval: 0.25 },
-    output: { xCount: 64, yCount: 64, xInterval: 0.25, yInterval: 0.25 },
-    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-    t5_encoder_block: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
-    resnet_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 8, yCount: 1, xInterval: 1, yInterval: 1 },
-  },
-  CONSISTENCY_MODELS: {
-    input: {
-      xCount: IMAGE_DIM[0],
-      yCount: IMAGE_DIM[1],
-      xInterval: 1,
-      yInterval: 1,
-    },
-    output: {
-      xCount: IMAGE_DIM[0],
-      yCount: IMAGE_DIM[1],
-      xInterval: 1,
-      yInterval: 1,
-    },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  IMPROVED_DDPM: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  STABLE_DIFFUSION_XL: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    text_encoder: { xCount: 77, yCount: 2, xInterval: 2, yInterval: 4 },
-    condition: { xCount: 4, yCount: 1, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 16, yCount: 2, xInterval: 2, yInterval: 2 },
-    self_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  SDXL_TURBO: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    turbo_block: { xCount: 12, yCount: 12, xInterval: 2, yInterval: 2 },
-    efficient_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-};
-
 // SDXL Implementation
 export const STABLE_DIFFUSION_XL = [
   { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
@@ -1141,4 +1026,473 @@ export const SDXL_TURBO = [
     ],
   },
   { name: "Output Image", type: "output", dimensions: SDXL_IMAGE_DIM },
+];
+
+// Layer configurations for diffusion models
+export const LAYER_CONFIGS = {
+  DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
+  STABLE_DIFFUSION: {
+    layerHeight: 5,
+    keyPrefix: "stable_diffusion",
+    type: "diffusion",
+  },
+  GLIDE: { layerHeight: 60, keyPrefix: "glide", type: "diffusion" },
+  IMAGEN: { layerHeight: 80, keyPrefix: "imagen", type: "diffusion" },
+  CONSISTENCY_MODELS: {
+    layerHeight: 60,
+    keyPrefix: "consistency_models",
+    type: "diffusion",
+  },
+  IMPROVED_DDPM: {
+    layerHeight: 60,
+    keyPrefix: "improved_ddpm",
+    type: "diffusion",
+  },
+  STABLE_DIFFUSION_XL: {
+    layerHeight: 5,
+    keyPrefix: "sdxl",
+    type: "diffusion",
+  },
+  SDXL_TURBO: {
+    layerHeight: 5,
+    keyPrefix: "sdxl_turbo",
+    type: "diffusion",
+  },
+  IP_ADAPTER: {
+    layerHeight: 60,
+    keyPrefix: "ip_adapter",
+    type: "diffusion",
+  },
+  STABLE_VIDEO_DIFFUSION: {
+    layerHeight: 5,
+    keyPrefix: "svd",
+    type: "diffusion",
+  },
+};
+
+// Grid configurations for diffusion models
+export const GRID_CONFIGS = {
+  DDPM: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_DIFFUSION: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    unet_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  GLIDE: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 4, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  IMAGEN: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    // output: { xCount: 256, yCount: 256, xInterval: 0.25, yInterval: 0.25 },
+    output: { xCount: 64, yCount: 64, xInterval: 0.25, yInterval: 0.25 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    t5_encoder_block: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 8, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  CONSISTENCY_MODELS: {
+    input: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    output: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  IMPROVED_DDPM: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_DIFFUSION_XL: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    text_encoder: { xCount: 77, yCount: 2, xInterval: 2, yInterval: 4 },
+    condition: { xCount: 4, yCount: 1, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 16, yCount: 2, xInterval: 2, yInterval: 2 },
+    self_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  SDXL_TURBO: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    turbo_block: { xCount: 12, yCount: 12, xInterval: 2, yInterval: 2 },
+    efficient_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  IP_ADAPTER: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    image_encoder: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
+    vit: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
+    ip_adapter: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    ip_cross_attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_VIDEO_DIFFUSION: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    temporal_encoder: {
+      xCount: NUM_FRAMES,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    frame_condition: {
+      xCount: NUM_FRAMES,
+      yCount: NUM_FRAMES,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    temporal_attention: {
+      xCount: NUM_FRAMES,
+      yCount: NUM_FRAMES,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    temporal_resnet: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    temporal_cross_attention: {
+      xCount: NUM_FRAMES,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    motion_modulation: {
+      xCount: NUM_FRAMES,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    down_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    up_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+};
+
+// Continuing IP-Adapter with complete structure
+export const IP_ADAPTER = [
+  { name: "Input Image", type: "input", dimensions: IMAGE_DIM },
+  {
+    name: "Image Encoder (CLIP ViT-L)",
+    type: "image_encoder",
+    sublayers: [
+      {
+        name: "Patch Embedding",
+        type: "patch_embed",
+        dimensions: [50, 50, 1024],
+      },
+      ...Array.from({ length: 24 }, (_, i) => ({
+        name: `Transformer Block ${i + 1}`,
+        type: "transformer_block",
+        sublayers: [
+          {
+            name: `Self Attention ${i + 1}`,
+            type: "self_attention",
+            dimensions: [577, 1024],
+          },
+          {
+            name: `MLP ${i + 1}`,
+            type: "mlp",
+            dimensions: [577, 4096],
+          },
+          {
+            name: `LayerNorm ${i + 1}`,
+            type: "norm",
+            dimensions: [577, 1024],
+          },
+        ],
+      })),
+      { name: "Image Features", type: "features", dimensions: [577, 1024] },
+    ],
+  },
+  {
+    name: "IP-Adapter",
+    type: "ip_adapter",
+    sublayers: [
+      {
+        name: "Feature Projection",
+        type: "projection",
+        sublayers: [
+          { name: "Key Projection", type: "linear", dimensions: [577, 768] },
+          { name: "Value Projection", type: "linear", dimensions: [577, 768] },
+        ],
+      },
+      { name: "Scale Layer", type: "scale", dimensions: [768] },
+    ],
+  },
+  {
+    name: "UNet",
+    type: "unet",
+    sublayers: [
+      // Time embedding
+      {
+        name: "Time Embedding",
+        type: "time_embedding",
+        sublayers: [
+          { name: "SinCos Embedding", type: "sincos", dimensions: [320] },
+          { name: "Linear 1", type: "linear", dimensions: [1280] },
+          { name: "SiLU", type: "activation" },
+          { name: "Linear 2", type: "linear", dimensions: [1280] },
+        ],
+      },
+      // Downsampling path
+      ...Array.from({ length: NUM_UNET_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}.1`,
+            type: "resnet_block",
+            sublayers: [
+              { name: "GroupNorm", type: "norm", dimensions: [64 * 2 ** i] },
+              { name: "SiLU", type: "activation" },
+              { name: "Conv1", type: "conv", dimensions: [64 * 2 ** i] },
+              { name: "GroupNorm", type: "norm", dimensions: [64 * 2 ** i] },
+              { name: "SiLU", type: "activation" },
+              { name: "Conv2", type: "conv", dimensions: [64 * 2 ** i] },
+            ],
+          },
+          {
+            name: `IP Cross Attention ${i + 1}`,
+            type: "ip_cross_attention",
+            sublayers: [
+              { name: "LayerNorm 1", type: "norm", dimensions: [768] },
+              {
+                name: "Cross Attention",
+                type: "attention",
+                sublayers: [
+                  {
+                    name: "Query Projection",
+                    type: "linear",
+                    dimensions: [768, 768],
+                  },
+                  {
+                    name: "Cross Attention",
+                    type: "attention",
+                    dimensions: [768, 577, 768],
+                  },
+                  {
+                    name: "Output Projection",
+                    type: "linear",
+                    dimensions: [768, 768],
+                  },
+                ],
+              },
+              { name: "LayerNorm 2", type: "norm", dimensions: [768] },
+              {
+                name: "Feed Forward",
+                type: "mlp",
+                sublayers: [
+                  { name: "Linear 1", type: "linear", dimensions: [3072] },
+                  { name: "GELU", type: "activation" },
+                  { name: "Linear 2", type: "linear", dimensions: [768] },
+                ],
+              },
+            ],
+          },
+          {
+            name: `Downsample ${i + 1}`,
+            type: "downsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "ResNet Bottleneck",
+            type: "resnet_block",
+            dimensions: [IMAGE_DIM[0] / 16, IMAGE_DIM[1] / 16, 1280],
+          },
+          {
+            name: "IP Cross Attention Bottleneck",
+            type: "ip_cross_attention",
+            sublayers: [
+              { name: "LayerNorm", type: "norm", dimensions: [1280] },
+              {
+                name: "Cross Attention",
+                type: "attention",
+                dimensions: [1280, 577, 1280],
+              },
+              {
+                name: "Feed Forward",
+                type: "mlp",
+                dimensions: [5120, 1280],
+              },
+            ],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_UNET_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_UNET_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `ResNet ${NUM_UNET_BLOCKS - i}.1`,
+            type: "resnet_block",
+            sublayers: [
+              {
+                name: "GroupNorm",
+                type: "norm",
+                dimensions: [64 * 2 ** (NUM_UNET_BLOCKS - i - 1)],
+              },
+              { name: "SiLU", type: "activation" },
+              {
+                name: "Conv1",
+                type: "conv",
+                dimensions: [64 * 2 ** (NUM_UNET_BLOCKS - i - 1)],
+              },
+              {
+                name: "GroupNorm",
+                type: "norm",
+                dimensions: [64 * 2 ** (NUM_UNET_BLOCKS - i - 1)],
+              },
+              { name: "SiLU", type: "activation" },
+              {
+                name: "Conv2",
+                type: "conv",
+                dimensions: [64 * 2 ** (NUM_UNET_BLOCKS - i - 1)],
+              },
+            ],
+          },
+          {
+            name: `IP Cross Attention ${NUM_UNET_BLOCKS - i}`,
+            type: "ip_cross_attention",
+            sublayers: [
+              { name: "LayerNorm 1", type: "norm", dimensions: [768] },
+              {
+                name: "Cross Attention",
+                type: "attention",
+                sublayers: [
+                  {
+                    name: "Query Projection",
+                    type: "linear",
+                    dimensions: [768, 768],
+                  },
+                  {
+                    name: "Cross Attention",
+                    type: "attention",
+                    dimensions: [768, 577, 768],
+                  },
+                  {
+                    name: "Output Projection",
+                    type: "linear",
+                    dimensions: [768, 768],
+                  },
+                ],
+              },
+              { name: "LayerNorm 2", type: "norm", dimensions: [768] },
+              {
+                name: "Feed Forward",
+                type: "mlp",
+                sublayers: [
+                  { name: "Linear 1", type: "linear", dimensions: [3072] },
+                  { name: "GELU", type: "activation" },
+                  { name: "Linear 2", type: "linear", dimensions: [768] },
+                ],
+              },
+            ],
+          },
+          {
+            name: `Upsample ${NUM_UNET_BLOCKS - i}`,
+            type: "upsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_UNET_BLOCKS - i - 2),
+              IMAGE_DIM[1] / 2 ** (NUM_UNET_BLOCKS - i - 2),
+              64 * 2 ** (NUM_UNET_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
+];
+
+// STABLE_VIDEO_DIFFUSION Implementation
+export const STABLE_VIDEO_DIFFUSION = [
+  { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
+  {
+    name: "VAE Encoder",
+    type: "vae_encoder",
+    sublayers: [
+      { name: "Conv 1", type: "conv", dimensions: [512, 512, 128] },
+      { name: "ResBlock", type: "resnet_block", dimensions: [256, 256, 256] },
+      { name: "Latent Space", type: "dense", dimensions: SDXL_LATENT_DIM },
+    ],
+  },
+  {
+    name: "Temporal Encoder",
+    type: "temporal_encoder",
+    sublayers: [
+      {
+        name: "Frame Sequence",
+        type: "frame_condition",
+        dimensions: [NUM_FRAMES * 8, NUM_FRAMES * 8, 3],
+      },
+      {
+        name: "Motion Processing",
+        type: "motion_bucket",
+        dimensions: [NUM_FRAMES * 4, MOTION_BUCKET_SIZE, 64],
+      },
+      {
+        name: "Temporal Features",
+        type: "temporal_attention",
+        dimensions: [NUM_FRAMES * 4, TEMPORAL_ENCODER_DIM, 64],
+      },
+    ],
+  },
+  // ... continuing with the rest of the structure
 ];
