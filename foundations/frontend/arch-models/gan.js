@@ -532,6 +532,62 @@ export const STYLEGAN3 = [
   },
 ];
 
+// Pix2Pix Structure
+export const PIX2PIX = [
+  // Generator (U-Net)
+  {
+    name: "Source Image Input",
+    type: "input",
+    stack: "generator",
+    dimensions: IMAGE_DIM,
+  },
+  // Encoder part of U-Net
+  ...Array.from({ length: 8 }, (_, i) => ({
+    name: `Encoder Block ${i + 1}`,
+    type: "encoder_block",
+    stack: "generator",
+    dimensions: [64 * 2 ** Math.min(i, 7), 256 / 2 ** i, 256 / 2 ** i],
+    skip_connection: i < 7 ? true : false,
+  })),
+  // Decoder part of U-Net with skip connections
+  ...Array.from({ length: 8 }, (_, i) => ({
+    name: `Decoder Block ${8 - i}`,
+    type: "decoder_block",
+    stack: "generator",
+    dimensions: [
+      64 * 2 ** Math.max(6 - i, 0),
+      256 / 2 ** (7 - i),
+      256 / 2 ** (7 - i),
+    ],
+    skip_connection: i > 0 ? true : false,
+  })),
+  {
+    name: "Generator Output",
+    type: "output",
+    stack: "generator",
+    dimensions: IMAGE_DIM,
+  },
+  // PatchGAN Discriminator
+  {
+    name: "Image Pair Input",
+    type: "input",
+    stack: "discriminator",
+    dimensions: [IMAGE_DIM[0] * 2, IMAGE_DIM[1], IMAGE_DIM[2]], // Concatenated real and generated
+  },
+  ...Array.from({ length: 4 }, (_, i) => ({
+    name: `PatchGAN Layer ${i + 1}`,
+    type: "conv",
+    stack: "discriminator",
+    dimensions: [64 * 2 ** Math.min(i, 3), 64 / 2 ** i, 64 / 2 ** i],
+  })),
+  {
+    name: "Discriminator Output",
+    type: "output",
+    stack: "discriminator",
+    dimensions: [1, 30, 30], // PatchGAN output size
+  },
+];
+
 // Layer Configurations
 export const LAYER_CONFIGS = {
   GENERATIVE_ADVERSARIAL_NETWORKS_GANS: {
@@ -577,6 +633,11 @@ export const LAYER_CONFIGS = {
   STYLEGAN3: {
     layerHeight: 100,
     keyPrefix: "stylegan3",
+    type: "gan",
+  },
+  PIX2PIX: {
+    layerHeight: 10,
+    keyPrefix: "pix2pix",
     type: "gan",
   },
 };
@@ -695,5 +756,46 @@ export const GRID_CONFIGS = {
       yInterval: 0.1,
     },
     conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+  },
+  PIX2PIX: {
+    encoder_block: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+      skip_connection: true,
+    },
+    decoder_block: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+      skip_connection: true,
+    },
+    conv: {
+      xCount: 8,
+      yCount: 8,
+      xInterval: 4,
+      yInterval: 4,
+      patch_size: 70, // For PatchGAN
+    },
+    input: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    output: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    skip_connection: {
+      xCount: 4,
+      yCount: 16,
+      xInterval: 8,
+      yInterval: 1,
+    },
   },
 };

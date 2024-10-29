@@ -9,6 +9,15 @@ const TEXT_EMBED_DIM_CLIP = 768; // Text embedding dimension for CLIP in GLIDE
 const TEXT_EMBED_DIM_T5 = 1024; // Text embedding dimension for T5 in Imagen
 const NUM_T5_ENCODER_BLOCKS = 24; // Number of T5 encoder layers in Imagen
 
+// Add constant for Improved DDPM
+const NUM_IMPROVED_DDPM_BLOCKS = 4;
+
+// Add constants for SDXL
+const SDXL_IMAGE_DIM = [1024, 1024, 3];
+const SDXL_LATENT_DIM = [128, 128, 4];
+const NUM_SDXL_BLOCKS = 6; // More blocks than base SD
+const TEXT_EMBED_DIM_SDXL = 2048; // Larger text embedding
+
 export const DDPM = [
   { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
   { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
@@ -700,6 +709,125 @@ export const CONSISTENCY_MODELS = [
   { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
 ];
 
+// Improved DDPM Implementation
+export const IMPROVED_DDPM = [
+  { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
+  {
+    name: "Time Embedding",
+    type: "time_embedding",
+    dimensions: [1, 1, 256],
+  },
+  {
+    name: "Improved UNet",
+    type: "unet",
+    sublayers: [
+      // Encoder (Downsampling Path) with ResNet blocks and attention
+      ...Array.from({ length: NUM_IMPROVED_DDPM_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}.1`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+          {
+            name: `Attention ${i + 1}`,
+            type: "attention",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+          {
+            name: `ResNet ${i + 1}.2`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (i + 1),
+              IMAGE_DIM[1] / 2 ** (i + 1),
+              64 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck with attention
+      {
+        name: "Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Bottleneck ResNet",
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** NUM_IMPROVED_DDPM_BLOCKS,
+              IMAGE_DIM[1] / 2 ** NUM_IMPROVED_DDPM_BLOCKS,
+              512,
+            ],
+          },
+          {
+            name: "Bottleneck Attention",
+            type: "attention",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** NUM_IMPROVED_DDPM_BLOCKS,
+              IMAGE_DIM[1] / 2 ** NUM_IMPROVED_DDPM_BLOCKS,
+              512,
+            ],
+          },
+        ],
+      },
+      // Decoder (Upsampling Path) with skip connections
+      ...Array.from({ length: NUM_IMPROVED_DDPM_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_IMPROVED_DDPM_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `ResNet ${NUM_IMPROVED_DDPM_BLOCKS - i}.1`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              64 * 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Attention ${NUM_IMPROVED_DDPM_BLOCKS - i}`,
+            type: "attention",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              64 * 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `ResNet ${NUM_IMPROVED_DDPM_BLOCKS - i}.2`,
+            type: "resnet_block",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              IMAGE_DIM[1] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+              64 * 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Upsample ${NUM_IMPROVED_DDPM_BLOCKS - i}`,
+            type: "upsample",
+            dimensions: [
+              IMAGE_DIM[0] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 2),
+              IMAGE_DIM[1] / 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 2),
+              64 * 2 ** (NUM_IMPROVED_DDPM_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  { name: "Output Image", type: "output", dimensions: IMAGE_DIM },
+];
+
 // Layer configurations for diffusion models
 export const LAYER_CONFIGS = {
   DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
@@ -713,6 +841,21 @@ export const LAYER_CONFIGS = {
   CONSISTENCY_MODELS: {
     layerHeight: 60,
     keyPrefix: "consistency_models",
+    type: "diffusion",
+  },
+  IMPROVED_DDPM: {
+    layerHeight: 60,
+    keyPrefix: "improved_ddpm",
+    type: "diffusion",
+  },
+  STABLE_DIFFUSION_XL: {
+    layerHeight: 5,
+    keyPrefix: "sdxl",
+    type: "diffusion",
+  },
+  SDXL_TURBO: {
+    layerHeight: 5,
+    keyPrefix: "sdxl_turbo",
     type: "diffusion",
   },
 };
@@ -774,4 +917,228 @@ export const GRID_CONFIGS = {
     },
     resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
   },
+  IMPROVED_DDPM: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_DIFFUSION_XL: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    text_encoder: { xCount: 77, yCount: 2, xInterval: 2, yInterval: 4 },
+    condition: { xCount: 4, yCount: 1, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 16, yCount: 2, xInterval: 2, yInterval: 2 },
+    self_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  SDXL_TURBO: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    turbo_block: { xCount: 12, yCount: 12, xInterval: 2, yInterval: 2 },
+    efficient_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
 };
+
+// SDXL Implementation
+export const STABLE_DIFFUSION_XL = [
+  { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
+  {
+    name: "VAE Encoder",
+    type: "vae_encoder",
+    sublayers: [
+      { name: "Conv 1", type: "conv", dimensions: [512, 512, 128] },
+      { name: "ResBlock 1", type: "resnet_block", dimensions: [256, 256, 256] },
+      { name: "ResBlock 2", type: "resnet_block", dimensions: [128, 128, 512] },
+      { name: "Latent Space", type: "dense", dimensions: SDXL_LATENT_DIM },
+    ],
+  },
+  {
+    name: "Dual Text Encoders",
+    type: "text_encoder",
+    sublayers: [
+      {
+        name: "OpenCLIP ViT-H",
+        type: "transformer_block",
+        dimensions: [77, 1, 1280],
+      },
+      {
+        name: "CLIP ViT-L",
+        type: "transformer_block",
+        dimensions: [77, 1, 768],
+      },
+    ],
+  },
+  {
+    name: "Condition Processor",
+    type: "condition",
+    sublayers: [
+      {
+        name: "Size Conditioning",
+        type: "embedding",
+        dimensions: [2, 1, 256],
+      },
+      {
+        name: "Crop Conditioning",
+        type: "embedding",
+        dimensions: [2, 1, 256],
+      },
+    ],
+  },
+  {
+    name: "UNet",
+    type: "unet",
+    sublayers: [
+      ...Array.from({ length: NUM_SDXL_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `ResNet ${i + 1}.1`,
+            type: "resnet_block",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** i,
+              SDXL_LATENT_DIM[1] / 2 ** i,
+              320 * 2 ** i,
+            ],
+          },
+          {
+            name: `Cross Attention ${i + 1}`,
+            type: "cross_attention",
+            dimensions: [TEXT_EMBED_DIM_SDXL, 77, 2048],
+          },
+          {
+            name: `Self Attention ${i + 1}`,
+            type: "self_attention",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** i,
+              SDXL_LATENT_DIM[1] / 2 ** i,
+              320 * 2 ** i,
+            ],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Bottleneck",
+        type: "bottleneck",
+        dimensions: [
+          SDXL_LATENT_DIM[0] / 2 ** NUM_SDXL_BLOCKS,
+          SDXL_LATENT_DIM[1] / 2 ** NUM_SDXL_BLOCKS,
+          320 * 2 ** NUM_SDXL_BLOCKS,
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_SDXL_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_SDXL_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `ResNet ${NUM_SDXL_BLOCKS - i}.1`,
+            type: "resnet_block",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** (NUM_SDXL_BLOCKS - i - 1),
+              SDXL_LATENT_DIM[1] / 2 ** (NUM_SDXL_BLOCKS - i - 1),
+              320 * 2 ** (NUM_SDXL_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Cross Attention ${NUM_SDXL_BLOCKS - i}`,
+            type: "cross_attention",
+            dimensions: [TEXT_EMBED_DIM_SDXL, 77, 2048],
+          },
+          {
+            name: `Self Attention ${NUM_SDXL_BLOCKS - i}`,
+            type: "self_attention",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** (NUM_SDXL_BLOCKS - i - 1),
+              SDXL_LATENT_DIM[1] / 2 ** (NUM_SDXL_BLOCKS - i - 1),
+              320 * 2 ** (NUM_SDXL_BLOCKS - i - 1),
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "VAE Decoder",
+    type: "vae_decoder",
+    sublayers: [
+      { name: "Dense Layer", type: "dense", dimensions: [2048, 1, 1] },
+      { name: "ResBlock 1", type: "resnet_block", dimensions: [256, 256, 512] },
+      { name: "ResBlock 2", type: "resnet_block", dimensions: [512, 512, 256] },
+      { name: "Output Conv", type: "conv", dimensions: SDXL_IMAGE_DIM },
+    ],
+  },
+  { name: "Output Image", type: "output", dimensions: SDXL_IMAGE_DIM },
+];
+
+// SDXL Turbo Implementation
+export const SDXL_TURBO = [
+  { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
+  {
+    name: "VAE Encoder",
+    type: "vae_encoder",
+    sublayers: [
+      { name: "Conv 1", type: "conv", dimensions: [512, 512, 128] },
+      { name: "ResBlock 1", type: "resnet_block", dimensions: [256, 256, 256] },
+      { name: "Latent Space", type: "dense", dimensions: SDXL_LATENT_DIM },
+    ],
+  },
+  {
+    name: "Turbo UNet",
+    type: "unet",
+    sublayers: [
+      ...Array.from({ length: 4 }, (_, i) => ({
+        name: `Turbo Block ${i + 1}`,
+        type: "turbo_block",
+        sublayers: [
+          {
+            name: `Fast ResNet ${i + 1}`,
+            type: "resnet_block",
+            dimensions: [
+              SDXL_LATENT_DIM[0] / 2 ** i,
+              SDXL_LATENT_DIM[1] / 2 ** i,
+              320 * 2 ** i,
+            ],
+          },
+          {
+            name: `Efficient Attention ${i + 1}`,
+            type: "efficient_attention",
+            dimensions: [TEXT_EMBED_DIM_SDXL, 77, 1024],
+          },
+        ],
+      })),
+      {
+        name: "Turbo Bottleneck",
+        type: "bottleneck",
+        dimensions: [SDXL_LATENT_DIM[0] / 16, SDXL_LATENT_DIM[1] / 16, 1280],
+      },
+    ],
+  },
+  {
+    name: "VAE Decoder",
+    type: "vae_decoder",
+    sublayers: [
+      { name: "Dense Layer", type: "dense", dimensions: [1024, 1, 1] },
+      {
+        name: "Fast ResBlock",
+        type: "resnet_block",
+        dimensions: [256, 256, 256],
+      },
+      { name: "Output Conv", type: "conv", dimensions: SDXL_IMAGE_DIM },
+    ],
+  },
+  { name: "Output Image", type: "output", dimensions: SDXL_IMAGE_DIM },
+];
