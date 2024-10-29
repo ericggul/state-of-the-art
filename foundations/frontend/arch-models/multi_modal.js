@@ -11,6 +11,8 @@ const NUM_UNET_BLOCKS = 8;
 const NUM_UNET_ATTENTION_LAYERS = 4;
 const IMAGE_EMBED_DIM = [1, 1, 16384];
 
+const SDXL_IMAGE_DIM = [1024, 1024, 3];
+
 // Constants for multi-modal models
 const NUM_LAYERS_FLAMINGO = 24;
 const NUM_LAYERS_BLIP2_LM = 24;
@@ -18,6 +20,29 @@ const NUM_LAYERS_LLAVA_LM = 32;
 const NUM_LAYERS_PALME_LM = 64;
 const NUM_LAYERS_GPT4V_LM = 96;
 const NUM_VISION_LAYERS = 12;
+
+// Add Florence-specific constants
+const NUM_FLORENCE_VISION_LAYERS = 24;
+const NUM_FLORENCE_TEXT_LAYERS = 12;
+const FLORENCE_EMBED_DIM = 1024;
+
+// Add DALL-E 3 specific constants
+const NUM_DALLE3_TRANSFORMER_LAYERS = 24;
+const DALLE3_EMBED_DIM = 2048;
+const DALLE3_DIFFUSION_DIM = 2048;
+
+// Add CogVLM specific constants
+const NUM_COGVLM_VISION_LAYERS = 32;
+const NUM_COGVLM_LLM_LAYERS = 40;
+const COGVLM_EMBED_DIM = 4096;
+const COGVLM_VISION_DIM = 1024;
+
+// Add LLaVA specific constants
+const NUM_LLAVA_VISION_LAYERS = 32;
+const NUM_LLAVA_LLM_LAYERS = 32;
+const LLAVA_EMBED_DIM = 4096;
+const LLAVA_VISION_DIM = 1024;
+const LLAVA_PROJECTOR_DIM = 5120;
 
 // Model definitions
 
@@ -680,84 +705,110 @@ export const BLIP_2 = [
 
 /** LLaVA **/
 export const LLAVA = [
-  // Vision Encoder (CLIP ViT-L/14)
+  // Vision Stream
   {
     name: "Image Input",
     type: "input",
-    dimensions: IMAGE_INPUT_DIM,
+    dimensions: SDXL_IMAGE_DIM,
     stream: "image",
   },
   {
     name: "CLIP Vision Encoder",
     type: "vision_transformer",
-    dimensions: [1, 257, 1024], // 256 patches + 1 CLS token
+    dimensions: [576, 1, LLAVA_VISION_DIM], // 24x24 patches
     stream: "image",
     sublayers: [
-      ...Array.from({ length: 24 }, (_, i) => ({
-        name: `Vision Transformer Layer ${i + 1}`,
+      ...Array.from({ length: NUM_LLAVA_VISION_LAYERS }, (_, i) => ({
+        name: `Vision Layer ${i + 1}`,
         type: "transformer_layer",
-        dimensions: [1, 257, 1024],
+        dimensions: [576, 1, LLAVA_VISION_DIM],
         sublayers: [
           {
-            name: `Self-Attention`,
+            name: "Self-Attention",
             type: "attention",
-            dimensions: [1, 257, 1024],
+            dimensions: [576, 1, LLAVA_VISION_DIM],
           },
-          { name: `Feed Forward`, type: "mlp", dimensions: [1, 257, 1024] },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [576, 1, LLAVA_VISION_DIM],
+          },
         ],
       })),
     ],
   },
 
-  // Projection Layer
+  // Vision-Language Projector
   {
-    name: "Projection Layer",
-    type: "dense",
-    dimensions: [1, 257, 4096], // Match LLaMA dimension
+    name: "Vision-Language Projector",
+    type: "projector",
+    dimensions: [576, 1, LLAVA_PROJECTOR_DIM],
     stream: "fusion",
+    sublayers: [
+      {
+        name: "Linear Projection",
+        type: "mlp",
+        dimensions: [576, 1, LLAVA_PROJECTOR_DIM],
+      },
+      {
+        name: "LayerNorm",
+        type: "layernorm",
+        dimensions: [576, 1, LLAVA_PROJECTOR_DIM],
+      },
+    ],
   },
 
-  // Language Model (e.g., LLaMA)
+  // Language Model Stream
   {
     name: "Text Input",
     type: "input",
-    dimensions: TEXT_INPUT_DIM,
+    dimensions: [2048, 1, LLAVA_EMBED_DIM],
     stream: "text",
   },
   {
-    name: "Language Model",
+    name: "LLaMA Decoder",
     type: "transformer_decoder",
-    dimensions: [1, 77, 4096],
+    dimensions: [2048, 1, LLAVA_EMBED_DIM],
     stream: "text",
     sublayers: [
-      ...Array.from({ length: NUM_LAYERS_LLAVA_LM }, (_, i) => ({
-        name: `LM Transformer Layer ${i + 1}`,
+      ...Array.from({ length: NUM_LLAVA_LLM_LAYERS }, (_, i) => ({
+        name: `LLM Layer ${i + 1}`,
         type: "transformer_layer",
-        dimensions: [1, 77, 4096],
+        dimensions: [2048, 1, LLAVA_EMBED_DIM],
         sublayers: [
           {
-            name: `Self-Attention`,
+            name: "RoPE Self-Attention",
             type: "attention",
-            dimensions: [1, 77, 4096],
+            dimensions: [2048, 1, LLAVA_EMBED_DIM],
           },
           {
-            name: `Cross-Attention`,
+            name: "Cross-Attention",
             type: "cross_attention",
-            dimensions: [1, 77, 4096],
-            inputs: ["Projection Layer Output"],
+            dimensions: [2048, 576, LLAVA_EMBED_DIM],
           },
-          { name: `Feed Forward`, type: "mlp", dimensions: [1, 77, 4096] },
+          {
+            name: "SwiGLU FFN",
+            type: "mlp",
+            dimensions: [2048, 1, LLAVA_EMBED_DIM],
+          },
         ],
       })),
     ],
   },
 
-  // Output Layer
+  // Output Head
   {
-    name: "Output Projection",
-    type: "dense",
-    dimensions: [1, 77, "vocab_size"], // Define vocab_size accordingly
+    name: "Output Layer",
+    type: "output",
+    dimensions: [2048, 1, 32000], // Vocabulary size
     stream: "text",
+    sublayers: [
+      {
+        name: "Language Model Head",
+        type: "mlp",
+        dimensions: [2048, 1, 32000],
+      },
+    ],
   },
 ];
 
@@ -911,6 +962,304 @@ export const GPT_4V = [
   },
 ];
 
+/** FLORENCE **/
+export const FLORENCE = [
+  // Vision Stream
+  {
+    name: "Image Input",
+    type: "input",
+    dimensions: IMAGE_INPUT_DIM,
+    stream: "image",
+  },
+  {
+    name: "Vision Encoder",
+    type: "vision_transformer",
+    dimensions: [1, 197, FLORENCE_EMBED_DIM],
+    stream: "image",
+    sublayers: [
+      ...Array.from({ length: NUM_FLORENCE_VISION_LAYERS }, (_, i) => ({
+        name: `Vision Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [1, 197, FLORENCE_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [1, 197, FLORENCE_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [1, 197, FLORENCE_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+  // Text Stream
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: [77, 1, FLORENCE_EMBED_DIM],
+    stream: "text",
+  },
+  {
+    name: "Text Encoder",
+    type: "text_encoder",
+    dimensions: [77, 1, FLORENCE_EMBED_DIM],
+    stream: "text",
+    sublayers: [
+      ...Array.from({ length: NUM_FLORENCE_TEXT_LAYERS }, (_, i) => ({
+        name: `Text Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [77, 1, FLORENCE_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [77, 1, FLORENCE_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [77, 1, FLORENCE_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+  // Fusion/Contrastive Learning
+  {
+    name: "Contrastive Head",
+    type: "contrastive",
+    dimensions: [1, 1, FLORENCE_EMBED_DIM],
+    stream: "fusion",
+    sublayers: [
+      {
+        name: "Image Projection",
+        type: "mlp",
+        dimensions: [1, 1, FLORENCE_EMBED_DIM],
+      },
+      {
+        name: "Text Projection",
+        type: "mlp",
+        dimensions: [1, 1, FLORENCE_EMBED_DIM],
+      },
+      {
+        name: "Temperature Parameter",
+        type: "learnable_temp",
+        dimensions: [1, 1, 1],
+      },
+    ],
+  },
+];
+
+/** DALL-E 3 **/
+export const DALL_E_3 = [
+  // Text Stream - CLIP Text Encoder
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: TEXT_INPUT_DIM,
+    stream: "text",
+  },
+  {
+    name: "CLIP Text Encoder",
+    type: "text_encoder",
+    dimensions: [77, 1, DALLE3_EMBED_DIM],
+    stream: "text",
+    sublayers: [
+      ...Array.from({ length: NUM_DALLE3_TRANSFORMER_LAYERS }, (_, i) => ({
+        name: `Text Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [77, 1, DALLE3_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [77, 1, DALLE3_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [77, 1, DALLE3_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+
+  // Diffusion Prior
+  {
+    name: "Diffusion Prior",
+    type: "diffusion_prior",
+    dimensions: [DALLE3_EMBED_DIM],
+    stream: "fusion",
+    sublayers: [
+      {
+        name: "Prior Transformer",
+        type: "transformer_layer",
+        dimensions: [1, 77, DALLE3_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Cross-Attention",
+            type: "cross_attention",
+            dimensions: [1, 77, DALLE3_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [1, 77, DALLE3_EMBED_DIM],
+          },
+        ],
+      },
+    ],
+  },
+
+  // Decoder Diffusion
+  {
+    name: "Decoder Diffusion",
+    type: "decoder_diffusion",
+    dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], DALLE3_DIFFUSION_DIM],
+    stream: "image",
+    sublayers: [
+      {
+        name: "UNet",
+        type: "unet",
+        dimensions: [
+          SDXL_IMAGE_DIM[0],
+          SDXL_IMAGE_DIM[1],
+          DALLE3_DIFFUSION_DIM,
+        ],
+        sublayers: [
+          {
+            name: "Time Embedding",
+            type: "time_embedding",
+            dimensions: [DALLE3_DIFFUSION_DIM],
+          },
+          {
+            name: "Cross-Attention",
+            type: "cross_attention",
+            dimensions: [DALLE3_DIFFUSION_DIM, 77],
+            inputs: ["CLIP Text Encoder Output"],
+          },
+          {
+            name: "ResNet Blocks",
+            type: "resnet_block",
+            dimensions: [
+              SDXL_IMAGE_DIM[0],
+              SDXL_IMAGE_DIM[1],
+              DALLE3_DIFFUSION_DIM,
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  // Output
+  {
+    name: "Generated Image",
+    type: "output",
+    dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+    stream: "image",
+  },
+];
+
+/** COGVLM **/
+export const COGVLM = [
+  // Vision Stream
+  {
+    name: "Image Input",
+    type: "input",
+    dimensions: SDXL_IMAGE_DIM,
+    stream: "image",
+  },
+  {
+    name: "Vision Encoder",
+    type: "vision_transformer",
+    dimensions: [196, 1, COGVLM_VISION_DIM],
+    stream: "image",
+    sublayers: [
+      ...Array.from({ length: NUM_COGVLM_VISION_LAYERS }, (_, i) => ({
+        name: `Vision Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [196, 1, COGVLM_VISION_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [196, 1, COGVLM_VISION_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [196, 1, COGVLM_VISION_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+
+  // Text Stream
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: [2048, 1, COGVLM_EMBED_DIM], // Longer sequence length
+    stream: "text",
+  },
+  {
+    name: "Language Model",
+    type: "transformer_decoder",
+    dimensions: [2048, 1, COGVLM_EMBED_DIM],
+    stream: "text",
+    sublayers: [
+      ...Array.from({ length: NUM_COGVLM_LLM_LAYERS }, (_, i) => ({
+        name: `LLM Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [2048, 1, COGVLM_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [2048, 1, COGVLM_EMBED_DIM],
+          },
+          {
+            name: "Cross-Attention",
+            type: "cross_attention",
+            dimensions: [2048, 196, COGVLM_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [2048, 1, COGVLM_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+
+  // Fusion/Output
+  {
+    name: "Output Projection",
+    type: "fusion",
+    dimensions: [2048, 1, COGVLM_EMBED_DIM],
+    stream: "fusion",
+    sublayers: [
+      {
+        name: "Vision-Language Fusion",
+        type: "cross_attention",
+        dimensions: [2048, 196, COGVLM_EMBED_DIM],
+      },
+      {
+        name: "Output Layer",
+        type: "mlp",
+        dimensions: [2048, 1, 32000], // Vocabulary size
+      },
+    ],
+  },
+];
+
 // Layer configurations for multi_modal models
 export const LAYER_CONFIGS = {
   SHOW_AND_TELL: {
@@ -947,7 +1296,7 @@ export const LAYER_CONFIGS = {
     type: "multi_modal",
   },
   LLAVA: {
-    layerHeight: 180,
+    layerHeight: 120,
     keyPrefix: "llava",
     type: "multi_modal",
   },
@@ -959,6 +1308,21 @@ export const LAYER_CONFIGS = {
   GPT_4V: {
     layerHeight: 150,
     keyPrefix: "gpt4v",
+    type: "multi_modal",
+  },
+  FLORENCE: {
+    layerHeight: 120,
+    keyPrefix: "florence",
+    type: "multi_modal",
+  },
+  DALL_E_3: {
+    layerHeight: 120,
+    keyPrefix: "dalle3",
+    type: "multi_modal",
+  },
+  COGVLM: {
+    layerHeight: 120,
+    keyPrefix: "cogvlm",
     type: "multi_modal",
   },
 };
@@ -1027,7 +1391,6 @@ export const GRID_CONFIGS = {
     resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
     cross_attention: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
     time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    conv: { xCount: 3, yCount: 1, xInterval: 1, yInterval: 1 },
     output: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
   },
 
@@ -1071,16 +1434,16 @@ export const GRID_CONFIGS = {
   },
 
   LLAVA: {
-    input: { xCount: 40, yCount: 40, xInterval: 1, yInterval: 1 },
-    vision_transformer: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
-    transformer_decoder: {
-      xCount: NUM_LAYERS_LLAVA_LM,
-      yCount: 1,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    cross_attention: { xCount: 4, yCount: 4, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    vision_transformer: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 16, yCount: 16, xInterval: 1, yInterval: 1 },
+    cross_attention: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 64, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    projector: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
+    transformer_decoder: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
+    layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    output: { xCount: 32, yCount: 1, xInterval: 1, yInterval: 1 },
   },
 
   PALM_E: {
@@ -1112,5 +1475,41 @@ export const GRID_CONFIGS = {
     },
     cross_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
     mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+  },
+
+  FLORENCE: {
+    input: { xCount: 40, yCount: 40, xInterval: 1, yInterval: 1 },
+    vision_transformer: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    text_encoder: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    contrastive: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    learnable_temp: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+
+  DALL_E_3: {
+    input: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    text_encoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 12, yCount: 6, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 768, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    diffusion_prior: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    decoder_diffusion: { xCount: 16, yCount: 8, xInterval: 2, yInterval: 2 },
+    unet: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    cross_attention: { xCount: 8, yCount: 6, xInterval: 2, yInterval: 2 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 32, xInterval: 1, yInterval: 1 },
+  },
+  COGVLM: {
+    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    vision_transformer: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_decoder: { xCount: 40, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
+    cross_attention: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    fusion: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
   },
 };
