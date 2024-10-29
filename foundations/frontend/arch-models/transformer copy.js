@@ -56,6 +56,17 @@ const NUM_LAMDA_LAYERS = 64; // Google LaMDA
 const NUM_LLAMA_2_LAYERS = 32; // LLaMA-2 7B base size
 const NUM_MISTRAL_LAYERS = 32; // Mistral 7B
 
+// Add constants
+const NUM_MIXTRAL_LAYERS = 32; // Mixtral 8x7B
+const NUM_PHI_2_LAYERS = 32; // Phi-2
+
+// Add constants
+const NUM_GEMINI_LAYERS = 90; // Gemini Ultra (estimated)
+const NUM_CLAUDE_3_LAYERS = 80; // Claude 3 Opus (estimated)
+
+// Add constant
+const NUM_MT5_LAYERS = 24; // for mT5-Large, adjust for other sizes
+
 export const VIDEOGEN = [
   { name: `Input Image Frames`, type: "input", stack: "encoder" },
   { name: `TAE Encoder`, type: "encoder", stack: "encoder" },
@@ -374,54 +385,82 @@ export const GPT_4 = [
 
 export const PALM = [
   { name: "Input Embeddings", type: "embedding", stack: "decoder" },
-  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
   ...Array.from({ length: NUM_PALM_LAYERS }, (_, i) => ({
     name: `Decoder Layer ${i + 1}`,
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm", dimensions: [18432, 1, 1] },
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [18432, 1, 1] },
       {
-        name: `Self-Attention ${i + 1}`,
-        type: "attention",
+        name: `Multi-Query Attention ${i + 1}`,
+        type: "multi_query_attention",
         dimensions: [18432, 128, 128],
+        num_query_groups: 8,
       },
-      { name: `Layer Norm 2`, type: "layernorm", dimensions: [18432, 1, 1] },
       {
-        name: `Feed Forward ${i + 1}`,
-        type: "ffn",
+        name: `Pathway Router ${i + 1}`,
+        type: "pathway_router",
+        dimensions: [18432, 1, 1],
+        num_paths: 8,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [18432, 1, 1] },
+      {
+        name: `SwiGLU Feed Forward ${i + 1}`,
+        type: "swiglu_ffn",
         dimensions: [73728, 128, 1],
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
-  { name: "Output", type: "output", stack: "decoder" },
+  { name: "RMSNorm", type: "rmsnorm", stack: "decoder" },
+  { name: "Multi-Task Output", type: "multi_task_output", stack: "decoder" },
 ];
 
 export const PALM_2 = [
   { name: "Input Embeddings", type: "embedding", stack: "decoder" },
-  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
+  { name: "Vision Encoder", type: "vision_encoder", stack: "encoder" },
   ...Array.from({ length: NUM_PALM_2_LAYERS }, (_, i) => ({
     name: `Decoder Layer ${i + 1}`,
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm", dimensions: [20480, 1, 1] },
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [20480, 1, 1] },
       {
-        name: `Self-Attention ${i + 1}`,
-        type: "attention",
+        name: `Multi-Query Attention ${i + 1}`,
+        type: "multi_query_attention",
+        dimensions: [20480, 160, 160],
+        num_query_groups: 16,
+      },
+      {
+        name: `Cross-Modal Attention ${i + 1}`,
+        type: "cross_modal_attention",
         dimensions: [20480, 160, 160],
       },
-      { name: `Layer Norm 2`, type: "layernorm", dimensions: [20480, 1, 1] },
       {
-        name: `Feed Forward ${i + 1}`,
-        type: "ffn",
+        name: `Enhanced Pathway Router ${i + 1}`,
+        type: "pathway_router",
+        dimensions: [20480, 1, 1],
+        num_paths: 16,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [20480, 1, 1] },
+      {
+        name: `SwiGLU Feed Forward ${i + 1}`,
+        type: "swiglu_ffn",
         dimensions: [81920, 160, 1],
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
-  { name: "Output", type: "output", stack: "decoder" },
+  { name: "RMSNorm", type: "rmsnorm", stack: "decoder" },
+  { name: "Multi-Modal Output", type: "multi_modal_output", stack: "decoder" },
 ];
 
 export const LLAMA = [
@@ -554,53 +593,86 @@ export const ELECTRA = [
 
 export const SWITCH_TRANSFORMER = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
-  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "encoder",
+  },
   ...Array.from({ length: NUM_SWITCH_LAYERS }, (_, i) => ({
     name: `Layer ${i + 1}`,
     type: "encoder_layer",
     stack: "encoder",
     sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [1024, 1, 1] },
       {
-        name: `Self-Attention ${i + 1}`,
+        name: `Multi-Head Attention ${i + 1}`,
         type: "attention",
         dimensions: [1024, 16, 64],
       },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [1024, 1, 1] },
       {
-        name: `Mixture-of-Experts FFN ${i + 1}`,
+        name: `Router ${i + 1}`,
+        type: "moe_router",
+        dimensions: [1024, 1, 1],
+        num_experts: 32,
+        capacity_factor: 1.5,
+      },
+      {
+        name: `Expert FFN ${i + 1}`,
         type: "moe_ffn",
-        dimensions: [65536, 1, 1], // Large FFN due to Mixture-of-Experts
+        dimensions: [65536, 32, 1], // Much larger FFN due to sparsity
+        num_experts: 32,
+        active_experts: 1, // Top-1 routing
+      },
+      {
+        name: `Load Balancing Loss ${i + 1}`,
+        type: "auxiliary_loss",
+        dimensions: [32, 1, 1],
       },
     ],
   })),
-  { name: "Output Layer", type: "output", stack: "encoder" },
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "encoder" },
+  { name: "Output", type: "output", stack: "encoder" },
 ];
 
 export const ALBERT = [
-  { name: "Input Embeddings", type: "embedding", stack: "encoder" },
   {
-    name: "Positional Encoding",
-    type: "positional",
+    name: "Factorized Embedding",
+    type: "factorized_embedding",
     stack: "encoder",
+    embedding_size: 128, // Reduced embedding size
+    hidden_size: 768, // Full hidden size
   },
-  // ALBERT shares parameters across layers
-  ...Array.from({ length: NUM_ALBERT_LAYERS }, () => ({
-    name: `Shared Encoder Layer`,
+  { name: "Positional Encoding", type: "positional", stack: "encoder" },
+  // Single shared layer that gets reused
+  {
+    name: "Shared Encoder Layer",
     type: "encoder_layer",
     stack: "encoder",
+    shared: true, // Indicates parameter sharing
     sublayers: [
+      { name: "Layer Norm 1", type: "layernorm", dimensions: [768, 1, 1] },
       {
-        name: `Self-Attention`,
+        name: "Self-Attention",
         type: "attention",
         dimensions: [768, 12, 64],
       },
+      { name: "Layer Norm 2", type: "layernorm", dimensions: [768, 1, 1] },
       {
-        name: `Feed Forward`,
+        name: "Feed Forward",
         type: "ffn",
         dimensions: [3072, 1, 1],
       },
     ],
-  })),
-  { name: "Output Layer", type: "output", stack: "encoder" },
+  },
+  // Sentence-Order Prediction (SOP) head
+  {
+    name: "Inter-Sentence Coherence",
+    type: "sop_head",
+    stack: "encoder",
+    dimensions: [768, 1, 1],
+  },
+  { name: "Output", type: "output", stack: "encoder" },
 ];
 
 export const DISTILBERT = [
@@ -789,35 +861,52 @@ export const VISION_TRANSFORMER_VIT = [
 ];
 
 export const SWIN_TRANSFORMER = [
-  { name: "Patch Embedding", type: "embedding", stack: "encoder" },
-  ...Array.from({ length: NUM_SWIN_STAGES }, (_, stageIndex) => [
-    ...Array.from({ length: NUM_SWIN_LAYERS_PER_STAGE }, (_, i) => ({
-      name: `Stage ${stageIndex + 1} Layer ${i + 1}`,
-      type: "encoder_layer",
-      stack: "encoder",
-      sublayers: [
-        { name: `Layer Norm 1`, type: "layernorm", dimensions: [768, 1, 1] },
-        {
-          name: `Window Attention ${i + 1}`,
-          type: "window_attention",
-          dimensions: [768, 12, 64],
-        },
-        { name: `Layer Norm 2`, type: "layernorm", dimensions: [768, 1, 1] },
-        {
-          name: `Feed Forward ${i + 1}`,
-          type: "ffn",
-          dimensions: [3072, 1, 1],
-        },
-      ],
-    })),
-    {
-      name: `Patch Merging ${stageIndex + 1}`,
-      type: "patch_merging",
-      stack: "encoder",
-    },
-  ]).flat(),
-  { name: "Global Average Pooling", type: "pooling", stack: "encoder" },
-  { name: "Linear Classifier", type: "output", stack: "encoder" },
+  { name: "Patch Embedding", type: "patch_embedding", stack: "encoder" },
+  // Stage 1
+  ...Array.from({ length: NUM_SWIN_LAYERS_PER_STAGE }, (_, i) => ({
+    name: `Stage 1 Layer ${i + 1}`,
+    type: "swin_block",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [96, 1, 1] },
+      {
+        name: `Window Attention ${i % 2 ? "Shifted" : "Regular"}`,
+        type: i % 2 ? "shifted_window_attention" : "window_attention",
+        dimensions: [96, 7, 7],
+        window_size: 7,
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [96, 1, 1] },
+      {
+        name: `MLP ${i + 1}`,
+        type: "mlp",
+        dimensions: [384, 1, 1],
+      },
+    ],
+  })),
+  { name: "Patch Merging 1", type: "patch_merging", dimensions: [192, 1, 1] },
+  // Stage 2 (doubled channels)
+  ...Array.from({ length: NUM_SWIN_LAYERS_PER_STAGE }, (_, i) => ({
+    name: `Stage 2 Layer ${i + 1}`,
+    type: "swin_block",
+    stack: "encoder",
+    sublayers: [
+      { name: `Layer Norm 1`, type: "layernorm", dimensions: [192, 1, 1] },
+      {
+        name: `Window Attention ${i % 2 ? "Shifted" : "Regular"}`,
+        type: i % 2 ? "shifted_window_attention" : "window_attention",
+        dimensions: [192, 7, 7],
+        window_size: 7,
+      },
+      { name: `Layer Norm 2`, type: "layernorm", dimensions: [192, 1, 1] },
+      {
+        name: `MLP ${i + 1}`,
+        type: "mlp",
+        dimensions: [768, 1, 1],
+      },
+    ],
+  })),
+  { name: "Layer Norm", type: "layernorm", stack: "encoder" },
+  { name: "Global Average Pool", type: "pooling", stack: "encoder" },
 ];
 
 // Add DeiT structure
@@ -961,7 +1050,11 @@ export const MEGATRON_LM = [
 // DeBERTa structure
 export const DEBERTA = [
   { name: "Input Embeddings", type: "embedding", stack: "encoder" },
-  { name: "Relative Position Encoding", type: "positional", stack: "encoder" },
+  {
+    name: "Relative Position Encoding",
+    type: "disentangled_positional",
+    stack: "encoder",
+  },
   ...Array.from({ length: NUM_DEBERTA_LAYERS }, (_, i) => ({
     name: `Encoder Layer ${i + 1}`,
     type: "encoder_layer",
@@ -969,11 +1062,23 @@ export const DEBERTA = [
     sublayers: [
       { name: `Layer Norm 1`, type: "layernorm", dimensions: [1024, 1, 1] },
       {
-        name: `Disentangled Attention ${i + 1}`,
+        name: `Disentangled Self-Attention ${i + 1}`,
         type: "disentangled_attention",
-        dimensions: [1024, 16, 64],
+        content_attention: {
+          dimensions: [1024, 16, 64],
+          type: "content_stream",
+        },
+        position_attention: {
+          dimensions: [1024, 16, 64],
+          type: "position_stream",
+        },
       },
       { name: `Layer Norm 2`, type: "layernorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Enhanced Mask Decoder ${i + 1}`,
+        type: "emd",
+        dimensions: [1024, 1, 1],
+      },
       {
         name: `Feed Forward ${i + 1}`,
         type: "ffn",
@@ -982,7 +1087,6 @@ export const DEBERTA = [
     ],
   })),
   { name: "Final Layer Norm", type: "layernorm", stack: "encoder" },
-  { name: "Output", type: "output", stack: "encoder" },
 ];
 
 // Claude structure
@@ -1042,60 +1146,278 @@ export const LAMDA = [
 // LLaMA 2 structure
 export const LLAMA_2 = [
   { name: "Input Embeddings", type: "embedding", stack: "decoder" },
-  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
   ...Array.from({ length: NUM_LLAMA_2_LAYERS }, (_, i) => ({
     name: `Decoder Layer ${i + 1}`,
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm", dimensions: [4096, 1, 1] },
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [4096, 1, 1] },
       {
         name: `RoPE Self-Attention ${i + 1}`,
-        type: "attention",
+        type: "rope_attention",
         dimensions: [4096, 32, 32],
       },
-      { name: `Layer Norm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
+      { name: `RMSNorm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
       {
-        name: `Feed Forward ${i + 1}`,
-        type: "ffn",
+        name: `SwiGLU Feed Forward ${i + 1}`,
+        type: "swiglu_ffn",
         dimensions: [11008, 32, 1],
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
+  { name: "RMSNorm", type: "layernorm", stack: "decoder" },
   { name: "Output", type: "output", stack: "decoder" },
 ];
 
 // Mistral structure
 export const MISTRAL = [
   { name: "Input Embeddings", type: "embedding", stack: "decoder" },
-  { name: "Positional Encoding", type: "positional", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
   ...Array.from({ length: NUM_MISTRAL_LAYERS }, (_, i) => ({
     name: `Decoder Layer ${i + 1}`,
     type: "decoder_layer",
     stack: "decoder",
     sublayers: [
-      { name: `Layer Norm 1`, type: "layernorm", dimensions: [4096, 1, 1] },
+      { name: `RMSNorm 1`, type: "layernorm", dimensions: [4096, 1, 1] },
       {
         name: `Sliding Window Attention ${i + 1}`,
         type: "sliding_window_attention",
         dimensions: [4096, 32, 32],
+        window_size: 4096,
       },
       {
-        name: `Grouped Query Attention ${i + 1}`,
+        name: `GQA ${i + 1}`,
         type: "grouped_query_attention",
         dimensions: [4096, 8, 8],
+        num_groups: 8,
       },
-      { name: `Layer Norm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
+      { name: `RMSNorm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
       {
-        name: `Feed Forward ${i + 1}`,
-        type: "ffn",
+        name: `SwiGLU Feed Forward ${i + 1}`,
+        type: "swiglu_ffn",
         dimensions: [14336, 32, 1],
       },
     ],
   })),
-  { name: "Layer Norm", type: "layernorm", stack: "decoder" },
+  { name: "RMSNorm", type: "layernorm", stack: "decoder" },
   { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Mixtral structure (combines Mistral's sliding window + MoE)
+export const MIXTRAL = [
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
+  ...Array.from({ length: NUM_MIXTRAL_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [4096, 1, 1] },
+      {
+        name: `Sliding Window Attention ${i + 1}`,
+        type: "sliding_window_attention",
+        dimensions: [4096, 32, 32],
+        window_size: 4096,
+      },
+      {
+        name: `GQA ${i + 1}`,
+        type: "grouped_query_attention",
+        dimensions: [4096, 8, 8],
+        num_groups: 8,
+      },
+      { name: `RMSNorm 2`, type: "layernorm", dimensions: [4096, 1, 1] },
+      {
+        name: `MoE Feed Forward ${i + 1}`,
+        type: "moe_ffn",
+        dimensions: [14336, 32, 1],
+        num_experts: 8,
+        active_experts: 2,
+      },
+    ],
+  })),
+  { name: "RMSNorm", type: "layernorm", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Phi-2 structure (uses parallel attention and FFN)
+export const PHI_2 = [
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
+  ...Array.from({ length: NUM_PHI_2_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `RMSNorm`, type: "layernorm", dimensions: [2560, 1, 1] },
+      {
+        name: `Parallel Attention-FFN ${i + 1}`,
+        type: "parallel_transformer",
+        attention: {
+          type: "attention",
+          dimensions: [2560, 32, 32],
+        },
+        ffn: {
+          type: "gated_ffn", // Phi-2 uses gated FFN
+          dimensions: [8192, 32, 1],
+        },
+      },
+    ],
+  })),
+  { name: "RMSNorm", type: "layernorm", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Gemini structure (multimodal + mixture of experts)
+export const GEMINI = [
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  { name: "Vision Encoder", type: "vision_encoder", stack: "encoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
+  ...Array.from({ length: NUM_GEMINI_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [12288, 1, 1] },
+      {
+        name: `Multi-Query Attention ${i + 1}`,
+        type: "multi_query_attention",
+        dimensions: [12288, 96, 128],
+        num_query_groups: 8,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [12288, 1, 1] },
+      {
+        name: `MoE Feed Forward ${i + 1}`,
+        type: "moe_ffn",
+        dimensions: [49152, 96, 1], // 4x hidden size
+        num_experts: 8,
+        active_experts: 2,
+      },
+      {
+        name: `Cross-Modal Attention ${i + 1}`,
+        type: "cross_modal_attention",
+        dimensions: [12288, 96, 128],
+      },
+    ],
+  })),
+  { name: "RMSNorm", type: "rmsnorm", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Claude 3 structure (with constitutional AI components)
+export const CLAUDE_3 = [
+  { name: "Input Embeddings", type: "embedding", stack: "decoder" },
+  {
+    name: "RoPE Positional Encoding",
+    type: "rotary_positional",
+    stack: "decoder",
+  },
+  ...Array.from({ length: NUM_CLAUDE_3_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [8192, 1, 1] },
+      {
+        name: `Sliding Window Attention ${i + 1}`,
+        type: "sliding_window_attention",
+        dimensions: [8192, 64, 128],
+        window_size: 8192,
+      },
+      {
+        name: `Constitutional Gate ${i + 1}`, // Special Claude 3 feature
+        type: "constitutional_gate",
+        dimensions: [8192, 1, 1],
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [8192, 1, 1] },
+      {
+        name: `SwiGLU Feed Forward ${i + 1}`,
+        type: "swiglu_ffn",
+        dimensions: [32768, 64, 1],
+      },
+    ],
+  })),
+  { name: "RMSNorm", type: "rmsnorm", stack: "decoder" },
+  { name: "Output", type: "output", stack: "decoder" },
+];
+
+// Implement mT5 structure
+export const MT5 = [
+  {
+    name: "Sentencepiece Embeddings",
+    type: "embedding",
+    stack: "encoder",
+    vocab_size: 250000, // Larger vocabulary for multilingual support
+  },
+  ...Array.from({ length: NUM_MT5_LAYERS }, (_, i) => ({
+    name: `Encoder Layer ${i + 1}`,
+    type: "encoder_layer",
+    stack: "encoder",
+    sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "relative_attention", // Uses relative attention
+        dimensions: [1024, 16, 64],
+        relative_attention_num_buckets: 32,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "gated_ffn", // Uses gated FFN
+        dimensions: [4096, 16, 1],
+      },
+    ],
+  })),
+  { name: "Decoder Input", type: "input", stack: "decoder" },
+  ...Array.from({ length: NUM_MT5_LAYERS }, (_, i) => ({
+    name: `Decoder Layer ${i + 1}`,
+    type: "decoder_layer",
+    stack: "decoder",
+    sublayers: [
+      { name: `RMSNorm 1`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Self-Attention ${i + 1}`,
+        type: "relative_attention",
+        dimensions: [1024, 16, 64],
+        relative_attention_num_buckets: 32,
+      },
+      { name: `RMSNorm 2`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Cross-Attention ${i + 1}`,
+        type: "cross_attention",
+        dimensions: [1024, 16, 64],
+      },
+      { name: `RMSNorm 3`, type: "rmsnorm", dimensions: [1024, 1, 1] },
+      {
+        name: `Feed Forward ${i + 1}`,
+        type: "gated_ffn",
+        dimensions: [4096, 16, 1],
+      },
+    ],
+  })),
+  { name: "Final RMSNorm", type: "rmsnorm", stack: "decoder" },
+  { name: "Language-Aware Output", type: "output", stack: "decoder" },
 ];
 
 ///////NOTE////////////////////////////////
@@ -1289,6 +1611,31 @@ export const LAYER_CONFIGS = {
     keyPrefix: "mistral",
     layerHeight: 7,
   },
+  MIXTRAL: {
+    type: "transformer",
+    keyPrefix: "mixtral",
+    layerHeight: 7,
+  },
+  PHI_2: {
+    type: "transformer",
+    keyPrefix: "phi2",
+    layerHeight: 7,
+  },
+  GEMINI: {
+    type: "transformer",
+    keyPrefix: "gemini",
+    layerHeight: 10, // Larger due to multimodal capabilities
+  },
+  CLAUDE_3: {
+    type: "transformer",
+    keyPrefix: "claude3",
+    layerHeight: 8, // Slightly larger than Claude 2
+  },
+  MT5: {
+    layerHeight: 10,
+    keyPrefix: "mt5",
+    type: "transformer",
+  },
 };
 export const GRID_CONFIGS = {
   VIDEOGEN: {
@@ -1326,14 +1673,14 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 5 },
   },
   GPT_2: {
-    attention: { xCount: 12, yCount: 12, xInterval: 3, yInterval: 3 },
+    attention: { xCount: 12, yCount: 6, xInterval: 3, yInterval: 3 },
     ffn: { xCount: 24, yCount: 4, xInterval: 2, yInterval: 5 },
   },
   GPT_3: {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 192, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 20, yCount: 12, xInterval: 800, yInterval: 30 },
+    attention: { xCount: 20, yCount: 6, xInterval: 800, yInterval: 30 },
     ffn: { xCount: 24, yCount: 4, xInterval: 2000, yInterval: 50 },
     reduced: true,
   },
@@ -1341,7 +1688,7 @@ export const GRID_CONFIGS = {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 32, yCount: 12, xInterval: 300, yInterval: 300 },
+    attention: { xCount: 32, yCount: 6, xInterval: 300, yInterval: 300 },
     ffn: { xCount: 24, yCount: 4, xInterval: 200, yInterval: 500 },
     reduced: true,
   },
@@ -1390,7 +1737,7 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
   SWITCH_TRANSFORMER: {
-    attention: { xCount: 16, yCount: 16, xInterval: 64, yInterval: 64 },
+    attention: { xCount: 16, yCount: 8, xInterval: 64, yInterval: 64 },
     moe_ffn: { xCount: 32, yCount: 4, xInterval: 2048, yInterval: 5 },
   },
   ALBERT: {
@@ -1439,9 +1786,23 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
   SWIN_TRANSFORMER: {
-    window_attention: { xCount: 8, yCount: 8, xInterval: 32, yInterval: 32 },
-    ffn: { xCount: 16, yCount: 4, xInterval: 64, yInterval: 5 },
-    patch_merging: { xCount: 8, yCount: 8, xInterval: 32, yInterval: 32 },
+    window_attention: {
+      xCount: 14,
+      yCount: 14,
+      xInterval: 7,
+      yInterval: 7,
+      window_size: 7,
+    },
+    shifted_window_attention: {
+      xCount: 14,
+      yCount: 14,
+      xInterval: 7,
+      yInterval: 7,
+      window_size: 7,
+      shift_size: 3,
+    },
+    patch_merging: { xCount: 8, yCount: 8, xInterval: 16, yInterval: 16 },
+    mlp: { xCount: 16, yCount: 4, xInterval: 64, yInterval: 5 },
   },
   DEIT: {
     attention: { xCount: 12, yCount: 12, xInterval: 64, yInterval: 64 },
@@ -1466,12 +1827,11 @@ export const GRID_CONFIGS = {
   },
   DEBERTA: {
     disentangled_attention: {
-      xCount: 16,
-      yCount: 16,
-      xInterval: 64,
-      yInterval: 64,
+      content_stream: { xCount: 16, yCount: 16, xInterval: 32, yInterval: 32 },
+      position_stream: { xCount: 16, yCount: 16, xInterval: 32, yInterval: 32 },
     },
-    ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
+    emd: { xCount: 12, yCount: 4, xInterval: 16, yInterval: 4 },
+    ffn: { xCount: 24, yCount: 4, xInterval: 128, yInterval: 5 },
   },
   CLAUDE: {
     attention: { xCount: 32, yCount: 10, xInterval: 1, yInterval: 1 },
@@ -1491,17 +1851,310 @@ export const GRID_CONFIGS = {
   MISTRAL: {
     sliding_window_attention: {
       xCount: 24,
-      yCount: 16,
+      yCount: 8,
       xInterval: 2,
       yInterval: 2,
-    }, // Different attention type
+      window_size: 4096, // Added window size parameter
+    },
     grouped_query_attention: {
       xCount: 8,
       yCount: 8,
       xInterval: 4,
       yInterval: 4,
-    }, // GQA specific
-    ffn: { xCount: 28, yCount: 6, xInterval: 1, yInterval: 4 },
+      num_groups: 8, // Added groups parameter
+    },
+    swiglu_ffn: {
+      // Changed to match SwiGLU FFN
+      xCount: 28,
+      yCount: 6,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      // Added RMSNorm config
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  MIXTRAL: {
+    sliding_window_attention: {
+      xCount: 24,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+      window_size: 4096,
+    },
+    grouped_query_attention: {
+      xCount: 8,
+      yCount: 8,
+      xInterval: 4,
+      yInterval: 4,
+      num_groups: 8,
+    },
+    moe_ffn: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 1,
+      yInterval: 4,
+      num_experts: 8,
+      active_experts: 2,
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  PHI_2: {
+    parallel_transformer: {
+      attention: {
+        xCount: 24,
+        yCount: 16,
+        xInterval: 2,
+        yInterval: 2,
+      },
+      gated_ffn: {
+        xCount: 28,
+        yCount: 6,
+        xInterval: 1,
+        yInterval: 4,
+      },
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  GEMINI: {
+    multi_query_attention: {
+      xCount: 48,
+      yCount: 5,
+      xInterval: 2,
+      yInterval: 2,
+      num_query_groups: 8,
+    },
+    moe_ffn: {
+      xCount: 32,
+      yCount: 4,
+      xInterval: 1,
+      yInterval: 4,
+      num_experts: 8,
+      active_experts: 2,
+    },
+    cross_modal_attention: {
+      xCount: 32,
+      yCount: 7,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    rmsnorm: {
+      xCount: 24,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  CLAUDE_3: {
+    sliding_window_attention: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+      window_size: 8192,
+    },
+    constitutional_gate: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    swiglu_ffn: {
+      xCount: 48,
+      yCount: 4,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 24,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  PALM: {
+    multi_query_attention: {
+      xCount: 32,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+      num_query_groups: 8,
+    },
+    pathway_router: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+      num_paths: 8,
+    },
+    swiglu_ffn: {
+      xCount: 48,
+      yCount: 6,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 24,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  PALM_2: {
+    multi_query_attention: {
+      xCount: 40,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+      num_query_groups: 16,
+    },
+    cross_modal_attention: {
+      xCount: 20,
+      yCount: 2,
+      xInterval: 2,
+      yInterval: 2,
+      rotation: 90,
+    },
+    pathway_router: {
+      xCount: 20,
+      yCount: 1,
+      xInterval: 2,
+      yInterval: 2,
+      num_paths: 16,
+    },
+    swiglu_ffn: {
+      xCount: 64,
+      yCount: 2,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 32,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  SWITCH_TRANSFORMER: {
+    attention: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 32,
+      yInterval: 32,
+    },
+    moe_router: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 4,
+      yInterval: 4,
+      num_experts: 32,
+    },
+    moe_ffn: {
+      xCount: 64,
+      yCount: 8,
+      xInterval: 128,
+      yInterval: 8,
+      num_experts: 32,
+      active_experts: 1,
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    auxiliary_loss: {
+      xCount: 8,
+      yCount: 4,
+      xInterval: 4,
+      yInterval: 2,
+    },
+    reduced: true,
+  },
+  ALBERT: {
+    factorized_embedding: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 8,
+      yInterval: 4,
+      reduction_factor: 4,
+    },
+    attention: {
+      xCount: 24,
+      yCount: 12,
+      xInterval: 32,
+      yInterval: 32,
+      shared: true, // Indicates shared parameters
+    },
+    ffn: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 64,
+      yInterval: 8,
+      shared: true, // Indicates shared parameters
+    },
+    sop_head: {
+      xCount: 12,
+      yCount: 4,
+      xInterval: 16,
+      yInterval: 4,
+    },
+    layernorm: {
+      xCount: 12,
+      yCount: 4,
+      xInterval: 8,
+      yInterval: 2,
+      shared: true,
+    },
+    reduced: true,
+  },
+  MT5: {
+    relative_attention: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+      relative_attention_num_buckets: 32,
+    },
+    cross_attention: {
+      xCount: 32,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    gated_ffn: {
+      xCount: 48,
+      yCount: 4,
+      xInterval: 1,
+      yInterval: 4,
+    },
+    rmsnorm: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
     reduced: true,
   },
 };

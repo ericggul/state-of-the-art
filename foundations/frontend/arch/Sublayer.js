@@ -11,6 +11,7 @@ export const INTERLAYER_MARGIN_Y = 3.0;
 const Sublayer = ({
   position,
   sublayer,
+  rotation,
   style,
   model,
   useGivenInterval = false,
