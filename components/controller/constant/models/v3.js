@@ -1051,14 +1051,6 @@ export const MODELS = {
         explanation:
           "First AI to defeat top professional players in StarCraft II, a complex real-time strategy game.",
       },
-      "v7.2.2": {
-        name: "OpenAI Five",
-        year: 2019,
-        place: "OpenAI",
-        citation: 800,
-        explanation:
-          "Mastered the complex team game Dota 2, defeating world champion team.",
-      },
     },
     "v7.3": {
       name: "Advanced AI Systems",
@@ -1076,22 +1068,6 @@ export const MODELS = {
         citation: 3000,
         explanation:
           "Dramatically improved protein structure prediction to atomic accuracy.",
-      },
-      "v7.3.3": {
-        name: "Gato",
-        year: 2022,
-        place: "Scott Reed et al., DeepMind",
-        citation: 400,
-        explanation:
-          "A generalist agent capable of performing hundreds of different tasks.",
-      },
-      "v7.3.4": {
-        name: "RT-2",
-        year: 2023,
-        place: "Google DeepMind",
-        citation: 100,
-        explanation:
-          "Robotic transformer that can generalize from web data to real-world robot actions.",
       },
     },
   },
@@ -1216,11 +1192,9 @@ export const ARRAY = [
   "AlphaZero",
   "MuZero",
   "AlphaStar",
-  "OpenAI Five",
+
   "AlphaFold",
   "AlphaFold 2",
-  "Gato",
-  "RT-2",
 ];
 
 export const OBJECT_ARRAY = [
@@ -1690,10 +1664,7 @@ export const OBJECT_ARRAY = [
     name: "AlphaStar",
     version: "v7.2.1",
   },
-  {
-    name: "OpenAI Five",
-    version: "v7.2.2",
-  },
+
   {
     name: "AlphaFold",
     version: "v7.3.1",
@@ -1701,13 +1672,5 @@ export const OBJECT_ARRAY = [
   {
     name: "AlphaFold 2",
     version: "v7.3.2",
-  },
-  {
-    name: "Gato",
-    version: "v7.3.3",
-  },
-  {
-    name: "RT-2",
-    version: "v7.3.4",
   },
 ];

@@ -37,7 +37,7 @@ const ALPHAGO_ZERO_INPUT_DIM = [19, 19, 17]; // Go board with feature planes
 const NUM_OPENAI_FIVE_LSTM_UNITS = 8192;
 const NUM_OPENAI_FIVE_LSTM_LAYERS = 4;
 const NUM_OPENAI_FIVE_HIDDEN_UNITS = 8192;
-const OPENAI_FIVE_EMBED_DIM = 1024;
+const OPENAI_FIVE_EMBED_DIM = 124;
 const NUM_HEROES = 117; // Number of heroes in Dota 2
 const NUM_ITEMS = 200; // Approximate number of items
 const NUM_ABILITIES = 400; // Approximate number of abilities
@@ -57,6 +57,15 @@ const TEMPLATE_DIM = 64;
 const ALPHAFOLD_EMBED_DIM = 256;
 
 // Model definitions
+
+// Add AlphaFold 2 specific constants
+const AF2_NUM_MSA_STACK = 48; // Number of MSA Stack blocks
+const AF2_NUM_EXTRA_MSA_STACK = 8; // Number of Extra MSA Stack blocks
+const AF2_NUM_TEMPLATE_STACK = 8; // Number of Template Stack blocks
+const AF2_NUM_STRUCTURE_STACK = 8; // Number of Structure Module blocks
+const AF2_EMBED_DIM = 256; // Embedding dimension
+
+/** AlphaFold 2 **/
 
 /** Deep Q-Network (DQN) **/
 export const DEEP_Q_NETWORK_DQN = [
@@ -1095,141 +1104,7 @@ export const ALPHAGO_ZERO = [
     ],
   },
 ];
-
-/** OpenAI Five **/
-export const OPENAI_FIVE = [
-  // Input Processing
-  {
-    name: "Input",
-    type: "input",
-    dimensions: [DOTA_OBS_DIM, 1, 1],
-  },
-
-  // Entity Embeddings
-  {
-    name: "Entity Processing",
-    type: "entity_embeddings",
-    dimensions: [1, 1, OPENAI_FIVE_EMBED_DIM],
-    sublayers: [
-      {
-        name: "Hero Embeddings",
-        type: "entity_embed",
-        dimensions: [NUM_HEROES, OPENAI_FIVE_EMBED_DIM],
-      },
-      {
-        name: "Unit Embeddings",
-        type: "entity_embed",
-        dimensions: [1000, OPENAI_FIVE_EMBED_DIM], // Max units
-      },
-      {
-        name: "Item Embeddings",
-        type: "entity_embed",
-        dimensions: [NUM_ITEMS, OPENAI_FIVE_EMBED_DIM],
-      },
-      {
-        name: "Ability Embeddings",
-        type: "entity_embed",
-        dimensions: [NUM_ABILITIES, OPENAI_FIVE_EMBED_DIM],
-      },
-    ],
-  },
-
-  // LSTM Stack (4 layers instead of 2)
-  {
-    name: "LSTM Stack",
-    type: "lstm_stack",
-    dimensions: [1, 1, NUM_OPENAI_FIVE_LSTM_UNITS],
-    sublayers: Array.from({ length: NUM_OPENAI_FIVE_LSTM_LAYERS }, (_, i) => ({
-      name: `LSTM Layer ${i + 1}`,
-      type: "lstm",
-      dimensions: [1, 1, NUM_OPENAI_FIVE_LSTM_UNITS],
-    })),
-  },
-
-  // Action Processing
-  {
-    name: "Action Processing",
-    type: "action_processing",
-    dimensions: [1, 1, NUM_OPENAI_FIVE_HIDDEN_UNITS],
-    sublayers: [
-      {
-        name: "Action Type Selection",
-        type: "action_selection",
-        dimensions: [1, 1, 8], // Main action categories
-        activation: "softmax",
-      },
-      {
-        name: "Target Selection",
-        type: "target_selection",
-        sublayers: [
-          {
-            name: "Unit Targeting",
-            type: "pointer_network",
-            dimensions: [1, 1, 1000], // Max targetable units
-          },
-          {
-            name: "Location Targeting",
-            type: "continuous_action",
-            dimensions: [1, 1, 2], // X,Y coordinates
-          },
-        ],
-      },
-      {
-        name: "Ability/Item Selection",
-        type: "discrete_selection",
-        dimensions: [1, 1, NUM_ABILITIES + NUM_ITEMS],
-      },
-    ],
-  },
-
-  // Communication Channel
-  {
-    name: "Communication",
-    type: "communication_channel",
-    dimensions: [5, NUM_OPENAI_FIVE_HIDDEN_UNITS], // 5 agents
-    sublayers: [
-      {
-        name: "Message Generation",
-        type: "message_gen",
-        dimensions: [1, 1, NUM_OPENAI_FIVE_HIDDEN_UNITS],
-      },
-      {
-        name: "Message Integration",
-        type: "message_integration",
-        dimensions: [5, NUM_OPENAI_FIVE_HIDDEN_UNITS],
-      },
-    ],
-  },
-
-  // Value Network with larger capacity
-  {
-    name: "Value Network",
-    type: "value_network",
-    dimensions: [1, 1, NUM_OPENAI_FIVE_HIDDEN_UNITS],
-    sublayers: [
-      {
-        name: "Value Hidden 1",
-        type: "dense",
-        dimensions: [1, 1, NUM_OPENAI_FIVE_HIDDEN_UNITS],
-        activation: "relu",
-      },
-      {
-        name: "Value Hidden 2",
-        type: "dense",
-        dimensions: [1, 1, NUM_OPENAI_FIVE_HIDDEN_UNITS / 2],
-        activation: "relu",
-      },
-      {
-        name: "Value Output",
-        type: "dense",
-        dimensions: [1, 1, 1],
-        activation: "linear",
-      },
-    ],
-  },
-];
-
-/** AlphaFold **/
+/** AlphaFold (Original) **/
 export const ALPHAFOLD = [
   // Input Processing
   {
@@ -1246,34 +1121,20 @@ export const ALPHAFOLD = [
         type: "pair_embedding",
         dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, NUM_PAIR_FEATURES],
       },
-      {
-        name: "Template Embedding",
-        type: "template_embedding",
-        dimensions: [NUM_TEMPLATES, MSA_MAX_POSITIONS, TEMPLATE_DIM],
-      },
     ],
   },
 
-  // Evoformer Stack
+  // Evoformer Stack (Original had fewer blocks)
   {
     name: "Evoformer Stack",
     type: "evoformer_stack",
     dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, ALPHAFOLD_EMBED_DIM],
-    sublayers: Array.from({ length: 48 }, (_, i) => ({
+    sublayers: Array.from({ length: 8 }, (_, i) => ({
       name: `Evoformer Block ${i + 1}`,
       type: "evoformer_block",
       sublayers: [
         {
-          name: "MSA Row-wise Attention",
-          type: "msa_attention",
-          dimensions: [
-            MSA_MAX_SEQUENCES,
-            MSA_MAX_POSITIONS,
-            ALPHAFOLD_EMBED_DIM,
-          ],
-        },
-        {
-          name: "MSA Column-wise Attention",
+          name: "MSA Attention",
           type: "msa_attention",
           dimensions: [
             MSA_MAX_SEQUENCES,
@@ -1291,24 +1152,6 @@ export const ALPHAFOLD = [
           ],
         },
         {
-          name: "Outer Product Mean",
-          type: "outer_product",
-          dimensions: [
-            MSA_MAX_POSITIONS,
-            MSA_MAX_POSITIONS,
-            ALPHAFOLD_EMBED_DIM,
-          ],
-        },
-        {
-          name: "Triangle Multiplication",
-          type: "triangle_multiplication",
-          dimensions: [
-            MSA_MAX_POSITIONS,
-            MSA_MAX_POSITIONS,
-            ALPHAFOLD_EMBED_DIM,
-          ],
-        },
-        {
           name: "Pair Transition",
           type: "pair_transition",
           dimensions: [
@@ -1321,38 +1164,168 @@ export const ALPHAFOLD = [
     })),
   },
 
-  // Structure Module
+  // Structure Module (Original simpler version)
   {
     name: "Structure Module",
     type: "structure_module",
-    dimensions: [MSA_MAX_POSITIONS, 3, 3], // 3D coordinates
+    dimensions: [MSA_MAX_POSITIONS, 3, 3],
     sublayers: [
-      {
-        name: "IPA Stack",
-        type: "ipa_stack",
-        sublayers: Array.from({ length: 8 }, (_, i) => ({
-          name: `IPA Block ${i + 1}`,
-          type: "ipa_block",
-          sublayers: [
-            {
-              name: "Invariant Point Attention",
-              type: "invariant_attention",
-              dimensions: [MSA_MAX_POSITIONS, ALPHAFOLD_EMBED_DIM],
-            },
-            {
-              name: "Backbone Update",
-              type: "backbone_update",
-              dimensions: [MSA_MAX_POSITIONS, 3, 3],
-            },
-          ],
-        })),
-      },
       {
         name: "Structure Transition",
         type: "structure_transition",
         dimensions: [MSA_MAX_POSITIONS, ALPHAFOLD_EMBED_DIM],
       },
+      {
+        name: "Backbone Update",
+        type: "backbone_update",
+        dimensions: [MSA_MAX_POSITIONS, 3, 3],
+      },
     ],
+  },
+
+  // Output Head (Original had simpler output)
+  {
+    name: "Output Head",
+    type: "output_head",
+    dimensions: [MSA_MAX_POSITIONS, 3, 3],
+    sublayers: [
+      {
+        name: "Distance Prediction",
+        type: "distance_head",
+        dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, 1],
+      },
+      {
+        name: "Structure Head",
+        type: "structure_head",
+        dimensions: [MSA_MAX_POSITIONS, 3, 3],
+      },
+    ],
+  },
+];
+
+export const ALPHAFOLD_2 = [
+  // Input Processing
+  {
+    name: "Input Features",
+    type: "input_embeddings",
+    sublayers: [
+      {
+        name: "MSA Embedding",
+        type: "msa_embedding",
+        dimensions: [MSA_MAX_SEQUENCES, MSA_MAX_POSITIONS, NUM_MSA_FEATURES],
+      },
+      {
+        name: "Extra MSA Embedding",
+        type: "extra_msa_embedding",
+        dimensions: [
+          MSA_MAX_SEQUENCES * 4,
+          MSA_MAX_POSITIONS,
+          NUM_MSA_FEATURES,
+        ],
+      },
+      {
+        name: "Template Embedding",
+        type: "template_embedding",
+        dimensions: [NUM_TEMPLATES, MSA_MAX_POSITIONS, TEMPLATE_DIM],
+      },
+    ],
+  },
+
+  // MSA Stack
+  {
+    name: "MSA Stack",
+    type: "msa_stack",
+    dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+    sublayers: Array.from({ length: AF2_NUM_MSA_STACK }, (_, i) => ({
+      name: `MSA Block ${i + 1}`,
+      type: "msa_block",
+      sublayers: [
+        {
+          name: "MSA Row Attention",
+          type: "msa_row_attention",
+          dimensions: [MSA_MAX_SEQUENCES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+        {
+          name: "MSA Column Attention",
+          type: "msa_column_attention",
+          dimensions: [MSA_MAX_SEQUENCES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+        {
+          name: "MSA Transition",
+          type: "msa_transition",
+          dimensions: [MSA_MAX_SEQUENCES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+      ],
+    })),
+  },
+
+  // Extra MSA Stack
+  {
+    name: "Extra MSA Stack",
+    type: "extra_msa_stack",
+    dimensions: [MSA_MAX_POSITIONS * 4, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+    sublayers: Array.from({ length: AF2_NUM_EXTRA_MSA_STACK }, (_, i) => ({
+      name: `Extra MSA Block ${i + 1}`,
+      type: "extra_msa_block",
+      sublayers: [
+        {
+          name: "Extra MSA Attention",
+          type: "extra_msa_attention",
+          dimensions: [MSA_MAX_SEQUENCES * 4, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+        {
+          name: "Extra MSA Transition",
+          type: "extra_msa_transition",
+          dimensions: [MSA_MAX_SEQUENCES * 4, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+      ],
+    })),
+  },
+
+  // Template Stack
+  {
+    name: "Template Stack",
+    type: "template_stack",
+    dimensions: [NUM_TEMPLATES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+    sublayers: Array.from({ length: AF2_NUM_TEMPLATE_STACK }, (_, i) => ({
+      name: `Template Block ${i + 1}`,
+      type: "template_block",
+      sublayers: [
+        {
+          name: "Template Attention",
+          type: "template_attention",
+          dimensions: [NUM_TEMPLATES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+        {
+          name: "Template Transition",
+          type: "template_transition",
+          dimensions: [NUM_TEMPLATES, MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+      ],
+    })),
+  },
+
+  // Structure Module
+  {
+    name: "Structure Module",
+    type: "structure_module",
+    dimensions: [MSA_MAX_POSITIONS, 3, 3],
+    sublayers: Array.from({ length: AF2_NUM_STRUCTURE_STACK }, (_, i) => ({
+      name: `Structure Block ${i + 1}`,
+      type: "structure_block",
+      sublayers: [
+        {
+          name: "IPA Module",
+          type: "ipa_module",
+          dimensions: [MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+        {
+          name: "Structure Transition",
+          type: "structure_transition",
+          dimensions: [MSA_MAX_POSITIONS, AF2_EMBED_DIM],
+        },
+      ],
+    })),
   },
 
   // Output Heads
@@ -1362,23 +1335,23 @@ export const ALPHAFOLD = [
     sublayers: [
       {
         name: "Distogram Head",
-        type: "distogram",
-        dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, 64], // 64 bins
+        type: "distogram_head",
+        dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, 64],
       },
       {
-        name: "TM Score Head",
-        type: "tm_score",
-        dimensions: [1],
-      },
-      {
-        name: "pTM Head",
-        type: "ptm",
-        dimensions: [MSA_MAX_POSITIONS, MSA_MAX_POSITIONS, 1],
+        name: "pLDDT Head",
+        type: "plddt_head",
+        dimensions: [MSA_MAX_POSITIONS, 1],
       },
       {
         name: "Structure Head",
-        type: "structure",
-        dimensions: [MSA_MAX_POSITIONS, 3, 3], // Final 3D coordinates
+        type: "structure_head",
+        dimensions: [MSA_MAX_POSITIONS, 3, 3],
+      },
+      {
+        name: "pTM Head",
+        type: "ptm_head",
+        dimensions: [1],
       },
     ],
   },
@@ -1427,15 +1400,16 @@ export const LAYER_CONFIGS = {
     keyPrefix: "alphago_zero",
     type: "reinforcement",
   },
-  OPENAI_FIVE: {
-    layerHeight: 10,
-    keyPrefix: "openai_five",
+
+  ALPHAFOLD: {
+    layerHeight: 240,
+    keyPrefix: "alphafold",
     type: "reinforcement",
   },
-  ALPHAFOLD: {
-    layerHeight: 180,
-    keyPrefix: "alphafold",
-    type: "protein_structure",
+  ALPHAFOLD_2: {
+    layerHeight: 300,
+    keyPrefix: "alphafold2",
+    type: "reinforcement",
   },
 };
 
@@ -1659,54 +1633,170 @@ export const GRID_CONFIGS = {
       yInterval: 0.5,
     },
   },
-  OPENAI_FIVE: {
-    input: {
-      xCount: 64,
-      yCount: 32,
+  ALPHAFOLD: {
+    input_embeddings: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    msa_embedding: {
+      xCount: 12,
+      yCount: 6,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    pair_embedding: {
+      xCount: 12,
+      yCount: 12,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    evoformer_stack: {
+      xCount: 24,
+      yCount: 12,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    evoformer_block: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    msa_attention: {
+      xCount: 12,
+      yCount: 6,
       xInterval: 1,
       yInterval: 1,
     },
-    embedding: {
-      xCount: OPENAI_FIVE_EMBED_DIM / 8,
-      yCount: 4,
+    msa_transition: {
+      xCount: 12,
+      yCount: 6,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    pair_transition: {
+      xCount: 12,
+      yCount: 12,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    structure_module: {
+      xCount: 16,
+      yCount: 8,
       xInterval: 2,
       yInterval: 2,
     },
-    lstm: {
-      xCount: NUM_OPENAI_FIVE_LSTM_UNITS / 64,
-      yCount: 1,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    action: {
-      xCount: NUM_OPENAI_FIVE_HIDDEN_UNITS / 64,
-      yCount: 4,
+    backbone_update: {
+      xCount: 12,
+      yCount: 6,
       xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    output_head: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 2,
       yInterval: 2,
     },
-    pointer: {
+  },
+  ALPHAFOLD_2: {
+    input_embeddings: {
       xCount: 24,
+      yCount: 12,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    msa_embedding: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    extra_msa_embedding: {
+      xCount: 20,
+      yCount: 10,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    template_embedding: {
+      xCount: NUM_TEMPLATES,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    msa_stack: {
+      xCount: 32,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    msa_block: {
+      xCount: 24,
+      yCount: 12,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    msa_row_attention: {
+      xCount: 16,
       yCount: 8,
       xInterval: 1,
       yInterval: 1,
     },
-    communication: {
-      xCount: 5,
-      yCount: NUM_OPENAI_FIVE_HIDDEN_UNITS / 256,
-      xInterval: 2,
-      yInterval: 1.5,
+    msa_column_attention: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1,
+      yInterval: 1,
     },
-    value: {
-      xCount: NUM_OPENAI_FIVE_HIDDEN_UNITS / 64,
-      yCount: 2,
-      xInterval: 1.5,
+    extra_msa_stack: {
+      xCount: 28,
+      yCount: 14,
+      xInterval: 2,
       yInterval: 2,
     },
-    dense: {
-      xCount: 512,
-      yCount: 1,
-      xInterval: 0.5,
-      yInterval: 0.5,
+    extra_msa_block: {
+      xCount: 20,
+      yCount: 10,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    template_stack: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    template_block: {
+      xCount: 12,
+      yCount: 6,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    structure_module: {
+      xCount: 24,
+      yCount: 12,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    structure_block: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    ipa_module: {
+      xCount: 12,
+      yCount: 6,
+      xInterval: 1,
+      yInterval: 1,
+    },
+    output_heads: {
+      xCount: 20,
+      yCount: 10,
+      xInterval: 2,
+      yInterval: 2,
     },
   },
 };
