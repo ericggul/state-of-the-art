@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "PCs | Frontend Backend",
+  title: "PCs | State of the Art",
   robots: {
     index: true,
     follow: true,

@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import * as S from "./styles";
-import { MODELS } from "@/components/controller/constant/models/v2";
+import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 
 export default function Mobile({ socket }) {

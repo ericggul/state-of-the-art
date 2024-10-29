@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useRef } from "react";
 import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
-import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
+import { OBJECT_ARRAY } from "@/components/controller/constant/models/v3";
 import * as Tone from "tone";
 
 export default function Grid() {

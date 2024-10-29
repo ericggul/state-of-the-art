@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import * as S from "./styles";
 import Architecture3D from "@/foundations/frontend/3d";
 import ArchitectureUI from "@/foundations/frontend/ui";
-import { MODELS } from "@/components/controller/constant/models/v2";
+import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterAndRefineModels } from "./utils";
 import useDebounce from "@/utils/hooks/useDebounce";
 
@@ -42,10 +42,10 @@ function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
 
   const debouncedVersion = useDebounce(version, DEBOUNCE_DELAY);
 
-  // console.log(
-  //   refinedFlattened,
-  //   refinedFlattened.map((model) => model.name)
-  // );
+  console.log(
+    refinedFlattened,
+    refinedFlattened.map((model) => model.name)
+  );
 
   return (
     <S.Container>

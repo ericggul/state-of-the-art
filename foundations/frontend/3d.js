@@ -8,7 +8,7 @@ import useScreenStore from "@/components/screen/store";
 
 import { STYLE_STRATEGIES } from "./style";
 import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
-import { OBJECT_ARRAY } from "@/components/controller/constant/models/v2";
+import { OBJECT_ARRAY } from "@/components/controller/constant/models/v3";
 
 import BasicNNLayers from "./arch/layers/BasicNNLayers";
 import CNNLayers from "./arch/layers/CNNLayers";
