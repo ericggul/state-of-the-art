@@ -33,6 +33,18 @@ const SORA_TEMPORAL_LAYERS = 32;
 const SORA_SPATIAL_LAYERS = 24;
 const SORA_EMBED_DIM = 2048;
 
+// Add Lumiere-specific constants
+const NUM_LUMIERE_BLOCKS = 6;
+const LUMIERE_EMBED_DIM = 1280;
+const LUMIERE_TEMPORAL_LAYERS = 24;
+const NUM_CONDITIONING_FRAMES = 8;
+
+// Add Gen-2 specific constants
+const NUM_GEN_2_BLOCKS = 6;
+const GEN_2_EMBED_DIM = 1536;
+const GEN_2_TEMPORAL_LAYERS = 24;
+const GEN_2_SPATIAL_LAYERS = 20;
+
 export const DDPM = [
   { name: "Input Noise", type: "input", dimensions: IMAGE_DIM },
   { name: "Time Embedding", type: "time_embedding", dimensions: [1, 1, 256] },
@@ -1035,230 +1047,6 @@ export const SDXL_TURBO = [
   { name: "Output Image", type: "output", dimensions: SDXL_IMAGE_DIM },
 ];
 
-// Layer configurations for diffusion models
-export const LAYER_CONFIGS = {
-  DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
-  STABLE_DIFFUSION: {
-    layerHeight: 5,
-    keyPrefix: "stable_diffusion",
-    type: "diffusion",
-  },
-  GLIDE: { layerHeight: 60, keyPrefix: "glide", type: "diffusion" },
-  IMAGEN: { layerHeight: 80, keyPrefix: "imagen", type: "diffusion" },
-  CONSISTENCY_MODELS: {
-    layerHeight: 60,
-    keyPrefix: "consistency_models",
-    type: "diffusion",
-  },
-  IMPROVED_DDPM: {
-    layerHeight: 60,
-    keyPrefix: "improved_ddpm",
-    type: "diffusion",
-  },
-  STABLE_DIFFUSION_XL: {
-    layerHeight: 5,
-    keyPrefix: "sdxl",
-    type: "diffusion",
-  },
-  SDXL_TURBO: {
-    layerHeight: 5,
-    keyPrefix: "sdxl_turbo",
-    type: "diffusion",
-  },
-  IP_ADAPTER: {
-    layerHeight: 60,
-    keyPrefix: "ip_adapter",
-    type: "diffusion",
-  },
-  STABLE_VIDEO_DIFFUSION: {
-    layerHeight: 5,
-    keyPrefix: "svd",
-    type: "diffusion",
-  },
-  SORA: {
-    layerHeight: 5,
-    keyPrefix: "sora",
-    type: "diffusion",
-  },
-};
-
-// Grid configurations for diffusion models
-export const GRID_CONFIGS = {
-  DDPM: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  STABLE_DIFFUSION: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    unet_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  GLIDE: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 4, yCount: 1, xInterval: 1, yInterval: 1 },
-  },
-  IMAGEN: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    // output: { xCount: 256, yCount: 256, xInterval: 0.25, yInterval: 0.25 },
-    output: { xCount: 64, yCount: 64, xInterval: 0.25, yInterval: 0.25 },
-    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-    t5_encoder_block: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
-    resnet_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 8, yCount: 1, xInterval: 1, yInterval: 1 },
-  },
-  CONSISTENCY_MODELS: {
-    input: {
-      xCount: IMAGE_DIM[0],
-      yCount: IMAGE_DIM[1],
-      xInterval: 1,
-      yInterval: 1,
-    },
-    output: {
-      xCount: IMAGE_DIM[0],
-      yCount: IMAGE_DIM[1],
-      xInterval: 1,
-      yInterval: 1,
-    },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  IMPROVED_DDPM: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  STABLE_DIFFUSION_XL: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    text_encoder: { xCount: 77, yCount: 2, xInterval: 2, yInterval: 4 },
-    condition: { xCount: 4, yCount: 1, xInterval: 2, yInterval: 2 },
-    cross_attention: { xCount: 16, yCount: 2, xInterval: 2, yInterval: 2 },
-    self_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  SDXL_TURBO: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    turbo_block: { xCount: 12, yCount: 12, xInterval: 2, yInterval: 2 },
-    efficient_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-  IP_ADAPTER: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    image_encoder: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
-    vit: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
-    ip_adapter: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    ip_cross_attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  STABLE_VIDEO_DIFFUSION: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
-    temporal_encoder: {
-      xCount: NUM_FRAMES,
-      yCount: 4,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    frame_condition: {
-      xCount: NUM_FRAMES,
-      yCount: NUM_FRAMES,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    temporal_attention: {
-      xCount: NUM_FRAMES,
-      yCount: NUM_FRAMES,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    temporal_resnet: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    temporal_cross_attention: {
-      xCount: NUM_FRAMES,
-      yCount: 8,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    motion_modulation: {
-      xCount: NUM_FRAMES,
-      yCount: 4,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    down_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    up_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-  },
-  SORA: {
-    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
-    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    spatiotemporal_attention: {
-      xCount: 16,
-      yCount: 16,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    world_state: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    physics_model: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    motion_gate: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    motion_refine: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    world_consistency: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    world_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    motion_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    conv3d: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
-    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
-    spatiotemporal_synthesis: {
-      xCount: 16,
-      yCount: 16,
-      xInterval: 2,
-      yInterval: 2,
-    },
-    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    global_context: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
-    patch_embed: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
-    temporal_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    spatial_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-  },
-};
-
 // Continuing IP-Adapter with complete structure
 export const IP_ADAPTER = [
   { name: "Input Image", type: "input", dimensions: IMAGE_DIM },
@@ -1940,5 +1728,884 @@ export const SORA = [
     name: "Output Video",
     type: "output",
     dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+];
+
+export const LUMIERE = [
+  {
+    name: "Input Video",
+    type: "input",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+  {
+    name: "DiT Encoder",
+    type: "dit_encoder",
+    sublayers: [
+      {
+        name: "Patch Embedding",
+        type: "patch_embed",
+        dimensions: [
+          NUM_FRAMES,
+          SDXL_IMAGE_DIM[0] / 16,
+          SDXL_IMAGE_DIM[1] / 16,
+          LUMIERE_EMBED_DIM,
+        ],
+      },
+      {
+        name: "Temporal Processing",
+        type: "temporal_encoder",
+        sublayers: Array.from({ length: LUMIERE_TEMPORAL_LAYERS }, (_, i) => ({
+          name: `Temporal Block ${i + 1}`,
+          type: "temporal_block",
+          sublayers: [
+            {
+              name: "Frame Attention",
+              type: "temporal_attention",
+              dimensions: [NUM_FRAMES, NUM_FRAMES, LUMIERE_EMBED_DIM],
+            },
+            {
+              name: "Spatial MLP",
+              type: "mlp",
+              dimensions: [LUMIERE_EMBED_DIM * 4, LUMIERE_EMBED_DIM],
+            },
+          ],
+        })),
+      },
+    ],
+  },
+  {
+    name: "Conditioning Encoder",
+    type: "cond_encoder",
+    sublayers: [
+      {
+        name: "Frame Selection",
+        type: "frame_select",
+        dimensions: [
+          NUM_CONDITIONING_FRAMES,
+          SDXL_IMAGE_DIM[0],
+          SDXL_IMAGE_DIM[1],
+          3,
+        ],
+      },
+      {
+        name: "Motion Encoding",
+        type: "motion_encoder",
+        dimensions: [NUM_CONDITIONING_FRAMES, LUMIERE_EMBED_DIM],
+      },
+    ],
+  },
+  {
+    name: "DiT UNet",
+    type: "dit_unet",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_LUMIERE_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `DiT Block ${i + 1}`,
+            type: "dit_block",
+            sublayers: [
+              {
+                name: "Spatiotemporal Attention",
+                type: "spatiotemporal_attention",
+                dimensions: [
+                  NUM_FRAMES *
+                    (SDXL_IMAGE_DIM[0] / 2 ** i) *
+                    (SDXL_IMAGE_DIM[1] / 2 ** i),
+                  LUMIERE_EMBED_DIM * 2 ** i,
+                ],
+              },
+              {
+                name: "Conditioning Integration",
+                type: "cond_integration",
+                dimensions: [LUMIERE_EMBED_DIM * 2 ** i],
+              },
+            ],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "DiT Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Global Context",
+            type: "global_context",
+            dimensions: [LUMIERE_EMBED_DIM * 16],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_LUMIERE_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_LUMIERE_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `DiT Synthesis ${NUM_LUMIERE_BLOCKS - i}`,
+            type: "dit_synthesis",
+            sublayers: [
+              {
+                name: "Space-Time Generation",
+                type: "attention",
+                dimensions: [
+                  (NUM_FRAMES * SDXL_IMAGE_DIM[0] * SDXL_IMAGE_DIM[1]) /
+                    4 ** (NUM_LUMIERE_BLOCKS - i - 1),
+                  LUMIERE_EMBED_DIM * 2 ** (NUM_LUMIERE_BLOCKS - i - 1),
+                ],
+              },
+              {
+                name: "Motion Integration",
+                type: "motion_integration",
+                dimensions: [
+                  LUMIERE_EMBED_DIM * 2 ** (NUM_LUMIERE_BLOCKS - i - 1),
+                ],
+              },
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "Video Decoder",
+    type: "video_decoder",
+    sublayers: [
+      {
+        name: "Temporal Upsampling",
+        type: "temporal_upsample",
+        dimensions: [NUM_FRAMES, LUMIERE_EMBED_DIM],
+      },
+      {
+        name: "Spatial Decoder",
+        type: "spatial_decoder",
+        dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+      },
+    ],
+  },
+  {
+    name: "Output Video",
+    type: "output",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+];
+
+// Add Point-E specific constants
+const NUM_POINTE_BLOCKS = 4;
+const POINTE_EMBED_DIM = 1024;
+const NUM_POINTS = 4096;
+const POINT_FEATURES = 6; // x,y,z coordinates + RGB values
+
+export const POINT_E = [
+  { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
+  {
+    name: "Image Encoder",
+    type: "image_encoder",
+    sublayers: [
+      {
+        name: "Vision Transformer",
+        type: "vit",
+        dimensions: [16, 16, POINTE_EMBED_DIM],
+      },
+      {
+        name: "Global Pooling",
+        type: "pool",
+        dimensions: [POINTE_EMBED_DIM],
+      },
+    ],
+  },
+  {
+    name: "Point Cloud UNet",
+    type: "unet",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_POINTE_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `Point Transform ${i + 1}`,
+            type: "point_transform",
+            dimensions: [NUM_POINTS / 2 ** i, POINTE_EMBED_DIM * 2 ** i],
+          },
+          {
+            name: `Self Attention ${i + 1}`,
+            type: "point_attention",
+            dimensions: [NUM_POINTS / 2 ** i, POINTE_EMBED_DIM * 2 ** i],
+          },
+          {
+            name: `Image Cross Attention ${i + 1}`,
+            type: "cross_attention",
+            dimensions: [NUM_POINTS / 2 ** i, POINTE_EMBED_DIM * 2 ** i],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Point Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Global Point Features",
+            type: "global_features",
+            dimensions: [POINTE_EMBED_DIM * 8],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_POINTE_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_POINTE_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `Point Synthesis ${NUM_POINTE_BLOCKS - i}`,
+            type: "point_synthesis",
+            dimensions: [
+              NUM_POINTS / 2 ** (NUM_POINTE_BLOCKS - i - 1),
+              POINTE_EMBED_DIM * 2 ** (NUM_POINTE_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Feature Integration ${NUM_POINTE_BLOCKS - i}`,
+            type: "feature_integration",
+            dimensions: [POINTE_EMBED_DIM * 2 ** (NUM_POINTE_BLOCKS - i - 1)],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "Point Decoder",
+    type: "point_decoder",
+    sublayers: [
+      {
+        name: "Coordinate MLP",
+        type: "mlp",
+        dimensions: [POINTE_EMBED_DIM, NUM_POINTS * 3],
+      },
+      {
+        name: "Color MLP",
+        type: "mlp",
+        dimensions: [POINTE_EMBED_DIM, NUM_POINTS * 3],
+      },
+    ],
+  },
+  {
+    name: "Output Point Cloud",
+    type: "output",
+    dimensions: [NUM_POINTS, POINT_FEATURES],
+  },
+];
+
+// Add Get3D specific constants
+const NUM_GET3D_BLOCKS = 5;
+const GET3D_EMBED_DIM = 1024;
+const NUM_VERTICES = 8192;
+const NUM_FACES = 16384;
+const FEATURE_DIM = 256;
+
+export const GET3D = [
+  { name: "Input Image", type: "input", dimensions: SDXL_IMAGE_DIM },
+  {
+    name: "Image Encoder",
+    type: "image_encoder",
+    sublayers: [
+      {
+        name: "Vision Transformer",
+        type: "vit",
+        dimensions: [16, 16, GET3D_EMBED_DIM],
+      },
+      {
+        name: "Feature Pooling",
+        type: "pool",
+        dimensions: [GET3D_EMBED_DIM],
+      },
+    ],
+  },
+  {
+    name: "Geometry Generator",
+    type: "unet",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_GET3D_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `Mesh Transform ${i + 1}`,
+            type: "mesh_transform",
+            dimensions: [NUM_VERTICES / 2 ** i, FEATURE_DIM * 2 ** i],
+          },
+          {
+            name: `Graph Attention ${i + 1}`,
+            type: "graph_attention",
+            dimensions: [NUM_VERTICES / 2 ** i, FEATURE_DIM * 2 ** i],
+          },
+          {
+            name: `Feature Propagation ${i + 1}`,
+            type: "feature_propagation",
+            dimensions: [NUM_VERTICES / 2 ** i, FEATURE_DIM * 2 ** i],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Mesh Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Global Mesh Features",
+            type: "global_features",
+            dimensions: [GET3D_EMBED_DIM * 8],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_GET3D_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_GET3D_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `Mesh Synthesis ${NUM_GET3D_BLOCKS - i}`,
+            type: "mesh_synthesis",
+            dimensions: [
+              NUM_VERTICES / 2 ** (NUM_GET3D_BLOCKS - i - 1),
+              FEATURE_DIM * 2 ** (NUM_GET3D_BLOCKS - i - 1),
+            ],
+          },
+          {
+            name: `Topology Refinement ${NUM_GET3D_BLOCKS - i}`,
+            type: "topology_refine",
+            dimensions: [FEATURE_DIM * 2 ** (NUM_GET3D_BLOCKS - i - 1)],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "Texture Generator",
+    type: "texture_generator",
+    sublayers: [
+      {
+        name: "UV Mapping",
+        type: "uv_map",
+        dimensions: [NUM_FACES, 2],
+      },
+      {
+        name: "Texture Features",
+        type: "texture_features",
+        dimensions: [512, 512, FEATURE_DIM],
+      },
+      {
+        name: "Material Prediction",
+        type: "material_mlp",
+        dimensions: [FEATURE_DIM, 9], // RGB + roughness + metallic + normal
+      },
+    ],
+  },
+  {
+    name: "Mesh Decoder",
+    type: "mesh_decoder",
+    sublayers: [
+      {
+        name: "Vertex Decoder",
+        type: "vertex_mlp",
+        dimensions: [GET3D_EMBED_DIM, NUM_VERTICES * 3],
+      },
+      {
+        name: "Face Decoder",
+        type: "face_mlp",
+        dimensions: [GET3D_EMBED_DIM, NUM_FACES * 3],
+      },
+    ],
+  },
+  {
+    name: "Output Mesh",
+    type: "output",
+    dimensions: [NUM_VERTICES, NUM_FACES],
+  },
+];
+
+// Layer configurations for diffusion models
+export const LAYER_CONFIGS = {
+  DDPM: { layerHeight: 60, keyPrefix: "ddpm", type: "diffusion" },
+  STABLE_DIFFUSION: {
+    layerHeight: 5,
+    keyPrefix: "stable_diffusion",
+    type: "diffusion",
+  },
+  GLIDE: { layerHeight: 60, keyPrefix: "glide", type: "diffusion" },
+  IMAGEN: { layerHeight: 80, keyPrefix: "imagen", type: "diffusion" },
+  CONSISTENCY_MODELS: {
+    layerHeight: 60,
+    keyPrefix: "consistency_models",
+    type: "diffusion",
+  },
+  IMPROVED_DDPM: {
+    layerHeight: 60,
+    keyPrefix: "improved_ddpm",
+    type: "diffusion",
+  },
+  STABLE_DIFFUSION_XL: {
+    layerHeight: 5,
+    keyPrefix: "sdxl",
+    type: "diffusion",
+  },
+  SDXL_TURBO: {
+    layerHeight: 5,
+    keyPrefix: "sdxl_turbo",
+    type: "diffusion",
+  },
+  IP_ADAPTER: {
+    layerHeight: 60,
+    keyPrefix: "ip_adapter",
+    type: "diffusion",
+  },
+  STABLE_VIDEO_DIFFUSION: {
+    layerHeight: 5,
+    keyPrefix: "svd",
+    type: "diffusion",
+  },
+  SORA: {
+    layerHeight: 5,
+    keyPrefix: "sora",
+    type: "diffusion",
+  },
+  LUMIERE: {
+    layerHeight: 5,
+    keyPrefix: "lumiere",
+    type: "diffusion",
+  },
+  GEN_2: {
+    layerHeight: 5,
+    keyPrefix: "gen2",
+    type: "diffusion",
+  },
+  POINT_E: {
+    layerHeight: 5,
+    keyPrefix: "point_e",
+    type: "diffusion",
+  },
+  GET3D: {
+    layerHeight: 5,
+    keyPrefix: "get3d",
+    type: "diffusion",
+  },
+};
+
+// Grid configurations for diffusion models
+export const GRID_CONFIGS = {
+  DDPM: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    deconv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_DIFFUSION: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    unet_attention: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  GLIDE: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    transformer_block: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 4, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  IMAGEN: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    // output: { xCount: 256, yCount: 256, xInterval: 0.25, yInterval: 0.25 },
+    output: { xCount: 64, yCount: 64, xInterval: 0.25, yInterval: 0.25 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    t5_encoder_block: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 8, yCount: 1, xInterval: 1, yInterval: 1 },
+  },
+  CONSISTENCY_MODELS: {
+    input: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    output: {
+      xCount: IMAGE_DIM[0],
+      yCount: IMAGE_DIM[1],
+      xInterval: 1,
+      yInterval: 1,
+    },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  IMPROVED_DDPM: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_DIFFUSION_XL: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    text_encoder: { xCount: 77, yCount: 2, xInterval: 2, yInterval: 4 },
+    condition: { xCount: 4, yCount: 1, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 16, yCount: 2, xInterval: 2, yInterval: 2 },
+    self_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  SDXL_TURBO: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    turbo_block: { xCount: 12, yCount: 12, xInterval: 2, yInterval: 2 },
+    efficient_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  IP_ADAPTER: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    image_encoder: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
+    vit: { xCount: 24, yCount: 24, xInterval: 2, yInterval: 2 },
+    ip_adapter: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    ip_cross_attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    resnet_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  STABLE_VIDEO_DIFFUSION: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    temporal_encoder: {
+      xCount: NUM_FRAMES,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    frame_condition: {
+      xCount: NUM_FRAMES,
+      yCount: NUM_FRAMES,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    temporal_attention: {
+      xCount: NUM_FRAMES,
+      yCount: NUM_FRAMES,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    temporal_resnet: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    temporal_cross_attention: {
+      xCount: NUM_FRAMES,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    motion_modulation: {
+      xCount: NUM_FRAMES,
+      yCount: 4,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    down_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    up_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  SORA: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    vae_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    vae_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    spatiotemporal_attention: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    world_state: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    physics_model: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_gate: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_refine: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    world_consistency: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    world_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    conv3d: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    spatiotemporal_synthesis: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    global_context: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    patch_embed: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    temporal_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    spatial_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  LUMIERE: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    dit_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    cond_encoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    dit_block: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    spatiotemporal_attention: {
+      xCount: 16,
+      yCount: 16,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    cond_integration: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    global_context: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    dit_synthesis: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    motion_integration: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    temporal_upsample: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    spatial_decoder: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    temporal_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    frame_select: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    motion_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  GEN_2: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    multimodal_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vision_encoder: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    text_encoder: { xCount: 77, yCount: 1, xInterval: 2, yInterval: 2 },
+    layout_encoder: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    comp_transformer: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    layout_processor: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    layout_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    spatial_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    comp_block: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    layout_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    spatial_control: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    content_guidance: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    global_comp: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    comp_synthesis: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    layout_refine: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    content_integration: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    comp_decode: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    image_decode: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+  POINT_E: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    image_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vit: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    point_transform: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    point_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    cross_attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    global_features: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    point_synthesis: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    feature_integration: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    point_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    mlp: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+  },
+  GET3D: {
+    input: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    output: { xCount: 64, yCount: 64, xInterval: 1, yInterval: 1 },
+    image_encoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    vit: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    mesh_transform: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    graph_attention: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    feature_propagation: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    global_features: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    mesh_synthesis: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    topology_refine: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    texture_generator: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    uv_map: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    texture_features: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    material_mlp: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    vertex_mlp: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    face_mlp: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    mesh_decoder: { xCount: 16, yCount: 16, xInterval: 4, yInterval: 4 },
+    down_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    up_block: { xCount: 4, yCount: 4, xInterval: 8, yInterval: 8 },
+    bottleneck: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+  },
+};
+
+export const GEN_2 = [
+  {
+    name: "Input Video",
+    type: "input",
+    dimensions: [NUM_FRAMES, SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+  },
+  {
+    name: "Multimodal Encoder",
+    type: "multimodal_encoder",
+    sublayers: [
+      {
+        name: "Vision Encoder",
+        type: "vision_encoder",
+        dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], GEN_2_EMBED_DIM],
+      },
+      {
+        name: "Text Encoder",
+        type: "text_encoder",
+        dimensions: [77, 1, GEN_2_EMBED_DIM],
+      },
+      {
+        name: "Layout Encoder",
+        type: "layout_encoder",
+        dimensions: [16, 16, GEN_2_EMBED_DIM],
+      },
+    ],
+  },
+  {
+    name: "Compositional Transformer",
+    type: "comp_transformer",
+    sublayers: [
+      {
+        name: "Layout Understanding",
+        type: "layout_processor",
+        sublayers: Array.from({ length: GEN_2_SPATIAL_LAYERS }, (_, i) => ({
+          name: `Layout Block ${i + 1}`,
+          type: "layout_block",
+          sublayers: [
+            {
+              name: "Spatial Attention",
+              type: "spatial_attention",
+              dimensions: [16, 16, GEN_2_EMBED_DIM],
+            },
+            {
+              name: "Layout MLP",
+              type: "mlp",
+              dimensions: [GEN_2_EMBED_DIM * 4, GEN_2_EMBED_DIM],
+            },
+          ],
+        })),
+      },
+    ],
+  },
+  {
+    name: "Diffusion UNet",
+    type: "unet",
+    sublayers: [
+      // Downsampling path
+      ...Array.from({ length: NUM_GEN_2_BLOCKS }, (_, i) => ({
+        name: `Down Block ${i + 1}`,
+        type: "down_block",
+        sublayers: [
+          {
+            name: `Composition Block ${i + 1}`,
+            type: "comp_block",
+            sublayers: [
+              {
+                name: "Layout Integration",
+                type: "layout_attention",
+                dimensions: [
+                  SDXL_LATENT_DIM[0] / 2 ** i,
+                  SDXL_LATENT_DIM[1] / 2 ** i,
+                  GEN_2_EMBED_DIM * 2 ** i,
+                ],
+              },
+              {
+                name: "Spatial Control",
+                type: "spatial_control",
+                dimensions: [GEN_2_EMBED_DIM * 2 ** i],
+              },
+            ],
+          },
+          {
+            name: `Content Guidance ${i + 1}`,
+            type: "content_guidance",
+            dimensions: [GEN_2_EMBED_DIM * 2 ** i],
+          },
+        ],
+      })),
+      // Bottleneck
+      {
+        name: "Compositional Bottleneck",
+        type: "bottleneck",
+        sublayers: [
+          {
+            name: "Global Composition",
+            type: "global_comp",
+            dimensions: [GEN_2_EMBED_DIM * 16],
+          },
+        ],
+      },
+      // Upsampling path
+      ...Array.from({ length: NUM_GEN_2_BLOCKS }, (_, i) => ({
+        name: `Up Block ${NUM_GEN_2_BLOCKS - i}`,
+        type: "up_block",
+        sublayers: [
+          {
+            name: `Composition Synthesis ${NUM_GEN_2_BLOCKS - i}`,
+            type: "comp_synthesis",
+            sublayers: [
+              {
+                name: "Layout Refinement",
+                type: "layout_refine",
+                dimensions: [GEN_2_EMBED_DIM * 2 ** (NUM_GEN_2_BLOCKS - i - 1)],
+              },
+              {
+                name: "Content Integration",
+                type: "content_integration",
+                dimensions: [GEN_2_EMBED_DIM * 2 ** (NUM_GEN_2_BLOCKS - i - 1)],
+              },
+            ],
+          },
+        ],
+      })),
+    ],
+  },
+  {
+    name: "Decoder",
+    type: "decoder",
+    sublayers: [
+      {
+        name: "Final Composition",
+        type: "comp_decode",
+        dimensions: [GEN_2_EMBED_DIM * 2],
+      },
+      {
+        name: "Image Generation",
+        type: "image_decode",
+        dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
+      },
+    ],
+  },
+  {
+    name: "Output Image",
+    type: "output",
+    dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
   },
 ];
