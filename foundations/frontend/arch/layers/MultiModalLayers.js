@@ -4,7 +4,7 @@ import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
 export default function MultiModalLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model] || {};
-  const layerGap = modelConfig.layerHeight || 50;
+  const layerGap = modelConfig.layerHeight || 10;
 
   // Separate layers into different modalities if applicable
   const { imageLayers, textLayers, fusionLayers } = useMemo(() => {

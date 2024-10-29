@@ -44,6 +44,21 @@ const LLAVA_EMBED_DIM = 4096;
 const LLAVA_VISION_DIM = 1024;
 const LLAVA_PROJECTOR_DIM = 5120;
 
+// Add Claude 3 Vision specific constants
+const NUM_CLAUDE_3_VISION_LAYERS = 48; // Deeper vision processing
+const NUM_CLAUDE3_LLM_LAYERS = 64; // Large language model capacity
+const CLAUDE3_EMBED_DIM = 8192; // Significantly larger embedding dimension
+const CLAUDE_3_VISION_DIM = 2048;
+const NUM_CLAUDE3_EXPERTS = 4; // MoE experts
+
+// Add Gemini Vision specific constants
+const NUM_GEMINI_VISION_LAYERS = 56;
+const NUM_GEMINI_LLM_LAYERS = 80;
+const GEMINI_EMBED_DIM = 12288; // Larger embedding for Gemini Ultra
+const GEMINI_VISION_DIM = 2560;
+const NUM_GEMINI_EXPERTS = 8; // More experts than Claude
+const NUM_VISUAL_SCALES = 4; // Multi-scale processing
+
 // Model definitions
 
 export const SHOW_AND_TELL = [
@@ -1260,6 +1275,436 @@ export const COGVLM = [
   },
 ];
 
+/** CLAUDE_3_VISION **/
+export const CLAUDE_3_VISION = [
+  // Vision Stream with Hierarchical Processing
+  {
+    name: "Image Input",
+    type: "input",
+    dimensions: [1024, 1024, 3],
+    stream: "image",
+  },
+  {
+    name: "Hierarchical Vision Encoder",
+    type: "hierarchical_vit",
+    dimensions: [256, 1, CLAUDE_3_VISION_DIM],
+    stream: "image",
+    sublayers: [
+      {
+        name: "Patch Embedding",
+        type: "patch_embed",
+        dimensions: [256, 1, CLAUDE_3_VISION_DIM],
+      },
+      ...Array.from({ length: 4 }, (_, stage) => ({
+        name: `Vision Stage ${stage + 1}`,
+        type: "vision_stage",
+        dimensions: [256 >> stage, 1, CLAUDE_3_VISION_DIM << stage],
+        sublayers: Array.from(
+          { length: NUM_CLAUDE_3_VISION_LAYERS / 4 },
+          (_, i) => ({
+            name: `Vision Block ${stage}_${i + 1}`,
+            type: "transformer_layer",
+            dimensions: [256 >> stage, 1, CLAUDE_3_VISION_DIM << stage],
+            sublayers: [
+              {
+                name: "Window Attention",
+                type: "window_attention",
+                dimensions: [256 >> stage, 1, CLAUDE_3_VISION_DIM << stage],
+              },
+              {
+                name: "MoE FFN",
+                type: "moe_ffn",
+                dimensions: [256 >> stage, 1, CLAUDE_3_VISION_DIM << stage],
+              },
+            ],
+          })
+        ),
+      })),
+    ],
+  },
+
+  // Language Model Stream with MoE
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: [4096, 1, CLAUDE3_EMBED_DIM], // Extra long context
+    stream: "text",
+  },
+  {
+    name: "Claude 3 LLM",
+    type: "moe_transformer",
+    dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+    stream: "text",
+    sublayers: [
+      ...Array.from({ length: NUM_CLAUDE3_LLM_LAYERS }, (_, i) => ({
+        name: `LLM Layer ${i + 1}`,
+        type: "moe_layer",
+        dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Multi-Query Attention",
+            type: "mq_attention",
+            dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+          },
+          {
+            name: "Hierarchical Expert FFN",
+            type: "hierarchical_moe",
+            dimensions: [4096, 1, CLAUDE3_EMBED_DIM * 4],
+            experts: NUM_CLAUDE3_EXPERTS,
+          },
+          {
+            name: "Multi-Modal Gating",
+            type: "modal_gate",
+            dimensions: [4096, 384, CLAUDE3_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+
+  // Advanced Fusion System
+  {
+    name: "Pathways Router",
+    type: "pathways_router",
+    dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+    stream: "fusion",
+    sublayers: [
+      {
+        name: "Task-Specific Routing",
+        type: "task_router",
+        dimensions: [NUM_CLAUDE3_EXPERTS, CLAUDE3_EMBED_DIM],
+      },
+      {
+        name: "Multi-Modal Pathways",
+        type: "modal_pathways",
+        dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Cross-Modal Experts",
+            type: "cross_modal_experts",
+            dimensions: [NUM_CLAUDE3_EXPERTS, CLAUDE3_EMBED_DIM],
+          },
+          {
+            name: "Pathway Integration",
+            type: "pathway_integration",
+            dimensions: [4096, 1, CLAUDE3_EMBED_DIM],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+export const GEMINI_VISION = [
+  // Multi-Scale Vision Stream
+  {
+    name: "Image Input",
+    type: "input",
+    dimensions: [1536, 1536, 3], // Higher resolution input
+    stream: "image",
+  },
+  {
+    name: "Multi-Scale Vision Processor",
+    type: "multiscale_vision",
+    dimensions: [384, 1, GEMINI_VISION_DIM],
+    stream: "image",
+    sublayers: Array.from({ length: NUM_VISUAL_SCALES }, (_, scale) => ({
+      name: `Vision Scale ${scale + 1}`,
+      type: "vision_scale",
+      dimensions: [384 >> scale, 1, GEMINI_VISION_DIM << scale],
+      sublayers: [
+        {
+          name: `Vision Encoder ${scale + 1}`,
+          type: "vision_encoder",
+          dimensions: [384 >> scale, 1, GEMINI_VISION_DIM << scale],
+          sublayers: Array.from(
+            { length: NUM_GEMINI_VISION_LAYERS / 4 },
+            (_, i) => ({
+              name: `Vision Block ${scale}_${i + 1}`,
+              type: "transformer_layer",
+              dimensions: [384 >> scale, 1, GEMINI_VISION_DIM << scale],
+              sublayers: [
+                {
+                  name: "Global-Local Attention",
+                  type: "global_local_attention",
+                  dimensions: [384 >> scale, 1, GEMINI_VISION_DIM << scale],
+                },
+                {
+                  name: "Scale-Specific MoE",
+                  type: "scale_moe",
+                  dimensions: [384 >> scale, 1, GEMINI_VISION_DIM << scale],
+                },
+              ],
+            })
+          ),
+        },
+      ],
+    })),
+  },
+
+  // Language Model Stream with MoE
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: [8192, 1, GEMINI_EMBED_DIM], // Extra long context
+    stream: "text",
+  },
+  {
+    name: "Gemini LLM",
+    type: "gemini_transformer",
+    dimensions: [8192, 1, GEMINI_EMBED_DIM],
+    stream: "text",
+    sublayers: Array.from({ length: NUM_GEMINI_LLM_LAYERS }, (_, i) => ({
+      name: `LLM Layer ${i + 1}`,
+      type: "gemini_layer",
+      dimensions: [8192, 1, GEMINI_EMBED_DIM],
+      sublayers: [
+        {
+          name: "Multi-Query Attention",
+          type: "mq_attention",
+          dimensions: [8192, 1, GEMINI_EMBED_DIM],
+        },
+        {
+          name: "Hierarchical MoE",
+          type: "hierarchical_moe",
+          dimensions: [8192, 1, GEMINI_EMBED_DIM * 4],
+          experts: NUM_GEMINI_EXPERTS,
+        },
+        {
+          name: "Modal Gate",
+          type: "modal_gate",
+          dimensions: [8192, 384, GEMINI_EMBED_DIM],
+        },
+      ],
+    })),
+  },
+
+  // Advanced Fusion System
+  {
+    name: "Multi-Modal Router",
+    type: "pathways_router",
+    dimensions: [8192, 1, GEMINI_EMBED_DIM],
+    stream: "fusion",
+    sublayers: [
+      {
+        name: "Task Router",
+        type: "task_router",
+        dimensions: [NUM_GEMINI_EXPERTS, GEMINI_EMBED_DIM],
+      },
+      {
+        name: "Modal Pathways",
+        type: "modal_pathways",
+        dimensions: [8192, 1, GEMINI_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Cross-Modal Experts",
+            type: "cross_modal_experts",
+            dimensions: [NUM_GEMINI_EXPERTS, GEMINI_EMBED_DIM],
+          },
+          {
+            name: "Pathway Integration",
+            type: "pathway_integration",
+            dimensions: [8192, 1, GEMINI_EMBED_DIM],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+// Add Whisper-specific constants
+const NUM_WHISPER_ENCODER_LAYERS = 6;
+const NUM_WHISPER_DECODER_LAYERS = 6;
+const WHISPER_EMBED_DIM = 512;
+const WHISPER_AUDIO_DIM = 1500; // For 30-second context
+const WHISPER_MEL_BINS = 80;
+
+export const WHISPER = [
+  // Audio Encoder Stream
+  {
+    name: "Audio Input",
+    type: "input",
+    dimensions: [WHISPER_AUDIO_DIM, WHISPER_MEL_BINS], // Mel spectrogram
+    stream: "audio",
+  },
+  {
+    name: "Audio Encoder",
+    type: "audio_encoder",
+    dimensions: [WHISPER_AUDIO_DIM, 1, WHISPER_EMBED_DIM],
+    stream: "audio",
+    sublayers: [
+      {
+        name: "Convolution Patches",
+        type: "conv_patches",
+        dimensions: [WHISPER_AUDIO_DIM / 2, 1, WHISPER_EMBED_DIM],
+      },
+      ...Array.from({ length: NUM_WHISPER_ENCODER_LAYERS }, (_, i) => ({
+        name: `Encoder Layer ${i + 1}`,
+        type: "transformer_layer",
+        dimensions: [WHISPER_AUDIO_DIM / 2, 1, WHISPER_EMBED_DIM],
+        sublayers: [
+          {
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [WHISPER_AUDIO_DIM / 2, 1, WHISPER_EMBED_DIM],
+          },
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [WHISPER_AUDIO_DIM / 2, 1, WHISPER_EMBED_DIM],
+          },
+        ],
+      })),
+    ],
+  },
+
+  // Text Decoder Stream
+  {
+    name: "Text Input",
+    type: "input",
+    dimensions: [256, 1, WHISPER_EMBED_DIM], // Token sequence
+    stream: "text",
+  },
+  {
+    name: "Text Decoder",
+    type: "transformer_decoder",
+    dimensions: [256, 1, WHISPER_EMBED_DIM],
+    stream: "text",
+    sublayers: Array.from({ length: NUM_WHISPER_DECODER_LAYERS }, (_, i) => ({
+      name: `Decoder Layer ${i + 1}`,
+      type: "transformer_layer",
+      dimensions: [256, 1, WHISPER_EMBED_DIM],
+      sublayers: [
+        {
+          name: "Self-Attention",
+          type: "attention",
+          dimensions: [256, 1, WHISPER_EMBED_DIM],
+        },
+        {
+          name: "Cross-Attention",
+          type: "cross_attention",
+          dimensions: [256, 1, WHISPER_EMBED_DIM],
+          inputs: ["Audio Encoder Output"],
+        },
+        {
+          name: "Feed Forward",
+          type: "mlp",
+          dimensions: [256, 1, WHISPER_EMBED_DIM],
+        },
+      ],
+    })),
+  },
+
+  // Output Layer
+  {
+    name: "Output Projection",
+    type: "dense",
+    dimensions: [256, 1, 51865], // Whisper multilingual vocabulary size
+    stream: "text",
+  },
+];
+
+// Add AudioCraft specific constants
+const NUM_AUDIOCRAFT_ENCODER_LAYERS = 12;
+const NUM_AUDIOCRAFT_DECODER_LAYERS = 12;
+const NUM_AUDIOCRAFT_LM_LAYERS = 24;
+const AUDIOCRAFT_EMBED_DIM = 1024;
+const AUDIOCRAFT_CODEBOOK_SIZE = 2048;
+const AUDIOCRAFT_RVQ_LEVELS = 4;
+
+export const AUDIOCRAFT = [
+  // Audio Encoder (EnCodec)
+  {
+    name: "Audio Input",
+    type: "input",
+    dimensions: [32000, 1, 1], // 1 second of audio at 32kHz
+    stream: "audio",
+  },
+  {
+    name: "EnCodec Encoder",
+    type: "encodec_encoder",
+    dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM],
+    stream: "audio",
+    sublayers: [
+      {
+        name: "Multi-Scale Encoder",
+        type: "multiscale_conv",
+        dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM],
+        sublayers: Array.from(
+          { length: NUM_AUDIOCRAFT_ENCODER_LAYERS },
+          (_, i) => ({
+            name: `Encoder Block ${i + 1}`,
+            type: "conv_block",
+            dimensions: [2048 >> i, 1, AUDIOCRAFT_EMBED_DIM],
+          })
+        ),
+      },
+      {
+        name: "RVQ Quantizer",
+        type: "residual_quantizer",
+        dimensions: [AUDIOCRAFT_CODEBOOK_SIZE, AUDIOCRAFT_RVQ_LEVELS],
+        sublayers: Array.from({ length: AUDIOCRAFT_RVQ_LEVELS }, (_, i) => ({
+          name: `Quantizer Level ${i + 1}`,
+          type: "vector_quantizer",
+          dimensions: [AUDIOCRAFT_CODEBOOK_SIZE, 1],
+        })),
+      },
+    ],
+  },
+
+  // Language Model for Audio Generation
+  {
+    name: "Audio LM",
+    type: "transformer_decoder",
+    dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM],
+    stream: "generation",
+    sublayers: Array.from({ length: NUM_AUDIOCRAFT_LM_LAYERS }, (_, i) => ({
+      name: `LM Layer ${i + 1}`,
+      type: "transformer_layer",
+      dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM],
+      sublayers: [
+        {
+          name: "Causal Self-Attention",
+          type: "causal_attention",
+          dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM],
+        },
+        {
+          name: "Feed Forward",
+          type: "mlp",
+          dimensions: [2048, 1, AUDIOCRAFT_EMBED_DIM * 4],
+        },
+      ],
+    })),
+  },
+
+  // Audio Decoder (EnCodec)
+  {
+    name: "EnCodec Decoder",
+    type: "encodec_decoder",
+    dimensions: [32000, 1, 1],
+    stream: "audio",
+    sublayers: [
+      {
+        name: "Multi-Scale Decoder",
+        type: "multiscale_deconv",
+        dimensions: [32000, 1, 1],
+        sublayers: Array.from(
+          { length: NUM_AUDIOCRAFT_DECODER_LAYERS },
+          (_, i) => ({
+            name: `Decoder Block ${i + 1}`,
+            type: "deconv_block",
+            dimensions: [
+              32000 >> (NUM_AUDIOCRAFT_DECODER_LAYERS - i - 1),
+              1,
+              AUDIOCRAFT_EMBED_DIM >> i,
+            ],
+          })
+        ),
+      },
+    ],
+  },
+];
+
 // Layer configurations for multi_modal models
 export const LAYER_CONFIGS = {
   SHOW_AND_TELL: {
@@ -1323,6 +1768,26 @@ export const LAYER_CONFIGS = {
   COGVLM: {
     layerHeight: 120,
     keyPrefix: "cogvlm",
+    type: "multi_modal",
+  },
+  CLAUDE_3_VISION: {
+    layerHeight: 30, // Increased height for better visualization
+    keyPrefix: "claude3v",
+    type: "multi_modal",
+  },
+  GEMINI_VISION: {
+    layerHeight: 180, // Even larger for complex visualization
+    keyPrefix: "geminiv",
+    type: "multi_modal",
+  },
+  WHISPER: {
+    layerHeight: 10,
+    keyPrefix: "whisper",
+    type: "multi_modal",
+  },
+  AUDIOCRAFT: {
+    layerHeight: 10,
+    keyPrefix: "audiocraft",
     type: "multi_modal",
   },
 };
@@ -1511,5 +1976,152 @@ export const GRID_CONFIGS = {
     cross_attention: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
     mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     fusion: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
+  },
+  CLAUDE_3_VISION: {
+    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    hierarchical_vit: { xCount: 48, yCount: 1, xInterval: 3, yInterval: 3 },
+    vision_stage: { xCount: 12, yCount: 3, xInterval: 2, yInterval: 2 },
+    window_attention: {
+      xCount: 16,
+      yCount: 4,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    moe_ffn: {
+      xCount: 8,
+      yCount: NUM_CLAUDE3_EXPERTS,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    moe_transformer: { xCount: 32, yCount: 1, xInterval: 2.5, yInterval: 2.5 },
+    moe_layer: { xCount: 16, yCount: 1, xInterval: 2, yInterval: 2 },
+    rotary_attention: { xCount: 24, yCount: 8, xInterval: 1, yInterval: 1 },
+    expert_ffn: {
+      xCount: 8,
+      yCount: NUM_CLAUDE3_EXPERTS,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    cross_modal_moe: { xCount: 16, yCount: 4, xInterval: 1.5, yInterval: 1.5 },
+    modal_router: {
+      xCount: 16,
+      yCount: NUM_CLAUDE3_EXPERTS,
+      xInterval: 2,
+      yInterval: 2.5,
+    },
+    task_router: {
+      xCount: NUM_CLAUDE3_EXPERTS,
+      yCount: 6,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    modal_pathways: { xCount: 32, yCount: 32, xInterval: 1.5, yInterval: 1.5 },
+    cross_modal_experts: {
+      xCount: NUM_CLAUDE3_EXPERTS,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    pathway_integration: { xCount: 32, yCount: 32, xInterval: 1, yInterval: 1 },
+  },
+  GEMINI_VISION: {
+    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    multiscale_vision: { xCount: 32, yCount: 4, xInterval: 2, yInterval: 3 },
+    vision_scale: { xCount: 14, yCount: 7, xInterval: 2, yInterval: 2 },
+    vision_encoder: { xCount: 16, yCount: 8, xInterval: 2, yInterval: 2 },
+
+    // Attention mechanisms
+    global_local_attention: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    mq_attention: { xCount: 16, yCount: 8, xInterval: 1, yInterval: 1 },
+
+    // Expert layers - adjusted for visibility
+    scale_moe: {
+      xCount: 8,
+      yCount: NUM_GEMINI_EXPERTS,
+      xInterval: 3, // Increased spacing
+      yInterval: 3, // Increased spacing
+    },
+    hierarchical_moe: {
+      xCount: 8,
+      yCount: NUM_GEMINI_EXPERTS,
+      xInterval: 3, // Increased spacing
+      yInterval: 3, // Increased spacing
+    },
+
+    // Transformer and processing layers
+    scale_fusion: { xCount: 16, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
+    gemini_transformer: { xCount: 40, yCount: 1, xInterval: 2, yInterval: 2 }, // Reduced count
+    gemini_layer: { xCount: 16, yCount: 1, xInterval: 2, yInterval: 2 },
+
+    // Routing and pathway layers - adjusted for clarity
+    modal_gate: { xCount: 12, yCount: 6, xInterval: 2, yInterval: 2 },
+    pathways_router: {
+      xCount: 12,
+      yCount: NUM_GEMINI_EXPERTS,
+      xInterval: 3, // Increased spacing
+      yInterval: 3, // Increased spacing
+    },
+    task_router: {
+      xCount: NUM_GEMINI_EXPERTS,
+      yCount: 4,
+      xInterval: 3, // Increased spacing
+      yInterval: 3, // Increased spacing
+    },
+
+    // Integration layers
+    modal_pathways: { xCount: 16, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
+    cross_modal_experts: {
+      xCount: NUM_GEMINI_EXPERTS,
+      yCount: 6,
+      xInterval: 3, // Increased spacing
+      yInterval: 3, // Increased spacing
+    },
+    pathway_integration: {
+      xCount: 16,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+  },
+  WHISPER: {
+    input: { xCount: 80, yCount: 16, xInterval: 1, yInterval: 1 },
+    audio_encoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    conv_patches: { xCount: 16, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
+    cross_attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    transformer_decoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    dense: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+  },
+  AUDIOCRAFT: {
+    input: { xCount: 64, yCount: 8, xInterval: 1, yInterval: 1 },
+    encodec_encoder: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
+    multiscale_conv: { xCount: 24, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
+    conv_block: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
+    residual_quantizer: {
+      xCount: AUDIOCRAFT_RVQ_LEVELS,
+      yCount: 8,
+      xInterval: 2,
+      yInterval: 2,
+    },
+    vector_quantizer: { xCount: 16, yCount: 4, xInterval: 1.5, yInterval: 1.5 },
+    transformer_decoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
+    transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
+    causal_attention: { xCount: 16, yCount: 16, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    encodec_decoder: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
+    multiscale_deconv: {
+      xCount: 24,
+      yCount: 8,
+      xInterval: 1.5,
+      yInterval: 1.5,
+    },
+    deconv_block: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
   },
 };

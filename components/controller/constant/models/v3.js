@@ -966,30 +966,6 @@ export const MODELS = {
         explanation:
           "Multimodal capabilities of Gemini, with advanced visual understanding and reasoning.",
       },
-      "v6.4.6": {
-        name: "QWen-VL",
-        year: 2023,
-        place: "Alibaba",
-        citation: 80,
-        explanation:
-          "Vision-language model with strong performance in Chinese and English.",
-      },
-      "v6.4.7": {
-        name: "Yi-VL",
-        year: 2024,
-        place: "01.AI",
-        citation: 50,
-        explanation:
-          "Open-source vision-language model with competitive performance.",
-      },
-      "v6.4.8": {
-        name: "IDEFICS",
-        year: 2024,
-        place: "Hugging Face",
-        citation: 40,
-        explanation:
-          "Open-source multimodal model trained on large-scale image-text data.",
-      },
     },
     "v6.5": {
       name: "Audio and Speech Models",
@@ -1000,22 +976,6 @@ export const MODELS = {
         citation: 2000,
         explanation:
           "Robust speech recognition model supporting multiple languages.",
-      },
-      "v6.5.2": {
-        name: "AudioCraft",
-        year: 2023,
-        place: "Meta AI",
-        citation: 200,
-        explanation:
-          "Suite of models for audio generation, including MusicGen.",
-      },
-      "v6.5.3": {
-        name: "Stable Audio",
-        year: 2023,
-        place: "Stability AI",
-        citation: 100,
-        explanation:
-          "Text-to-audio generation model for music and sound effects.",
       },
     },
   },
@@ -1245,12 +1205,9 @@ export const ARRAY = [
   "GPT-4V",
   "Claude 3 Vision",
   "Gemini Vision",
-  "QWen-VL",
-  "Yi-VL",
-  "IDEFICS",
+
   "Whisper",
-  "AudioCraft",
-  "Stable Audio",
+
   "Deep Q-Network (DQN)",
   "A3C",
   "PPO",
@@ -1695,30 +1652,12 @@ export const OBJECT_ARRAY = [
     name: "Gemini Vision",
     version: "v6.4.5",
   },
-  {
-    name: "QWen-VL",
-    version: "v6.4.6",
-  },
-  {
-    name: "Yi-VL",
-    version: "v6.4.7",
-  },
-  {
-    name: "IDEFICS",
-    version: "v6.4.8",
-  },
+
   {
     name: "Whisper",
     version: "v6.5.1",
   },
-  {
-    name: "AudioCraft",
-    version: "v6.5.2",
-  },
-  {
-    name: "Stable Audio",
-    version: "v6.5.3",
-  },
+
   {
     name: "Deep Q-Network (DQN)",
     version: "v7.0.1",
