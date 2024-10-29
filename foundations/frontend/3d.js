@@ -20,6 +20,8 @@ import GANLayers from "./arch/layers/GANLayers";
 import DiffusionLayers from "./arch/layers/DiffusionLayers";
 import MultiModalLayers from "./arch/layers/MultiModalLayers";
 import ReinforcementLayers from "./arch/layers/ReinforcementLayers";
+import HopfieldLayers from "./arch/layers/HopfieldLayers";
+import BoltzmannLayers from "./arch/layers/BoltzmannLayers";
 
 import AvatarModel from "@/foundations/frontend/avatar/model";
 import CommonScene from "./utils/CommonScene";
@@ -135,6 +137,12 @@ export default function Visualisation({
         break;
       case "reinforcement":
         ModelComponent = ReinforcementLayers;
+        break;
+      case "hopfield":
+        ModelComponent = HopfieldLayers;
+        break;
+      case "boltzmann":
+        ModelComponent = BoltzmannLayers;
         break;
 
       default:

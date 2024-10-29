@@ -8,6 +8,7 @@ import * as GAN from "./gan";
 import * as DIFFUSION from "./diffusion";
 import * as MULTI_MODAL from "./multi_modal";
 import * as REINFORCEMENT from "./reinforcement";
+import * as HOPFIELD_BOLTZMANN from "./hopfield_boltzmann";
 
 export const MODELS = {
   ...CNN,
@@ -20,6 +21,7 @@ export const MODELS = {
   ...DIFFUSION,
   ...MULTI_MODAL,
   ...REINFORCEMENT,
+  ...HOPFIELD_BOLTZMANN,
 };
 
 export const LAYER_CONFIGS = {
@@ -33,6 +35,7 @@ export const LAYER_CONFIGS = {
   ...DIFFUSION.LAYER_CONFIGS,
   ...MULTI_MODAL.LAYER_CONFIGS,
   ...REINFORCEMENT.LAYER_CONFIGS,
+  ...HOPFIELD_BOLTZMANN.LAYER_CONFIGS,
 };
 
 export const GRID_CONFIGS = {
@@ -46,6 +49,7 @@ export const GRID_CONFIGS = {
   ...DIFFUSION.GRID_CONFIGS,
   ...MULTI_MODAL.GRID_CONFIGS,
   ...REINFORCEMENT.GRID_CONFIGS,
+  ...HOPFIELD_BOLTZMANN.GRID_CONFIGS,
 };
 
 // Function to get model structure based on model name
