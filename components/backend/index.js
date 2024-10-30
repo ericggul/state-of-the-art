@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 const Embeddings25 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/2")
+  import("@/foundations/test-backend/3-chaos/2")
 );
 
 const Output3 = dynamic(() =>

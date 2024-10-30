@@ -10,30 +10,27 @@ const Embeddings00 = dynamic(() =>
 );
 
 //0: Original Version
-const Embeddings250 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/0")
+const Embeddings30 = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/0")
 );
 ///1: Best Selection for Now
-const Embeddings251 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/1")
+const Embeddings31 = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/1")
 );
 //2: Too chaotic all around the place
-const Embeddings252 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/2")
+const Embeddings32 = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/2")
 );
 
-const Embeddings253 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/3")
+const Embeddings33 = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/3")
 );
 
-const Embeddings25Glich = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/glitch")
+const Embeddings3Glich = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/glitch")
 );
-const Embeddings25Store = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/store")
-);
-const Embeddings25Transparent = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/transparent")
+const Embeddings3Transparent = dynamic(() =>
+  import("@/foundations/test-backend/3-chaos/transparent")
 );
 
 export default function RelationPage() {
@@ -43,14 +40,13 @@ export default function RelationPage() {
     <>
       {idx == "0-0" && <Embeddings00 newEmbeddings={TEST_EMBEDDINGS} />}
 
-      {idx == "2.5-0" && <Embeddings250 />}
-      {idx == "2.5-1" && <Embeddings251 />}
-      {idx == "2.5-2" && <Embeddings252 />}
-      {idx == "2.5-3" && <Embeddings253 />}
+      {idx == "3-0" && <Embeddings30 />}
+      {idx == "3-1" && <Embeddings31 />}
+      {idx == "3-2" && <Embeddings32 />}
+      {idx == "3-3" && <Embeddings33 />}
 
-      {idx == "2.5-glitch" && <Embeddings25Glich />}
-      {idx == "2.5-" && <Embeddings25Store />}
-      {idx == "2.5-transparent" && <Embeddings25Transparent />}
+      {idx == "3-glitch" && <Embeddings3Glich />}
+      {idx == "3-transparent" && <Embeddings3Transparent />}
     </>
   );
 }

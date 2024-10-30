@@ -2,8 +2,8 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
-import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
-import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
+import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
+import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
 
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 

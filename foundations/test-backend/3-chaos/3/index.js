@@ -2,10 +2,10 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
-import useAudio from "@/foundations/test-backend/2.5-duo/utils/useAudio";
-import useTTS from "@/foundations/test-backend/2.5-duo/utils/useTTS";
-import useDrumRhythm from "@/foundations/test-backend/2.5-duo/utils/useDrumRhythm";
-import useConversation from "@/foundations/test-backend/2.5-duo/utils/useConversation";
+import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
+import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
+
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 import {
   INPUT_EMBEDDINGS,
@@ -36,8 +36,6 @@ export default function Wrapper() {
         lastIndex > 0 ? embeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
       const outputData = embeddings[lastIndex];
 
-      console.log(inputData, outputData);
-
       setInputEmbeddings(inputData);
       setOutputEmbeddings(outputData);
       setLength(inputData.tokens.length + outputData.tokens.length);
@@ -45,8 +43,6 @@ export default function Wrapper() {
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
-  // useDrumRhythm({ text: outputEmbeddings.tokens.join(" ") });
-  // useTTS({ text: outputEmbeddings.tokens.join(" ") });
 
   return (
     <S.Container
@@ -67,7 +63,7 @@ export default function Wrapper() {
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
-        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
         visible={true}
         timeUnit={1}
       />

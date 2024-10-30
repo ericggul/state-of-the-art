@@ -21,7 +21,7 @@ const Preview = dynamic(() =>
   import("@/foundations/test-frontend/product-preview/ui")
 );
 const Embeddings250 = dynamic(() =>
-  import("@/foundations/test-backend/2.5-duo/2")
+  import("@/foundations/test-backend/3-chaos/2")
 );
 
 export default function El() {

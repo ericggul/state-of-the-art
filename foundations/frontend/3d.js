@@ -170,7 +170,7 @@ export default function Visualisation({
       }}
       gl={{ alpha: true, antialias: true }}
     >
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
       <Suspense fallback={null}>
         <CommonScene style={style}>
           <group ref={modelGroupRef}>
