@@ -3,6 +3,7 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
 import { Box3, Vector3 } from "three";
+import { Perf } from "r3f-perf";
 
 import useScreenStore from "@/components/screen/store";
 
@@ -169,6 +170,7 @@ export default function Visualisation({
       }}
       gl={{ alpha: true, antialias: true }}
     >
+      <Perf position="top-left" />
       <Suspense fallback={null}>
         <CommonScene style={style}>
           <group ref={modelGroupRef}>

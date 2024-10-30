@@ -1,7 +1,7 @@
 // Constants for Hopfield Network and Boltzmann Machine
 const NUM_NODES_HOPFIELD = 25; // Increased number of nodes
 const NUM_VISIBLE_UNITS = 17;
-const NUM_HIDDEN_UNITS = 21;
+const NUM_HIDDEN_UNITS = 37;
 
 /** Hopfield Network **/
 export const HOPFIELD_NETWORK = [
