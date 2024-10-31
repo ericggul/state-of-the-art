@@ -42,14 +42,15 @@ export default function PerformanceChart({ performance }) {
     data,
     isLowerBetter,
     format,
+    benchmarks,
   } = performance;
 
   const chartData = {
-    labels,
+    labels: benchmarks?.labels || labels,
     datasets: [
       {
-        label: metric,
-        data,
+        label: `${metric} Score`,
+        data: benchmarks?.data || data,
         borderColor: "#00ffff",
         backgroundColor: "rgba(0, 255, 255, 0.2)",
         pointBackgroundColor: "#00ffff",

@@ -6,7 +6,12 @@ import PerformanceChart from "./PerformanceChart";
 import RelatedPapers from "./RelatedPapers";
 import TypewriterText from "./TypewriterText";
 import ModelLimitations from "./ModelLimitations";
-import { MODEL_IMAGE, DEFAULT_MODEL } from "./constants";
+import {
+  MODEL_IMAGE,
+  DEFAULT_MODEL,
+  SAMPLE_MODEL,
+  MODEL_STATS_CONFIG,
+} from "./constants";
 
 export default function Dashboard() {
   const { currentArchitectures } = useScreenStore();
@@ -23,6 +28,29 @@ export default function Dashboard() {
   const defaultModel = DEFAULT_MODEL;
 
   const currentModel = model || defaultModel;
+
+  const getTopStats = (modelStats, maxStats = 3) => {
+    if (!modelStats) return [];
+
+    return (
+      Object.entries(modelStats)
+        // Filter out undefined or null values
+        .filter(([key, value]) => value !== undefined && value !== null)
+        // Sort by priority
+        .sort(
+          ([keyA], [keyB]) =>
+            MODEL_STATS_CONFIG[keyA].priority -
+            MODEL_STATS_CONFIG[keyB].priority
+        )
+        // Take only the top N stats
+        .slice(0, maxStats)
+        .map(([key, value]) => ({
+          key,
+          value,
+          ...MODEL_STATS_CONFIG[key],
+        }))
+    );
+  };
 
   return (
     <S.Container>
@@ -63,27 +91,17 @@ export default function Dashboard() {
         <S.Card>
           <S.CardTitle>Model Stats</S.CardTitle>
           <S.StatGrid>
-            <S.Stat>
-              <S.StatLabel>Citations</S.StatLabel>
-              <S.StatValue>
-                <TypewriterText
-                  text={currentModel.citation?.toString() || ""}
-                  speed={30}
-                />
-              </S.StatValue>
-            </S.Stat>
-            <S.Stat>
-              <S.StatLabel>Parameters</S.StatLabel>
-              <S.StatValue>
-                <TypewriterText text={currentModel.parameters} speed={30} />
-              </S.StatValue>
-            </S.Stat>
-            <S.Stat>
-              <S.StatLabel>Training Data</S.StatLabel>
-              <S.StatValue>
-                <TypewriterText text={currentModel.trainingData} speed={30} />
-              </S.StatValue>
-            </S.Stat>
+            {getTopStats(currentModel.stats).map((stat) => (
+              <S.Stat key={stat.key}>
+                <S.StatLabel>{stat.label}</S.StatLabel>
+                <S.StatValue>
+                  <TypewriterText
+                    text={`${stat.value}${stat.suffix}`}
+                    speed={30}
+                  />
+                </S.StatValue>
+              </S.Stat>
+            ))}
           </S.StatGrid>
         </S.Card>
 
