@@ -36,20 +36,17 @@ export const RELATED_PAPERS = [
     title: "Attention Is All You Need",
     authors: "Vaswani et al.",
     year: 2017,
-    url: "#",
   },
   {
     title:
       "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
     authors: "Devlin et al.",
     year: 2018,
-    url: "#",
   },
   {
     title: "Language Models are Few-Shot Learners",
     authors: "Brown et al.",
     year: 2020,
-    url: "#",
   },
 ];
 
