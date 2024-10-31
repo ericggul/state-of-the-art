@@ -7,6 +7,10 @@ import { INPUT_EMBEDDINGS } from "@/foundations/backend/utils/constant";
 import dynamic from "next/dynamic";
 import useStore from "./store";
 
+const Backend3 = dynamic(() => import("@/foundations/backend/3"), {
+  ssr: false,
+});
+
 const Backend4 = dynamic(() => import("@/foundations/backend/4"), {
   ssr: false,
 });
@@ -23,11 +27,11 @@ export default function Backend() {
 
   return (
     <S.Container style={{ background: isblack ? "black" : "white" }}>
-      <Backend4
+      {/* <Backend4
         range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
         visible={isblack && length <= 15}
         timeUnit={1}
-      />
+      /> */}
 
       <Backend4
         range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}

@@ -14,22 +14,37 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-// Memoized TokenComponent component
-const TokenComponent = React.memo(function TokenComponent({
+// Memoized SingleOutputToken component
+const SingleOutputToken = React.memo(function SingleOutputToken({
   i,
-  wordInterval,
-  wordPosCalc,
+  outputWordInterval,
+  outputWordPosCalc,
   token,
 }) {
+  const [displayToken, setDisplayToken] = useState(token);
+
+  useRandomInterval(
+    () =>
+      setDisplayToken((given) => {
+        if (given !== token) return token;
+        const randomString = Array.from({ length: token.length }, () =>
+          Math.round(Math.random())
+        ).join("");
+        return randomString;
+      }),
+    10,
+    1000
+  );
+
   return (
     <S.Token
       style={{
-        left: wordPosCalc(i)[0],
-        top: wordPosCalc(i)[1],
-        width: wordInterval,
+        left: outputWordPosCalc(i)[0],
+        top: outputWordPosCalc(i)[1],
+        width: outputWordInterval,
       }}
     >
-      {token}
+      {displayToken}
     </S.Token>
   );
 });
@@ -51,7 +66,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [opacity, setOpacity] = useState(1);
 
   // Compute similarity matrix
   const crossSimilarityMatrix = useComputeCrossSimlarity({
@@ -75,7 +90,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     if (visible) {
       setXRange(1.5);
       setYRange(18);
-      setIsAnimating(isblack && visible);
+      setOpacity(isblack ? 1 : 0.5);
     }
   }, [visible, isblack]);
 
@@ -96,8 +111,6 @@ function SingleRandom({ range, visible, timeUnit }) {
   // Path creation
   const createBezierPath = useCallback(
     (x1, y1, x2, y2) => {
-      if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) return "";
-
       const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
       const controlY1 =
         y1 + inputPosCalc.yMargin * bezierParams.controlY1Factor;
@@ -166,22 +179,23 @@ function SingleRandom({ range, visible, timeUnit }) {
       style={{
         background: isblack ? "black" : "white",
         color: isblack ? "white" : "black",
+        opacity: visible ? 1 : 0,
       }}
     >
       <div>
         {renderedInputTokens}
         {outputTokens.map((token, i) => (
-          <TokenComponent
+          <SingleOutputToken
             key={`output-${i}`}
             i={i}
-            wordInterval={outputPosCalc.wordInterval}
-            wordPosCalc={outputPosCalc.wordPosCalc}
+            outputWordInterval={outputPosCalc.wordInterval}
+            outputWordPosCalc={outputPosCalc.wordPosCalc}
             token={token}
           />
         ))}
       </div>
 
-      <S.Pic>{renderedPaths}</S.Pic>
+      <S.Pic style={{ opacity }}>{renderedPaths}</S.Pic>
     </S.Container>
   );
 }
