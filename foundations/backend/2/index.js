@@ -3,12 +3,15 @@ import * as S from "../components/styles";
 import useStore from "@/components/backend/store";
 import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
 import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import { useAnimationState } from "../shared/hooks/useAnimationState";
+import { TokensRenderer } from "../shared/components/TokensRenderer";
+import useRadialParams from "./useRadialParams";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings } = useStore();
   const { tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
+  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
   const { wordInterval, yMargin, generateStaticPositions } = useBasePosCalc({
     tokens,
@@ -19,6 +22,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     () => generateStaticPositions(),
     [generateStaticPositions]
   );
+
   const wordPosCalc = useCallback(
     (idx) => {
       const position = positions[idx];
@@ -27,13 +31,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     [positions]
   );
 
-  const [radialIdx, setRadialIdx] = React.useState(0.6);
-  useRandomInterval(
-    () => !isblack && setRadialIdx(Math.random() * 1.2 + 0.2),
-    timeUnit,
-    10 * timeUnit,
-    visible
-  );
+  const radialIdx = useRadialParams(visible, isAnimating, timeUnit);
 
   const createArcPath = useCallback(
     (x1, y1, x2, y2, dir = 1) => {
@@ -74,28 +72,28 @@ function SingleRandom({ range, visible, timeUnit }) {
     );
   }, [tokens, similarityMatrix, wordPosCalc, createArcPath, isblack]);
 
+  const posCalc = {
+    wordPosCalc,
+    wordInterval,
+    yMargin,
+  };
+
   return (
     <S.Container
       isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
-      <div>
-        {tokens.map((token, i) => {
-          const [x, y] = wordPosCalc(i);
-          return (
-            <S.Token
-              key={i}
-              style={{
-                left: x,
-                top: y,
-                width: wordInterval,
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              {token}
-            </S.Token>
-          );
-        })}
+      <div
+        style={{
+          opacity: isblack ? 0 : 1,
+        }}
+      >
+        <TokensRenderer
+          inputTokens={[]}
+          outputTokens={tokens}
+          inputPosCalc={posCalc}
+          outputPosCalc={posCalc}
+        />
       </div>
       <S.Pic>{paths}</S.Pic>
     </S.Container>
