@@ -9,7 +9,12 @@ export default function useRadialParams(visible, isAnimating, timeUnit) {
     setRadialIdx(Math.random() * 1.2 + 0.2);
   }, [visible, isAnimating]);
 
-  useRandomInterval(updateRadialParams, timeUnit, 10 * timeUnit, isAnimating);
+  useRandomInterval(
+    updateRadialParams,
+    1 * timeUnit,
+    30 * timeUnit,
+    isAnimating
+  );
 
   useEffect(() => {
     if (!isAnimating) {

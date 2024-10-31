@@ -7,17 +7,9 @@ import { INPUT_EMBEDDINGS } from "@/foundations/backend/shared/constants/convers
 import dynamic from "next/dynamic";
 import useStore from "./store";
 
-const Backend2 = dynamic(() => import("@/foundations/backend/2"), {
-  ssr: false,
-});
-
-const Backend3 = dynamic(() => import("@/foundations/backend/3"), {
-  ssr: false,
-});
-
-const Backend4 = dynamic(() => import("@/foundations/backend/4"), {
-  ssr: false,
-});
+import Backend2 from "@/foundations/backend/2";
+import Backend3 from "@/foundations/backend/3";
+import Backend4 from "@/foundations/backend/4";
 
 export default function Backend() {
   const { isblack, length, loop, level } = useStore();
@@ -37,11 +29,29 @@ export default function Backend() {
         timeUnit={1}
       /> */}
 
-      <Backend2
-        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
-        visible={true}
-        timeUnit={1}
-      />
+      {level <= 2 && (
+        <Backend2
+          range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+          visible={true}
+          timeUnit={1}
+        />
+      )}
+
+      {level === 3 && (
+        <Backend3
+          range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+          visible={true}
+          timeUnit={1}
+        />
+      )}
+
+      {level === 4 && (
+        <Backend4
+          range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+          visible={true}
+          timeUnit={1}
+        />
+      )}
 
       {/* <Backend4
         range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
