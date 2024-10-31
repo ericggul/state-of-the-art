@@ -6,6 +6,7 @@ export function TokensRenderer({
   outputTokens,
   inputPosCalc,
   outputPosCalc,
+  highlightIdx,
 }) {
   return (
     <>
@@ -16,6 +17,7 @@ export function TokensRenderer({
           token={token}
           wordPosCalc={inputPosCalc.wordPosCalc}
           wordInterval={inputPosCalc.wordInterval}
+          highlightIdx={highlightIdx}
         />
       ))}
 
@@ -26,6 +28,7 @@ export function TokensRenderer({
           token={token}
           wordPosCalc={outputPosCalc.wordPosCalc}
           wordInterval={outputPosCalc.wordInterval}
+          highlightIdx={highlightIdx}
         />
       ))}
     </>

@@ -7,6 +7,7 @@ import { INPUT_EMBEDDINGS } from "@/foundations/backend/shared/constants/convers
 import dynamic from "next/dynamic";
 import useStore from "./store";
 
+import Backend1 from "@/foundations/backend/1";
 import Backend2 from "@/foundations/backend/2";
 import Backend3 from "@/foundations/backend/3";
 import Backend4 from "@/foundations/backend/4";
@@ -29,7 +30,13 @@ export default function Backend() {
         timeUnit={1}
       /> */}
 
-      {level <= 2 && (
+      <Backend1
+        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+        visible={true}
+        timeUnit={1}
+      />
+
+      {/* {level <= 2 && (
         <Backend2
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
           visible={true}
@@ -51,7 +58,7 @@ export default function Backend() {
           visible={true}
           timeUnit={1}
         />
-      )}
+      )} */}
 
       {/* <Backend4
         range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}

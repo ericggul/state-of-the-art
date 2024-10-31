@@ -1,6 +1,43 @@
 import { BEZIER_DEFAULT } from "../utils/mathUtils";
 import { useMemo } from "react";
 
+export function usePathsV1(params) {
+  const {
+    tokens,
+    similarityMatrix,
+    wordPosCalc,
+    yMargin,
+    isblack,
+    createArcPath,
+    targetWordIdx,
+  } = params;
+
+  return useMemo(() => {
+    return tokens.map((_, i) => {
+      if (i === targetWordIdx) return null;
+      const similarity = similarityMatrix[i][targetWordIdx];
+      if (similarity <= 0.05) return null;
+
+      const [x1, y1] = wordPosCalc(i);
+      const [x2, y2] = wordPosCalc(targetWordIdx);
+
+      return (
+        <path
+          key={`arc-${i}`}
+          d={createArcPath(x1, y1, x2, y2, {
+            yMargin,
+            dir: i % 2 === 0 ? 1 : 0,
+          })}
+          stroke={isblack ? "white" : "black"}
+          fill="none"
+          strokeWidth={similarity ** 2 * 4}
+          opacity={1}
+        />
+      );
+    });
+  }, [tokens, similarityMatrix, wordPosCalc, yMargin, isblack, targetWordIdx]);
+}
+
 export function usePathsV2(params) {
   const {
     tokens,

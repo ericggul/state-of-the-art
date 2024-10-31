@@ -6,14 +6,16 @@ const TokenComponent = React.memo(function TokenComponent({
   wordPosCalc,
   wordInterval,
   token,
+  highlightIdx = null,
 }) {
   const style = useMemo(
     () => ({
       left: wordPosCalc(i)[0],
       top: wordPosCalc(i)[1],
       width: wordInterval,
+      opacity: highlightIdx === null || highlightIdx === i ? 1 : 0.1,
     }),
-    [i, wordPosCalc, wordInterval]
+    [i, wordPosCalc, wordInterval, highlightIdx]
   );
 
   return <S.Token style={style}>{token}</S.Token>;
