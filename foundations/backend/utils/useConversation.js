@@ -96,7 +96,7 @@ export default function useConversation() {
   }
 
   async function getNextText() {
-    // await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
     hasFetchedText.current = false;
     setGetNewText(true);
   }

@@ -1,3 +1,4 @@
+import { BEZIER_DEFAULT } from "../utils/mathUtils";
 import { useMemo } from "react";
 
 export function usePathsV2(params) {
@@ -62,7 +63,6 @@ export function usePathsBezier(params) {
     similarityThreshold = 0.2,
     strokeWidthMultiplier = 4,
     isV4 = false,
-    BEZIER_DEFAULT,
   } = params;
 
   return useMemo(() => {
@@ -76,7 +76,9 @@ export function usePathsBezier(params) {
           const [x2, y2] = outputPosCalc.wordPosCalc(j);
 
           const bezierParam = isV4
-            ? bezierParams[`${i}-${j}`] || BEZIER_DEFAULT
+            ? bezierParams && Object.keys(bezierParams).length > 0
+              ? bezierParams[`${i}-${j}`] ?? BEZIER_DEFAULT
+              : BEZIER_DEFAULT
             : bezierParams;
 
           return (

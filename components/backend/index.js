@@ -29,7 +29,7 @@ export default function Backend() {
         timeUnit={1}
       /> */}
 
-      {level <= 0 && (
+      {level <= 2 && (
         <Backend2
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
           visible={true}
@@ -37,7 +37,7 @@ export default function Backend() {
         />
       )}
 
-      {level === 1 && (
+      {level === 3 && (
         <Backend3
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
           visible={true}
@@ -45,7 +45,7 @@ export default function Backend() {
         />
       )}
 
-      {level === 2 && (
+      {level === 4 && (
         <Backend4
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
           visible={true}
