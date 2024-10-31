@@ -21,71 +21,71 @@ ChartJS.register(
   Legend
 );
 
-const data = {
-  labels: ["1B", "10B", "100B", "175B"],
-  datasets: [
-    {
-      label: "Perplexity",
-      data: [18, 15, 12, 10],
-      borderColor: "#00ffff",
-      backgroundColor: "rgba(0, 255, 255, 0.2)",
-      pointBackgroundColor: "#00ffff",
-      pointBorderColor: "#000000",
-      pointHoverBackgroundColor: "#ffffff",
-      pointHoverBorderColor: "#00ffff",
-    },
-  ],
-};
+export default function PerformanceChart({ performance }) {
+  const data = {
+    labels: performance.labels,
+    datasets: [
+      {
+        label: "Perplexity",
+        data: performance.data,
+        borderColor: "#00ffff",
+        backgroundColor: "rgba(0, 255, 255, 0.2)",
+        pointBackgroundColor: "#00ffff",
+        pointBorderColor: "#000000",
+        pointHoverBackgroundColor: "#ffffff",
+        pointHoverBorderColor: "#00ffff",
+      },
+    ],
+  };
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-      labels: {
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: "#00ffff",
+          font: {
+            family: "'Orbitron', sans-serif",
+            size: 12,
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: "Model Performance",
         color: "#00ffff",
         font: {
           family: "'Orbitron', sans-serif",
-          size: 12,
+          size: 16,
         },
       },
     },
-    title: {
-      display: true,
-      text: "Model Performance",
-      color: "#00ffff",
-      font: {
-        family: "'Orbitron', sans-serif",
-        size: 16,
+    scales: {
+      x: {
+        grid: {
+          color: "rgba(0, 255, 255, 0.1)",
+        },
+        ticks: {
+          color: "#00ffff",
+          font: {
+            family: "'Orbitron', sans-serif",
+          },
+        },
       },
-    },
-  },
-  scales: {
-    x: {
-      grid: {
-        color: "rgba(0, 255, 255, 0.1)",
-      },
-      ticks: {
-        color: "#00ffff",
-        font: {
-          family: "'Orbitron', sans-serif",
+      y: {
+        grid: {
+          color: "rgba(0, 255, 255, 0.1)",
+        },
+        ticks: {
+          color: "#00ffff",
+          font: {
+            family: "'Orbitron', sans-serif",
+          },
         },
       },
     },
-    y: {
-      grid: {
-        color: "rgba(0, 255, 255, 0.1)",
-      },
-      ticks: {
-        color: "#00ffff",
-        font: {
-          family: "'Orbitron', sans-serif",
-        },
-      },
-    },
-  },
-};
+  };
 
-export default function PerformanceChart({ modelName }) {
   return <Line options={options} data={data} />;
 }

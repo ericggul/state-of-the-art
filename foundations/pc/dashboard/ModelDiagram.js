@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { MODEL_ARCHITECTURE } from "./constants";
 
 const DiagramContainer = styled.div`
   display: flex;
@@ -30,16 +31,15 @@ const Arrow = styled.div`
   border-top: 1vw solid #00ffff;
 `;
 
-export default function ModelDiagram({ modelName }) {
+export default function ModelDiagram() {
   return (
     <DiagramContainer>
-      <Layer>Input</Layer>
-      <Arrow />
-      <Layer>Embedding</Layer>
-      <Arrow />
-      <Layer>Transformer</Layer>
-      <Arrow />
-      <Layer>Output</Layer>
+      {MODEL_ARCHITECTURE.map((layer, index) => (
+        <React.Fragment key={layer}>
+          <Layer>{layer}</Layer>
+          {index < MODEL_ARCHITECTURE.length - 1 && <Arrow />}
+        </React.Fragment>
+      ))}
     </DiagramContainer>
   );
 }

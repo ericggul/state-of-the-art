@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
+import TypewriterText from "./TypewriterText";
+import { RELATED_PAPERS } from "./constants";
+
 const PaperList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -10,23 +13,20 @@ const PaperItem = styled.li`
   margin-bottom: 1vw;
 `;
 
-const PaperLink = styled.a`
+const PaperLink = styled.div`
   color: #00ffff;
   text-decoration: none;
   font-size: 0.9vw;
-  &:hover {
-    text-decoration: underline;
-    text-shadow: 0 0 5px #00ffff;
-  }
 `;
 
-export default function RelatedPapers({ papers }) {
+export default function RelatedPapers() {
   return (
     <PaperList>
-      {papers.map((paper, index) => (
+      {RELATED_PAPERS.map((paper, index) => (
         <PaperItem key={index}>
-          <PaperLink href={paper.url} target="_blank" rel="noopener noreferrer">
-            {paper.title} - {paper.authors} ({paper.year})
+          <PaperLink>
+            <TypewriterText text={paper.title} speed={20} /> -{" "}
+            <TypewriterText text={paper.authors} speed={20} /> - {paper.year}
           </PaperLink>
         </PaperItem>
       ))}
