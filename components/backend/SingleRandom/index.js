@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import * as S from "./styles";
 import usePosCalc from "./usePosCalc";
-import { useComputeCrossSimlarity } from "@/foundations/backend/utils/useComputeSimilarity";
+import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const BEZIER_DEFAULT = {
@@ -78,8 +78,6 @@ function SingleRandom({
     newInputEmbeddings;
   const { embeddings: outputEmbeddings, tokens: outputTokens } =
     newOutputEmbeddings;
-
-  console.log("83", isblack);
 
   const crossSimilarityMatrix = useComputeCrossSimlarity({
     newInputEmbeddings,

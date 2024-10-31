@@ -1,35 +1,16 @@
-"use client";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import * as S from "./styles";
+import { useState, useEffect } from "react";
+import SingleRandom from "./SingleRandom";
 
-import useConversation from "./utils/useConversation";
-import useAudio from "./utils/useAudio";
+import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
+import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
 
 import {
   INPUT_EMBEDDINGS,
   OUTPUT_EMBEDDINGS,
-} from "./utils/constant-conversation";
+} from "@/foundations/test/1-relation/utils/constant-conversation";
 
-const Backend1 = dynamic(() => import("@/foundations/backend/1"));
-const Backend2 = dynamic(() => import("@/foundations/backend/2"));
-const Backend3 = dynamic(() => import("@/foundations/backend/3"));
-const Backend4 = dynamic(() => import("@/foundations/backend/4"));
-
-import * as S from "./styles";
-
-export default function ScreenBackend({ showBackend = true }) {
-  //later on for multi-device integration, socket-related logic will be placed here
-
-  ///LOOP: INCREASES AS EVERY ITERATION PROGRESES
-  const [loop, setLoop] = useState(0);
-
-  //LEVEL: INCREASES from 1-4, 1-4 as loop initially increasees, stick on 4 after 4
-  const [level, setLevel] = useState(1);
-
-  //therefore, conversation-related logic will be placed here
-
-  //conversation management here?
-
+export default function Wrapper() {
   const [isblack, setIsblack] = useState(true);
 
   const [conversations, setConversations] = useState([]);
@@ -62,13 +43,32 @@ export default function ScreenBackend({ showBackend = true }) {
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
+  // useDrumRhythm({ text: outputEmbeddings.tokens.join(" ") });
+  // useTTS({ text: outputEmbeddings.tokens.join(" ") });
 
   return (
-    <S.Container $glitchEffect={false}>
-      {level === 1 && <Backend1 />}
-      {level === 2 && <Backend2 />}
-      {level === 3 && <Backend3 />}
-      {level === 4 && <Backend4 />}
+    <S.Container
+      style={{
+        background: isblack ? "black" : "white",
+      }}
+    >
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
+        visible={isblack && length <= 15}
+        timeUnit={1}
+      />
+
+      <SingleRandom
+        newInputEmbeddings={inputEmbeddings}
+        newOutputEmbeddings={outputEmbeddings}
+        isblack={isblack}
+        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+        visible={true}
+        timeUnit={1}
+      />
     </S.Container>
   );
 }
