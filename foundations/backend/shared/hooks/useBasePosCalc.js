@@ -4,7 +4,7 @@ import {
   Y_START,
   Y_MARGIN,
   X_WIDTH_MAX,
-} from "@/foundations/backend/constant/vis-params";
+} from "@/foundations/backend/shared/constants/vis-params";
 
 export function useBasePosCalc({ tokens, type }) {
   const [windowWidth, windowHeight] = useResize();

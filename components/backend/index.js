@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import useAudio from "@/foundations/backend/utils/useAudio";
 import useConversation from "@/foundations/backend/utils/useConversation";
-import { INPUT_EMBEDDINGS } from "@/foundations/backend/constant/conversation";
+import { INPUT_EMBEDDINGS } from "@/foundations/backend/shared/constants/conversation";
 import dynamic from "next/dynamic";
 import useStore from "./store";
 

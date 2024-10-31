@@ -2,7 +2,7 @@ import { create } from "zustand";
 import {
   INPUT_EMBEDDINGS,
   OUTPUT_EMBEDDINGS,
-} from "@/foundations/backend/constant/conversation";
+} from "@/foundations/backend/shared/constants/conversation";
 
 const useStore = create((set) => ({
   // Visual state
