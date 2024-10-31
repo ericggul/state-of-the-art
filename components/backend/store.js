@@ -21,9 +21,22 @@ const useStore = create((set) => ({
   embeddings: [],
   setEmbeddings: (value) => set({ embeddings: value }),
   addEmbedding: (embedding) =>
-    set((state) => ({
-      embeddings: [...state.embeddings, embedding],
-    })),
+    set((state) => {
+      const newEmbeddings = [...state.embeddings, embedding];
+
+      // Update input/output embeddings when adding new embedding
+      const lastIndex = newEmbeddings.length - 1;
+      const inputData =
+        lastIndex > 0 ? newEmbeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
+      const outputData = newEmbeddings[lastIndex];
+
+      return {
+        embeddings: newEmbeddings,
+        inputEmbeddings: inputData,
+        outputEmbeddings: outputData,
+        length: inputData.tokens.length + outputData.tokens.length,
+      };
+    }),
 
   // Current embeddings state
   inputEmbeddings: INPUT_EMBEDDINGS,
