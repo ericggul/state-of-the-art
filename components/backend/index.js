@@ -29,14 +29,15 @@ export default function Backend() {
         visible={isblack && length <= 15}
         timeUnit={1}
       /> */}
+      {level <= 1 && (
+        <Backend1
+          range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+          visible={true}
+          timeUnit={1}
+        />
+      )}
 
-      <Backend1
-        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
-        visible={true}
-        timeUnit={1}
-      />
-
-      {/* {level <= 2 && (
+      {level === 2 && (
         <Backend2
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
           visible={true}
@@ -58,13 +59,7 @@ export default function Backend() {
           visible={true}
           timeUnit={1}
         />
-      )} */}
-
-      {/* <Backend4
-        range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
-        visible={true}
-        timeUnit={1}
-      /> */}
+      )}
     </S.Container>
   );
 }
