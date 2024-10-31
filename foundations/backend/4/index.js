@@ -79,8 +79,6 @@ function SingleRandom({
   const { embeddings: outputEmbeddings, tokens: outputTokens } =
     newOutputEmbeddings;
 
-  console.log("83", isblack);
-
   const crossSimilarityMatrix = useComputeCrossSimlarity({
     newInputEmbeddings,
     newOutputEmbeddings,

@@ -7,44 +7,24 @@ function dotProduct(vector1, vector2) {
 
 // Function to compute similarity matrix
 function computeSimilarityMatrix(embeddings, tokens) {
-  const similarityMatrix = tokens.map((_, i) =>
-    tokens.map((_, j) =>
-      dotProduct(embeddings[tokens[i]], embeddings[tokens[j]])
-    )
-  );
+  const similarityMatrix = tokens.map((_, i) => tokens.map((_, j) => dotProduct(embeddings[tokens[i]], embeddings[tokens[j]])));
   return similarityMatrix;
 }
 
-export function useComputeSimilarity({ newEmbeddings }) {
+export default function useComputeSimilarity({ newEmbeddings }) {
   const { embeddings, tokens } = newEmbeddings;
 
-  const similarityMatrix = useMemo(
-    () =>
-      embeddings && tokens ? computeSimilarityMatrix(embeddings, tokens) : [],
-    [embeddings, tokens]
-  );
+  const similarityMatrix = useMemo(() => (embeddings && tokens ? computeSimilarityMatrix(embeddings, tokens) : []), [embeddings, tokens]);
 
   return similarityMatrix;
 }
 
-export function useComputeCrossSimlarity({
-  newInputEmbeddings,
-  newOutputEmbeddings,
-}) {
-  const { embeddings: inputEmbeddings, tokens: inputTokens } =
-    newInputEmbeddings;
-  const { embeddings: outputEmbeddings, tokens: outputTokens } =
-    newOutputEmbeddings;
+export function useComputeCrossSimlarity({ newInputEmbeddings, newOutputEmbeddings }) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
 
   const similarityMatrix = useMemo(() => {
-    const similarityMatrix = inputTokens.map((_, i) =>
-      outputTokens.map((_, j) =>
-        dotProduct(
-          inputEmbeddings[inputTokens[i]],
-          outputEmbeddings[outputTokens[j]]
-        )
-      )
-    );
+    const similarityMatrix = inputTokens.map((_, i) => outputTokens.map((_, j) => dotProduct(inputEmbeddings[inputTokens[i]], outputEmbeddings[outputTokens[j]])));
     return similarityMatrix;
   }, [inputEmbeddings, outputEmbeddings, inputTokens, outputTokens]);
 
@@ -52,14 +32,8 @@ export function useComputeCrossSimlarity({
 }
 
 export function useComputeMultiCrossSimlarity({ newMultiEmbeddings }) {
-  const embeddingsArr = useMemo(
-    () => newMultiEmbeddings.map((embeddings) => embeddings.embeddings),
-    [newMultiEmbeddings]
-  );
-  const tokensArr = useMemo(
-    () => newMultiEmbeddings.map((embeddings) => embeddings.tokens),
-    [newMultiEmbeddings]
-  );
+  const embeddingsArr = useMemo(() => newMultiEmbeddings.map((embeddings) => embeddings.embeddings), [newMultiEmbeddings]);
+  const tokensArr = useMemo(() => newMultiEmbeddings.map((embeddings) => embeddings.tokens), [newMultiEmbeddings]);
 
   const multiSimilarityMatrix = useMemo(() => {
     const result = [];
@@ -67,14 +41,7 @@ export function useComputeMultiCrossSimlarity({ newMultiEmbeddings }) {
       const thisEl = i;
       const nextEl = i + 1;
 
-      const similarityMatrix = tokensArr[thisEl].map((_, i) =>
-        tokensArr[nextEl].map((_, j) =>
-          dotProduct(
-            embeddingsArr[thisEl][tokensArr[thisEl][i]],
-            embeddingsArr[nextEl][tokensArr[nextEl][j]]
-          )
-        )
-      );
+      const similarityMatrix = tokensArr[thisEl].map((_, i) => tokensArr[nextEl].map((_, j) => dotProduct(embeddingsArr[thisEl][tokensArr[thisEl][i]], embeddingsArr[nextEl][tokensArr[nextEl][j]])));
       result.push(similarityMatrix);
     }
     return result;

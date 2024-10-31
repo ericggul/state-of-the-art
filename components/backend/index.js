@@ -1,14 +1,19 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
-import SingleRandom from "./SingleRandom";
 
-import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
-import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
+import useAudio from "@/foundations/backend/utils/useAudio";
+import useConversation from "@/foundations/backend/utils/useConversation";
 
 import {
   INPUT_EMBEDDINGS,
   OUTPUT_EMBEDDINGS,
-} from "@/foundations/test/1-relation/utils/constant-conversation";
+} from "@/foundations/backend/utils/constant";
+
+import dynamic from "next/dynamic";
+
+const Backend4 = dynamic(() => import("@/foundations/backend/4"), {
+  ssr: false,
+});
 
 export default function Wrapper() {
   const [isblack, setIsblack] = useState(true);
@@ -52,7 +57,7 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
-      <SingleRandom
+      <Backend4
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
@@ -61,7 +66,7 @@ export default function Wrapper() {
         timeUnit={1}
       />
 
-      <SingleRandom
+      <Backend4
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
