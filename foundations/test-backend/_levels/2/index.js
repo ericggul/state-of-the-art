@@ -1,0 +1,121 @@
+import * as S from "./styles";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
+import useResize from "@/utils/hooks/useResize";
+import useComputeSimilarity from "@/foundations/test/1-relation/utils/useComputeSimilarity";
+
+import useIncrementalInterval from "@/utils/hooks/intervals/useIncrementalInterval";
+import useOpacityInterval from "@/utils/hooks/intervals/useOpacityInterval";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+
+const getRandom = (min, max) => Math.random() * (max - min) + min;
+
+export default function Layer1({ newEmbeddings }) {
+  const { embeddings, tokens } = newEmbeddings;
+  const similarityMatrix = useComputeSimilarity({ newEmbeddings });
+
+  const [windowWidth, windowHeight] = useResize();
+
+  // Memoize calculations for performance
+  const wordLength = useMemo(() => tokens.length, [tokens]);
+  const wordInterval = useMemo(() => Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength), [windowWidth, wordLength]);
+  const yMargin = useMemo(() => windowHeight * 0.02, [windowHeight]);
+
+  // Calculate the position of each word and memoize it
+  const wordPosCalc = useCallback((idx) => [windowWidth / 2 - ((wordLength - 1) * wordInterval) / 2 + idx * wordInterval, windowHeight / 2], [wordInterval, wordLength, windowWidth, windowHeight]);
+
+  const [isblack, setIsblack] = useState(true);
+
+  const [radialIdx, setRadialIdx] = useState(0.6);
+
+  // Use random interval to change radialIdx and avoid recalculating too often
+  useRandomInterval(() => !isblack && setRadialIdx(getRandom(0.2, 1.4)), 1, 10);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsblack((b) => !b);
+      setRadialIdx((i) => (i !== 0.6 ? 0.6 : getRandom(0.2, 1.4)));
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Memoize rendered tokens to avoid re-rendering them unnecessarily
+  const renderedTokens = useMemo(() => {
+    return tokens.map((token, i) => (
+      <S.Token
+        key={i}
+        style={{
+          left: wordPosCalc(i)[0],
+          top: wordPosCalc(i)[1],
+          width: wordInterval,
+        }}
+      >
+        {token}
+      </S.Token>
+    ));
+  }, [tokens, wordPosCalc, wordInterval]);
+
+  // Memoize the arcs to avoid recalculating the paths
+  const renderedArcs = useMemo(() => {
+    return tokens.flatMap((token, i) =>
+      tokens.map((targetToken, j) =>
+        i < j ? (
+          <SingleGroup
+            i={i}
+            j={j}
+            yMargin={yMargin}
+            radialIdx={Math.random() < 0.5 ? radialIdx : 1 - radialIdx}
+            isblack={isblack}
+            wordPosCalc={wordPosCalc}
+            similarityMatrix={similarityMatrix}
+            key={`${i}-${j}`}
+          />
+        ) : null
+      )
+    );
+  }, [tokens, wordPosCalc, yMargin, radialIdx, isblack, similarityMatrix]);
+
+  return (
+    <S.Container
+      style={{
+        background: isblack ? "black" : "white",
+        color: isblack ? "white" : "black",
+      }}
+    >
+      {renderedTokens}
+      <S.Pic>{renderedArcs}</S.Pic>
+    </S.Container>
+  );
+}
+
+// Memoize the SingleGroup component to avoid re-renders when props don't change
+const SingleGroup = React.memo(function SingleGroup({ i, j, wordPosCalc, similarityMatrix, yMargin, radialIdx, isblack }) {
+  // Function to create an arc path between two points
+  const createArcPath = useCallback(
+    (x1, y1, x2, y2, dir = 1) => {
+      const radius = Math.abs(x2 - x1) / 2;
+      const sweepFlag = dir;
+      const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * yMargin;
+      const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * yMargin;
+      return `M${x1} ${y1Adjusted} A${radius} ${radius * radialIdx} 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
+    },
+    [yMargin, radialIdx]
+  );
+
+  const [dir, setDir] = useState(Math.random() < 0.5 ? 1 : 0);
+
+  // Use random interval to change direction of arcs periodically
+  useRandomInterval(() => !isblack && setDir(Math.random() < 0.5 ? 1 : 0), 10, 1000);
+
+  return (
+    <g key={`arc-group-${i}-${j}`}>
+      <path
+        key={`arc-${i}-${j}`}
+        d={createArcPath(wordPosCalc(i)[0], wordPosCalc(i)[1], wordPosCalc(j)[0], wordPosCalc(j)[1], dir)}
+        stroke={isblack ? "white" : "black"}
+        fill="none"
+        strokeWidth={similarityMatrix[i][j] > 0.05 ? similarityMatrix[i][j] ** 3 * 2.0 + 0.2 : 0}
+      />
+    </g>
+  );
+});
