@@ -23,12 +23,8 @@ export const Container = styled.div`
   }
 `;
 
-export const MidRow = styled.div`
-  ${FlexCenterStyle}
-`;
-
 export const Token = styled.div`
-  font-size: 0.7vw;
+  font-size: 1vw;
   font-weight: 500;
   color: white;
 
@@ -46,7 +42,6 @@ export const Pic = styled.svg`
   ${WholeContainer}
 
   path {
-    // transition: 0.1s linear;
     stroke-linecap: round;
     stroke-linejoin: round;
   }

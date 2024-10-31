@@ -5,8 +5,17 @@ import useStore from "@/components/backend/store";
 const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
 
 export default function useConversation() {
-  const { conversations, addConversation, addEmbedding, setIsblack } =
-    useStore();
+  const {
+    conversations,
+    addConversation,
+    addEmbedding,
+    setIsblack,
+    loop,
+    setLoop,
+    level,
+    setLevel,
+    isblack,
+  } = useStore();
 
   const [getNewText, setGetNewText] = useState(true);
   const hasFetchedText = useRef(false);
@@ -19,6 +28,15 @@ export default function useConversation() {
       setIsblack(true);
     }
   }, [getNewText]);
+
+  useEffect(() => {
+    if (!isblack) {
+      // When switching to white
+      const nextLoop = loop + 1;
+      setLoop(nextLoop);
+      setLevel(Math.min(nextLoop, 4)); // Level caps at 4
+    }
+  }, [isblack]);
 
   async function fetchText(conversations) {
     try {

@@ -11,11 +11,15 @@ const Backend4 = dynamic(() => import("@/foundations/backend/4"), {
   ssr: false,
 });
 
-export default function Wrapper() {
-  const { isblack, length } = useStore();
+export default function Backend() {
+  const { isblack, length, loop, level } = useStore();
 
   useConversation();
   useAudio();
+
+  useEffect(() => {
+    console.log(`Loop: ${loop}, Level: ${level}`);
+  }, [loop, level]);
 
   return (
     <S.Container style={{ background: isblack ? "black" : "white" }}>
