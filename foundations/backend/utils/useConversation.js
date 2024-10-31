@@ -1,18 +1,15 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
+import useStore from "@/components/backend/store";
 
 const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
 
-export default function useConversation({
-  conversations,
-  setConversations,
-  setEmbeddings,
-  setIsblack,
-}) {
+export default function useConversation() {
+  const { conversations, addConversation, addEmbedding, setIsblack } =
+    useStore();
+
   const [getNewText, setGetNewText] = useState(true);
   const hasFetchedText = useRef(false);
-
-  // Cache for embeddings
   const embeddingsCache = useRef({});
 
   useEffect(() => {
@@ -48,55 +45,42 @@ export default function useConversation({
         throw new Error("No response data or message content");
       }
 
-      setConversations((prev) => [...prev, response.data]);
-      const resultText = response.data.message.content;
+      addConversation(response.data);
 
-      // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
-
       fetchEmbedding({ tokens });
     } catch (e) {
       console.log(e, "get gpt response error");
-      // Timeout 0.5s
       await new Promise((r) => setTimeout(r, 500));
       setGetNewText(true);
     }
-  }
-
-  async function getNextText() {
-    await new Promise((r) => setTimeout(r, 2000));
-    // await new Promise((r) => setTimeout(r, 4500));
-    hasFetchedText.current = false;
-    setGetNewText(true);
   }
 
   async function fetchEmbedding({ tokens }) {
     if (!tokens || tokens.length === 0) return;
 
     try {
-      // Remove duplicates to avoid redundant API calls
       const uniqueTokens = [...new Set(tokens)];
-
-      // Fetch embeddings for unique tokens
       const embeddings = await getEmbeddingsForTokens(uniqueTokens);
 
-      // Build the result object
       const result = {
         embeddings,
         tokens,
       };
 
-      setEmbeddings((ebd) => [...ebd, result]);
-      //dummy delay 2s
-      // await new Promise((r) => setTimeout(r, 2000));
+      addEmbedding(result);
 
       setIsblack(false);
-
-      //after 5s set is black true and
       await getNextText();
     } catch (e) {
       console.error("Failed to fetch embeddings:", e);
     }
+  }
+
+  async function getNextText() {
+    await new Promise((r) => setTimeout(r, 2000));
+    hasFetchedText.current = false;
+    setGetNewText(true);
   }
 
   // Helper function to fetch embeddings for an array of tokens

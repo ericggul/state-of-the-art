@@ -1,36 +1,29 @@
 import * as S from "./styles";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import useAudio from "@/foundations/backend/utils/useAudio";
 import useConversation from "@/foundations/backend/utils/useConversation";
-
-import {
-  INPUT_EMBEDDINGS,
-  OUTPUT_EMBEDDINGS,
-} from "@/foundations/backend/utils/constant";
-
+import { INPUT_EMBEDDINGS } from "@/foundations/backend/utils/constant";
 import dynamic from "next/dynamic";
+import useStore from "./store";
 
 const Backend4 = dynamic(() => import("@/foundations/backend/4"), {
   ssr: false,
 });
 
 export default function Wrapper() {
-  const [isblack, setIsblack] = useState(true);
+  const {
+    isblack,
+    inputEmbeddings,
+    outputEmbeddings,
+    length,
+    embeddings,
+    setInputEmbeddings,
+    setOutputEmbeddings,
+    setLength,
+  } = useStore();
 
-  const [conversations, setConversations] = useState([]);
-  const [embeddings, setEmbeddings] = useState([]);
-
-  useConversation({
-    conversations,
-    setConversations,
-    setEmbeddings,
-    setIsblack,
-  });
-
-  const [inputEmbeddings, setInputEmbeddings] = useState(INPUT_EMBEDDINGS);
-  const [outputEmbeddings, setOutputEmbeddings] = useState(OUTPUT_EMBEDDINGS);
-  const [length, setLength] = useState(10);
+  useConversation();
 
   useEffect(() => {
     if (!isblack && embeddings.length > 0) {
@@ -48,8 +41,6 @@ export default function Wrapper() {
   }, [isblack, embeddings]);
 
   useAudio({ isblack });
-  // useDrumRhythm({ text: outputEmbeddings.tokens.join(" ") });
-  // useTTS({ text: outputEmbeddings.tokens.join(" ") });
 
   return (
     <S.Container
