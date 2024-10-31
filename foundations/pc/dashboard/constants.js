@@ -12,8 +12,13 @@ export const DEFAULT_MODEL = {
   parameters: "175B",
   trainingData: "570GB",
   performance: {
+    metric: "Perplexity",
+    yAxisLabel: "Score",
+    xAxisLabel: "Model Size",
     labels: ["1B", "10B", "100B", "175B"],
     data: [18, 15, 12, 10],
+    isLowerBetter: true,
+    format: "number",
   },
 };
 
@@ -53,3 +58,56 @@ export const MODEL_ARCHITECTURE = [
   "Transformer",
   "Output",
 ];
+
+export const PERFORMANCE_METRICS = {
+  LANGUAGE: {
+    perplexity: {
+      label: "Perplexity",
+      yAxisLabel: "Score",
+      isLowerBetter: true,
+      format: "number",
+    },
+    bleu: {
+      label: "BLEU Score",
+      yAxisLabel: "Score (%)",
+      isLowerBetter: false,
+      format: "percentage",
+    },
+  },
+  VISION: {
+    accuracy: {
+      label: "Top-1 Accuracy",
+      yAxisLabel: "Accuracy (%)",
+      isLowerBetter: false,
+      format: "percentage",
+    },
+    fid: {
+      label: "FID Score",
+      yAxisLabel: "Score",
+      isLowerBetter: true,
+      format: "number",
+    },
+  },
+  MULTIMODAL: {
+    clipScore: {
+      label: "CLIP Score",
+      yAxisLabel: "Score",
+      isLowerBetter: false,
+      format: "percentage",
+    },
+  },
+  VAE: {
+    reconstructionLoss: {
+      label: "Reconstruction Loss",
+      yAxisLabel: "Loss",
+      isLowerBetter: true,
+      format: "decimal",
+    },
+    kldLoss: {
+      label: "KL Divergence",
+      yAxisLabel: "Loss",
+      isLowerBetter: true,
+      format: "decimal",
+    },
+  },
+};

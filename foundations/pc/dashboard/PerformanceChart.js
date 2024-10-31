@@ -21,13 +21,35 @@ ChartJS.register(
   Legend
 );
 
+const formatValue = (value, format) => {
+  switch (format) {
+    case "percentage":
+      return `${(value * 100).toFixed(1)}%`;
+    case "decimal":
+      return value.toFixed(3);
+    case "number":
+    default:
+      return value.toString();
+  }
+};
+
 export default function PerformanceChart({ performance }) {
-  const data = {
-    labels: performance.labels,
+  const {
+    metric,
+    yAxisLabel,
+    xAxisLabel,
+    labels,
+    data,
+    isLowerBetter,
+    format,
+  } = performance;
+
+  const chartData = {
+    labels,
     datasets: [
       {
-        label: "Perplexity",
-        data: performance.data,
+        label: metric,
+        data,
         borderColor: "#00ffff",
         backgroundColor: "rgba(0, 255, 255, 0.2)",
         pointBackgroundColor: "#00ffff",
@@ -53,16 +75,29 @@ export default function PerformanceChart({ performance }) {
       },
       title: {
         display: true,
-        text: "Model Performance",
+        text: `Model ${metric} Performance`,
         color: "#00ffff",
         font: {
           family: "'Orbitron', sans-serif",
           size: 16,
         },
       },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = context.raw;
+            return `${metric}: ${formatValue(value, format)}`;
+          },
+        },
+      },
     },
     scales: {
       x: {
+        title: {
+          display: true,
+          text: xAxisLabel,
+          color: "#00ffff",
+        },
         grid: {
           color: "rgba(0, 255, 255, 0.1)",
         },
@@ -74,6 +109,11 @@ export default function PerformanceChart({ performance }) {
         },
       },
       y: {
+        title: {
+          display: true,
+          text: yAxisLabel,
+          color: "#00ffff",
+        },
         grid: {
           color: "rgba(0, 255, 255, 0.1)",
         },
@@ -82,10 +122,12 @@ export default function PerformanceChart({ performance }) {
           font: {
             family: "'Orbitron', sans-serif",
           },
+          callback: (value) => formatValue(value, format),
         },
+        reverse: isLowerBetter, // Reverse scale if lower values are better
       },
     },
   };
 
-  return <Line options={options} data={data} />;
+  return <Line options={options} data={chartData} />;
 }
