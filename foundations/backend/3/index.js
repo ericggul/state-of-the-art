@@ -1,109 +1,65 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import * as S from "./styles";
+import React, { useMemo, useCallback } from "react";
+import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
-import { useComputeCrossSimlarity } from "@/foundations/backend/utils/useComputeSimilarity";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
-
-const BEZIER_DEFAULT = {
-  controlX1Factor: 0,
-  controlX2Factor: 1,
-  controlY1Factor: 10,
-  controlY2Factor: 5,
-};
-
-const getRandom = (a, b) => Math.random() * (b - a) + a;
-
-// Memoized TokenComponent component
-const TokenComponent = React.memo(function TokenComponent({
-  i,
-  wordInterval,
-  wordPosCalc,
-  token,
-}) {
-  return (
-    <S.Token
-      style={{
-        left: wordPosCalc(i)[0],
-        top: wordPosCalc(i)[1],
-        width: wordInterval,
-      }}
-    >
-      {token}
-    </S.Token>
-  );
-});
+import { useVisualization } from "../shared/hooks/useVisualization";
+import { useAnimationState } from "../shared/hooks/useAnimationState";
+import { TokensRenderer } from "../shared/components/TokensRenderer";
 
 function SingleRandom({ range, visible, timeUnit }) {
-  // Get state from Zustand
   const {
     isblack,
     inputEmbeddings: newInputEmbeddings,
     outputEmbeddings: newOutputEmbeddings,
   } = useStore();
 
-  const { embeddings: inputEmbeddings, tokens: inputTokens } =
-    newInputEmbeddings;
-  const { embeddings: outputEmbeddings, tokens: outputTokens } =
-    newOutputEmbeddings;
-
-  // Local state
-  const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [xRange, setXRange] = useState(0);
-  const [yRange, setYRange] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  // Compute similarity matrix
-  const crossSimilarityMatrix = useComputeCrossSimlarity({
+  const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
-    newOutputEmbeddings,
-  });
+    newOutputEmbeddings
+  );
+  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
-  // Position calculations
+  const posCalcProps = useMemo(
+    () => ({
+      isAnimating,
+      range,
+      timeUnit,
+    }),
+    [isAnimating, range, timeUnit]
+  );
+
   const inputPosCalc = usePosCalc({
     tokens: inputTokens,
     type: "input",
+    ...posCalcProps,
   });
 
   const outputPosCalc = usePosCalc({
     tokens: outputTokens,
     type: "output",
+    ...posCalcProps,
   });
 
-  // Effects for animation states
-  useEffect(() => {
-    if (visible) {
-      setXRange(1.5);
-      setYRange(18);
-      setIsAnimating(isblack && visible);
-    }
-  }, [visible, isblack]);
-
-  // Bezier parameter updates
-  useRandomInterval(
-    () => {
-      setBezierParams({
-        controlX1Factor: getRandom(0 - xRange, 0 + xRange),
-        controlX2Factor: getRandom(0.7 - xRange, 0.7 + xRange),
-        controlY1Factor: getRandom(10 - yRange, 10 + yRange),
-        controlY2Factor: getRandom(10 - yRange, 10 + yRange),
-      });
-    },
-    5 * timeUnit,
-    50 * timeUnit
+  const bezierParams = useBezierParams(
+    inputTokens,
+    outputTokens,
+    xRange,
+    yRange,
+    visible,
+    isAnimating,
+    timeUnit
   );
 
-  // Path creation
   const createBezierPath = useCallback(
-    (x1, y1, x2, y2) => {
+    (x1, y1, x2, y2, bezierParam) => {
       if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) return "";
 
-      const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
-      const controlY1 =
-        y1 + inputPosCalc.yMargin * bezierParams.controlY1Factor;
-      const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
+      const controlX1 = x1 + (x2 - x1) * bezierParam.controlX1Factor;
+      const controlY1 = y1 + inputPosCalc.yMargin * bezierParam.controlY1Factor;
+      const controlX2 = x1 + (x2 - x1) * bezierParam.controlX2Factor;
       const controlY2 =
-        y2 - outputPosCalc.yMargin * bezierParams.controlY2Factor;
+        y2 - outputPosCalc.yMargin * bezierParam.controlY2Factor;
 
       return `M${x1},${
         y1 + inputPosCalc.yMargin
@@ -111,77 +67,55 @@ function SingleRandom({ range, visible, timeUnit }) {
         y2 - outputPosCalc.yMargin
       }`;
     },
-    [bezierParams, inputPosCalc.yMargin, outputPosCalc.yMargin]
+    [inputPosCalc.yMargin, outputPosCalc.yMargin]
   );
 
-  // Memoized renders
-  const renderedInputTokens = useMemo(() => {
-    return inputTokens.map((token, i) => (
-      <S.Token
-        key={`input-${i}`}
-        style={{
-          left: inputPosCalc.wordPosCalc(i)[0],
-          top: inputPosCalc.wordPosCalc(i)[1],
-          width: inputPosCalc.wordInterval,
-        }}
-      >
-        {token}
-      </S.Token>
-    ));
-  }, [inputTokens, inputPosCalc]);
+  const paths = useMemo(() => {
+    return inputTokens
+      .map((_, i) =>
+        outputTokens.map((_, j) => {
+          const similarity = crossSimilarityMatrix[i][j];
+          const [x1, y1] = inputPosCalc.wordPosCalc(i);
+          const [x2, y2] = outputPosCalc.wordPosCalc(j);
 
-  const renderedPaths = useMemo(() => {
-    return inputTokens.map((token, i) =>
-      outputTokens.map((targetToken, j) => (
-        <path
-          key={`arc-${i}-${j}`}
-          d={createBezierPath(
-            inputPosCalc.wordPosCalc(i)[0],
-            inputPosCalc.wordPosCalc(i)[1],
-            outputPosCalc.wordPosCalc(j)[0],
-            outputPosCalc.wordPosCalc(j)[1]
-          )}
-          stroke={isblack ? "white" : "black"}
-          fill="none"
-          strokeWidth={
-            crossSimilarityMatrix[i][j] > 0.2
-              ? Math.pow(crossSimilarityMatrix[i][j], 3) * 4
-              : 0
-          }
-        />
-      ))
-    );
+          return (
+            <path
+              key={`arc-${i}-${j}`}
+              d={createBezierPath(x1, y1, x2, y2, bezierParams)}
+              stroke={isblack ? "white" : "black"}
+              fill="none"
+              strokeWidth={similarity > 0.2 ? Math.pow(similarity, 3) * 4 : 0}
+            />
+          );
+        })
+      )
+      .flat();
   }, [
     inputTokens,
     outputTokens,
+    crossSimilarityMatrix,
     inputPosCalc,
     outputPosCalc,
     createBezierPath,
-    crossSimilarityMatrix,
+    bezierParams,
     isblack,
   ]);
 
   return (
     <S.Container
-      style={{
-        background: isblack ? "black" : "white",
-        color: isblack ? "white" : "black",
-      }}
+      isblack={isblack ? "true" : undefined}
+      style={{ opacity: visible ? 1 : 0 }}
     >
       <div>
-        {renderedInputTokens}
-        {outputTokens.map((token, i) => (
-          <TokenComponent
-            key={`output-${i}`}
-            i={i}
-            wordInterval={outputPosCalc.wordInterval}
-            wordPosCalc={outputPosCalc.wordPosCalc}
-            token={token}
-          />
-        ))}
+        <TokensRenderer
+          inputTokens={inputTokens}
+          outputTokens={outputTokens}
+          inputPosCalc={inputPosCalc}
+          outputPosCalc={outputPosCalc}
+        />
       </div>
 
-      <S.Pic>{renderedPaths}</S.Pic>
+      <S.Pic>{paths}</S.Pic>
     </S.Container>
   );
 }

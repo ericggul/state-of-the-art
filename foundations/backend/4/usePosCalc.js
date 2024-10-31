@@ -1,6 +1,12 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
 
+import {
+  Y_START,
+  Y_MARGIN,
+  X_WIDTH_MAX,
+} from "@/foundations/backend/constant/vis-params";
+
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 export default function usePosCalc({
@@ -15,10 +21,13 @@ export default function usePosCalc({
 
   const wordInterval = useMemo(() => {
     if (wordLength === 0) return 0;
-    return Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength);
+    return Math.min(
+      0.05 * windowWidth,
+      (windowWidth * X_WIDTH_MAX) / wordLength
+    );
   }, [windowWidth, wordLength]);
 
-  const yMargin = useMemo(() => windowHeight * 0.03, [windowHeight]);
+  const yMargin = useMemo(() => windowHeight * Y_MARGIN, [windowHeight]);
 
   const [tokenPositions, setTokenPositions] = useState([]);
 
@@ -40,9 +49,9 @@ export default function usePosCalc({
       let yPos = windowHeight / 2;
 
       if (type === "input") {
-        yPos = windowHeight * 0.2;
+        yPos = windowHeight * Y_START;
       } else if (type === "output") {
-        yPos = windowHeight * 0.8;
+        yPos = windowHeight * (1 - Y_START);
       }
 
       return { x: xPos, y: yPos };

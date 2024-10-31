@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import { BEZIER_DEFAULT } from "./mathUtils";
 import useBezierParams from "./useBezierParams";
-
-import { useComputeCrossSimlarity } from "../utils/useComputeSimilarity";
-import TokenComponent from "../components/TokenComponent";
 import useStore from "@/components/backend/store";
+import { useVisualization } from "../shared/hooks/useVisualization";
+import { useAnimationState } from "../shared/hooks/useAnimationState";
+import { TokensRenderer } from "../shared/components/TokensRenderer";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -15,29 +15,11 @@ function SingleRandom({ range, visible, timeUnit }) {
     outputEmbeddings: newOutputEmbeddings,
   } = useStore();
 
-  const { tokens: inputTokens } = useMemo(
-    () => newInputEmbeddings,
-    [newInputEmbeddings]
-  );
-  const { tokens: outputTokens } = useMemo(
-    () => newOutputEmbeddings,
-    [newOutputEmbeddings]
-  );
-
-  const [xRange, setXRange] = useState(0);
-  const [yRange, setYRange] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    setXRange(1.5);
-    setYRange(18);
-    setIsAnimating(isblack && visible);
-  }, [isblack, visible]);
-
-  const crossSimilarityMatrix = useComputeCrossSimlarity({
+  const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
-    newOutputEmbeddings,
-  });
+    newOutputEmbeddings
+  );
+  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
   const posCalcProps = useMemo(
     () => ({
@@ -138,25 +120,12 @@ function SingleRandom({ range, visible, timeUnit }) {
           transitionDelay: ".1s",
         }}
       >
-        {inputTokens.map((token, i) => (
-          <TokenComponent
-            key={`input-${i}`}
-            i={i}
-            token={token}
-            wordPosCalc={inputPosCalc.wordPosCalc}
-            wordInterval={inputPosCalc.wordInterval}
-          />
-        ))}
-
-        {outputTokens.map((token, i) => (
-          <TokenComponent
-            key={`output-${i}`}
-            i={i}
-            token={token}
-            wordPosCalc={outputPosCalc.wordPosCalc}
-            wordInterval={outputPosCalc.wordInterval}
-          />
-        ))}
+        <TokensRenderer
+          inputTokens={inputTokens}
+          outputTokens={outputTokens}
+          inputPosCalc={inputPosCalc}
+          outputPosCalc={outputPosCalc}
+        />
       </div>
 
       <S.Pic>{paths}</S.Pic>
