@@ -1,3 +1,15 @@
+export function createRadialPath(x1, y1, x2, y2, params) {
+  const { margin, radialIdx, dir = 1 } = params;
+  const radius = Math.abs(x2 - x1) / 2;
+  const sweepFlag = dir;
+  const y1Adjusted = y1 + (dir === 1 ? -1 : 1) * margin;
+  const y2Adjusted = y2 + (dir === 1 ? -1 : 1) * margin;
+
+  return `M${x1} ${y1Adjusted} A${radius} ${
+    radius * radialIdx
+  } 0 0 ${sweepFlag} ${x2} ${y2Adjusted}`;
+}
+
 export function createBezierPathV3(x1, y1, x2, y2, bezierParams, margins) {
   const { inputMargin, outputMargin } = margins;
   const followVal = (val) => val;
