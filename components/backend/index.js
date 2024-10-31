@@ -7,6 +7,10 @@ import { INPUT_EMBEDDINGS } from "@/foundations/backend/shared/constants/convers
 import dynamic from "next/dynamic";
 import useStore from "./store";
 
+const Backend2 = dynamic(() => import("@/foundations/backend/2"), {
+  ssr: false,
+});
+
 const Backend3 = dynamic(() => import("@/foundations/backend/3"), {
   ssr: false,
 });
@@ -33,7 +37,7 @@ export default function Backend() {
         timeUnit={1}
       /> */}
 
-      <Backend3
+      <Backend2
         range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
         visible={true}
         timeUnit={1}
