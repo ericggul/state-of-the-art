@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as S from "./styles";
 import useStore from "@/components/backend/store";
 import usePosCalc from "./usePosCalc";
-import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
+import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";

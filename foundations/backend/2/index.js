@@ -3,7 +3,7 @@ import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import useRadialParams from "./useRadialParams";
 import useStore from "@/components/backend/store";
-import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
+import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createRadialPath } from "../shared/utils/createPath";

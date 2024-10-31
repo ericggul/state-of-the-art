@@ -1,10 +1,9 @@
 import * as S from "./styles";
 import { useEffect } from "react";
 
-import useAudio from "@/foundations/backend/utils/useAudio";
-import useConversation from "@/foundations/backend/utils/useConversation";
-import { INPUT_EMBEDDINGS } from "@/foundations/backend/shared/constants/conversation";
-import dynamic from "next/dynamic";
+import useAudio from "@/components/backend/utils/useAudio";
+import useConversation from "@/components/backend/utils/useConversation";
+
 import useStore from "./store";
 
 import Backend1 from "@/foundations/backend/1";
@@ -24,11 +23,6 @@ export default function Backend() {
 
   return (
     <S.Container style={{ background: isblack ? "black" : "white" }}>
-      {/* <Backend4
-        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
-        visible={isblack && length <= 15}
-        timeUnit={1}
-      /> */}
       {level <= 1 && (
         <Backend1
           range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}

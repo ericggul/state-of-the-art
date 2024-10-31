@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useComputeCrossSimlarity } from "../../utils/useComputeSimilarity";
+import { useComputeCrossSimlarity } from "../utils/useComputeSimilarity";
 
 export function useVisualization(newInputEmbeddings, newOutputEmbeddings) {
   const { tokens: inputTokens } = useMemo(
