@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
-import { getWeightedRandom } from "./mathUtils";
+import { generateBezierParams } from "../shared/hooks/useBezierBase";
 
 export default function useBezierParams(
   inputTokens,
@@ -20,12 +20,7 @@ export default function useBezierParams(
     inputTokens.forEach((_, i) => {
       outputTokens.forEach((_, j) => {
         const key = `${i}-${j}`;
-        newParams[key] = {
-          controlX1Factor: getWeightedRandom(-xRange, xRange),
-          controlX2Factor: getWeightedRandom(0.7 - xRange, 0.7 + xRange),
-          controlY1Factor: getWeightedRandom(10 - yRange, 10 + yRange),
-          controlY2Factor: getWeightedRandom(10 - yRange, 10 + yRange),
-        };
+        newParams[key] = generateBezierParams(xRange, yRange);
       });
     });
 
