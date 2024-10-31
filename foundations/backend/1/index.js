@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import * as S from "../components/styles";
+import * as S from "./styles";
 import useStore from "@/components/backend/store";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";

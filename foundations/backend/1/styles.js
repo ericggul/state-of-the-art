@@ -9,6 +9,7 @@ export const Container = styled.div`
 
   ${WholeContainer}
   ${FlexCenterStyle}
+  position: relative;
 
   font-size: 1vw;
   color: #fff;
@@ -42,9 +43,9 @@ export const Tokens = styled.div`
 `;
 
 export const Token = styled.div`
+  position: absolute;
   font-size: 0.8vw;
   font-weight: 500;
-  color: white;
   width: 5vw;
 
   ${FlexCenterStyle}
@@ -56,8 +57,5 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  // color: #aaa;
-
-  // transition: 0.2s linear;
   transition-delay: 0.2s;
 `;

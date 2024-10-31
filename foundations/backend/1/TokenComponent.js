@@ -1,14 +1,20 @@
 import * as S from "./styles";
-import { useMemo, useCallback, useState, useEffect } from "react";
-import useResize from "@/utils/hooks/useResize";
-import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
+import { useState, useEffect } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-export default function Token({ token, embedding, isTarget }) {
+export default function TokenComponent({
+  token,
+  embedding,
+  isTarget,
+  i,
+  wordPosCalc,
+}) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
   });
+
+  console.log(isTarget);
 
   useEffect(() => {
     if (embedding) {
@@ -19,7 +25,6 @@ export default function Token({ token, embedding, isTarget }) {
     }
   }, [embedding]);
 
-  // Shuffle embeddings periodically using random interval
   useRandomInterval(
     () => {
       if (embedding) {
@@ -29,12 +34,22 @@ export default function Token({ token, embedding, isTarget }) {
         }));
       }
     },
-    1000, // Use larger intervals to reduce frequent updates
+    1000,
     2000
   );
 
+  const [x, y] = wordPosCalc(i);
+
   return (
-    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
+    <S.Token
+      startswithspace={token.startsWith(" ") ? "true" : undefined}
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        transform: "translate(-50%, -50%)",
+      }}
+    >
       <S.Inner
         style={{
           opacity: isTarget ? 1 : 0.1,
