@@ -12,11 +12,12 @@ export function usePathsV1(params) {
     targetWordIdx,
   } = params;
 
-  return useMemo(() => {
+  // Token paths - connections to target word
+  const tokenPaths = useMemo(() => {
     return tokens.map((_, i) => {
       if (i === targetWordIdx) return null;
       const similarity = similarityMatrix[i][targetWordIdx];
-      if (similarity <= 0.05) return null;
+      if (similarity <= 0.2) return null;
 
       const [x1, y1] = wordPosCalc(i);
       const [x2, y2] = wordPosCalc(targetWordIdx);
@@ -36,6 +37,34 @@ export function usePathsV1(params) {
       );
     });
   }, [tokens, similarityMatrix, wordPosCalc, yMargin, isblack, targetWordIdx]);
+
+  // Interaction paths - connections between all words
+  const interactionPaths = useMemo(() => {
+    return tokens
+      .flatMap((_, i) =>
+        tokens.map((_, j) => {
+          if (i >= j) return null;
+          const similarity = similarityMatrix[i][j];
+
+          return (
+            <path
+              key={`arc-${i}-${j}`}
+              d={createArcPath(...wordPosCalc(i), ...wordPosCalc(j), {
+                yMargin,
+                dir: j % 2 === 0 ? 1 : 0,
+              })}
+              stroke={isblack ? "white" : "black"}
+              fill="none"
+              strokeWidth={similarity ** 2 * 2}
+              opacity={j === targetWordIdx || i === targetWordIdx ? 1 : 0.1}
+            />
+          );
+        })
+      )
+      .filter(Boolean);
+  }, [tokens, similarityMatrix, wordPosCalc, yMargin, isblack, targetWordIdx]);
+
+  return [...tokenPaths, ...interactionPaths];
 }
 
 export function usePathsV2(params) {

@@ -12,7 +12,6 @@ export const Container = styled.div`
 
   font-size: 1vw;
   color: #fff;
-  background: transparent !important;
 
   background: ${({ isblack }) => (isblack ? "black" : "white")};
   svg {

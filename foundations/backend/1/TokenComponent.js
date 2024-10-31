@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from "react";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import * as S from "./styles";
+import { useMemo, useCallback, useState, useEffect } from "react";
+import useResize from "@/utils/hooks/useResize";
+import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-const TokenComponent = React.memo(function TokenComponent({
-  i,
-  token,
-  embedding,
-  wordPosCalc,
-  wordInterval,
-  isTarget,
-}) {
+export default function Token({ token, embedding, isTarget }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
@@ -24,6 +19,7 @@ const TokenComponent = React.memo(function TokenComponent({
     }
   }, [embedding]);
 
+  // Shuffle embeddings periodically using random interval
   useRandomInterval(
     () => {
       if (embedding) {
@@ -33,29 +29,34 @@ const TokenComponent = React.memo(function TokenComponent({
         }));
       }
     },
-    1000,
+    1000, // Use larger intervals to reduce frequent updates
     2000
   );
 
-  const [x, y] = wordPosCalc(i);
-
   return (
-    <S.Token
-      style={{
-        left: x,
-        top: y,
-        width: wordInterval,
-      }}
-    >
-      <S.Inner style={{ opacity: isTarget ? 1 : 0.1 }}>
+    <S.Token startswithspace={token.startsWith(" ") ? "true" : ""}>
+      <S.Inner
+        style={{
+          opacity: isTarget ? 1 : 0.1,
+        }}
+      >
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
-      <p style={{ margin: "1vw 0", fontSize: "1vw" }}>{token}</p>
-      <S.Inner style={{ opacity: isTarget ? 1 : 0.1 }}>
+      <p
+        style={{
+          margin: "1vw 0",
+          fontSize: "1vw",
+        }}
+      >
+        {token}
+      </p>
+      <S.Inner
+        style={{
+          opacity: isTarget ? 1 : 0.1,
+        }}
+      >
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
     </S.Token>
   );
-});
-
-export default TokenComponent;
+}
