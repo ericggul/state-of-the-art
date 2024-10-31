@@ -37,7 +37,7 @@ export default function Backend() {
         timeUnit={1}
       /> */}
 
-      <Backend4
+      <Backend2
         range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
         visible={true}
         timeUnit={1}

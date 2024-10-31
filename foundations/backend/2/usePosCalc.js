@@ -1,30 +1,28 @@
-import { useState, useEffect, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
 
-export default function usePosCalc({
-  tokens,
-  isAnimating,
-  range,
-  timeUnit,
-  type,
-}) {
+export default function usePosCalc({ tokens }) {
   const { wordInterval, yMargin, generateStaticPositions } = useBasePosCalc({
     tokens,
     type: "center",
   });
-  const [tokenPositions, setTokenPositions] = useState([]);
 
-  useEffect(() => {
-    setTokenPositions(generateStaticPositions());
-  }, [generateStaticPositions, isAnimating, timeUnit]);
+  const positions = useMemo(
+    () => generateStaticPositions(),
+    [generateStaticPositions]
+  );
 
   const wordPosCalc = useCallback(
     (idx) => {
-      const position = tokenPositions[idx];
+      const position = positions[idx];
       return position ? [position.x, position.y] : [0, 0];
     },
-    [tokenPositions]
+    [positions]
   );
 
-  return { wordPosCalc, wordInterval, yMargin };
+  return {
+    wordPosCalc,
+    wordInterval,
+    yMargin,
+  };
 }

@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
-import { BEZIER_DEFAULT } from "../shared/utils/mathUtils";
 import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
@@ -66,7 +65,6 @@ function SingleRandom({ range, visible, timeUnit }) {
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 4,
     isV4: true,
-    BEZIER_DEFAULT,
   });
 
   return (

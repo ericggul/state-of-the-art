@@ -1,11 +1,11 @@
-import React, { useMemo, useCallback } from "react";
+import React from "react";
 import * as S from "../components/styles";
+import usePosCalc from "./usePosCalc";
+import useRadialParams from "./useRadialParams";
 import useStore from "@/components/backend/store";
 import useComputeSimilarity from "@/foundations/backend/utils/useComputeSimilarity";
-import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
-import useRadialParams from "./useRadialParams";
 import { createRadialPath } from "../shared/utils/createPath";
 import { usePathsV2 } from "../shared/hooks/usePaths";
 
@@ -15,41 +15,18 @@ function SingleRandom({ range, visible, timeUnit }) {
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
   const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
-  const { wordInterval, yMargin, generateStaticPositions } = useBasePosCalc({
-    tokens,
-    type: "center",
-  });
-
-  const positions = useMemo(
-    () => generateStaticPositions(),
-    [generateStaticPositions]
-  );
-
-  const wordPosCalc = useCallback(
-    (idx) => {
-      const position = positions[idx];
-      return position ? [position.x, position.y] : [0, 0];
-    },
-    [positions]
-  );
-
+  const posCalc = usePosCalc({ tokens });
   const radialIdx = useRadialParams(visible, isAnimating, timeUnit);
 
   const paths = usePathsV2({
     tokens,
     similarityMatrix,
-    wordPosCalc,
-    yMargin,
+    wordPosCalc: posCalc.wordPosCalc,
+    yMargin: posCalc.yMargin,
     radialIdx,
     isblack,
     createRadialPath,
   });
-
-  const posCalc = {
-    wordPosCalc,
-    wordInterval,
-    yMargin,
-  };
 
   return (
     <S.Container
