@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import useStore from "@/components/backend/store";
 
 const audioFiles = [
   "/audio/test.wav",
@@ -9,7 +10,8 @@ const audioFiles = [
 
 const ROBOT = "/audio/robot/test.m4a";
 
-export default function useAudio({ isblack }) {
+export default function useAudio() {
+  const { isblack } = useStore();
   const mainAudioRef = useRef(null);
   const robotAudioRef = useRef(null);
 
