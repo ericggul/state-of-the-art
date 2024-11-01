@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "./constants";
+import { RELATED_PAPERS } from "./constants";
 import { CitationParser } from "./utils/citationParser";
 
 const PaperList = styled.ul`
@@ -19,12 +19,10 @@ const PaperLink = styled.div`
   font-size: 0.9vw;
 `;
 
-export default function RelatedPapers({ model }) {
-  const papers = model?.papers || DEFAULT_MODEL.papers || [];
-
+export default function RelatedPapers() {
   return (
     <PaperList>
-      {papers.map((citation, index) => {
+      {RELATED_PAPERS.map((citation, index) => {
         const parsed = CitationParser.parseAPA(citation);
         const displayText = CitationParser.formatForDisplay(parsed);
 

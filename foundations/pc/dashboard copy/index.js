@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./styles";
-import useStore from "@/components/screen/store";
+import useScreenStore from "@/components/screen/store";
 import ModelDiagram from "./ModelDiagram";
 import PerformanceChart from "./PerformanceChart";
 import RelatedPapers from "./RelatedPapers";
 import TypewriterText from "./TypewriterText";
 import ModelLimitations from "./ModelLimitations";
-import { MODEL_IMAGE, DEFAULT_MODEL, STATS_CONFIG } from "./constants";
+import {
+  MODEL_IMAGE,
+  DEFAULT_MODEL,
+  SAMPLE_MODEL,
+  MODEL_STATS_CONFIG,
+} from "./constants";
 
 export default function Dashboard() {
-  const { currentArchitectures } = useStore();
+  const { currentArchitectures } = useScreenStore();
   const [prevModel, setPrevModel] = useState(null);
   const [model, setModel] = useState(null);
 
@@ -20,23 +25,31 @@ export default function Dashboard() {
     }
   }, [currentArchitectures]);
 
-  const currentModel = model || DEFAULT_MODEL;
+  const defaultModel = DEFAULT_MODEL;
+
+  const currentModel = model || defaultModel;
 
   const getTopStats = (modelStats, maxStats = 3) => {
     if (!modelStats) return [];
 
-    return Object.entries(modelStats)
-      .filter(([key, value]) => value !== undefined && value !== null)
-      .sort(
-        ([keyA], [keyB]) =>
-          STATS_CONFIG[keyA].priority - STATS_CONFIG[keyB].priority
-      )
-      .slice(0, maxStats)
-      .map(([key, value]) => ({
-        key,
-        value,
-        ...STATS_CONFIG[key],
-      }));
+    return (
+      Object.entries(modelStats)
+        // Filter out undefined or null values
+        .filter(([key, value]) => value !== undefined && value !== null)
+        // Sort by priority
+        .sort(
+          ([keyA], [keyB]) =>
+            MODEL_STATS_CONFIG[keyA].priority -
+            MODEL_STATS_CONFIG[keyB].priority
+        )
+        // Take only the top N stats
+        .slice(0, maxStats)
+        .map(([key, value]) => ({
+          key,
+          value,
+          ...MODEL_STATS_CONFIG[key],
+        }))
+    );
   };
 
   return (
@@ -44,13 +57,13 @@ export default function Dashboard() {
       <S.Header>
         <S.Title>
           <TypewriterText
-            text={`${currentModel.name} - ${currentModel.id}`}
+            text={`${currentModel.name || ""} - ${currentModel.version || ""}`}
             speed={30}
           />
         </S.Title>
         <S.Subtitle>
           <TypewriterText
-            text={`${currentModel.year}, ${currentModel.authors}`}
+            text={`${currentModel.year || ""}, ${currentModel.place || ""}`}
             speed={30}
           />
         </S.Subtitle>
@@ -67,7 +80,7 @@ export default function Dashboard() {
 
         <S.Card>
           <S.CardTitle>Architecture</S.CardTitle>
-          <ModelDiagram model={currentModel} />
+          <ModelDiagram />
         </S.Card>
 
         <S.Card>
@@ -83,7 +96,7 @@ export default function Dashboard() {
                 <S.StatLabel>{stat.label}</S.StatLabel>
                 <S.StatValue>
                   <TypewriterText
-                    text={`${stat.value}${stat.suffix || ""}`}
+                    text={`${stat.value}${stat.suffix}`}
                     speed={30}
                   />
                 </S.StatValue>
@@ -94,12 +107,12 @@ export default function Dashboard() {
 
         <S.Card>
           <S.CardTitle>Model Limitations</S.CardTitle>
-          <ModelLimitations model={currentModel} />
+          <ModelLimitations />
         </S.Card>
 
         <S.Card>
           <S.CardTitle>Related Papers</S.CardTitle>
-          <RelatedPapers model={currentModel} />
+          <RelatedPapers />
         </S.Card>
       </S.Grid>
     </S.Container>

@@ -1,305 +1,167 @@
-export const MODEL_IMAGE =
-  "https://via.placeholder.com/300x200.png?text=GPT+Model+Image";
+export const MODEL_CATEGORIES = {
+  FOUNDATION: "Foundation Models",
+  MEMORY: "Memory-Based Models",
+  CNN: "Vision Models",
+  TRANSFORMER: "Language Models",
+  GENERATIVE: "Generative Models",
+  MULTIMODAL: "Multimodal Models",
+  RL: "Reinforcement Learning",
+};
 
-export const DEFAULT_MODEL = {
-  name: "GPT",
-  version: "v4.2.3.1",
-  year: 2018,
-  place: "Alec Radford et al., OpenAI",
-  stats: {
-    citations: 13500,
-    parameters: "175B",
-    trainingData: "570GB",
-    computeUsed: "3640",
-    inferenceSpeed: 32,
-    memoryUsage: "350GB",
-    trainTime: "34 days",
-    carbonFootprint: "552",
+export const PERFORMANCE_TYPES = {
+  CLASSIFICATION: {
+    metric: "Classification Accuracy",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
   },
-  explanation:
-    "Introduced unsupervised pre-training for language models using Transformer decoder.",
-  parameters: "175B",
-  trainingData: "570GB",
-  performance: {
+  PERPLEXITY: {
     metric: "Perplexity",
     yAxisLabel: "Score",
-    xAxisLabel: "Model Size",
-    labels: ["1B", "10B", "100B", "175B"],
-    data: [18, 15, 12, 10],
-    isLowerBetter: true,
     format: "number",
+    isLowerBetter: true,
   },
-};
-
-export const RELATED_PAPERS = [
-  {
-    title: "Attention Is All You Need",
-    authors: "Vaswani et al.",
-    year: 2017,
-  },
-  {
-    title:
-      "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
-    authors: "Devlin et al.",
-    year: 2018,
-  },
-  {
-    title: "Language Models are Few-Shot Learners",
-    authors: "Brown et al.",
-    year: 2020,
-  },
-];
-
-export const MODEL_LIMITATIONS = [
-  "May generate incorrect information",
-  "Limited to 128K tokens",
-  "Contains societal biases",
-  "Fixed knowledge cutoff date",
-  "Struggles with complex reasoning",
-];
-
-export const MODEL_ARCHITECTURE = [
-  "Input",
-  "Embedding",
-  "Transformer",
-  "Output",
-];
-
-export const PERFORMANCE_METRICS = {
-  FOUNDATION: {
-    accuracy: {
-      label: "Classification Accuracy",
-      yAxisLabel: "Accuracy (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["Perceptron", "MLP", "Modern NN", "Current"],
-        data: [0.65, 0.78, 0.89, 0.92],
-      },
-    },
-  },
-
-  MEMORY_MODELS: {
-    recallAccuracy: {
-      label: "Pattern Recall Accuracy",
-      yAxisLabel: "Accuracy (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["Basic RNN", "Hopfield", "LSTM", "Current"],
-        data: [0.45, 0.67, 0.82, 0.88],
-      },
-    },
-    convergenceTime: {
-      label: "Convergence Time",
-      yAxisLabel: "Iterations",
-      isLowerBetter: true,
-      format: "number",
-      benchmarks: {
-        labels: ["Basic", "Optimized", "Modern", "Current"],
-        data: [1000, 750, 500, 300],
-      },
-    },
-  },
-
-  VISION_CNN: {
-    imagenetTop1: {
-      label: "ImageNet Top-1 Accuracy",
-      yAxisLabel: "Accuracy (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["AlexNet", "VGG", "ResNet", "Current"],
-        data: [0.63, 0.74, 0.82, 0.88],
-      },
-    },
-    inferenceTime: {
-      label: "Inference Time",
-      yAxisLabel: "ms/image",
-      isLowerBetter: true,
-      format: "number",
-      benchmarks: {
-        labels: ["Heavy", "Medium", "Light", "Current"],
-        data: [100, 50, 25, 15],
-      },
-    },
-  },
-
-  TRANSFORMER_LLM: {
-    perplexity: {
-      label: "Perplexity",
-      yAxisLabel: "Score",
-      isLowerBetter: true,
-      format: "number",
-      benchmarks: {
-        labels: ["GPT-2", "GPT-3", "GPT-4", "Current"],
-        data: [35.76, 20.5, 15.32, 10.12],
-      },
-    },
-    mmlu: {
-      label: "MMLU Score",
-      yAxisLabel: "Accuracy (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["BERT", "RoBERTa", "PaLM", "Current"],
-        data: [0.452, 0.501, 0.578, 0.699],
-      },
-    },
-    humanEval: {
-      label: "HumanEval",
-      yAxisLabel: "Pass Rate (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["CodeX", "GPT-3", "GPT-4", "Current"],
-        data: [0.521, 0.627, 0.732, 0.815],
-      },
-    },
-  },
-
-  GENERATIVE: {
-    fid: {
-      label: "FID Score",
-      yAxisLabel: "Score",
-      isLowerBetter: true,
-      format: "decimal",
-      benchmarks: {
-        labels: ["GAN", "DALL-E", "SD", "Current"],
-        data: [32.1, 27.3, 22.1, 18.7],
-      },
-    },
-    clipScore: {
-      label: "CLIP Score",
-      yAxisLabel: "Score",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["v1", "v2", "v3", "Current"],
-        data: [0.652, 0.687, 0.723, 0.758],
-      },
-    },
-  },
-
-  MULTIMODAL: {
-    vqa: {
-      label: "VQA Score",
-      yAxisLabel: "Accuracy (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["Early", "CLIP", "GPT-4V", "Current"],
-        data: [0.54, 0.67, 0.78, 0.82],
-      },
-    },
-    crossModalRetrieval: {
-      label: "Retrieval Accuracy",
-      yAxisLabel: "R@1 (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["CLIP", "Florence", "Gemini", "Current"],
-        data: [0.295, 0.381, 0.456, 0.487],
-      },
-    },
-  },
-
-  REINFORCEMENT: {
-    winRate: {
-      label: "Win Rate",
-      yAxisLabel: "Rate (%)",
-      isLowerBetter: false,
-      format: "percentage",
-      benchmarks: {
-        labels: ["DQN", "A3C", "AlphaGo", "Current"],
-        data: [0.51, 0.67, 0.89, 0.92],
-      },
-    },
-    sampleEfficiency: {
-      label: "Sample Efficiency",
-      yAxisLabel: "Steps to Converge",
-      isLowerBetter: true,
-      format: "number",
-      benchmarks: {
-        labels: ["Basic", "PPO", "Advanced", "Current"],
-        data: [1000000, 500000, 250000, 100000],
-      },
-    },
-  },
-};
-
-// Example of a model using these metrics:
-export const SAMPLE_MODEL = {
-  name: "GPT-Neo",
-  version: "v2.0",
-  year: 2023,
-  place: "EleutherAI",
-  citation: 8500,
-  explanation: "Open-source alternative to GPT-3 with competitive performance.",
-  parameters: "125B",
-  trainingData: "825GB",
-  performance: {
+  MMLU: {
     metric: "MMLU Score",
     yAxisLabel: "Accuracy (%)",
-    xAxisLabel: "Model",
-    labels: ["BERT", "RoBERTa", "T5", "Current"],
-    data: [0.452, 0.501, 0.578, 0.699],
-    isLowerBetter: false,
     format: "percentage",
-    benchmarks: {
-      labels: ["BERT", "RoBERTa", "T5", "Current"],
-      data: [0.452, 0.501, 0.578, 0.699],
-    },
+    isLowerBetter: false,
   },
 };
 
-export const MODEL_STATS_CONFIG = {
-  citations: {
-    label: "Citations",
-    priority: 1, // Lower number = higher priority
-    format: "number",
-    suffix: "",
-  },
-  parameters: {
-    label: "Parameters",
-    priority: 2,
-    format: "text",
-    suffix: "",
-  },
-  trainingData: {
-    label: "Training Data",
-    priority: 3,
-    format: "text",
-    suffix: "",
-  },
+export const STATS_CONFIG = {
+  citations: { label: "Citations", format: "number", priority: 1 },
+  parameters: { label: "Parameters", format: "text", priority: 2 },
+  trainingData: { label: "Training Data", format: "text", priority: 3 },
   computeUsed: {
-    label: "Compute Used",
-    priority: 4,
+    label: "Compute",
     format: "text",
     suffix: "PF-days",
+    priority: 4,
   },
   inferenceSpeed: {
-    label: "Inference Speed",
-    priority: 5,
+    label: "Speed",
     format: "number",
     suffix: "tok/s",
+    priority: 5,
   },
-  memoryUsage: {
-    label: "Memory Usage",
-    priority: 6,
-    format: "text",
-    suffix: "",
-  },
-  trainTime: {
-    label: "Training Time",
-    priority: 7,
-    format: "text",
-    suffix: "",
-  },
+  memoryUsage: { label: "Memory", format: "text", priority: 6 },
+  trainTime: { label: "Training Time", format: "text", priority: 7 },
   carbonFootprint: {
-    label: "CO2 Emission",
-    priority: 8,
+    label: "CO2",
     format: "text",
     suffix: "tCO2eq",
+    priority: 8,
   },
 };
+
+export const MODELS_LIST = [
+  {
+    id: "v1.0",
+    category: "FOUNDATION",
+    name: "McCulloch-Pitts Neuron",
+    year: 1943,
+    authors: "Warren McCulloch and Walter Pitts",
+    citations: 18434,
+    explanation:
+      "Introduced the first mathematical model of a neuron, laying the foundation for neural network research.",
+    architecture: ["Input", "Threshold", "Output"],
+    limitations: [
+      "Can only implement logical functions",
+      "No learning capability",
+      "Binary output only",
+    ],
+    stats: {
+      parameters: "1",
+      computeUsed: "N/A",
+      inferenceSpeed: 1,
+      memoryUsage: "1KB",
+    },
+    performance: {
+      metric: "Classification Accuracy",
+      yAxisLabel: "Accuracy (%)",
+      labels: ["Basic", "Improved", "Modern", "Current"],
+      data: [0.65, 0.78, 0.89, 0.92],
+      isLowerBetter: false,
+      format: "percentage",
+    },
+    papers: [
+      "McCulloch, W. S., & Pitts, W. (1943). A logical calculus of the ideas immanent in nervous activity. The bulletin of mathematical biophysics, 5(4), 115-133.",
+    ],
+  },
+  {
+    id: "v4.1",
+    category: "TRANSFORMER",
+    name: "GPT-3",
+    year: 2020,
+    authors: "Brown et al., OpenAI",
+    citations: 15800,
+    explanation:
+      "Large-scale language model demonstrating few-shot learning capabilities.",
+    architecture: ["Input", "Embedding", "Transformer", "Output"],
+    limitations: [
+      "High computational cost",
+      "Limited context window",
+      "Potential biases",
+      "No real-time knowledge",
+    ],
+    stats: {
+      parameters: "175B",
+      trainingData: "570GB",
+      computeUsed: "3640",
+      inferenceSpeed: 32,
+      memoryUsage: "350GB",
+      trainTime: "34 days",
+      carbonFootprint: "552",
+    },
+    performance: {
+      metric: "Perplexity",
+      yAxisLabel: "Score",
+      labels: ["GPT-2", "GPT-3", "GPT-4", "Current"],
+      data: [35.76, 20.5, 15.32, 10.12],
+      isLowerBetter: true,
+      format: "number",
+    },
+    papers: [
+      "Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., ... & Amodei, D. (2020). Language models are few-shot learners. arXiv preprint arXiv:2005.14165.",
+    ],
+  },
+  {
+    id: "v3.2",
+    category: "CNN",
+    name: "ResNet",
+    year: 2015,
+    authors: "He et al., Microsoft Research",
+    citations: 145000,
+    explanation:
+      "Introduced residual connections to enable training of very deep networks.",
+    architecture: ["Input", "Conv", "ResBlock", "Pool", "FC", "Output"],
+    limitations: [
+      "Computationally intensive",
+      "Large memory footprint",
+      "Limited receptive field",
+    ],
+    stats: {
+      parameters: "60M",
+      computeUsed: "1024",
+      inferenceSpeed: 150,
+      memoryUsage: "102MB",
+    },
+    performance: {
+      metric: "ImageNet Top-1 Accuracy",
+      yAxisLabel: "Accuracy (%)",
+      labels: ["AlexNet", "VGG", "ResNet", "Current"],
+      data: [0.63, 0.74, 0.82, 0.88],
+      isLowerBetter: false,
+      format: "percentage",
+    },
+    papers: [
+      "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778).",
+    ],
+  },
+];
+
+// Optional: Common shared data
+export const DEFAULT_MODEL = MODELS_LIST.find((model) => model.id === "v4.1");
+export const MODEL_IMAGE =
+  "https://via.placeholder.com/300x200.png?text=Model+Architecture";

@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import useStore from "@/components/screen/store";
-import { DEFAULT_MODEL } from "./constants";
+import { MODEL_ARCHITECTURE } from "./constants";
 
 const DiagramContainer = styled.div`
   display: flex;
@@ -32,15 +31,13 @@ const Arrow = styled.div`
   border-top: 1vw solid #00ffff;
 `;
 
-export default function ModelDiagram({ model }) {
-  const architecture = model?.architecture || DEFAULT_MODEL.architecture || [];
-
+export default function ModelDiagram() {
   return (
     <DiagramContainer>
-      {architecture.map((layer, index) => (
+      {MODEL_ARCHITECTURE.map((layer, index) => (
         <React.Fragment key={layer}>
           <Layer>{layer}</Layer>
-          {index < architecture.length - 1 && <Arrow />}
+          {index < MODEL_ARCHITECTURE.length - 1 && <Arrow />}
         </React.Fragment>
       ))}
     </DiagramContainer>

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "./constants";
+import { MODEL_LIMITATIONS } from "./constants";
 
 const LimitationList = styled.ul`
   list-style-type: none;
@@ -15,12 +15,10 @@ const LimitationItem = styled.li`
   opacity: 0.8;
 `;
 
-export default function ModelLimitations({ model }) {
-  const limitations = model?.limitations || DEFAULT_MODEL.limitations || [];
-
+export default function ModelLimitations() {
   return (
     <LimitationList>
-      {limitations.map((limitation, index) => (
+      {MODEL_LIMITATIONS.map((limitation, index) => (
         <LimitationItem key={index}>
           • <TypewriterText text={limitation} speed={20} />
         </LimitationItem>
