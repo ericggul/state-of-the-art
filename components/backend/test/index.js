@@ -21,7 +21,7 @@ const backends = {
 };
 
 export default function TestBackend() {
-  const { isblack, level, setLevel } = useStore();
+  const { isblack, level, setLevel, subLevel } = useStore();
   const [timeUnit, setTimeUnit] = useState(1);
   const [followLevel, setFollowLevel] = useState(true);
   const [fixedLevel, setFixedLevel] = useState(level);
@@ -58,6 +58,14 @@ export default function TestBackend() {
           >
             {followLevel ? "Following Level" : "Fixed Level"}
           </S.Button>
+        </S.ControlGroup>
+
+        <S.ControlGroup>
+          <S.Label>Current Level:</S.Label>
+          <S.LevelDisplay>
+            Level {currentLevel}
+            <S.SubLevel>(SubLevel {subLevel})</S.SubLevel>
+          </S.LevelDisplay>
         </S.ControlGroup>
 
         <S.ControlGroup>

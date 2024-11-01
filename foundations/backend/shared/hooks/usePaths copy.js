@@ -1,8 +1,6 @@
 import { BEZIER_DEFAULT } from "../utils/mathUtils";
 import { useMemo, useCallback } from "react";
 
-const getRandom = (a, b) => Math.random() * (b - a) + a;
-
 export function usePathsV1({
   tokens,
   similarityMatrix,
@@ -163,40 +161,16 @@ export function usePathsV1({
   ]);
 }
 
-export function usePathsV2({
-  tokens,
-  similarityMatrix,
-  wordPosCalc,
-  yMargin,
-  radialIdx,
-  isblack,
-  createRadialPath,
-  isAnimating,
-  subLevel,
-}) {
-  const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
-
-  const calculateRadialTextPoint = useCallback(
-    (x1, y1, x2, y2, dir, radialIdx) => {
-      const midX = (x1 + x2) / 2;
-      const radius = Math.abs(x2 - x1) / 2;
-
-      // First apply the base vertical offset based on direction
-      const baseOffset = (dir === 1 ? -1 : 1) * (radius * 0.6 + yMargin * 1.5);
-
-      // Then apply radial offset in the same direction as the base offset
-      const radialOffset = (dir === 1 ? -1 : 1) * radius * (radialIdx - 0.6);
-
-      const midY = (y1 + y2) / 2 + baseOffset + radialOffset;
-      return [midX, midY];
-    },
-    [yMargin]
-  );
-
-  const opacityMultiply = useMemo(
-    () => [1, 0.6, 0.3][subLevel] || 1,
-    [subLevel]
-  );
+export function usePathsV2(params) {
+  const {
+    tokens,
+    similarityMatrix,
+    wordPosCalc,
+    yMargin,
+    radialIdx,
+    isblack,
+    createRadialPath,
+  } = params;
 
   return useMemo(() => {
     return tokens.flatMap((_, i) =>
@@ -208,42 +182,19 @@ export function usePathsV2({
 
           const [x1, y1] = wordPosCalc(i);
           const [x2, y2] = wordPosCalc(j);
-          const dir = i % 2;
-
-          const [textX, textY] = calculateRadialTextPoint(
-            x1,
-            y1,
-            x2,
-            y2,
-            dir,
-            radialIdx
-          );
 
           return (
-            <g key={`arc-${i}-${j}`}>
-              <path
-                d={createRadialPath(x1, y1, x2, y2, {
-                  margin: yMargin,
-                  radialIdx,
-                  dir,
-                })}
-                stroke={strokeColor}
-                fill="none"
-                strokeWidth={similarity ** 3 * 5 + 0.2}
-              />
-
-              <text
-                x={textX}
-                y={textY}
-                fill={strokeColor}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                fontSize="0.7vw"
-                opacity={similarity * opacityMultiply}
-              >
-                {similarity.toFixed(2)}
-              </text>
-            </g>
+            <path
+              key={`arc-${i}-${j}`}
+              d={createRadialPath(x1, y1, x2, y2, {
+                margin: yMargin,
+                radialIdx,
+                dir: i % 2,
+              })}
+              stroke={isblack ? "white" : "black"}
+              fill="none"
+              strokeWidth={Math.pow(similarity, 3) * 3.0 + 0.2}
+            />
           );
         })
         .filter(Boolean)
@@ -256,9 +207,6 @@ export function usePathsV2({
     radialIdx,
     isblack,
     createRadialPath,
-    subLevel,
-    strokeColor,
-    calculateRadialTextPoint,
   ]);
 }
 

@@ -81,3 +81,19 @@ export const Viewport = styled.div`
   position: relative;
   overflow: hidden;
 `;
+
+export const LevelDisplay = styled.div`
+  color: #00ffff;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  background: #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const SubLevel = styled.span`
+  color: #00cccc;
+  font-size: 0.8rem;
+`;

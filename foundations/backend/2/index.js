@@ -10,13 +10,13 @@ import { createRadialPath } from "../shared/utils/createPath";
 import { usePathsV2 } from "../shared/hooks/usePaths";
 
 function SingleRandom({ range, visible, timeUnit }) {
-  const { isblack, outputEmbeddings: newEmbeddings } = useStore();
+  const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
   const { tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
   const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
   const posCalc = usePosCalc({ tokens });
-  const radialIdx = useRadialParams(visible, isAnimating, timeUnit);
+  const radialIdx = useRadialParams(visible, isAnimating, timeUnit, subLevel);
 
   const paths = usePathsV2({
     tokens,
@@ -26,6 +26,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     radialIdx,
     isblack,
     createRadialPath,
+    isAnimating,
+    subLevel,
   });
 
   return (
