@@ -8,43 +8,35 @@ export default function TokenComponent({
   i,
   wordPosCalc,
   isTarget,
-  isAnimating,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
     neg: [],
   });
-  const [opacity, setOpacity] = useState(Math.random() * 0.2);
 
-  // Compute embeddings only once when they change
   useEffect(() => {
-    if (!embedding) return;
-
-    const pos = embedding.filter((el) => el > 0).slice(0, 25);
-    const neg = embedding.filter((el) => el < 0).slice(0, 25);
-    setDisplayEmbeddings({ pos, neg });
+    if (embedding) {
+      setDisplayEmbeddings({
+        pos: embedding.filter((el) => el > 0).slice(0, 25),
+        neg: embedding.filter((el) => el < 0).slice(0, 25),
+      });
+    }
   }, [embedding]);
 
-  // Combine both random intervals into one for better performance
   useRandomInterval(
     () => {
-      if (!embedding || !isAnimating) {
-        setOpacity(1);
-        return;
+      if (embedding) {
+        setDisplayEmbeddings((prev) => ({
+          pos: [...prev.pos].sort(() => Math.random() - 0.5),
+          neg: [...prev.neg].sort(() => Math.random() - 0.5),
+        }));
       }
-
-      setOpacity(Math.random());
-      setDisplayEmbeddings((prev) => ({
-        pos: [...prev.pos].sort(() => Math.random() - 0.5),
-        neg: [...prev.neg].sort(() => Math.random() - 0.5),
-      }));
     },
-    1,
-    50
+    10,
+    20
   );
 
   const [x, y] = wordPosCalc(i);
-  const tokenOpacity = isTarget ? 1 : 0.1;
 
   return (
     <S.Token
@@ -54,7 +46,6 @@ export default function TokenComponent({
         left: x,
         top: y,
         transform: "translate(-50%, -50%)",
-        opacity: isAnimating ? opacity : 1,
       }}
     >
       <S.Inner>
@@ -64,7 +55,7 @@ export default function TokenComponent({
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
-          opacity: tokenOpacity,
+          opacity: isTarget ? 1 : 0.1,
         }}
       >
         {token}

@@ -17,7 +17,7 @@ function LevelOne({ range, visible, timeUnit }) {
 
   const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
-  const ANIM_INTERVAL = 100;
+  const ANIM_INTERVAL = 200;
 
   useEffect(() => {
     if (!isAnimating) return;

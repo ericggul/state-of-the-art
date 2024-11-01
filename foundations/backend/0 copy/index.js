@@ -6,7 +6,6 @@ import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeS
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
-import { useAnimationState } from "../shared/hooks/useAnimationState";
 
 function LevelZero({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings } = useStore();
@@ -14,8 +13,6 @@ function LevelZero({ range, visible, timeUnit }) {
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
   const posCalc = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
-
-  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -38,7 +35,6 @@ function LevelZero({ range, visible, timeUnit }) {
           wordPosCalc={posCalc.wordPosCalc}
           wordInterval={posCalc.wordInterval}
           isTarget={i <= targetWordIdx}
-          isAnimating={isAnimating}
         />
       ))}
     </S.Container>

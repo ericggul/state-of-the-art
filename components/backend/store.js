@@ -50,8 +50,14 @@ const useStore = create((set) => ({
 
   // Loop and level state (for future implementation)
   loop: 0,
-  setLoop: (value) => set({ loop: value }),
+  setLoop: (value) =>
+    set({
+      loop: value,
+      level: Math.min(Math.floor(value / 3), 4),
+      subLevel: Math.min(Math.floor(value % 3), 2),
+    }),
   level: 0,
+  subLevel: 0,
   setLevel: (value) => set({ level: value }),
 }));
 

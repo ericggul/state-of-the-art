@@ -34,7 +34,6 @@ export default function useConversation() {
       // When switching to white
       const nextLoop = loop + 1;
       setLoop(nextLoop);
-      setLevel(Math.min(nextLoop, 4)); // Level caps at 4
     }
   }, [isblack]);
 
