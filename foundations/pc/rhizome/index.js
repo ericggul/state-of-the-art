@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
 import { DURATION, getVersionColor, getMajorVersion } from "./constants";
-import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome";
+import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v3";
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 
