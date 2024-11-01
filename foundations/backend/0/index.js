@@ -7,13 +7,16 @@ import TokenComponent from "./TokenComponent";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function LevelZero({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
   const { tokens, embeddings } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
   const posCalc = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
-  const [showNumbers, setShowNumbers] = useState(false);
 
   const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
@@ -25,15 +28,9 @@ function LevelZero({ range, visible, timeUnit }) {
     return () => clearInterval(interval);
   }, [tokens.length]);
 
-  // Replace setInterval with useRandomInterval for number visibility
-  useRandomInterval(
-    () => {
-      if (subLevel !== 1 || !isAnimating) return;
-      setShowNumbers((prev) => !prev);
-    },
-    50, // min delay close to original 300ms
-    350 // max delay
-  );
+  const [animState, setAnimState] = useState(0);
+
+  useRandomInterval(() => setAnimState(getRandomInt(0, 7)), 1, 50);
 
   return (
     <S.Container
@@ -51,7 +48,7 @@ function LevelZero({ range, visible, timeUnit }) {
           isTarget={i <= targetWordIdx}
           isAnimating={isAnimating}
           subLevel={subLevel}
-          showNumbers={showNumbers}
+          animState={animState}
         />
       ))}
     </S.Container>

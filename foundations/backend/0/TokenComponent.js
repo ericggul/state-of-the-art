@@ -2,6 +2,12 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
+function animStateConverter(animState, targetDigit) {
+  const binary = animState.toString(2);
+  const binaryThreeDigits = binary.padStart(3, "0");
+  return binaryThreeDigits[targetDigit];
+}
+
 export default function TokenComponent({
   token,
   embedding,
@@ -10,7 +16,7 @@ export default function TokenComponent({
   isTarget,
   isAnimating,
   subLevel,
-  showNumbers,
+  animState,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -32,34 +38,42 @@ export default function TokenComponent({
         setOpacity(1);
         return;
       }
-
       // Only shuffle embeddings if animating
       setDisplayEmbeddings((prev) => ({
         pos: [...prev.pos].sort(() => Math.random() - 0.5),
         neg: [...prev.neg].sort(() => Math.random() - 0.5),
       }));
-
-      // Only animate opacity for subLevel 2
       setOpacity(subLevel === 2 ? Math.random() : 1);
     },
     1,
-    50
+    80
   );
 
   const [x, y] = wordPosCalc(i);
 
   // Calculate content visibility states
+  const BASE_OPACITY = 0.0;
   const containerOpacity = isAnimating ? opacity : 1;
-  const contentVisibility =
-    !isAnimating || subLevel !== 1 ? 1 : showNumbers ? 0 : 1;
+  const upperContentVisibility =
+    !isAnimating || subLevel !== 1
+      ? 1
+      : animStateConverter(animState, 0) == "1"
+      ? 1
+      : BASE_OPACITY;
+  const lowerContentVisibility =
+    !isAnimating || subLevel !== 1
+      ? 1
+      : animStateConverter(animState, 2) == "1"
+      ? 1
+      : BASE_OPACITY;
   const tokenVisibility =
     subLevel === 0
       ? 0
       : subLevel !== 1 || !isAnimating
       ? 1
-      : showNumbers
+      : animStateConverter(animState, 1) == "1"
       ? 1
-      : 0;
+      : BASE_OPACITY;
 
   return (
     <S.Token
@@ -72,7 +86,7 @@ export default function TokenComponent({
         opacity: containerOpacity,
       }}
     >
-      <S.Inner style={{ opacity: contentVisibility }}>
+      <S.Inner style={{ opacity: upperContentVisibility }}>
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
       <p
@@ -85,7 +99,7 @@ export default function TokenComponent({
       >
         {token}
       </p>
-      <S.Inner style={{ opacity: contentVisibility }}>
+      <S.Inner style={{ opacity: lowerContentVisibility }}>
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
     </S.Token>
