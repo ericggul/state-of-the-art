@@ -11,19 +11,9 @@ export function usePathsV1(params) {
     createArcPath,
     targetWordIdx,
     isAnimating,
-    showNumbers = false,
   } = params;
 
-  // Helper function to calculate text position (similar to reference code)
-  const calculateTextPoint = (x1, y1, x2, y2, dir) => {
-    const midX = (x1 + x2) / 2;
-    const radius = Math.abs(x2 - x1) / 2;
-    const midY =
-      (y1 + y2) / 2 + (dir === 1 ? -1 : 1) * (radius * 0.6 + yMargin * 1.5);
-    return [midX, midY];
-  };
-
-  // Token paths with numbers
+  // Token paths - connections to target word
   const tokenPaths = useMemo(() => {
     return tokens.map((_, i) => {
       if (i === targetWordIdx) return null;
@@ -32,90 +22,47 @@ export function usePathsV1(params) {
 
       const [x1, y1] = wordPosCalc(i);
       const [x2, y2] = wordPosCalc(targetWordIdx);
-      const dir = i % 2 === 0 ? 1 : 0;
 
       return (
-        <g key={`arc-group-${i}`}>
-          <path
-            d={createArcPath(x1, y1, x2, y2, {
-              yMargin,
-              dir,
-            })}
-            stroke={isblack ? "white" : "black"}
-            fill="none"
-            strokeWidth={similarity ** 2 * 5}
-            opacity={1}
-          />
-          {showNumbers && (
-            <text
-              x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
-              y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
-              fill={isblack ? "white" : "black"}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontSize="0.7vw"
-            >
-              {similarity.toFixed(2)}
-            </text>
-          )}
-        </g>
+        <path
+          key={`arc-${i}`}
+          d={createArcPath(x1, y1, x2, y2, {
+            yMargin,
+            dir: i % 2 === 0 ? 1 : 0,
+          })}
+          stroke={isblack ? "white" : "black"}
+          fill="none"
+          strokeWidth={similarity ** 2 * 5}
+          opacity={1}
+        />
       );
     });
-  }, [
-    tokens,
-    similarityMatrix,
-    wordPosCalc,
-    yMargin,
-    isblack,
-    targetWordIdx,
-    showNumbers,
-  ]);
+  }, [tokens, similarityMatrix, wordPosCalc, yMargin, isblack, targetWordIdx]);
 
-  // Interaction paths with numbers
+  // Interaction paths - connections between all words
   const interactionPaths = useMemo(() => {
     return tokens
       .flatMap((_, i) =>
         tokens.map((_, j) => {
           if (i >= j) return null;
           const similarity = similarityMatrix[i][j];
-          const dir = j % 2 === 0 ? 1 : 0;
-          const [x1, y1] = wordPosCalc(i);
-          const [x2, y2] = wordPosCalc(j);
 
           return (
-            <g key={`arc-group-${i}-${j}`}>
-              <path
-                d={createArcPath(x1, y1, x2, y2, {
-                  yMargin,
-                  dir,
-                })}
-                stroke={isblack ? "white" : "black"}
-                fill="none"
-                strokeWidth={similarity ** 2 * 2}
-                opacity={
-                  !isAnimating || j === targetWordIdx || i === targetWordIdx
-                    ? 1
-                    : 0.15
-                }
-              />
-              {showNumbers && similarity > 0.2 && (
-                <text
-                  x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
-                  y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
-                  fill={isblack ? "white" : "black"}
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontSize="0.7vw"
-                  opacity={
-                    !isAnimating || j === targetWordIdx || i === targetWordIdx
-                      ? 1
-                      : 0.15
-                  }
-                >
-                  {similarity.toFixed(2)}
-                </text>
-              )}
-            </g>
+            <path
+              key={`arc-${i}-${j}`}
+              d={createArcPath(...wordPosCalc(i), ...wordPosCalc(j), {
+                yMargin,
+                dir: j % 2 === 0 ? 1 : 0,
+              })}
+              stroke={isblack ? "white" : "black"}
+              fill="none"
+              strokeWidth={similarity ** 2 * 2}
+              opacity={
+                !isAnimating || j === targetWordIdx || i === targetWordIdx
+                  ? 1
+                  : 0.15
+              }
+            />
           );
         })
       )
@@ -128,7 +75,6 @@ export function usePathsV1(params) {
     isblack,
     targetWordIdx,
     isAnimating,
-    showNumbers,
   ]);
 
   return [...tokenPaths, ...interactionPaths];

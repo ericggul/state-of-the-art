@@ -6,6 +6,7 @@ import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeS
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
+import { useAnimationState } from "../shared/hooks/useAnimationState";
 
 function LevelOne({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings } = useStore();
@@ -14,12 +15,16 @@ function LevelOne({ range, visible, timeUnit }) {
   const posCalc = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
 
+  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
+
   useEffect(() => {
+    if (!isAnimating) return;
+
     const interval = setInterval(() => {
       setTargetWordIdx((prev) => (prev + 1) % tokens.length);
     }, 400);
     return () => clearInterval(interval);
-  }, [tokens.length]);
+  }, [tokens.length, isAnimating]);
 
   const paths = usePathsV1({
     tokens,
@@ -29,6 +34,8 @@ function LevelOne({ range, visible, timeUnit }) {
     isblack,
     createArcPath,
     targetWordIdx,
+    isAnimating,
+    showNumbers: true,
   });
 
   return (
@@ -45,8 +52,10 @@ function LevelOne({ range, visible, timeUnit }) {
           wordPosCalc={posCalc.wordPosCalc}
           wordInterval={posCalc.wordInterval}
           isTarget={i === targetWordIdx}
+          isAnimating={isAnimating}
         />
       ))}
+
       <S.Pic>{paths}</S.Pic>
     </S.Container>
   );

@@ -8,6 +8,7 @@ export default function TokenComponent({
   isTarget,
   i,
   wordPosCalc,
+  isAnimating,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -25,18 +26,18 @@ export default function TokenComponent({
     }
   }, [embedding]);
 
-  useRandomInterval(
-    () => {
-      if (embedding) {
-        setDisplayEmbeddings((prev) => ({
-          pos: [...prev.pos].sort(() => Math.random() - 0.5),
-          neg: [...prev.neg].sort(() => Math.random() - 0.5),
-        }));
-      }
-    },
-    1000,
-    2000
-  );
+  //   useRandomInterval(
+  //     () => {
+  //       if (embedding) {
+  //         setDisplayEmbeddings((prev) => ({
+  //           pos: [...prev.pos].sort(() => Math.random() - 0.5),
+  //           neg: [...prev.neg].sort(() => Math.random() - 0.5),
+  //         }));
+  //       }
+  //     },
+  //     1000,
+  //     2000
+  //   );
 
   const [x, y] = wordPosCalc(i);
 
@@ -52,7 +53,7 @@ export default function TokenComponent({
     >
       <S.Inner
         style={{
-          opacity: isTarget ? 1 : 0.1,
+          opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
         }}
       >
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
@@ -67,7 +68,7 @@ export default function TokenComponent({
       </p>
       <S.Inner
         style={{
-          opacity: isTarget ? 1 : 0.1,
+          opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
         }}
       >
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
