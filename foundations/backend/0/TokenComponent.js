@@ -53,7 +53,7 @@ export default function TokenComponent({
       }));
 
       if (subLevel === 2) {
-        setOpacity(Math.random());
+        setOpacity((o) => 1 - o);
       }
     },
     1,

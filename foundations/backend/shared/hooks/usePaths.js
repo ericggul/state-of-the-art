@@ -10,7 +10,7 @@ export function usePathsV1({
   createArcPath,
   targetWordIdx,
   isAnimating,
-  showNumbers,
+  subLevel,
 }) {
   const strokeColor = isblack ? "white" : "black";
 
@@ -32,11 +32,18 @@ export function usePathsV1({
     tokens.forEach((_, i) => {
       if (i === targetWordIdx) return;
       const similarity = similarityMatrix[i][targetWordIdx];
-      if (similarity <= 0.2 || !similarity) return;
+      if (similarity <= 0.05 || !similarity) return;
 
       const [x1, y1] = wordPosCalc(i);
       const [x2, y2] = wordPosCalc(targetWordIdx);
       const dir = i % 2 === 0 ? 1 : 0;
+
+      const strokeWidth =
+        subLevel === 0
+          ? 1
+          : subLevel === 1
+          ? similarity ** 2 * 4 + 0.2
+          : similarity ** 2 * 8 + 0.2;
 
       paths.push(
         <g key={`arc-group-${i}`}>
@@ -44,9 +51,9 @@ export function usePathsV1({
             d={createArcPath(x1, y1, x2, y2, { yMargin, dir })}
             stroke={strokeColor}
             fill="none"
-            strokeWidth={similarity ** 2 * 5}
+            strokeWidth={strokeWidth}
           />
-          {showNumbers && similarity && (
+          {subLevel >= 1 && similarity && (
             <text
               x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
               y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
@@ -67,11 +74,20 @@ export function usePathsV1({
     for (let i = 0; i < tokens.length; i++) {
       for (let j = i + 1; j < tokens.length; j++) {
         const similarity = similarityMatrix[i][j];
+        if (similarity <= 0.01 || !similarity) return;
+
         const dir = j % 2 === 0 ? 1 : 0;
         const [x1, y1] = wordPosCalc(i);
         const [x2, y2] = wordPosCalc(j);
         const pathOpacity =
           !isAnimating || j === targetWordIdx || i === targetWordIdx ? 1 : 0.15;
+
+        const strokeWidth =
+          subLevel === 0
+            ? 1
+            : subLevel === 1
+            ? similarity ** 2 * 4 + 0.2
+            : similarity ** 2 * 8 + 0.2;
 
         paths.push(
           <g key={`arc-group-${i}-${j}`}>
@@ -79,10 +95,10 @@ export function usePathsV1({
               d={createArcPath(x1, y1, x2, y2, { yMargin, dir })}
               stroke={strokeColor}
               fill="none"
-              strokeWidth={similarity ** 2 * 2}
+              strokeWidth={strokeWidth * 0.5}
               opacity={pathOpacity}
             />
-            {showNumbers && similarity > 0.2 && (
+            {subLevel >= 1 && (
               <text
                 x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
                 y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
@@ -109,7 +125,6 @@ export function usePathsV1({
     isblack,
     targetWordIdx,
     isAnimating,
-    showNumbers,
     strokeColor,
     calculateTextPoint,
     createArcPath,
@@ -148,7 +163,7 @@ export function usePathsV2(params) {
               })}
               stroke={isblack ? "white" : "black"}
               fill="none"
-              strokeWidth={Math.pow(similarity, 3) * 2.0 + 0.2}
+              strokeWidth={Math.pow(similarity, 3) * 3.0 + 0.2}
             />
           );
         })

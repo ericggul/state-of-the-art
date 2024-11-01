@@ -9,6 +9,7 @@ export default function TokenComponent({
   wordPosCalc,
   isAnimating,
   animInterval,
+  subLevel,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -16,7 +17,10 @@ export default function TokenComponent({
   });
 
   const [x, y] = useMemo(() => wordPosCalc(i), [wordPosCalc, i]);
-  const opacity = !isAnimating ? 0.7 : isTarget ? 1 : 0.1;
+
+  const fullOpacity = subLevel === 0 ? 0.7 : subLevel === 1 ? 0.5 : 0.3;
+
+  const opacity = !isAnimating ? fullOpacity : isTarget ? 1 : 0.1;
 
   useEffect(() => {
     if (!embedding) return;

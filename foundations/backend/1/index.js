@@ -21,8 +21,14 @@ function LevelOne({ visible }) {
   const [targetWordIdx, setTargetWordIdx] = useState(0);
   const { isAnimating } = useAnimationState(isblack, visible);
 
-  const ANIM_INTERVAL = 200;
+  const ANIM_INTERVAL = subLevel === 0 ? 300 : subLevel === 1 ? 200 : 100;
 
+  // Reset targetWordIdx when subLevel changes
+  useEffect(() => {
+    setTargetWordIdx(0);
+  }, [subLevel]);
+
+  // Handle animation progression
   useEffect(() => {
     if (!isAnimating) return;
 
@@ -42,7 +48,7 @@ function LevelOne({ visible }) {
     createArcPath,
     targetWordIdx,
     isAnimating,
-    showNumbers: true,
+    subLevel,
   });
 
   return (
@@ -61,6 +67,7 @@ function LevelOne({ visible }) {
           isTarget={i === targetWordIdx}
           isAnimating={isAnimating}
           animInterval={ANIM_INTERVAL}
+          subLevel={subLevel}
         />
       ))}
       <S.Pic $animInterval={ANIM_INTERVAL}>{paths}</S.Pic>
