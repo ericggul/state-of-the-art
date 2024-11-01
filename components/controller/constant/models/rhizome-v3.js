@@ -3263,45 +3263,1339 @@ export const DATA_NODES_LINKS = {
     },
     {
       id: 495,
-      source: 37,
-      target: 84,
-      value: 8,
-      relation: "transformer techniques applied to graph attention models",
+      source: 27, // U-Net
+      target: 83, // Stable Diffusion
+      value: 9,
+      relation: "U-Net architecture used in diffusion models",
     },
     {
       id: 496,
-      source: 83,
-      target: 105,
-      value: 9,
-      relation: "DDPM innovations used in GPT-4V",
+      source: 8, // Variational Autoencoder (VAE)
+      target: 81, // DDPM
+      value: 8,
+      relation: "Probabilistic modeling inspired diffusion models",
     },
     {
       id: 497,
-      source: 39,
-      target: 79,
-      value: 8,
-      relation: "XLNet's improvements contributed to StyleGAN3",
+      source: 37, // Transformer Architecture
+      target: 23, // Vision Transformer (ViT)
+      value: 9,
+      relation: "Applied Transformer architecture to vision tasks",
     },
     {
       id: 498,
-      source: 101,
-      target: 106,
-      value: 7,
-      relation: "BLIP-2's generative strategies applied to Claude 3 Vision",
+      source: 20, // ResNet
+      target: 37, // Transformer Architecture
+      value: 8,
+      relation: "Residual connections inspired Transformer's design",
     },
     {
       id: 499,
-      source: 99,
-      target: 104,
+      source: 41, // BERT
+      target: 61, // ELECTRA
       value: 8,
-      relation: "DALL-E 3 influenced PaLM-E's text-to-image models",
+      relation: "ELECTRA improved upon BERT's pre-training",
     },
     {
       id: 500,
-      source: 68,
-      target: 85,
+      source: 41, // BERT
+      target: 65, // ALBERT
+      value: 8,
+      relation: "Parameter sharing in ALBERT based on BERT",
+    },
+    {
+      id: 501,
+      source: 10, // SimCLR
+      target: 95, // CLIP
+      value: 8,
+      relation: "Contrastive learning methods influenced CLIP",
+    },
+    {
+      id: 502,
+      source: 11, // MoCo
+      target: 95, // CLIP
+      value: 8,
+      relation: "Momentum contrast in MoCo inspired CLIP",
+    },
+    {
+      id: 503,
+      source: 17, // AlexNet
+      target: 20, // ResNet
+      value: 8,
+      relation: "ResNet built upon deep CNN architectures like AlexNet",
+    },
+    {
+      id: 504,
+      source: 18, // VGGNet
+      target: 20, // ResNet
+      value: 8,
+      relation:
+        "ResNet addressed vanishing gradients in deep networks like VGGNet",
+    },
+    {
+      id: 505,
+      source: 18, // VGGNet
+      target: 21, // DenseNet
+      value: 8,
+      relation: "DenseNet extended ideas from VGGNet on depth and connectivity",
+    },
+    {
+      id: 506,
+      source: 20, // ResNet
+      target: 22, // EfficientNet
+      value: 8,
+      relation: "EfficientNet built upon ideas from ResNet for scaling",
+    },
+    {
+      id: 507,
+      source: 22, // EfficientNet
+      target: 32, // MobileNetV3
+      value: 8,
+      relation: "Efficient scaling methods applied in MobileNetV3",
+    },
+    {
+      id: 508,
+      source: 41, // BERT
+      target: 38, // T5
       value: 7,
-      relation: "CLIP's visual embeddings adapted for IP-Adapter",
+      relation: "BERT's pretraining methods influenced T5",
+    },
+    {
+      id: 509,
+      source: 44, // GPT
+      target: 38, // T5
+      value: 7,
+      relation: "GPT's autoregressive modeling influenced T5",
+    },
+    {
+      id: 510,
+      source: 23, // Vision Transformer (ViT)
+      target: 12, // DINO
+      value: 8,
+      relation: "ViT architecture used in DINO's self-supervised learning",
+    },
+    {
+      id: 511,
+      source: 10, // SimCLR
+      target: 12, // DINO
+      value: 7,
+      relation: "Contrastive learning methods influenced DINO",
+    },
+    {
+      id: 512,
+      source: 11, // MoCo
+      target: 12, // DINO
+      value: 7,
+      relation: "Momentum encoding inspired DINO's approach",
+    },
+    {
+      id: 513,
+      source: 52, // LLaMA
+      target: 53, // LLaMA 2
+      value: 8,
+      relation: "Improved LLaMA with better performance",
+    },
+    {
+      id: 514,
+      source: 53, // LLaMA 2
+      target: 54, // Mistral
+      value: 8,
+      relation: "Mistral built upon LLaMA 2's advancements",
+    },
+    {
+      id: 515,
+      source: 54, // Mistral
+      target: 55, // Mixtral
+      value: 7,
+      relation: "Mixtral combined multiple Mistral architectures",
+    },
+    {
+      id: 516,
+      source: 53, // LLaMA 2
+      target: 103, // LLaVA
+      value: 8,
+      relation: "LLaVA extends LLaMA 2 with visual understanding",
+    },
+    {
+      id: 517,
+      source: 47, // GPT-4
+      target: 105, // GPT-4V
+      value: 9,
+      relation: "GPT-4V extends GPT-4 with visual capabilities",
+    },
+    {
+      id: 518,
+      source: 105, // GPT-4V
+      target: 107, // Gemini Vision
+      value: 8,
+      relation: "Gemini Vision builds upon GPT-4V's multimodal abilities",
+    },
+    {
+      id: 519,
+      source: 104, // PaLM-E
+      target: 105, // GPT-4V
+      value: 8,
+      relation: "PaLM-E influenced GPT-4V's multimodal capabilities",
+    },
+    {
+      id: 520,
+      source: 105, // GPT-4V
+      target: 106, // Claude 3 Vision
+      value: 9,
+      relation: "GPT-4V's visual capabilities inspired Claude 3 Vision",
+    },
+    {
+      id: 521,
+      source: 27, // U-Net
+      target: 81, // DDPM
+      value: 8,
+      relation: "U-Net architecture used in DDPM models",
+    },
+    {
+      id: 522,
+      source: 23, // Vision Transformer (ViT)
+      target: 95, // CLIP
+      value: 9,
+      relation: "ViT's architecture used in CLIP's image encoder",
+    },
+    {
+      id: 523,
+      source: 41, // BERT
+      target: 97, // DALL-E
+      value: 8,
+      relation: "BERT's text encoding influenced DALL-E's text processing",
+    },
+    {
+      id: 524,
+      source: 95, // CLIP
+      target: 97, // DALL-E
+      value: 9,
+      relation:
+        "CLIP's image-text alignment inspired DALL-E's text-to-image generation",
+    },
+    {
+      id: 525,
+      source: 83, // Stable Diffusion
+      target: 84, // Stable Diffusion XL
+      value: 9,
+      relation: "Stable Diffusion XL improved upon Stable Diffusion",
+    },
+    {
+      id: 526,
+      source: 84, // Stable Diffusion XL
+      target: 85, // SDXL Turbo
+      value: 8,
+      relation: "SDXL Turbo accelerated image generation from SDXL",
+    },
+    {
+      id: 527,
+      source: 83, // Stable Diffusion
+      target: 86, // IP-Adapter
+      value: 7,
+      relation: "IP-Adapter enhanced Stable Diffusion with image prompts",
+    },
+    {
+      id: 528,
+      source: 81, // DDPM
+      target: 83, // Stable Diffusion
+      value: 9,
+      relation: "Stable Diffusion built upon DDPM techniques",
+    },
+    {
+      id: 529,
+      source: 81, // DDPM
+      target: 82, // Improved DDPM
+      value: 8,
+      relation: "Improved sampling techniques in Improved DDPM",
+    },
+    {
+      id: 530,
+      source: 82, // Improved DDPM
+      target: 83, // Stable Diffusion
+      value: 8,
+      relation: "Stable Diffusion utilized Improved DDPM methods",
+    },
+    {
+      id: 531,
+      source: 69, // XLM
+      target: 70, // mT5
+      value: 7,
+      relation: "XLM's multilingual approach influenced mT5",
+    },
+    {
+      id: 532,
+      source: 95, // CLIP
+      target: 96, // Florence
+      value: 8,
+      relation: "CLIP's techniques contributed to Florence's development",
+    },
+    {
+      id: 533,
+      source: 95, // CLIP
+      target: 101, // BLIP-2
+      value: 8,
+      relation: "CLIP's pre-training methods influenced BLIP-2",
+    },
+    {
+      id: 534,
+      source: 105, // GPT-4V
+      target: 104, // PaLM-E
+      value: 7,
+      relation: "GPT-4V and PaLM-E share multimodal capabilities",
+    },
+    {
+      id: 535,
+      source: 117, // AlphaFold
+      target: 118, // AlphaFold 2
+      value: 9,
+      relation: "AlphaFold 2 significantly improved AlphaFold",
+    },
+    {
+      id: 536,
+      source: 115, // MuZero
+      target: 117, // AlphaFold
+      value: 8,
+      relation: "MuZero's techniques influenced AlphaFold's development",
+    },
+    {
+      id: 537,
+      source: 61, // ELECTRA
+      target: 65, // ALBERT
+      value: 7,
+      relation: "ELECTRA and ALBERT both aimed for efficient pre-training",
+    },
+    {
+      id: 538,
+      source: 42, // RoBERTa
+      target: 61, // ELECTRA
+      value: 8,
+      relation: "ELECTRA built upon optimizations from RoBERTa",
+    },
+    {
+      id: 539,
+      source: 44, // GPT
+      target: 52, // LLaMA
+      value: 8,
+      relation: "LLaMA was inspired by GPT's autoregressive modeling",
+    },
+    {
+      id: 540,
+      source: 46, // GPT-3
+      target: 53, // LLaMA 2
+      value: 8,
+      relation: "LLaMA 2 built upon insights from GPT-3",
+    },
+    {
+      id: 541,
+      source: 38, // T5
+      target: 70, // mT5
+      value: 8,
+      relation: "mT5 is the multilingual version of T5",
+    },
+    {
+      id: 542,
+      source: 79, // StyleGAN2
+      target: 80, // StyleGAN3
+      value: 9,
+      relation: "StyleGAN3 further improved upon StyleGAN2",
+    },
+    {
+      id: 543,
+      source: 75, // Conditional GAN
+      target: 97, // DALL-E
+      value: 8,
+      relation: "Conditional GAN concepts used in DALL-E",
+    },
+    {
+      id: 544,
+      source: 95, // CLIP
+      target: 98, // DALL-E 2
+      value: 9,
+      relation: "CLIP's embeddings integrated into DALL-E 2",
+    },
+    {
+      id: 545,
+      source: 98, // DALL-E 2
+      target: 99, // DALL-E 3
+      value: 9,
+      relation: "DALL-E 3 improved upon DALL-E 2",
+    },
+    {
+      id: 546,
+      source: 43, // DeBERTa
+      target: 105, // GPT-4V
+      value: 7,
+      relation: "Advancements in DeBERTa influenced GPT-4V",
+    },
+    {
+      id: 547,
+      source: 99, // DALL-E 3
+      target: 105, // GPT-4V
+      value: 8,
+      relation: "DALL-E 3's capabilities contributed to GPT-4V",
+    },
+    {
+      id: 548,
+      source: 83, // Stable Diffusion
+      target: 87, // Stable Video Diffusion
+      value: 9,
+      relation: "Stable Video Diffusion extended Stable Diffusion to video",
+    },
+    {
+      id: 549,
+      source: 105, // GPT-4V
+      target: 107, // Gemini Vision
+      value: 9,
+      relation: "GPT-4V's multimodal abilities inspired Gemini Vision",
+    },
+    {
+      id: 550,
+      source: 103, // LLaVA
+      target: 105, // GPT-4V
+      value: 7,
+      relation: "LLaVA's visual capabilities are similar to GPT-4V",
+    },
+    {
+      id: 551,
+      source: 95, // CLIP
+      target: 103, // LLaVA
+      value: 8,
+      relation: "CLIP's techniques influenced LLaVA's development",
+    },
+    {
+      id: 552,
+      source: 12, // DINO
+      target: 26, // EVA
+      value: 8,
+      relation: "DINO's self-supervised methods used in EVA",
+    },
+    {
+      id: 553,
+      source: 95, // CLIP
+      target: 100, // FLAMINGO
+      value: 8,
+      relation: "CLIP's multimodal approach influenced FLAMINGO",
+    },
+    {
+      id: 554,
+      source: 100, // FLAMINGO
+      target: 107, // Gemini Vision
+      value: 8,
+      relation: "FLAMINGO's methods contributed to Gemini Vision",
+    },
+    {
+      id: 555,
+      source: 12, // DINO
+      target: 13, // DINOv2
+      value: 9,
+      relation: "DINOv2 improved upon DINO's methods",
+    },
+    {
+      id: 556,
+      source: 46, // GPT-3 (ID 46)
+      target: 58, // Claude 3 (ID 58)
+      value: 8,
+      relation: "Claude 3 competes with GPT-3",
+    },
+    {
+      id: 557,
+      source: 47, // GPT-4 (ID 47)
+      target: 58, // Claude 3 (ID 58)
+      value: 9,
+      relation: "Claude 3 as an alternative to GPT-4",
+    },
+    {
+      id: 558,
+      source: 50, // Claude (ID 50)
+      target: 58, // Claude 3 (ID 58)
+      value: 9,
+      relation: "Claude 3 improved upon Claude",
+    },
+    {
+      id: 559,
+      source: 48, // PaLM (ID 48)
+      target: 49, // PaLM 2 (ID 49)
+      value: 9,
+      relation: "PaLM 2 improved upon PaLM",
+    },
+    {
+      id: 560,
+      source: 47, // GPT-4 (ID 47)
+      target: 49, // PaLM 2 (ID 49)
+      value: 8,
+      relation: "PaLM 2 competes with GPT-4",
+    },
+    {
+      id: 561,
+      source: 51, // LaMDA (ID 51)
+      target: 48, // PaLM (ID 48)
+      value: 8,
+      relation: "PaLM built upon LaMDA's conversational capabilities",
+    },
+    {
+      id: 562,
+      source: 51, // LaMDA (ID 51)
+      target: 49, // PaLM 2 (ID 49)
+      value: 8,
+      relation: "PaLM 2 enhanced LaMDA's dialogue abilities",
+    },
+    {
+      id: 563,
+      source: 105, // GPT-4V (ID 105)
+      target: 106, // Claude 3 Vision (ID 106)
+      value: 7,
+      relation: "GPT-4V and Claude 3 Vision as multimodal competitors",
+    },
+    {
+      id: 564,
+      source: 58, // Claude 3 (ID 58)
+      target: 106, // Claude 3 Vision (ID 106)
+      value: 9,
+      relation: "Claude 3 Vision extends Claude 3 with vision",
+    },
+    {
+      id: 565,
+      source: 46, // GPT-3 (ID 46)
+      target: 97, // DALL-E (ID 97)
+      value: 8,
+      relation: "GPT-3's language model used in DALL-E's text processing",
+    },
+    {
+      id: 566,
+      source: 95, // CLIP (ID 95)
+      target: 105, // GPT-4V (ID 105)
+      value: 8,
+      relation: "CLIP's vision-language model influenced GPT-4V",
+    },
+    {
+      id: 567,
+      source: 95, // CLIP (ID 95)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "CLIP's methods contributed to Claude 3's development",
+    },
+    {
+      id: 568,
+      source: 99, // DALL-E 3 (ID 99)
+      target: 105, // GPT-4V (ID 105)
+      value: 8,
+      relation: "DALL-E 3's techniques influenced GPT-4V's multimodality",
+    },
+    {
+      id: 569,
+      source: 105, // GPT-4V (ID 105)
+      target: 57, // Gemini (ID 57)
+      value: 8,
+      relation: "GPT-4V's capabilities contributed to Gemini",
+    },
+    {
+      id: 570,
+      source: 57, // Gemini (ID 57)
+      target: 107, // Gemini Vision (ID 107)
+      value: 9,
+      relation: "Gemini Vision extends Gemini with visual understanding",
+    },
+    {
+      id: 571,
+      source: 108, // Whisper (ID 108)
+      target: 105, // GPT-4V (ID 105)
+      value: 7,
+      relation: "Whisper's audio processing influenced GPT-4V",
+    },
+    {
+      id: 572,
+      source: 46, // GPT-3 (ID 46)
+      target: 52, // LLaMA (ID 52)
+      value: 8,
+      relation: "LLaMA built upon GPT-3's architecture",
+    },
+    {
+      id: 573,
+      source: 52, // LLaMA (ID 52)
+      target: 53, // LLaMA 2 (ID 53)
+      value: 9,
+      relation: "LLaMA 2 improved upon LLaMA",
+    },
+    {
+      id: 574,
+      source: 53, // LLaMA 2 (ID 53)
+      target: 103, // LLaVA (ID 103)
+      value: 8,
+      relation: "LLaVA extended LLaMA 2 with visual understanding",
+    },
+    {
+      id: 575,
+      source: 103, // LLaVA (ID 103)
+      target: 105, // GPT-4V (ID 105)
+      value: 7,
+      relation: "LLaVA's visual capabilities are similar to GPT-4V",
+    },
+    {
+      id: 576,
+      source: 105, // GPT-4V (ID 105)
+      target: 107, // Gemini Vision (ID 107)
+      value: 9,
+      relation: "GPT-4V's multimodal abilities inspired Gemini Vision",
+    },
+    {
+      id: 577,
+      source: 58, // Claude 3 (ID 58)
+      target: 107, // Gemini Vision (ID 107)
+      value: 7,
+      relation: "Claude 3 Vision competes with Gemini Vision",
+    },
+    {
+      id: 578,
+      source: 49, // PaLM 2 (ID 49)
+      target: 104, // PaLM-E (ID 104)
+      value: 8,
+      relation: "PaLM-E extended PaLM 2 with multimodal capabilities",
+    },
+    {
+      id: 579,
+      source: 104, // PaLM-E (ID 104)
+      target: 107, // Gemini Vision (ID 107)
+      value: 8,
+      relation: "PaLM-E's methods influenced Gemini Vision",
+    },
+    {
+      id: 580,
+      source: 97, // DALL-E (ID 97)
+      target: 98, // DALL-E 2 (ID 98)
+      value: 9,
+      relation: "DALL-E 2 improved upon DALL-E",
+    },
+    {
+      id: 581,
+      source: 98, // DALL-E 2 (ID 98)
+      target: 99, // DALL-E 3 (ID 99)
+      value: 9,
+      relation: "DALL-E 3 further advanced text-to-image generation",
+    },
+    {
+      id: 582,
+      source: 99, // DALL-E 3 (ID 99)
+      target: 105, // GPT-4V (ID 105)
+      value: 8,
+      relation: "DALL-E 3's capabilities contributed to GPT-4V",
+    },
+    {
+      id: 583,
+      source: 105, // GPT-4V (ID 105)
+      target: 106, // Claude 3 Vision (ID 106)
+      value: 8,
+      relation: "Claude 3 Vision competes with GPT-4V",
+    },
+    {
+      id: 584,
+      source: 47, // GPT-4 (ID 47)
+      target: 49, // PaLM 2 (ID 49)
+      value: 7,
+      relation: "GPT-4 and PaLM 2 are competing large language models",
+    },
+    {
+      id: 585,
+      source: 45, // GPT-2 (ID 45)
+      target: 46, // GPT-3 (ID 46)
+      value: 9,
+      relation: "GPT-3 scaled up GPT-2's capabilities",
+    },
+    {
+      id: 586,
+      source: 46, // GPT-3 (ID 46)
+      target: 47, // GPT-4 (ID 47)
+      value: 9,
+      relation: "GPT-4 improved upon GPT-3",
+    },
+    {
+      id: 587,
+      source: 58, // Claude 3 (ID 58)
+      target: 47, // GPT-4 (ID 47)
+      value: 8,
+      relation: "Claude 3 competes with GPT-4",
+    },
+    {
+      id: 588,
+      source: 108, // Whisper (ID 108)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "Whisper's speech models used in Claude 3",
+    },
+    {
+      id: 589,
+      source: 57, // Gemini (ID 57)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "Gemini competes with Claude 3",
+    },
+    {
+      id: 590,
+      source: 53, // LLaMA 2 (ID 53)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "LLaMA 2's methods influenced Claude 3",
+    },
+    {
+      id: 591,
+      source: 51, // LaMDA (ID 51)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "LaMDA's dialogue capabilities inspired Claude 3",
+    },
+    {
+      id: 592,
+      source: 51, // LaMDA (ID 51)
+      target: 106, // Claude 3 Vision (ID 106)
+      value: 7,
+      relation: "LaMDA influenced Claude 3 Vision's development",
+    },
+    {
+      id: 593,
+      source: 105, // GPT-4V (ID 105)
+      target: 108, // Whisper (ID 108)
+      value: 7,
+      relation: "GPT-4V's audio understanding influenced by Whisper",
+    },
+    {
+      id: 594,
+      source: 95, // CLIP (ID 95)
+      target: 58, // Claude 3 (ID 58)
+      value: 8,
+      relation: "CLIP's techniques influenced Claude 3's multimodal abilities",
+    },
+    {
+      id: 595,
+      source: 103, // LLaVA (ID 103)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "LLaVA's advancements related to Claude 3's vision",
+    },
+    {
+      id: 596,
+      source: 53, // LLaMA 2 (ID 53)
+      target: 105, // GPT-4V (ID 105)
+      value: 7,
+      relation: "LLaMA 2's improvements influenced GPT-4V",
+    },
+    {
+      id: 597,
+      source: 48, // PaLM (ID 48)
+      target: 51, // LaMDA (ID 51)
+      value: 8,
+      relation: "PaLM's large-scale training influenced LaMDA",
+    },
+    {
+      id: 598,
+      source: 105, // GPT-4V (ID 105)
+      target: 104, // PaLM-E (ID 104)
+      value: 7,
+      relation: "GPT-4V and PaLM-E share multimodal capabilities",
+    },
+    {
+      id: 599,
+      source: 58, // Claude 3 (ID 58)
+      target: 107, // Gemini Vision (ID 107)
+      value: 7,
+      relation: "Claude 3 Vision competes with Gemini Vision",
+    },
+    {
+      id: 600,
+      source: 49, // PaLM 2 (ID 49)
+      target: 58, // Claude 3 (ID 58)
+      value: 7,
+      relation: "PaLM 2 competes with Claude 3",
+    },
+    {
+      id: 601,
+      source: 3, // Multi-Layer Perceptron (ID 3)
+      target: 14, // Neocognitron (ID 14)
+      value: 7,
+      relation: "MLP inspired the development of Neocognitron",
+    },
+    {
+      id: 602,
+      source: 14, // Neocognitron (ID 14)
+      target: 15, // LeNet-1 (ID 15)
+      value: 8,
+      relation: "LeNet-1 built upon Neocognitron's convolutional concepts",
+    },
+    {
+      id: 603,
+      source: 15, // LeNet-1 (ID 15)
+      target: 16, // LeNet-5 (ID 16)
+      value: 9,
+      relation: "LeNet-5 improved and expanded LeNet-1",
+    },
+    {
+      id: 604,
+      source: 16, // LeNet-5 (ID 16)
+      target: 17, // AlexNet (ID 17)
+      value: 9,
+      relation: "AlexNet scaled up CNNs based on LeNet-5",
+    },
+    {
+      id: 605,
+      source: 17, // AlexNet (ID 17)
+      target: 18, // VGGNet (ID 18)
+      value: 8,
+      relation: "VGGNet increased depth over AlexNet",
+    },
+    {
+      id: 606,
+      source: 17, // AlexNet (ID 17)
+      target: 19, // GoogLeNet (ID 19)
+      value: 8,
+      relation: "GoogLeNet introduced inception modules after AlexNet",
+    },
+    {
+      id: 607,
+      source: 18, // VGGNet (ID 18)
+      target: 20, // ResNet (ID 20)
+      value: 9,
+      relation:
+        "ResNet addressed vanishing gradients in deep networks like VGGNet",
+    },
+    {
+      id: 608,
+      source: 20, // ResNet (ID 20)
+      target: 21, // DenseNet (ID 21)
+      value: 8,
+      relation: "DenseNet built upon ResNet's skip connections",
+    },
+    {
+      id: 609,
+      source: 20, // ResNet (ID 20)
+      target: 23, // Vision Transformer (ViT) (ID 23)
+      value: 7,
+      relation: "ResNet inspired ViT's use of residual connections",
+    },
+    {
+      id: 610,
+      source: 23, // Vision Transformer (ViT) (ID 23)
+      target: 24, // Swin Transformer (ID 24)
+      value: 8,
+      relation: "Swin Transformer improved ViT with hierarchical design",
+    },
+    {
+      id: 611,
+      source: 20, // ResNet (ID 20)
+      target: 27, // U-Net (ID 27)
+      value: 8,
+      relation: "U-Net adapted ResNet's architecture for segmentation",
+    },
+    {
+      id: 612,
+      source: 27, // U-Net (ID 27)
+      target: 28, // SegNet (ID 28)
+      value: 7,
+      relation: "SegNet built upon U-Net's segmentation approach",
+    },
+    {
+      id: 613,
+      source: 20, // ResNet (ID 20)
+      target: 29, // YOLO (ID 29)
+      value: 8,
+      relation: "YOLO utilized CNN features inspired by ResNet",
+    },
+    {
+      id: 614,
+      source: 29, // YOLO (ID 29)
+      target: 30, // MobileNetV1 (ID 30)
+      value: 7,
+      relation: "MobileNetV1 applied YOLO's efficiency for mobile devices",
+    },
+    {
+      id: 615,
+      source: 30, // MobileNetV1 (ID 30)
+      target: 31, // MobileNetV2 (ID 31)
+      value: 8,
+      relation: "MobileNetV2 improved upon MobileNetV1",
+    },
+    {
+      id: 616,
+      source: 31, // MobileNetV2 (ID 31)
+      target: 32, // MobileNetV3 (ID 32)
+      value: 8,
+      relation: "MobileNetV3 further optimized MobileNetV2",
+    },
+    {
+      id: 617,
+      source: 17, // AlexNet (ID 17)
+      target: 35, // RNN (ID 35)
+      value: 6,
+      relation: "AlexNet's success influenced exploration in sequential models",
+    },
+    {
+      id: 618,
+      source: 35, // RNN (ID 35)
+      target: 36, // LSTM (ID 36)
+      value: 9,
+      relation: "LSTM addressed RNN's vanishing gradient problem",
+    },
+    {
+      id: 619,
+      source: 36, // LSTM (ID 36)
+      target: 37, // Transformer Architecture (ID 37)
+      value: 9,
+      relation:
+        "Transformers overcame LSTM's sequential processing limitations",
+    },
+    {
+      id: 620,
+      source: 37, // Transformer Architecture (ID 37)
+      target: 81, // DDPM (ID 81)
+      value: 7,
+      relation:
+        "Transformers inspired attention mechanisms in diffusion models",
+    },
+    {
+      id: 621,
+      source: 81, // DDPM (ID 81)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 9,
+      relation: "Stable Diffusion built upon DDPM techniques",
+    },
+    {
+      id: 622,
+      source: 83, // Stable Diffusion (ID 83)
+      target: 84, // Stable Diffusion XL (ID 84)
+      value: 8,
+      relation: "Stable Diffusion XL enhanced image quality and resolution",
+    },
+    {
+      id: 623,
+      source: 83, // Stable Diffusion (ID 83)
+      target: 87, // Stable Video Diffusion (ID 87)
+      value: 8,
+      relation: "Stable Video Diffusion extended Stable Diffusion to video",
+    },
+    {
+      id: 624,
+      source: 81, // DDPM (ID 81)
+      target: 82, // Improved DDPM (ID 82)
+      value: 8,
+      relation: "Improved DDPM optimized sampling efficiency",
+    },
+    {
+      id: 625,
+      source: 82, // Improved DDPM (ID 82)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 8,
+      relation: "Stable Diffusion utilized Improved DDPM methods",
+    },
+    {
+      id: 626,
+      source: 27, // U-Net (ID 27)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 9,
+      relation: "U-Net architecture used in Stable Diffusion's model",
+    },
+    {
+      id: 627,
+      source: 20, // ResNet (ID 20)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 7,
+      relation: "ResNet's concepts influenced Stable Diffusion's encoder",
+    },
+    {
+      id: 628,
+      source: 17, // AlexNet (ID 17)
+      target: 20, // ResNet (ID 20)
+      value: 8,
+      relation: "ResNet built upon deep CNN architectures like AlexNet",
+    },
+    {
+      id: 629,
+      source: 18, // VGGNet (ID 18)
+      target: 20, // ResNet (ID 20)
+      value: 8,
+      relation: "ResNet addressed challenges faced by VGGNet",
+    },
+    {
+      id: 630,
+      source: 17, // AlexNet (ID 17)
+      target: 109, // Deep Q-Network (DQN) (ID 109)
+      value: 6,
+      relation: "CNNs from AlexNet applied in DQN for Atari games",
+    },
+    {
+      id: 631,
+      source: 109, // Deep Q-Network (DQN) (ID 109)
+      target: 110, // A3C (ID 110)
+      value: 8,
+      relation: "A3C improved training efficiency over DQN",
+    },
+    {
+      id: 632,
+      source: 110, // A3C (ID 110)
+      target: 111, // PPO (ID 111)
+      value: 9,
+      relation: "PPO simplified and improved policy optimization",
+    },
+    {
+      id: 633,
+      source: 111, // PPO (ID 111)
+      target: 112, // AlphaGo (ID 112)
+      value: 7,
+      relation: "PPO techniques contributed to AlphaGo's training",
+    },
+    {
+      id: 634,
+      source: 112, // AlphaGo (ID 112)
+      target: 113, // AlphaGo Zero (ID 113)
+      value: 9,
+      relation: "AlphaGo Zero removed the need for human data",
+    },
+    {
+      id: 635,
+      source: 113, // AlphaGo Zero (ID 113)
+      target: 114, // AlphaZero (ID 114)
+      value: 9,
+      relation: "AlphaZero generalized AlphaGo Zero's approach",
+    },
+    {
+      id: 636,
+      source: 114, // AlphaZero (ID 114)
+      target: 115, // MuZero (ID 115)
+      value: 9,
+      relation: "MuZero learned models without knowing the rules",
+    },
+    {
+      id: 637,
+      source: 115, // MuZero (ID 115)
+      target: 116, // AlphaStar (ID 116)
+      value: 8,
+      relation: "MuZero's techniques influenced AlphaStar",
+    },
+    {
+      id: 638,
+      source: 116, // AlphaStar (ID 116)
+      target: 117, // AlphaFold (ID 117)
+      value: 7,
+      relation: "AlphaStar's advancements inspired AlphaFold",
+    },
+    {
+      id: 639,
+      source: 117, // AlphaFold (ID 117)
+      target: 118, // AlphaFold 2 (ID 118)
+      value: 9,
+      relation: "AlphaFold 2 significantly improved protein folding accuracy",
+    },
+    {
+      id: 640,
+      source: 36, // LSTM (ID 36)
+      target: 109, // Deep Q-Network (DQN) (ID 109)
+      value: 7,
+      relation: "LSTM concepts applied in sequence prediction for DQN",
+    },
+    {
+      id: 641,
+      source: 95, // CLIP (ID 95)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 8,
+      relation: "CLIP's text encoder used in Stable Diffusion",
+    },
+    {
+      id: 642,
+      source: 83, // Stable Diffusion (ID 83)
+      target: 105, // GPT-4V (ID 105)
+      value: 7,
+      relation: "Stable Diffusion's multimodality influenced GPT-4V",
+    },
+    {
+      id: 643,
+      source: 20, // ResNet (ID 20)
+      target: 95, // CLIP (ID 95)
+      value: 8,
+      relation: "ResNet used as image encoder in CLIP",
+    },
+    {
+      id: 644,
+      source: 23, // Vision Transformer (ViT) (ID 23)
+      target: 95, // CLIP (ID 95)
+      value: 9,
+      relation: "ViT architecture used in CLIP's image encoder",
+    },
+    {
+      id: 645,
+      source: 81, // DDPM (ID 81)
+      target: 97, // DALL-E (ID 97)
+      value: 7,
+      relation: "DDPM techniques influenced DALL-E's generation",
+    },
+    {
+      id: 646,
+      source: 97, // DALL-E (ID 97)
+      target: 98, // DALL-E 2 (ID 98)
+      value: 9,
+      relation: "DALL-E 2 improved upon DALL-E with diffusion models",
+    },
+    {
+      id: 647,
+      source: 98, // DALL-E 2 (ID 98)
+      target: 99, // DALL-E 3 (ID 99)
+      value: 9,
+      relation: "DALL-E 3 further advanced text-to-image generation",
+    },
+    {
+      id: 648,
+      source: 27, // U-Net (ID 27)
+      target: 81, // DDPM (ID 81)
+      value: 8,
+      relation: "U-Net architecture utilized in DDPM's denoising process",
+    },
+    {
+      id: 649,
+      source: 83, // Stable Diffusion (ID 83)
+      target: 99, // DALL-E 3 (ID 99)
+      value: 7,
+      relation: "Stable Diffusion's methods influenced DALL-E 3",
+    },
+    {
+      id: 650,
+      source: 108, // Whisper (ID 108)
+      target: 109, // Deep Q-Network (DQN) (ID 109)
+      value: 6,
+      relation: "Whisper's sequence models inspired RL applications",
+    },
+    {
+      id: 651,
+      source: 45, // GPT-2 (ID 45)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 7,
+      relation:
+        "GPT-2's language modeling influenced text prompts in diffusion",
+    },
+    {
+      id: 652,
+      source: 52, // LLaMA (ID 52)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 6,
+      relation: "LLaMA's language understanding used in diffusion prompts",
+    },
+    {
+      id: 653,
+      source: 36, // LSTM (ID 36)
+      target: 108, // Whisper (ID 108)
+      value: 8,
+      relation: "LSTM's sequence processing foundational for Whisper",
+    },
+    {
+      id: 654,
+      source: 81, // DDPM (ID 81)
+      target: 87, // Stable Video Diffusion (ID 87)
+      value: 8,
+      relation: "DDPM's methods extended to video generation",
+    },
+    {
+      id: 655,
+      source: 87, // Stable Video Diffusion (ID 87)
+      target: 90, // Gen-2 (ID 90)
+      value: 8,
+      relation: "Gen-2 improved upon Stable Video Diffusion",
+    },
+    {
+      id: 656,
+      source: 29, // YOLO (ID 29)
+      target: 34, // SAM (Segment Anything Model) (ID 34)
+      value: 7,
+      relation: "YOLO's object detection concepts influenced SAM",
+    },
+    {
+      id: 657,
+      source: 34, // SAM (Segment Anything Model) (ID 34)
+      target: 35, // SEEM (ID 35)
+      value: 8,
+      relation: "SEEM extended SAM's segmentation capabilities",
+    },
+    {
+      id: 658,
+      source: 112, // AlphaGo (ID 112)
+      target: 115, // MuZero (ID 115)
+      value: 8,
+      relation: "AlphaGo's techniques evolved into MuZero",
+    },
+    {
+      id: 659,
+      source: 116, // AlphaStar (ID 116)
+      target: 112, // AlphaGo (ID 112)
+      value: 7,
+      relation: "AlphaStar built upon AlphaGo's reinforcement learning",
+    },
+    {
+      id: 660,
+      source: 37, // Transformer Architecture (ID 37)
+      target: 116, // AlphaStar (ID 116)
+      value: 7,
+      relation: "Transformers applied in AlphaStar's architecture",
+    },
+    {
+      id: 661,
+      source: 81, // DDPM (ID 81)
+      target: 104, // PaLM-E (ID 104)
+      value: 6,
+      relation: "DDPM's generative models inspired PaLM-E's multimodality",
+    },
+    {
+      id: 662,
+      source: 104, // PaLM-E (ID 104)
+      target: 105, // GPT-4V (ID 105)
+      value: 8,
+      relation: "PaLM-E's multimodal approach influenced GPT-4V",
+    },
+    {
+      id: 663,
+      source: 37, // Transformer Architecture (ID 37)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 7,
+      relation: "Transformers' attention mechanisms inspired diffusion models",
+    },
+    {
+      id: 664,
+      source: 20, // ResNet (ID 20)
+      target: 27, // U-Net (ID 27)
+      value: 8,
+      relation: "U-Net incorporated ResNet's skip connections",
+    },
+    {
+      id: 665,
+      source: 20, // ResNet (ID 20)
+      target: 28, // SegNet (ID 28)
+      value: 7,
+      relation: "SegNet built upon CNN architectures like ResNet",
+    },
+    {
+      id: 666,
+      source: 23, // Vision Transformer (ViT) (ID 23)
+      target: 27, // U-Net (ID 27)
+      value: 6,
+      relation: "ViT concepts applied in U-Net variants",
+    },
+    {
+      id: 667,
+      source: 23, // Vision Transformer (ViT) (ID 23)
+      target: 81, // DDPM (ID 81)
+      value: 7,
+      relation: "ViT used as encoder in some diffusion models",
+    },
+    {
+      id: 668,
+      source: 36, // LSTM (ID 36)
+      target: 81, // DDPM (ID 81)
+      value: 6,
+      relation: "LSTM's sequential processing influenced diffusion time steps",
+    },
+    {
+      id: 669,
+      source: 95, // CLIP (ID 95)
+      target: 97, // DALL-E (ID 97)
+      value: 9,
+      relation: "CLIP's embeddings used in DALL-E for text-to-image",
+    },
+    {
+      id: 670,
+      source: 95, // CLIP (ID 95)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 8,
+      relation: "CLIP provided text embeddings for Stable Diffusion",
+    },
+    {
+      id: 671,
+      source: 45, // GPT-2 (ID 45)
+      target: 95, // CLIP (ID 95)
+      value: 7,
+      relation: "GPT-2's language understanding influenced CLIP's text encoder",
+    },
+    {
+      id: 672,
+      source: 45, // GPT-2 (ID 45)
+      target: 97, // DALL-E (ID 97)
+      value: 8,
+      relation: "GPT-2's architecture used in DALL-E's text processing",
+    },
+    {
+      id: 673,
+      source: 95, // CLIP (ID 95)
+      target: 98, // DALL-E 2 (ID 98)
+      value: 9,
+      relation: "CLIP's advancements integrated into DALL-E 2",
+    },
+    {
+      id: 674,
+      source: 47, // GPT-4 (ID 47)
+      target: 105, // GPT-4V (ID 105)
+      value: 9,
+      relation: "GPT-4V extends GPT-4 with visual capabilities",
+    },
+    {
+      id: 675,
+      source: 105, // GPT-4V (ID 105)
+      target: 107, // Gemini Vision (ID 107)
+      value: 9,
+      relation: "GPT-4V's multimodal abilities inspired Gemini Vision",
+    },
+    {
+      id: 676,
+      source: 103, // LLaVA (ID 103)
+      target: 107, // Gemini Vision (ID 107)
+      value: 7,
+      relation: "LLaVA's methods influenced Gemini Vision",
+    },
+    {
+      id: 677,
+      source: 95, // CLIP (ID 95)
+      target: 103, // LLaVA (ID 103)
+      value: 8,
+      relation: "CLIP's techniques contributed to LLaVA's development",
+    },
+    {
+      id: 678,
+      source: 27, // U-Net (ID 27)
+      target: 86, // IP-Adapter (ID 86)
+      value: 7,
+      relation: "U-Net architecture used in IP-Adapter",
+    },
+    {
+      id: 679,
+      source: 86, // IP-Adapter (ID 86)
+      target: 83, // Stable Diffusion (ID 83)
+      value: 7,
+      relation: "IP-Adapter enhanced Stable Diffusion with image prompts",
+    },
+    {
+      id: 680,
+      source: 84, // Stable Diffusion XL (ID 84)
+      target: 86, // IP-Adapter (ID 86)
+      value: 8,
+      relation: "IP-Adapter techniques applied in SDXL",
+    },
+    {
+      id: 681,
+      source: 86, // IP-Adapter (ID 86)
+      target: 87, // Stable Video Diffusion (ID 87)
+      value: 8,
+      relation: "IP-Adapter concepts extended to video diffusion",
+    },
+    {
+      id: 682,
+      source: 87, // Stable Video Diffusion (ID 87)
+      target: 88, // Sora (ID 88)
+      value: 7,
+      relation: "Sora improved upon Stable Video Diffusion",
+    },
+    {
+      id: 683,
+      source: 88, // Sora (ID 88)
+      target: 89, // Lumiere (ID 89)
+      value: 7,
+      relation: "Lumiere advanced video generation techniques",
+    },
+    {
+      id: 684,
+      source: 89, // Lumiere (ID 89)
+      target: 90, // Gen-2 (ID 90)
+      value: 8,
+      relation: "Gen-2 built upon Lumiere's innovations",
     },
   ],
 };
