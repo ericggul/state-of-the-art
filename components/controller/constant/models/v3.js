@@ -1181,9 +1181,7 @@ export const ARRAY = [
   "GPT-4V",
   "Claude 3 Vision",
   "Gemini Vision",
-
   "Whisper",
-
   "Deep Q-Network (DQN)",
   "A3C",
   "PPO",
@@ -1192,11 +1190,9 @@ export const ARRAY = [
   "AlphaZero",
   "MuZero",
   "AlphaStar",
-
   "AlphaFold",
   "AlphaFold 2",
 ];
-
 export const OBJECT_ARRAY = [
   {
     name: "McCulloch-Pitts Neuron",
@@ -1626,12 +1622,10 @@ export const OBJECT_ARRAY = [
     name: "Gemini Vision",
     version: "v6.4.5",
   },
-
   {
     name: "Whisper",
     version: "v6.5.1",
   },
-
   {
     name: "Deep Q-Network (DQN)",
     version: "v7.0.1",
@@ -1664,7 +1658,6 @@ export const OBJECT_ARRAY = [
     name: "AlphaStar",
     version: "v7.2.1",
   },
-
   {
     name: "AlphaFold",
     version: "v7.3.1",

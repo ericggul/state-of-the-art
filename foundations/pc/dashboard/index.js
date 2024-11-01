@@ -7,7 +7,10 @@ import RelatedPapers from "./RelatedPapers";
 import TypewriterText from "./TypewriterText";
 import ModelFeatures from "./ModelFeatures";
 import ModelStats from "./ModelStats";
-import { MODEL_IMAGE, DEFAULT_MODEL, STATS_CONFIG } from "./constants";
+import { DEFAULT_MODEL } from "./constants";
+
+const DEFAULT_IMAGE =
+  "https://via.placeholder.com/300x200.png?text=Model+Architecture";
 
 export default function Dashboard() {
   const { currentArchitectures } = useStore();
@@ -60,7 +63,15 @@ export default function Dashboard() {
       <S.Grid>
         <S.Card>
           <S.CardTitle>Model Overview</S.CardTitle>
-          <S.ModelImage src={MODEL_IMAGE} alt={currentModel.name} />
+          <S.ModelImageWrapper>
+            <S.ModelImage
+              src={currentModel.image || DEFAULT_IMAGE}
+              alt={currentModel.name}
+              onError={(e) => {
+                e.target.src = DEFAULT_IMAGE;
+              }}
+            />
+          </S.ModelImageWrapper>
           <S.Description>
             <TypewriterText text={currentModel.explanation} speed={20} />
           </S.Description>

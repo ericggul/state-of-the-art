@@ -49,12 +49,25 @@ export const CardTitle = styled.h3`
   text-shadow: 0 0 5px #00ffff;
 `;
 
+export const ModelImageWrapper = styled.div`
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  margin-bottom: 1vw;
+`;
+
 export const ModelImage = styled.img`
   width: 100%;
-  height: auto;
-  border-radius: 5px;
-  margin-bottom: 1vw;
-  border: 1px solid #00ffff;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const Description = styled.p`

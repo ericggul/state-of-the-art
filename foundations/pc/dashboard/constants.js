@@ -1,20 +1,19 @@
 export const MODEL_CATEGORIES = {
-  FOUNDATION: "Foundation Models",
-  MEMORY: "Memory-Based Models",
-  CNN: "Vision Models",
-  TRANSFORMER: "Language Models",
-  GENERATIVE: "Generative Models",
-  MULTIMODAL: "Multimodal Models",
-  RL: "Reinforcement Learning",
+  basic_nn: "Basic Neural Networks",
+  hopfield_boltzmann: "Hopfield & Boltzmann Models",
+  vae: "Variational Autoencoders",
+  self_supervised: "Self-Supervised Models",
+  cnn: "Convolutional Neural Networks",
+  transformer: "Transformer Models",
+  rnn: "Recurrent Neural Networks",
+  gan: "Generative Adversarial Networks",
+  diffusion: "Diffusion Models",
+  multimodal: "Multimodal Models",
+  reinforcement: "Reinforcement Learning",
 };
 
 export const PERFORMANCE_TYPES = {
-  CLASSIFICATION: {
-    metric: "Classification Accuracy",
-    yAxisLabel: "Accuracy (%)",
-    format: "percentage",
-    isLowerBetter: false,
-  },
+  // Text/Language Models
   PERPLEXITY: {
     metric: "Perplexity",
     yAxisLabel: "Score",
@@ -26,6 +25,134 @@ export const PERFORMANCE_TYPES = {
     yAxisLabel: "Accuracy (%)",
     format: "percentage",
     isLowerBetter: false,
+  },
+  LAMBADA: {
+    metric: "LAMBADA Accuracy",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+  HELLASWAG: {
+    metric: "HellaSwag Score",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+
+  // Vision Models
+  CLASSIFICATION: {
+    metric: "Classification Accuracy",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+  OBJECT_DETECTION: {
+    metric: "mAP (COCO)",
+    yAxisLabel: "Mean Average Precision",
+    format: "decimal",
+    isLowerBetter: false,
+  },
+  SEGMENTATION: {
+    metric: "IoU Score",
+    yAxisLabel: "Intersection over Union",
+    format: "decimal",
+    isLowerBetter: false,
+  },
+
+  // Generative Models
+  FID: {
+    metric: "FID Score",
+    yAxisLabel: "Fréchet Inception Distance",
+    format: "number",
+    isLowerBetter: true,
+  },
+  CLIP_SCORE: {
+    metric: "CLIP Score",
+    yAxisLabel: "Text-Image Alignment",
+    format: "decimal",
+    isLowerBetter: false,
+  },
+  INCEPTION_SCORE: {
+    metric: "Inception Score",
+    yAxisLabel: "Score",
+    format: "decimal",
+    isLowerBetter: false,
+  },
+
+  // Audio/Speech Models
+  WER: {
+    metric: "Word Error Rate",
+    yAxisLabel: "Error Rate (%)",
+    format: "percentage",
+    isLowerBetter: true,
+  },
+  MOS: {
+    metric: "Mean Opinion Score",
+    yAxisLabel: "Score",
+    format: "decimal",
+    isLowerBetter: false,
+  },
+
+  // 3D Models
+  CHAMFER_DISTANCE: {
+    metric: "Chamfer Distance",
+    yAxisLabel: "Distance",
+    format: "decimal",
+    isLowerBetter: true,
+  },
+  MESH_ACCURACY: {
+    metric: "Mesh Accuracy",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+
+  // Multimodal Models
+  VQA_SCORE: {
+    metric: "VQA Score",
+    yAxisLabel: "Accuracy (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+  CROSS_MODAL_RETRIEVAL: {
+    metric: "R@K Score",
+    yAxisLabel: "Recall@K (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+
+  // Reinforcement Learning
+  AVERAGE_RETURN: {
+    metric: "Average Return",
+    yAxisLabel: "Score",
+    format: "number",
+    isLowerBetter: false,
+  },
+  SUCCESS_RATE: {
+    metric: "Task Success Rate",
+    yAxisLabel: "Success Rate (%)",
+    format: "percentage",
+    isLowerBetter: false,
+  },
+
+  // Efficiency Metrics
+  INFERENCE_TIME: {
+    metric: "Inference Time",
+    yAxisLabel: "Time (ms)",
+    format: "number",
+    isLowerBetter: true,
+  },
+  THROUGHPUT: {
+    metric: "Throughput",
+    yAxisLabel: "Samples/second",
+    format: "number",
+    isLowerBetter: false,
+  },
+  MEMORY_EFFICIENCY: {
+    metric: "Memory Usage",
+    yAxisLabel: "GB",
+    format: "number",
+    isLowerBetter: true,
   },
 };
 
@@ -58,7 +185,7 @@ export const STATS_CONFIG = {
 export const MODELS_LIST = [
   {
     id: "v1.0",
-    category: "FOUNDATION",
+    category: "basic_nn",
     name: "McCulloch-Pitts Neuron",
     year: 1943,
     authors: "Warren McCulloch and Walter Pitts",
@@ -96,10 +223,12 @@ export const MODELS_LIST = [
       "Rosenblatt, F. (1958). The perceptron: a probabilistic model for information storage and organization in the brain. Psychological review, 65(6), 386.",
       "Minsky, M., & Papert, S. (1969). Perceptrons: An introduction to computational geometry. MIT press.",
     ],
+    image: "1.png",
+    paperURL: "http://www.cs.columbia.edu/~wiesel/papers/mcp.pdf",
   },
   {
     id: "v4.1",
-    category: "TRANSFORMER",
+    category: "transformer",
     name: "GPT-3",
     year: 2020,
     authors: "Brown et al., OpenAI",
@@ -143,10 +272,12 @@ export const MODELS_LIST = [
       "Radford, A., et al. (2019). Language models are unsupervised multitask learners. OpenAI blog, 1(8), 9.",
       "Chowdhery, A., et al. (2022). PaLM: Scaling language modeling with pathways. arXiv preprint arXiv:2204.02311.",
     ],
+    image: "2.png",
+    paperURL: "https://arxiv.org/pdf/2005.14165.pdf",
   },
   {
     id: "v3.2",
-    category: "CNN",
+    category: "cnn",
     name: "ResNet",
     year: 2015,
     authors: "He et al., Microsoft Research",
@@ -185,10 +316,10 @@ export const MODELS_LIST = [
       "Simonyan, K., & Zisserman, A. (2014). Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556.",
       "Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012). Imagenet classification with deep convolutional neural networks. Advances in neural information processing systems, 25.",
     ],
+    image: "3.png",
+    paperURL: "https://arxiv.org/pdf/1512.03385.pdf",
   },
 ];
 
 // Optional: Common shared data
-export const DEFAULT_MODEL = MODELS_LIST.find((model) => model.id === "v4.1");
-export const MODEL_IMAGE =
-  "https://miro.medium.com/v2/resize:fit:1400/1*ZbnVUpK5pw5iJJeeiBa-9w.png";
+export const DEFAULT_MODEL = MODELS_LIST[0];
