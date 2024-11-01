@@ -12,7 +12,7 @@ import Backend2 from "@/foundations/backend/2";
 import Backend3 from "@/foundations/backend/3";
 import Backend4 from "@/foundations/backend/4";
 
-const TESTING = false;
+const TESTING = true;
 
 export default function Backend() {
   const { isblack, length, loop, level } = useStore();
