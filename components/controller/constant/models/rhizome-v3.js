@@ -4597,5 +4597,480 @@ export const DATA_NODES_LINKS = {
       value: 8,
       relation: "Gen-2 built upon Lumiere's innovations",
     },
+
+    {
+      id: 685,
+      source: 1, // McCulloch-Pitts Neuron
+      target: 2, // Perceptron
+      value: 7,
+      relation:
+        "Perceptron built upon McCulloch-Pitts Neuron introducing learnable weights and biases",
+    },
+    {
+      id: 686,
+      source: 2, // Perceptron
+      target: 3, // Multi-Layer Perceptron (MLP)
+      value: 8,
+      relation:
+        "MLP extends Perceptron by adding multiple layers for non-linear modeling",
+    },
+    {
+      id: 687,
+      source: 3, // Multi-Layer Perceptron (MLP)
+      target: 4, // Backpropagation Algorithm
+      value: 9,
+      relation:
+        "Backpropagation algorithm enables training of MLPs by computing gradients",
+    },
+    {
+      id: 688,
+      source: 5, // Hopfield Network
+      target: 6, // Boltzmann Machine
+      value: 8,
+      relation:
+        "Boltzmann Machine generalizes Hopfield Network with stochastic units",
+    },
+    {
+      id: 689,
+      source: 7, // Basic Autoencoder
+      target: 8, // Variational Autoencoder (VAE)
+      value: 8,
+      relation:
+        "VAE extends Autoencoder by introducing probabilistic latent variables",
+    },
+    {
+      id: 690,
+      source: 8, // Variational Autoencoder (VAE)
+      target: 9, // Beta-VAE
+      value: 8,
+      relation:
+        "Beta-VAE modifies VAE to encourage disentangled representations",
+    },
+    {
+      id: 691,
+      source: 8, // Variational Autoencoder (VAE)
+      target: 71, // Generative Adversarial Networks (GANs)
+      value: 7,
+      relation:
+        "VAEs and GANs are foundational generative models using different approaches",
+    },
+    {
+      id: 692,
+      source: 71, // Generative Adversarial Networks (GANs)
+      target: 72, // DCGAN
+      value: 8,
+      relation: "DCGAN applied GANs to convolutional architectures",
+    },
+    {
+      id: 693,
+      source: 72, // DCGAN
+      target: 78, // StyleGAN
+      value: 8,
+      relation: "StyleGAN built upon DCGAN for high-fidelity image synthesis",
+    },
+    {
+      id: 694,
+      source: 78, // StyleGAN
+      target: 79, // StyleGAN2
+      value: 9,
+      relation: "StyleGAN2 improved upon StyleGAN",
+    },
+    {
+      id: 695,
+      source: 79, // StyleGAN2
+      target: 80, // StyleGAN3
+      value: 9,
+      relation: "StyleGAN3 further improved upon StyleGAN2",
+    },
+    {
+      id: 696,
+      source: 14, // Neocognitron
+      target: 15, // LeNet-1
+      value: 9,
+      relation: "LeNet-1 built upon Neocognitron's convolutional concepts",
+    },
+    {
+      id: 697,
+      source: 15, // LeNet-1
+      target: 16, // LeNet-5
+      value: 9,
+      relation: "LeNet-5 improved upon LeNet-1",
+    },
+    {
+      id: 698,
+      source: 16, // LeNet-5
+      target: 17, // AlexNet
+      value: 9,
+      relation: "AlexNet scaled up CNNs based on LeNet-5",
+    },
+    {
+      id: 699,
+      source: 17, // AlexNet
+      target: 18, // VGGNet
+      value: 8,
+      relation: "VGGNet increased depth over AlexNet",
+    },
+    {
+      id: 700,
+      source: 17, // AlexNet
+      target: 19, // GoogLeNet
+      value: 8,
+      relation: "GoogLeNet introduced inception modules after AlexNet",
+    },
+    {
+      id: 701,
+      source: 18, // VGGNet
+      target: 20, // ResNet
+      value: 9,
+      relation:
+        "ResNet addressed vanishing gradients in deep networks like VGGNet",
+    },
+    {
+      id: 702,
+      source: 20, // ResNet
+      target: 21, // DenseNet
+      value: 8,
+      relation: "DenseNet built upon ResNet's skip connections",
+    },
+    {
+      id: 703,
+      source: 20, // ResNet
+      target: 22, // EfficientNet
+      value: 8,
+      relation: "EfficientNet built upon ideas from ResNet for scaling",
+    },
+    {
+      id: 704,
+      source: 8, // Variational Autoencoder (VAE)
+      target: 97, // DALL-E
+      value: 8,
+      relation: "VAE concepts contributed to DALL-E's generative modeling",
+    },
+    {
+      id: 705,
+      source: 71, // Generative Adversarial Networks (GANs)
+      target: 97, // DALL-E
+      value: 8,
+      relation: "GAN techniques influenced DALL-E's image generation",
+    },
+    {
+      id: 706,
+      source: 37, // Transformer Architecture
+      target: 23, // Vision Transformer (ViT)
+      value: 9,
+      relation: "ViT applies Transformer architecture to vision tasks",
+    },
+    {
+      id: 707,
+      source: 23, // Vision Transformer (ViT)
+      target: 95, // CLIP
+      value: 9,
+      relation: "ViT's architecture used in CLIP's image encoder",
+    },
+    {
+      id: 708,
+      source: 95, // CLIP
+      target: 97, // DALL-E
+      value: 9,
+      relation:
+        "CLIP's image-text alignment inspired DALL-E's text-to-image generation",
+    },
+    {
+      id: 709,
+      source: 35, // RNN (Recurrent Neural Network)
+      target: 36, // Long Short-Term Memory (LSTM)
+      value: 9,
+      relation: "LSTM addressed RNN's vanishing gradient problem",
+    },
+    {
+      id: 710,
+      source: 36, // Long Short-Term Memory (LSTM)
+      target: 37, // Transformer Architecture
+      value: 9,
+      relation:
+        "Transformers overcame LSTM's sequential processing limitations",
+    },
+    {
+      id: 711,
+      source: 37, // Transformer Architecture
+      target: 44, // GPT
+      value: 9,
+      relation: "GPT uses the Transformer for autoregressive language modeling",
+    },
+    {
+      id: 712,
+      source: 37, // Transformer Architecture
+      target: 41, // BERT
+      value: 9,
+      relation: "BERT uses Transformer for bidirectional encoding",
+    },
+    {
+      id: 713,
+      source: 41, // BERT
+      target: 42, // RoBERTa
+      value: 8,
+      relation: "RoBERTa is an optimized version of BERT",
+    },
+    {
+      id: 714,
+      source: 41, // BERT
+      target: 66, // ALBERT
+      value: 8,
+      relation: "ALBERT reduces parameters of BERT using parameter sharing",
+    },
+    {
+      id: 715,
+      source: 41, // BERT
+      target: 67, // DistilBERT
+      value: 8,
+      relation: "DistilBERT is a distilled version of BERT for efficiency",
+    },
+    {
+      id: 716,
+      source: 44, // GPT
+      target: 45, // GPT-2
+      value: 9,
+      relation: "GPT-2 scaled up GPT's capabilities",
+    },
+    {
+      id: 717,
+      source: 45, // GPT-2
+      target: 46, // GPT-3
+      value: 9,
+      relation: "GPT-3 scaled up GPT-2's capabilities",
+    },
+    {
+      id: 718,
+      source: 46, // GPT-3
+      target: 47, // GPT-4
+      value: 9,
+      relation: "GPT-4 improved upon GPT-3",
+    },
+    {
+      id: 719,
+      source: 8, // Variational Autoencoder (VAE)
+      target: 81, // DDPM
+      value: 8,
+      relation: "VAE's probabilistic modeling influenced DDPM",
+    },
+    {
+      id: 720,
+      source: 71, // Generative Adversarial Networks (GANs)
+      target: 81, // DDPM
+      value: 7,
+      relation: "GANs' generative techniques influenced DDPM",
+    },
+    {
+      id: 721,
+      source: 27, // U-Net
+      target: 81, // DDPM
+      value: 8,
+      relation: "U-Net architecture utilized in DDPM's denoising process",
+    },
+    {
+      id: 722,
+      source: 8, // Variational Autoencoder (VAE)
+      target: 83, // Stable Diffusion
+      value: 8,
+      relation:
+        "VAE concepts contributed to Stable Diffusion's generative modeling",
+    },
+    {
+      id: 723,
+      source: 71, // Generative Adversarial Networks (GANs)
+      target: 83, // Stable Diffusion
+      value: 7,
+      relation: "GANs' generative techniques influenced Stable Diffusion",
+    },
+    {
+      id: 724,
+      source: 81, // DDPM
+      target: 83, // Stable Diffusion
+      value: 9,
+      relation: "Stable Diffusion built upon DDPM techniques",
+    },
+    {
+      id: 725,
+      source: 82, // Improved DDPM
+      target: 83, // Stable Diffusion
+      value: 8,
+      relation: "Stable Diffusion utilized Improved DDPM methods",
+    },
+    {
+      id: 726,
+      source: 27, // U-Net
+      target: 83, // Stable Diffusion
+      value: 9,
+      relation: "U-Net architecture used in Stable Diffusion's model",
+    },
+    {
+      id: 727,
+      source: 20, // ResNet
+      target: 83, // Stable Diffusion
+      value: 7,
+      relation: "ResNet's concepts influenced Stable Diffusion's encoder",
+    },
+    {
+      id: 728,
+      source: 3, // Multi-Layer Perceptron (MLP)
+      target: 15, // LeNet-1
+      value: 7,
+      relation: "LeNet-1 extended MLP concepts to images with convolution",
+    },
+    {
+      id: 729,
+      source: 20, // ResNet
+      target: 23, // Vision Transformer (ViT)
+      value: 7,
+      relation: "ResNet inspired ViT's use of residual connections",
+    },
+    {
+      id: 730,
+      source: 20, // ResNet
+      target: 27, // U-Net
+      value: 8,
+      relation: "U-Net adapted ResNet's architecture for segmentation",
+    },
+    {
+      id: 731,
+      source: 27, // U-Net
+      target: 28, // SegNet
+      value: 7,
+      relation: "SegNet built upon U-Net's segmentation approach",
+    },
+    {
+      id: 732,
+      source: 20, // ResNet
+      target: 29, // YOLO (You Only Look Once)
+      value: 8,
+      relation: "YOLO utilized CNN features inspired by ResNet",
+    },
+    {
+      id: 733,
+      source: 29, // YOLO (You Only Look Once)
+      target: 30, // MobileNetV1
+      value: 7,
+      relation: "MobileNetV1 applied YOLO's efficiency for mobile devices",
+    },
+    {
+      id: 734,
+      source: 30, // MobileNetV1
+      target: 31, // MobileNetV2
+      value: 8,
+      relation: "MobileNetV2 improved upon MobileNetV1",
+    },
+    {
+      id: 735,
+      source: 31, // MobileNetV2
+      target: 32, // MobileNetV3
+      value: 8,
+      relation: "MobileNetV3 further optimized MobileNetV2",
+    },
+    {
+      id: 736,
+      source: 36, // Long Short-Term Memory (LSTM)
+      target: 109, // Deep Q-Network (DQN)
+      value: 7,
+      relation: "LSTM concepts applied in sequence prediction for DQN",
+    },
+    {
+      id: 737,
+      source: 17, // AlexNet
+      target: 109, // Deep Q-Network (DQN)
+      value: 6,
+      relation: "CNNs from AlexNet applied in DQN for Atari games",
+    },
+    {
+      id: 738,
+      source: 109, // Deep Q-Network (DQN)
+      target: 110, // A3C
+      value: 8,
+      relation: "A3C improved training efficiency over DQN",
+    },
+    {
+      id: 739,
+      source: 110, // A3C
+      target: 111, // PPO
+      value: 9,
+      relation: "PPO simplified and improved policy optimization",
+    },
+    {
+      id: 740,
+      source: 111, // PPO
+      target: 112, // AlphaGo
+      value: 7,
+      relation: "PPO techniques contributed to AlphaGo's training",
+    },
+    {
+      id: 741,
+      source: 112, // AlphaGo
+      target: 113, // AlphaGo Zero
+      value: 9,
+      relation: "AlphaGo Zero removed the need for human data",
+    },
+    {
+      id: 742,
+      source: 113, // AlphaGo Zero
+      target: 114, // AlphaZero
+      value: 9,
+      relation: "AlphaZero generalized AlphaGo Zero's approach",
+    },
+    {
+      id: 743,
+      source: 114, // AlphaZero
+      target: 115, // MuZero
+      value: 9,
+      relation: "MuZero learned models without knowing the rules",
+    },
+    {
+      id: 744,
+      source: 115, // MuZero
+      target: 116, // AlphaStar
+      value: 8,
+      relation: "MuZero's techniques influenced AlphaStar",
+    },
+    {
+      id: 745,
+      source: 116, // AlphaStar
+      target: 117, // AlphaFold
+      value: 7,
+      relation: "AlphaStar's advancements inspired AlphaFold",
+    },
+    {
+      id: 746,
+      source: 117, // AlphaFold
+      target: 118, // AlphaFold 2
+      value: 9,
+      relation: "AlphaFold 2 significantly improved protein folding accuracy",
+    },
+    {
+      id: 747,
+      source: 95, // CLIP
+      target: 83, // Stable Diffusion
+      value: 8,
+      relation: "CLIP's text encoder used in Stable Diffusion",
+    },
+    {
+      id: 748,
+      source: 45, // GPT-2
+      target: 83, // Stable Diffusion
+      value: 7,
+      relation:
+        "GPT-2's language modeling influenced text prompts in diffusion",
+    },
+    {
+      id: 749,
+      source: 27, // U-Net
+      target: 87, // Stable Video Diffusion
+      value: 7,
+      relation: "U-Net architecture used in Stable Video Diffusion",
+    },
+    {
+      id: 750,
+      source: 83, // Stable Diffusion
+      target: 87, // Stable Video Diffusion
+      value: 8,
+      relation: "Stable Video Diffusion extended Stable Diffusion to video",
+    },
   ],
 };
