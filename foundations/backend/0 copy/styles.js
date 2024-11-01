@@ -57,5 +57,6 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  transition-delay: 0.2s;
+  // transition: all 0.1s;
+  // transition-delay: 0.2s;
 `;
