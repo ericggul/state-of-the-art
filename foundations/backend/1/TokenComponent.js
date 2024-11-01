@@ -1,7 +1,7 @@
 import * as S from "./styles";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 
-export default function TokenComponent({
+const TokenComponent = memo(function TokenComponent({
   token,
   embedding,
   isTarget,
@@ -15,59 +15,64 @@ export default function TokenComponent({
     pos: [],
     neg: [],
   });
-
   const [x, y] = useMemo(() => wordPosCalc(i), [wordPosCalc, i]);
 
-  const fullOpacity = subLevel === 0 ? 0.7 : subLevel === 1 ? 0.5 : 0.3;
-
-  const opacity = !isAnimating ? fullOpacity : isTarget ? 1 : 0.1;
-
-  useEffect(() => {
-    if (!embedding) return;
-
-    setDisplayEmbeddings({
-      pos: embedding.filter((el) => el > 0).slice(0, 25),
-      neg: embedding.filter((el) => el < 0).slice(0, 25),
-    });
-  }, [embedding]);
-
-  // useRandomInterval(
-  //   () => {
-  //     if (embedding) {
-  //       setDisplayEmbeddings((prev) => ({
-  //         pos: [...prev.pos].sort(() => Math.random() - 0.5),
-  //         neg: [...prev.neg].sort(() => Math.random() - 0.5),
-  //       }));
-  //     }
-  //   },
-  //   1,
-  //   50
-  // );
-
-  return (
-    <S.Token
-      startswithspace={token.startsWith(" ") ? "true" : undefined}
-      style={{
+  const { opacity, tokenStyle } = useMemo(
+    () => ({
+      opacity: !isAnimating
+        ? [0.7, 0.5, 0.3][subLevel] || 0.5
+        : isTarget
+        ? 1
+        : 0.1,
+      tokenStyle: {
         position: "absolute",
         left: x,
         top: y,
         transform: "translate(-50%, -50%)",
-      }}
+      },
+    }),
+    [isAnimating, subLevel, isTarget, x, y]
+  );
+
+  useEffect(() => {
+    if (!embedding) return;
+    const pos = embedding.filter((el) => el > 0).slice(0, 25);
+    const neg = embedding.filter((el) => el < 0).slice(0, 25);
+    setDisplayEmbeddings({ pos, neg });
+  }, [embedding]);
+
+  const formattedPos = useMemo(
+    () => displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" "),
+    [displayEmbeddings.pos]
+  );
+
+  const formattedNeg = useMemo(
+    () => displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" "),
+    [displayEmbeddings.neg]
+  );
+
+  return (
+    <S.Token
+      startswithspace={token.startsWith(" ") ? "true" : undefined}
+      style={tokenStyle}
     >
-      <S.Inner style={{ opacity }} $animInterval={animInterval}>
-        {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
-      </S.Inner>
-      <p
-        style={{
-          margin: "1vw 0",
-          fontSize: "1vw",
-        }}
+      <S.Inner
+        style={{ opacity }}
+        $animInterval={animInterval}
+        $isAnimating={isAnimating}
       >
-        {token}
-      </p>
-      <S.Inner style={{ opacity }} $animInterval={animInterval}>
-        {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
+        {formattedPos}
+      </S.Inner>
+      <p style={{ margin: "1vw 0", fontSize: "1vw" }}>{token}</p>
+      <S.Inner
+        style={{ opacity }}
+        $animInterval={animInterval}
+        $isAnimating={isAnimating}
+      >
+        {formattedNeg}
       </S.Inner>
     </S.Token>
   );
-}
+});
+
+export default TokenComponent;

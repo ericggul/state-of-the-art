@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import * as S from "./styles";
 import useStore from "@/components/backend/store";
 import usePosCalc from "./usePosCalc";
@@ -14,22 +14,22 @@ function LevelOne({ visible }) {
     outputEmbeddings: { tokens, embeddings },
     subLevel,
   } = useStore();
+
   const similarityMatrix = useComputeSimilarity({
     newEmbeddings: { tokens, embeddings },
   });
-  const posCalc = usePosCalc({ tokens });
+  const { wordPosCalc, yMargin } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
   const { isAnimating } = useAnimationState(isblack, visible);
 
-  const ANIM_INTERVAL = subLevel === 0 ? 300 : subLevel === 1 ? 200 : 100;
+  const ANIM_INTERVAL = useMemo(
+    () => [300, 200, 100][subLevel] || 200,
+    [subLevel]
+  );
 
-  // Reset targetWordIdx when subLevel changes
+  // Combined reset and animation effect
   useEffect(() => {
     setTargetWordIdx(0);
-  }, [subLevel]);
-
-  // Handle animation progression
-  useEffect(() => {
     if (!isAnimating) return;
 
     const interval = setInterval(() => {
@@ -37,13 +37,13 @@ function LevelOne({ visible }) {
     }, ANIM_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [tokens.length, isAnimating]);
+  }, [isAnimating, tokens.length, ANIM_INTERVAL]);
 
   const paths = usePathsV1({
     tokens,
     similarityMatrix,
-    wordPosCalc: posCalc.wordPosCalc,
-    yMargin: posCalc.yMargin,
+    wordPosCalc,
+    yMargin,
     isblack,
     createArcPath,
     targetWordIdx,
@@ -51,26 +51,38 @@ function LevelOne({ visible }) {
     subLevel,
   });
 
-  return (
-    <S.Container
-      isblack={isblack ? "true" : undefined}
-      style={{ opacity: visible ? 1 : 0 }}
-    >
-      {tokens.map((token, i) => (
+  const tokenComponents = useMemo(
+    () =>
+      tokens.map((token, i) => (
         <TokenComponent
           key={i}
-          i={i}
           token={token}
           embedding={embeddings[token]}
-          wordPosCalc={posCalc.wordPosCalc}
-          wordInterval={posCalc.wordInterval}
+          i={i}
+          wordPosCalc={wordPosCalc}
           isTarget={i === targetWordIdx}
           isAnimating={isAnimating}
           animInterval={ANIM_INTERVAL}
           subLevel={subLevel}
         />
-      ))}
-      <S.Pic $animInterval={ANIM_INTERVAL}>{paths}</S.Pic>
+      )),
+    [
+      tokens,
+      embeddings,
+      wordPosCalc,
+      targetWordIdx,
+      isAnimating,
+      ANIM_INTERVAL,
+      subLevel,
+    ]
+  );
+
+  return (
+    <S.Container $isblack={isblack} style={{ opacity: visible ? 1 : 0 }}>
+      {tokenComponents}
+      <S.Pic $animInterval={ANIM_INTERVAL} $isAnimating={isAnimating}>
+        {paths}
+      </S.Pic>
     </S.Container>
   );
 }
