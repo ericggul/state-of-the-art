@@ -8,14 +8,18 @@ import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 
-function LevelOne({ range, visible, timeUnit }) {
-  const { isblack, outputEmbeddings: newEmbeddings } = useStore();
-  const { tokens, embeddings } = newEmbeddings;
-  const similarityMatrix = useComputeSimilarity({ newEmbeddings });
+function LevelOne({ visible }) {
+  const {
+    isblack,
+    outputEmbeddings: { tokens, embeddings },
+    subLevel,
+  } = useStore();
+  const similarityMatrix = useComputeSimilarity({
+    newEmbeddings: { tokens, embeddings },
+  });
   const posCalc = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
-
-  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
+  const { isAnimating } = useAnimationState(isblack, visible);
 
   const ANIM_INTERVAL = 200;
 
@@ -25,6 +29,7 @@ function LevelOne({ range, visible, timeUnit }) {
     const interval = setInterval(() => {
       setTargetWordIdx((prev) => (prev + 1) % tokens.length);
     }, ANIM_INTERVAL);
+
     return () => clearInterval(interval);
   }, [tokens.length, isAnimating]);
 
@@ -58,7 +63,6 @@ function LevelOne({ range, visible, timeUnit }) {
           animInterval={ANIM_INTERVAL}
         />
       ))}
-
       <S.Pic $animInterval={ANIM_INTERVAL}>{paths}</S.Pic>
     </S.Container>
   );

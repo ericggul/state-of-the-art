@@ -1,56 +1,57 @@
 import { BEZIER_DEFAULT } from "../utils/mathUtils";
 import { useMemo } from "react";
 
-export function usePathsV1(params) {
-  const {
-    tokens,
-    similarityMatrix,
-    wordPosCalc,
-    yMargin,
-    isblack,
-    createArcPath,
-    targetWordIdx,
-    isAnimating,
-    showNumbers = false,
-  } = params;
+export function usePathsV1({
+  tokens,
+  similarityMatrix,
+  wordPosCalc,
+  yMargin,
+  isblack,
+  createArcPath,
+  targetWordIdx,
+  isAnimating,
+  showNumbers,
+}) {
+  const strokeColor = isblack ? "white" : "black";
 
-  // Helper function to calculate text position (similar to reference code)
-  const calculateTextPoint = (x1, y1, x2, y2, dir) => {
-    const midX = (x1 + x2) / 2;
-    const radius = Math.abs(x2 - x1) / 2;
-    const midY =
-      (y1 + y2) / 2 + (dir === 1 ? -1 : 1) * (radius * 0.6 + yMargin * 1.5);
-    return [midX, midY];
-  };
+  const calculateTextPoint = useMemo(
+    () => (x1, y1, x2, y2, dir) => {
+      const midX = (x1 + x2) / 2;
+      const radius = Math.abs(x2 - x1) / 2;
+      const midY =
+        (y1 + y2) / 2 + (dir === 1 ? -1 : 1) * (radius * 0.6 + yMargin * 1.5);
+      return [midX, midY];
+    },
+    [yMargin]
+  );
 
-  // Token paths with numbers
-  const tokenPaths = useMemo(() => {
-    return tokens.map((_, i) => {
-      if (i === targetWordIdx) return null;
+  return useMemo(() => {
+    const paths = [];
+
+    // Token paths
+    tokens.forEach((_, i) => {
+      if (i === targetWordIdx) return;
       const similarity = similarityMatrix[i][targetWordIdx];
-      if (similarity <= 0.2 || !similarity) return null;
+      if (similarity <= 0.2 || !similarity) return;
 
       const [x1, y1] = wordPosCalc(i);
       const [x2, y2] = wordPosCalc(targetWordIdx);
       const dir = i % 2 === 0 ? 1 : 0;
 
-      return (
+      paths.push(
         <g key={`arc-group-${i}`}>
           <path
-            d={createArcPath(x1, y1, x2, y2, {
-              yMargin,
-              dir,
-            })}
-            stroke={isblack ? "white" : "black"}
+            d={createArcPath(x1, y1, x2, y2, { yMargin, dir })}
+            stroke={strokeColor}
             fill="none"
             strokeWidth={similarity ** 2 * 5}
-            opacity={1}
           />
           {showNumbers && similarity && (
             <text
               x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
               y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
-              fill={isblack ? "white" : "black"}
+              fill={strokeColor}
+              opacity={isblack ? 1 : 0}
               textAnchor="middle"
               alignmentBaseline="middle"
               fontSize="0.7vw"
@@ -61,65 +62,45 @@ export function usePathsV1(params) {
         </g>
       );
     });
-  }, [
-    tokens,
-    similarityMatrix,
-    wordPosCalc,
-    yMargin,
-    isblack,
-    targetWordIdx,
-    showNumbers,
-  ]);
 
-  // Interaction paths with numbers
-  const interactionPaths = useMemo(() => {
-    return tokens
-      .flatMap((_, i) =>
-        tokens.map((_, j) => {
-          if (i >= j) return null;
-          const similarity = similarityMatrix[i][j];
-          const dir = j % 2 === 0 ? 1 : 0;
-          const [x1, y1] = wordPosCalc(i);
-          const [x2, y2] = wordPosCalc(j);
+    // Interaction paths
+    for (let i = 0; i < tokens.length; i++) {
+      for (let j = i + 1; j < tokens.length; j++) {
+        const similarity = similarityMatrix[i][j];
+        const dir = j % 2 === 0 ? 1 : 0;
+        const [x1, y1] = wordPosCalc(i);
+        const [x2, y2] = wordPosCalc(j);
+        const pathOpacity =
+          !isAnimating || j === targetWordIdx || i === targetWordIdx ? 1 : 0.15;
 
-          return (
-            <g key={`arc-group-${i}-${j}`}>
-              <path
-                d={createArcPath(x1, y1, x2, y2, {
-                  yMargin,
-                  dir,
-                })}
-                stroke={isblack ? "white" : "black"}
-                fill="none"
-                strokeWidth={similarity ** 2 * 2}
-                opacity={
-                  !isAnimating || j === targetWordIdx || i === targetWordIdx
-                    ? 1
-                    : 0.15
-                }
-              />
-              {showNumbers && similarity > 0.2 && (
-                <text
-                  x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
-                  y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
-                  fill={isblack ? "white" : "black"}
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontSize="0.7vw"
-                  opacity={
-                    !isAnimating || j === targetWordIdx || i === targetWordIdx
-                      ? 1
-                      : 0.15
-                  }
-                >
-                  {similarity.toFixed(2)}
-                </text>
-              )}
-            </g>
-          );
-        })
-      )
-      .filter(Boolean);
+        paths.push(
+          <g key={`arc-group-${i}-${j}`}>
+            <path
+              d={createArcPath(x1, y1, x2, y2, { yMargin, dir })}
+              stroke={strokeColor}
+              fill="none"
+              strokeWidth={similarity ** 2 * 2}
+              opacity={pathOpacity}
+            />
+            {showNumbers && similarity > 0.2 && (
+              <text
+                x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
+                y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}
+                fill={strokeColor}
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fontSize="0.7vw"
+                opacity={pathOpacity}
+              >
+                {similarity.toFixed(2)}
+              </text>
+            )}
+          </g>
+        );
+      }
+    }
+
+    return paths;
   }, [
     tokens,
     similarityMatrix,
@@ -129,9 +110,10 @@ export function usePathsV1(params) {
     targetWordIdx,
     isAnimating,
     showNumbers,
+    strokeColor,
+    calculateTextPoint,
+    createArcPath,
   ]);
-
-  return [...tokenPaths, ...interactionPaths];
 }
 
 export function usePathsV2(params) {

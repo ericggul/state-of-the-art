@@ -1,11 +1,17 @@
 import * as S from "./styles";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-function animStateConverter(animState, targetDigit) {
-  const binary = animState.toString(2);
-  const binaryThreeDigits = binary.padStart(3, "0");
-  return binaryThreeDigits[targetDigit];
+const BASE_OPACITY = 0.0;
+
+function getAnimStateValue(binary, digit) {
+  return binary[digit] === "1" ? 1 : BASE_OPACITY;
+}
+
+function calculateVisibility(isAnimating, subLevel, animState, digit) {
+  if (!isAnimating || subLevel !== 1) return 1;
+  const binary = animState.toString(2).padStart(3, "0");
+  return getAnimStateValue(binary, digit);
 }
 
 export default function TokenComponent({
@@ -22,58 +28,51 @@ export default function TokenComponent({
     pos: [],
     neg: [],
   });
-  const [opacity, setOpacity] = useState(Math.random() * 0.2);
+  const [opacity, setOpacity] = useState(1);
+  const [x, y] = useMemo(() => wordPosCalc(i), [wordPosCalc, i]);
 
+  // Initialize embeddings
   useEffect(() => {
     if (!embedding) return;
-    setDisplayEmbeddings({
-      pos: embedding.filter((el) => el > 0).slice(0, 25),
-      neg: embedding.filter((el) => el < 0).slice(0, 25),
-    });
+    const pos = embedding.filter((el) => el > 0).slice(0, 25);
+    const neg = embedding.filter((el) => el < 0).slice(0, 25);
+    setDisplayEmbeddings({ pos, neg });
   }, [embedding]);
 
+  // Handle animations
   useRandomInterval(
     () => {
       if (!embedding || !isAnimating) {
         setOpacity(1);
         return;
       }
-      // Only shuffle embeddings if animating
+
       setDisplayEmbeddings((prev) => ({
         pos: [...prev.pos].sort(() => Math.random() - 0.5),
         neg: [...prev.neg].sort(() => Math.random() - 0.5),
       }));
-      setOpacity(subLevel === 2 ? Math.random() : 1);
+
+      if (subLevel === 2) {
+        setOpacity(Math.random());
+      }
     },
     1,
     80
   );
 
-  const [x, y] = wordPosCalc(i);
-
-  // Calculate content visibility states
-  const BASE_OPACITY = 0.0;
-  const containerOpacity = isAnimating ? opacity : 1;
-  const upperContentVisibility =
-    !isAnimating || subLevel !== 1
-      ? 1
-      : animStateConverter(animState, 0) == "1"
-      ? 1
-      : BASE_OPACITY;
-  const lowerContentVisibility =
-    !isAnimating || subLevel !== 1
-      ? 1
-      : animStateConverter(animState, 2) == "1"
-      ? 1
-      : BASE_OPACITY;
-  const tokenVisibility =
-    subLevel === 0
-      ? 0
-      : subLevel !== 1 || !isAnimating
-      ? 1
-      : animStateConverter(animState, 1) == "1"
-      ? 1
-      : BASE_OPACITY;
+  // Memoize visibility calculations
+  const visibilityStates = useMemo(
+    () => ({
+      container: isAnimating ? opacity : 1,
+      upper: calculateVisibility(isAnimating, subLevel, animState, 0),
+      token:
+        subLevel === 0
+          ? 0
+          : calculateVisibility(isAnimating, subLevel, animState, 1),
+      lower: calculateVisibility(isAnimating, subLevel, animState, 2),
+    }),
+    [isAnimating, subLevel, animState, opacity]
+  );
 
   return (
     <S.Token
@@ -83,23 +82,22 @@ export default function TokenComponent({
         left: x,
         top: y,
         transform: "translate(-50%, -50%)",
-        opacity: containerOpacity,
+        opacity: visibilityStates.container,
       }}
     >
-      <S.Inner style={{ opacity: upperContentVisibility }}>
+      <S.Inner style={{ opacity: visibilityStates.upper }}>
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
       <p
         style={{
           margin: "1vw 0",
           fontSize: "1vw",
-          // transition: "opacity 0.1s",
-          opacity: tokenVisibility,
+          opacity: visibilityStates.token,
         }}
       >
         {token}
       </p>
-      <S.Inner style={{ opacity: lowerContentVisibility }}>
+      <S.Inner style={{ opacity: visibilityStates.lower }}>
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
     </S.Token>

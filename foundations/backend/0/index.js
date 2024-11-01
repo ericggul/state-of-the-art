@@ -7,30 +7,31 @@ import TokenComponent from "./TokenComponent";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function LevelZero({ range, visible, timeUnit }) {
-  const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
-  const { tokens, embeddings } = newEmbeddings;
-  const similarityMatrix = useComputeSimilarity({ newEmbeddings });
-  const posCalc = usePosCalc({ tokens });
+function LevelZero({ visible }) {
+  const {
+    isblack,
+    outputEmbeddings: { tokens, embeddings },
+    subLevel,
+  } = useStore();
+  const similarityMatrix = useComputeSimilarity({
+    newEmbeddings: { tokens, embeddings },
+  });
+  const { wordPosCalc, wordInterval } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
-
-  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
+  const [animState, setAnimState] = useState(0);
+  const { isAnimating } = useAnimationState(isblack, visible);
 
   // Handle target word progression
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTargetWordIdx((prev) => prev + 1);
-    }, 200);
+    const interval = setInterval(
+      () => setTargetWordIdx((prev) => prev + 1),
+      200
+    );
     return () => clearInterval(interval);
   }, [tokens.length]);
 
-  const [animState, setAnimState] = useState(0);
-
-  useRandomInterval(() => setAnimState(getRandomInt(0, 7)), 1, 50);
+  // Handle animation state
+  useRandomInterval(() => setAnimState(Math.floor(Math.random() * 8)), 1, 50);
 
   return (
     <S.Container
@@ -43,8 +44,8 @@ function LevelZero({ range, visible, timeUnit }) {
           i={i}
           token={token}
           embedding={embeddings[token]}
-          wordPosCalc={posCalc.wordPosCalc}
-          wordInterval={posCalc.wordInterval}
+          wordPosCalc={wordPosCalc}
+          wordInterval={wordInterval}
           isTarget={i <= targetWordIdx}
           isAnimating={isAnimating}
           subLevel={subLevel}

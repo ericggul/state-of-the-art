@@ -1,6 +1,5 @@
 import * as S from "./styles";
-import { useState, useEffect } from "react";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import { useState, useEffect, useMemo } from "react";
 
 export default function TokenComponent({
   token,
@@ -16,29 +15,30 @@ export default function TokenComponent({
     neg: [],
   });
 
+  const [x, y] = useMemo(() => wordPosCalc(i), [wordPosCalc, i]);
+  const opacity = !isAnimating ? 0.7 : isTarget ? 1 : 0.1;
+
   useEffect(() => {
-    if (embedding) {
-      setDisplayEmbeddings({
-        pos: embedding.filter((el) => el > 0).slice(0, 25),
-        neg: embedding.filter((el) => el < 0).slice(0, 25),
-      });
-    }
+    if (!embedding) return;
+
+    setDisplayEmbeddings({
+      pos: embedding.filter((el) => el > 0).slice(0, 25),
+      neg: embedding.filter((el) => el < 0).slice(0, 25),
+    });
   }, [embedding]);
 
-  //   useRandomInterval(
-  //     () => {
-  //       if (embedding) {
-  //         setDisplayEmbeddings((prev) => ({
-  //           pos: [...prev.pos].sort(() => Math.random() - 0.5),
-  //           neg: [...prev.neg].sort(() => Math.random() - 0.5),
-  //         }));
-  //       }
-  //     },
-  //     1000,
-  //     2000
-  //   );
-
-  const [x, y] = wordPosCalc(i);
+  // useRandomInterval(
+  //   () => {
+  //     if (embedding) {
+  //       setDisplayEmbeddings((prev) => ({
+  //         pos: [...prev.pos].sort(() => Math.random() - 0.5),
+  //         neg: [...prev.neg].sort(() => Math.random() - 0.5),
+  //       }));
+  //     }
+  //   },
+  //   1,
+  //   50
+  // );
 
   return (
     <S.Token
@@ -50,12 +50,7 @@ export default function TokenComponent({
         transform: "translate(-50%, -50%)",
       }}
     >
-      <S.Inner
-        style={{
-          opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
-        }}
-        $animInterval={animInterval}
-      >
+      <S.Inner style={{ opacity }} $animInterval={animInterval}>
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
       <p
@@ -66,12 +61,7 @@ export default function TokenComponent({
       >
         {token}
       </p>
-      <S.Inner
-        style={{
-          opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
-        }}
-        $animInterval={animInterval}
-      >
+      <S.Inner style={{ opacity }} $animInterval={animInterval}>
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
     </S.Token>
