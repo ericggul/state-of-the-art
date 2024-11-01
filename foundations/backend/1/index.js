@@ -17,12 +17,14 @@ function LevelOne({ range, visible, timeUnit }) {
 
   const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
+  const ANIM_INTERVAL = 100;
+
   useEffect(() => {
     if (!isAnimating) return;
 
     const interval = setInterval(() => {
       setTargetWordIdx((prev) => (prev + 1) % tokens.length);
-    }, 400);
+    }, ANIM_INTERVAL);
     return () => clearInterval(interval);
   }, [tokens.length, isAnimating]);
 
@@ -53,10 +55,11 @@ function LevelOne({ range, visible, timeUnit }) {
           wordInterval={posCalc.wordInterval}
           isTarget={i === targetWordIdx}
           isAnimating={isAnimating}
+          animInterval={ANIM_INTERVAL}
         />
       ))}
 
-      <S.Pic>{paths}</S.Pic>
+      <S.Pic $animInterval={ANIM_INTERVAL}>{paths}</S.Pic>
     </S.Container>
   );
 }

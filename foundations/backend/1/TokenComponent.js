@@ -9,6 +9,7 @@ export default function TokenComponent({
   i,
   wordPosCalc,
   isAnimating,
+  animInterval,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -55,6 +56,7 @@ export default function TokenComponent({
         style={{
           opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
         }}
+        $animInterval={animInterval}
       >
         {displayEmbeddings.pos.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>
@@ -70,6 +72,7 @@ export default function TokenComponent({
         style={{
           opacity: !isAnimating ? 0.7 : isTarget ? 1 : 0.1,
         }}
+        $animInterval={animInterval}
       >
         {displayEmbeddings.neg.map((el) => el.toFixed(3)).join(" ")}
       </S.Inner>

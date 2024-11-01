@@ -23,17 +23,18 @@ export const Container = styled.div`
   }
 `;
 
-export const MidRow = styled.div`
-  ${FlexCenterStyle}
-`;
-
 export const Pic = styled.svg`
   ${WholeContainer}
 
   path {
-    transition: 0.4s linear;
+    transition: ${(props) => `${props.$animInterval}ms linear`};
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+
+  text {
+    transition: ${(props) => `${props.$animInterval}ms linear`};
+    transform-origin: center;
   }
 `;
 
@@ -57,5 +58,5 @@ export const Inner = styled.div`
   width: 100%;
   text-align: center;
   position: relative;
-  transition-delay: 0.2s;
+  transition-delay: ${(props) => `${props.$animInterval * 0.5}ms`};
 `;
