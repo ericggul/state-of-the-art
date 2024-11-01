@@ -9,6 +9,18 @@ const PaperList = styled.ul`
   padding: 0;
 `;
 
+const PaperSection = styled.div`
+  margin-bottom: 2vw;
+`;
+
+const SectionTitle = styled.h4`
+  color: #00ffff;
+  font-size: 0.9vw;
+  margin-bottom: 1vw;
+  text-shadow: 0 0 10px #00ffff;
+  opacity: 0.8;
+`;
+
 const PaperItem = styled.li`
   margin-bottom: 1vw;
 `;
@@ -20,22 +32,41 @@ const PaperLink = styled.div`
 `;
 
 export default function RelatedPapers({ model }) {
-  const papers = model?.papers || DEFAULT_MODEL.papers || [];
+  const currentModel = model || DEFAULT_MODEL;
+  const mainPaper = currentModel.paper;
+  const relatedPapers = currentModel.relatedPapers || [];
 
   return (
     <PaperList>
-      {papers.map((citation, index) => {
-        const parsed = CitationParser.parseAPA(citation);
-        const displayText = CitationParser.formatForDisplay(parsed);
+      <PaperSection>
+        <SectionTitle>Original Paper</SectionTitle>
+        <PaperItem>
+          <PaperLink>
+            <TypewriterText
+              text={CitationParser.formatForDisplay(
+                CitationParser.parseAPA(mainPaper)
+              )}
+              speed={20}
+            />
+          </PaperLink>
+        </PaperItem>
+      </PaperSection>
 
-        return (
-          <PaperItem key={index}>
-            <PaperLink>
-              <TypewriterText text={displayText} speed={20} />
-            </PaperLink>
-          </PaperItem>
-        );
-      })}
+      <PaperSection>
+        <SectionTitle>Related Research</SectionTitle>
+        {relatedPapers.map((citation, index) => {
+          const parsed = CitationParser.parseAPA(citation);
+          const displayText = CitationParser.formatForDisplay(parsed);
+
+          return (
+            <PaperItem key={index}>
+              <PaperLink>
+                <TypewriterText text={displayText} speed={20} />
+              </PaperLink>
+            </PaperItem>
+          );
+        })}
+      </PaperSection>
     </PaperList>
   );
 }

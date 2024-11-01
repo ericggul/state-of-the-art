@@ -66,6 +66,11 @@ export const MODELS_LIST = [
     explanation:
       "Introduced the first mathematical model of a neuron, laying the foundation for neural network research.",
     architecture: ["Input", "Threshold", "Output"],
+    highlights: [
+      "First mathematical model of artificial neuron",
+      "Binary threshold activation function",
+      "Foundational to modern neural networks",
+    ],
     limitations: [
       "Can only implement logical functions",
       "No learning capability",
@@ -85,8 +90,11 @@ export const MODELS_LIST = [
       isLowerBetter: false,
       format: "percentage",
     },
-    papers: [
+    paper:
       "McCulloch, W. S., & Pitts, W. (1943). A logical calculus of the ideas immanent in nervous activity. The bulletin of mathematical biophysics, 5(4), 115-133.",
+    relatedPapers: [
+      "Rosenblatt, F. (1958). The perceptron: a probabilistic model for information storage and organization in the brain. Psychological review, 65(6), 386.",
+      "Minsky, M., & Papert, S. (1969). Perceptrons: An introduction to computational geometry. MIT press.",
     ],
   },
   {
@@ -99,6 +107,12 @@ export const MODELS_LIST = [
     explanation:
       "Large-scale language model demonstrating few-shot learning capabilities.",
     architecture: ["Input", "Embedding", "Transformer", "Output"],
+    highlights: [
+      "175B parameters at scale",
+      "Few-shot learning capabilities",
+      "State-of-the-art NLP performance",
+      "Zero-shot task generalization",
+    ],
     limitations: [
       "High computational cost",
       "Limited context window",
@@ -122,8 +136,12 @@ export const MODELS_LIST = [
       isLowerBetter: true,
       format: "number",
     },
-    papers: [
+    paper:
       "Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., ... & Amodei, D. (2020). Language models are few-shot learners. arXiv preprint arXiv:2005.14165.",
+    relatedPapers: [
+      "Vaswani, A., et al. (2017). Attention is all you need. Advances in Neural Information Processing Systems, 30, 5998-6008.",
+      "Radford, A., et al. (2019). Language models are unsupervised multitask learners. OpenAI blog, 1(8), 9.",
+      "Chowdhery, A., et al. (2022). PaLM: Scaling language modeling with pathways. arXiv preprint arXiv:2204.02311.",
     ],
   },
   {
@@ -136,6 +154,12 @@ export const MODELS_LIST = [
     explanation:
       "Introduced residual connections to enable training of very deep networks.",
     architecture: ["Input", "Conv", "ResBlock", "Pool", "FC", "Output"],
+    highlights: [
+      "Deep residual learning",
+      "Skip connections architecture",
+      "SOTA image classification",
+      "Solved vanishing gradient problem",
+    ],
     limitations: [
       "Computationally intensive",
       "Large memory footprint",
@@ -155,8 +179,11 @@ export const MODELS_LIST = [
       isLowerBetter: false,
       format: "percentage",
     },
-    papers: [
+    paper:
       "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778).",
+    relatedPapers: [
+      "Simonyan, K., & Zisserman, A. (2014). Very deep convolutional networks for large-scale image recognition. arXiv preprint arXiv:1409.1556.",
+      "Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012). Imagenet classification with deep convolutional neural networks. Advances in neural information processing systems, 25.",
     ],
   },
 ];
@@ -164,4 +191,4 @@ export const MODELS_LIST = [
 // Optional: Common shared data
 export const DEFAULT_MODEL = MODELS_LIST.find((model) => model.id === "v4.1");
 export const MODEL_IMAGE =
-  "https://via.placeholder.com/300x200.png?text=Model+Architecture";
+  "https://miro.medium.com/v2/resize:fit:1400/1*ZbnVUpK5pw5iJJeeiBa-9w.png";

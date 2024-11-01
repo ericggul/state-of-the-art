@@ -5,7 +5,8 @@ import ModelDiagram from "./ModelDiagram";
 import PerformanceChart from "./PerformanceChart";
 import RelatedPapers from "./RelatedPapers";
 import TypewriterText from "./TypewriterText";
-import ModelLimitations from "./ModelLimitations";
+import ModelFeatures from "./ModelFeatures";
+import ModelStats from "./ModelStats";
 import { MODEL_IMAGE, DEFAULT_MODEL, STATS_CONFIG } from "./constants";
 
 export default function Dashboard() {
@@ -77,24 +78,12 @@ export default function Dashboard() {
 
         <S.Card>
           <S.CardTitle>Model Stats</S.CardTitle>
-          <S.StatGrid>
-            {getTopStats(currentModel.stats).map((stat) => (
-              <S.Stat key={stat.key}>
-                <S.StatLabel>{stat.label}</S.StatLabel>
-                <S.StatValue>
-                  <TypewriterText
-                    text={`${stat.value}${stat.suffix || ""}`}
-                    speed={30}
-                  />
-                </S.StatValue>
-              </S.Stat>
-            ))}
-          </S.StatGrid>
+          <ModelStats model={currentModel} />
         </S.Card>
 
         <S.Card>
-          <S.CardTitle>Model Limitations</S.CardTitle>
-          <ModelLimitations model={currentModel} />
+          <S.CardTitle>Model Features</S.CardTitle>
+          <ModelFeatures model={currentModel} />
         </S.Card>
 
         <S.Card>
