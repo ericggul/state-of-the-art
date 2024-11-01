@@ -13,14 +13,15 @@ export async function POST(req) {
       messages: [
         {
           role: "system",
-          content: "Generate next sentence of this meaningless poem.",
+          content:
+            "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 25. Mention the name 'Henry' explicitly occassionally.",
         },
         {
           role: "user",
           content: text,
         },
       ],
-      max_tokens: 20,
+      max_tokens: 25,
       logprobs: true,
       top_logprobs: 20,
       ...params,

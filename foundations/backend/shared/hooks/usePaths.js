@@ -28,7 +28,7 @@ export function usePathsV1(params) {
     return tokens.map((_, i) => {
       if (i === targetWordIdx) return null;
       const similarity = similarityMatrix[i][targetWordIdx];
-      if (similarity <= 0.2) return null;
+      if (similarity <= 0.2 || !similarity) return null;
 
       const [x1, y1] = wordPosCalc(i);
       const [x2, y2] = wordPosCalc(targetWordIdx);
@@ -46,7 +46,7 @@ export function usePathsV1(params) {
             strokeWidth={similarity ** 2 * 5}
             opacity={1}
           />
-          {showNumbers && (
+          {showNumbers && similarity && (
             <text
               x={calculateTextPoint(x1, y1, x2, y2, dir)[0]}
               y={calculateTextPoint(x1, y1, x2, y2, dir)[1]}

@@ -16,8 +16,6 @@ export default function TokenComponent({
     neg: [],
   });
 
-  console.log(isTarget);
-
   useEffect(() => {
     if (embedding) {
       setDisplayEmbeddings({

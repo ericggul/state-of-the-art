@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import useStore from "@/components/backend/store";
 
-const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
+const INITIAL_TEXT = `Henry had become one of the State of the Art Architecture Neural Network. `;
 
 export default function useConversation() {
   const {
