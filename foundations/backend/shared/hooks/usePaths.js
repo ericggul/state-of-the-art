@@ -1,5 +1,6 @@
 import { BEZIER_DEFAULT } from "../utils/mathUtils";
 import { useMemo, useCallback } from "react";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
@@ -175,27 +176,49 @@ export function usePathsV2({
   subLevel,
 }) {
   const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
+  const opacityMultiply = useMemo(
+    () => [1, 0.6, 0.3][subLevel] || 1,
+    [subLevel]
+  );
+
+  // Create a ref to store direction states for each path
+  const directionStates = useMemo(() => {
+    const states = new Map();
+    tokens.forEach((_, i) => {
+      tokens.forEach((_, j) => {
+        if (i < j) {
+          states.set(`${i}-${j}`, Math.random() < 0.5 ? 1 : 0);
+        }
+      });
+    });
+    return states;
+  }, [tokens]);
+
+  // Function to flip direction randomly
+  useRandomInterval(
+    () => {
+      directionStates.forEach((_, key) => {
+        if (Math.random() < 0.3) {
+          // 30% chance to flip
+          directionStates.set(key, Math.random() < 0.5 ? 1 : 0);
+        }
+      });
+    },
+    5,
+    50,
+    isAnimating
+  );
 
   const calculateRadialTextPoint = useCallback(
     (x1, y1, x2, y2, dir, radialIdx) => {
       const midX = (x1 + x2) / 2;
       const radius = Math.abs(x2 - x1) / 2;
-
-      // First apply the base vertical offset based on direction
-      const baseOffset = (dir === 1 ? -1 : 1) * (radius * 0.6 + yMargin * 1.5);
-
-      // Then apply radial offset in the same direction as the base offset
-      const radialOffset = (dir === 1 ? -1 : 1) * radius * (radialIdx - 0.6);
-
-      const midY = (y1 + y2) / 2 + baseOffset + radialOffset;
+      const midY =
+        (y1 + y2) / 2 +
+        (dir === 1 ? -1 : 1) * (radius * radialIdx + yMargin * 1.5);
       return [midX, midY];
     },
     [yMargin]
-  );
-
-  const opacityMultiply = useMemo(
-    () => [1, 0.6, 0.3][subLevel] || 1,
-    [subLevel]
   );
 
   return useMemo(() => {
@@ -208,7 +231,8 @@ export function usePathsV2({
 
           const [x1, y1] = wordPosCalc(i);
           const [x2, y2] = wordPosCalc(j);
-          const dir = i % 2;
+          const dir = directionStates.get(`${i}-${j}`);
+          const pathRadialIdx = Math.random() < 0.5 ? radialIdx : 1 - radialIdx;
 
           const [textX, textY] = calculateRadialTextPoint(
             x1,
@@ -216,7 +240,7 @@ export function usePathsV2({
             x2,
             y2,
             dir,
-            radialIdx
+            pathRadialIdx
           );
 
           return (
@@ -224,12 +248,12 @@ export function usePathsV2({
               <path
                 d={createRadialPath(x1, y1, x2, y2, {
                   margin: yMargin,
-                  radialIdx,
+                  radialIdx: pathRadialIdx,
                   dir,
                 })}
                 stroke={strokeColor}
                 fill="none"
-                strokeWidth={similarity ** 3 * 5 + 0.2}
+                strokeWidth={similarity ** 3 * 3 + 0.2}
               />
 
               <text
@@ -239,7 +263,7 @@ export function usePathsV2({
                 textAnchor="middle"
                 alignmentBaseline="middle"
                 fontSize="0.7vw"
-                opacity={similarity * opacityMultiply}
+                opacity={opacityMultiply}
               >
                 {similarity.toFixed(2)}
               </text>
@@ -259,6 +283,8 @@ export function usePathsV2({
     subLevel,
     strokeColor,
     calculateRadialTextPoint,
+    opacityMultiply,
+    directionStates,
   ]);
 }
 

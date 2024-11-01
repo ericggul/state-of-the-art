@@ -15,11 +15,11 @@ export default function useRadialParams(
     if (!visible || !isAnimating) return;
 
     if (subLevel === 0) {
-      setRadialIdx(getRandom(0.5, 0.7));
+      setRadialIdx(getRandom(0.5, 0.6));
     } else if (subLevel === 1) {
-      setRadialIdx(getRandom(0.3, 1.0));
+      setRadialIdx(getRandom(0.2, 0.8));
     } else {
-      setRadialIdx(getRandom(0.2, 1.4));
+      setRadialIdx(getRandom(0, 10.0));
     }
   }, [visible, isAnimating]);
 
