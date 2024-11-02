@@ -9,22 +9,21 @@ export async function POST(req) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "Generate next sentence, under 10 words.",
+          content:
+            "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 25. Mention the name 'Jeanyoon' explicitly occassionally.",
         },
         {
           role: "user",
           content: text,
         },
       ],
-      max_tokens: 40,
+      max_tokens: 25,
       logprobs: true,
       top_logprobs: 20,
-      temperature: 1.3,
-
       ...params,
     });
 

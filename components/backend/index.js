@@ -65,7 +65,7 @@ export default function Backend() {
             />
           )}
 
-          {level === 4 && (
+          {level >= 4 && (
             <Backend4
               // range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
               range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}

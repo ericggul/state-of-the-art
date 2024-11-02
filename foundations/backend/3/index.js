@@ -121,7 +121,13 @@ function SingleRandom({ range, visible, timeUnit }) {
       isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
-      <div>
+      <div
+        style={{
+          opacity: isblack ? 1 : 0,
+          transition: "opacity 0.5s",
+          transitionDelay: ".1s",
+        }}
+      >
         <TokensRenderer
           inputTokens={inputTokens}
           outputTokens={outputTokens}

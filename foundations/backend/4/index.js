@@ -15,6 +15,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     inputEmbeddings: newInputEmbeddings,
     outputEmbeddings: newOutputEmbeddings,
     subLevel,
+    level,
   } = useStore();
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
@@ -84,9 +85,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     >
       <div
         style={{
-          opacity: isblack ? 0 : 0,
-          transition: "opacity 0.5s",
-          transitionDelay: ".1s",
+          opacity: level >= 5 ? 0 : isblack ? 1 : 0,
+          // transition: "opacity 0.5s",
         }}
       >
         <TokensRenderer

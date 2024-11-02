@@ -52,7 +52,9 @@ export default function useConversation() {
 
       const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.1);
 
-      const response = await axios.post("/api/openai/gpt-4o-poem", {
+      const endpoint =
+        level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
+      const response = await axios.post(endpoint, {
         text,
         params: { temperature: temperature },
       });
@@ -98,7 +100,8 @@ export default function useConversation() {
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 2000));
+    const timeout = level >= 4 ? 1000 : 2000;
+    await new Promise((r) => setTimeout(r, timeout));
     hasFetchedText.current = false;
     setGetNewText(true);
   }
