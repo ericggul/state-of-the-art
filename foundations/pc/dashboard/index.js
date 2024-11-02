@@ -20,7 +20,17 @@ export default function Dashboard() {
   useEffect(() => {
     if (currentArchitectures[0] && currentArchitectures[0] !== prevModel) {
       setPrevModel(model);
-      setModel(currentArchitectures[0]);
+      const tempModel = {
+        ...DEFAULT_MODEL,
+        id: currentArchitectures[0].version || DEFAULT_MODEL.id,
+        name: currentArchitectures[0].name || DEFAULT_MODEL.name,
+        place: currentArchitectures[0].place || DEFAULT_MODEL.authors,
+        year: currentArchitectures[0].year || DEFAULT_MODEL.year,
+        citation: currentArchitectures[0].citation || DEFAULT_MODEL.citations,
+        explanation:
+          currentArchitectures[0].explanation || DEFAULT_MODEL.explanation,
+      };
+      setModel(tempModel);
     }
   }, [currentArchitectures]);
 

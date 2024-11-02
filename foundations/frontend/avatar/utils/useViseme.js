@@ -5,17 +5,78 @@ import useScreenStore from "@/components/screen/store";
 import useDebounce from "@/utils/hooks/useDebounce";
 
 export default function useViseme() {
-  const { latestSpeech } = useScreenStore();
+  const { latestSpeech, currentArchitectures } = useScreenStore();
 
   const [visemeMessage, setVisemeMessage] = useState({});
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [nextSpeech, setNextSpeech] = useState(null);
   const previousAudioRef = useRef(null);
+  const isPlayingRef = useRef(false);
 
-  // 500ms 디바운스 적용
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
+
+  // Handle audio end and trigger next speech
+  const handleAudioEnd = async () => {
+    isPlayingRef.current = false;
+    if (nextSpeech) {
+      const speech = nextSpeech;
+      setNextSpeech(null);
+      await getViseme({ text: speech });
+    } else {
+      generateNextSpeech();
+    }
+  };
+
+  console.log(conversationHistory);
+  // Generate next speech using GPT-4
+  const generateNextSpeech = async () => {
+    if (isPlayingRef.current || nextSpeech) return;
+
+    try {
+      const targetModel = currentArchitectures[0]?.name || "";
+
+      // Send the entire conversation history to the API
+      const response = await axios.post("/api/openai/gpt-4o-avatar", {
+        text:
+          conversationHistory[conversationHistory.length - 1]?.content || "",
+        conversationHistory: conversationHistory.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
+        targetModel,
+        params: {
+          temperature: 0.7,
+        },
+      });
+
+      if (!response.data?.message?.content) {
+        console.error("Unexpected response format:", response.data);
+        return;
+      }
+
+      const newSpeech = response.data.message.content;
+
+      // Update conversation history with the new response
+      setConversationHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: newSpeech },
+      ]);
+
+      // Either play the speech now or queue it
+      if (!isPlayingRef.current) {
+        await getViseme({ text: newSpeech });
+      } else {
+        setNextSpeech(newSpeech);
+      }
+    } catch (error) {
+      console.error("Failed to generate next speech:", error);
+      isPlayingRef.current = false;
+    }
+  };
 
   const fadeOutAudio = (audio, duration = 1000) => {
     const startVolume = audio.volume;
-    const steps = 15; // Number of steps for smooth transition
+    const steps = 15;
     const volumeStep = startVolume / steps;
     const intervalTime = duration / steps;
 
@@ -25,26 +86,39 @@ export default function useViseme() {
       } else {
         clearInterval(fadeInterval);
         audio.pause();
-        audio.volume = startVolume; // Reset volume for potential reuse
+        audio.volume = startVolume;
       }
     }, intervalTime);
   };
 
+  // Handle new speech from screen store
   useEffect(() => {
     if (debouncedSpeech && debouncedSpeech.length > 0) {
+      // Stop current speech and clear next speech
+      if (previousAudioRef.current) {
+        fadeOutAudio(previousAudioRef.current);
+      }
+      setNextSpeech(null);
+
+      // Append new user message instead of resetting conversation
+      setConversationHistory((prev) => [
+        ...prev,
+        { role: "user", content: debouncedSpeech },
+      ]);
+
       getViseme({ text: debouncedSpeech });
     }
   }, [debouncedSpeech]);
 
   async function getViseme({ text }) {
     try {
+      isPlayingRef.current = true;
       const audioRes = await axios.post(
         "/api/azure-tts",
         { text },
         { responseType: "blob" }
       );
 
-      // Fade out previous audio if exists
       if (previousAudioRef.current) {
         fadeOutAudio(previousAudioRef.current);
       }
@@ -54,17 +128,17 @@ export default function useViseme() {
       const audioUrl = URL.createObjectURL(audio);
       const audioPlayer = new Audio(audioUrl);
 
-      // Clean up old audio URL when creating new one
       if (previousAudioRef.current?.src) {
         URL.revokeObjectURL(previousAudioRef.current.src);
       }
+
+      audioPlayer.addEventListener("ended", handleAudioEnd);
 
       let message = {
         visemes,
         audioPlayer,
       };
 
-      // Play new audio after fade-out duration
       setTimeout(() => {
         message.audioPlayer.currentTime = 0;
         message.audioPlayer.volume = 1;
@@ -75,13 +149,22 @@ export default function useViseme() {
       setVisemeMessage(message);
     } catch (e) {
       console.error("TTS Error:", e.message);
+      isPlayingRef.current = false;
     }
   }
+
+  // Prepare next speech while current is playing
+  useEffect(() => {
+    if (isPlayingRef.current && !nextSpeech && !debouncedSpeech) {
+      generateNextSpeech();
+    }
+  }, [isPlayingRef.current, nextSpeech, debouncedSpeech]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (previousAudioRef.current) {
+        previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
         previousAudioRef.current.pause();
         if (previousAudioRef.current.src) {
           URL.revokeObjectURL(previousAudioRef.current.src);
@@ -90,5 +173,5 @@ export default function useViseme() {
     };
   }, []);
 
-  return { visemeMessage };
+  return { visemeMessage, conversationHistory };
 }
