@@ -23,7 +23,11 @@ function SingleRandom({ range, visible, timeUnit }) {
     newInputEmbeddings,
     newOutputEmbeddings
   );
-  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
+  const { xRange, yRange, isAnimating } = useAnimationState(
+    isblack,
+    visible,
+    subLevel
+  );
 
   const posCalcProps = useMemo(
     () => ({

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 import { generateBezierParams } from "../shared/hooks/useBezierBase";
@@ -11,14 +11,27 @@ export default function useBezierParams(
   timeUnit,
   subLevel
 ) {
-  const [bezierParams, setBezierParams] = useState(generateBezierParams(0, 0));
+  const [bezierParams, setBezierParams] = useState(() =>
+    generateBezierParams(0, 0)
+  );
 
-  const updateBezierParams = useCallback(() => {
-    if (!visible || !isAnimating) return;
+  const shouldUpdate = visible && isAnimating;
+
+  useEffect(() => {
+    if (!shouldUpdate) return;
     setBezierParams(generateBezierParams(xRange, yRange));
-  }, [xRange, yRange, visible, isAnimating]);
+  }, [xRange, yRange, shouldUpdate]);
 
-  useRandomInterval(updateBezierParams, 1 * timeUnit, 10 * timeUnit, visible);
+  useRandomInterval(
+    useCallback(() => {
+      if (shouldUpdate) {
+        setBezierParams(generateBezierParams(xRange, yRange));
+      }
+    }, [xRange, yRange, shouldUpdate]),
+    timeUnit,
+    10 * timeUnit,
+    visible
+  );
 
   return bezierParams;
 }
