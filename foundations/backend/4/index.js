@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
-import useBezierParams, { useBezierParamsSingular } from "./useBezierParams";
+import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
@@ -22,10 +22,17 @@ function SingleRandom({ range, visible, timeUnit }) {
     newInputEmbeddings,
     newOutputEmbeddings
   );
+
   const { xRange, yRange, isAnimating } = useAnimationState(
     isblack,
     visible,
     subLevel
+  );
+
+  const isPlural = useMemo(
+    () =>
+      !((subLevel === 0 && isAnimating) || (subLevel === 1 && !isAnimating)),
+    [subLevel, isAnimating]
   );
 
   const posCalcProps = useMemo(
@@ -58,7 +65,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     visible,
     isAnimating,
     timeUnit,
-    !((subLevel === 0 && isAnimating) || (subLevel === 1 && !isAnimating))
+    isPlural
   );
 
   const paths = usePathsBezier({
@@ -72,23 +79,20 @@ function SingleRandom({ range, visible, timeUnit }) {
     createBezierPath: createBezierPathV4,
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 4,
-    isPlural: !(
-      (subLevel === 0 && isAnimating) ||
-      (subLevel === 1 && !isAnimating)
-    ),
+    isPlural,
   });
+
+  const tokensOpacity = useMemo(
+    () => (level >= 5 ? 0 : isblack ? 1 : 0),
+    [level, isblack]
+  );
 
   return (
     <S.Container
       isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
-      <div
-        style={{
-          opacity: level >= 5 ? 0 : isblack ? 1 : 0,
-          // transition: "opacity 0.5s",
-        }}
-      >
+      <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer
           inputTokens={inputTokens}
           outputTokens={outputTokens}
@@ -96,7 +100,6 @@ function SingleRandom({ range, visible, timeUnit }) {
           outputPosCalc={outputPosCalc}
         />
       </div>
-
       <S.Pic>{paths}</S.Pic>
     </S.Container>
   );

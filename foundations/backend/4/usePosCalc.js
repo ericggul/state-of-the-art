@@ -6,7 +6,7 @@ const getRandom = (min, max) => Math.random() * (max - min) + min;
 const getRangeConfig = {
   0: { x: [0.2, 0.8], y: [0.2, 0.8] },
   1: { x: [0.2, 0.8], y: [0.2, 0.8] },
-  2: { x: [0.15, 0.85], y: [0.15, 0.85] },
+  2: { x: [0.2, 0.8], y: [0.15, 0.85] },
 };
 
 export default function usePosCalc({

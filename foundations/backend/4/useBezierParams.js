@@ -12,51 +12,42 @@ export default function useBezierParams(
   timeUnit,
   isPlural
 ) {
-  // For subLevel 0 (singular)
-  const [singleParams, setSingleParams] = useState(() =>
-    generateBezierParams(0, 0)
-  );
-  // For subLevel 1,2 (plural)
-  const [multiParams, setMultiParams] = useState({});
+  const [params, setParams] = useState(() => ({
+    single: generateBezierParams(0, 0),
+    multi: {},
+  }));
 
   const shouldUpdate = useMemo(
     () => visible && isAnimating,
     [visible, isAnimating]
   );
 
-  const updateMultiParams = useCallback(() => {
+  const updateParams = useCallback(() => {
     if (!shouldUpdate) return;
 
-    const newParams = inputTokens.reduce((acc, _, i) => {
-      outputTokens.forEach((_, j) => {
-        acc[`${i}-${j}`] = generateBezierParams(xRange, yRange);
-      });
-      return acc;
-    }, {});
-
-    setMultiParams(newParams);
-  }, [inputTokens, outputTokens, xRange, yRange, shouldUpdate]);
-
-  const updateSingleParams = useCallback(() => {
-    if (shouldUpdate) {
-      setSingleParams(generateBezierParams(xRange, yRange));
+    if (isPlural) {
+      const newParams = inputTokens.reduce((acc, _, i) => {
+        outputTokens.forEach((_, j) => {
+          acc[`${i}-${j}`] = generateBezierParams(xRange, yRange);
+        });
+        return acc;
+      }, {});
+      setParams((prev) => ({ ...prev, multi: newParams }));
+    } else {
+      setParams((prev) => ({
+        ...prev,
+        single: generateBezierParams(xRange, yRange),
+      }));
     }
-  }, [xRange, yRange, shouldUpdate]);
+  }, [shouldUpdate, isPlural, inputTokens, outputTokens, xRange, yRange]);
 
-  // Effect for singular mode initial update
   useEffect(() => {
-    if (!isPlural) {
-      updateSingleParams();
+    if (!isPlural && shouldUpdate) {
+      updateParams();
     }
-  }, [xRange, yRange, shouldUpdate, isPlural]);
+  }, [isPlural, shouldUpdate, updateParams]);
 
-  // Random interval for updates
-  useRandomInterval(
-    !isPlural ? updateSingleParams : updateMultiParams,
-    2 * timeUnit,
-    30 * timeUnit,
-    visible
-  );
+  useRandomInterval(updateParams, 2 * timeUnit, 30 * timeUnit, visible);
 
-  return !isPlural ? singleParams : multiParams;
+  return isPlural ? params.multi : params.single;
 }
