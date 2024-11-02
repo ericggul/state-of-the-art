@@ -300,7 +300,7 @@ export function usePathsBezier(params) {
     createBezierPath,
     similarityThreshold = 0.2,
     strokeWidthMultiplier = 4,
-    isV4 = false,
+    isSingular = false,
   } = params;
 
   return useMemo(() => {
@@ -313,7 +313,7 @@ export function usePathsBezier(params) {
           const [x1, y1] = inputPosCalc.wordPosCalc(i);
           const [x2, y2] = outputPosCalc.wordPosCalc(j);
 
-          const bezierParam = isV4
+          const bezierParam = isSingular
             ? bezierParams && Object.keys(bezierParams).length > 0
               ? bezierParams[`${i}-${j}`] ?? BEZIER_DEFAULT
               : BEZIER_DEFAULT
@@ -345,7 +345,7 @@ export function usePathsBezier(params) {
     createBezierPath,
     similarityThreshold,
     strokeWidthMultiplier,
-    isV4,
+    isSingular,
     BEZIER_DEFAULT,
   ]);
 }

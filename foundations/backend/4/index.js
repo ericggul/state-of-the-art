@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
-import useBezierParams from "./useBezierParams";
+import useBezierParams, { useBezierParamsSingular } from "./useBezierParams";
 import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
@@ -71,7 +71,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     createBezierPath: createBezierPathV4,
     similarityThreshold: 0.15,
     strokeWidthMultiplier: 4,
-    isV4: true,
+    isSingular: true,
   });
 
   return (
