@@ -6,8 +6,13 @@ import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
-import { createBezierPathV4 } from "../shared/utils/createPath";
-import { usePathsBezier } from "../shared/hooks/usePaths";
+import {
+  createBezierPathV4,
+  createRadialPath,
+} from "../shared/utils/createPath";
+import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
+
+import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -69,7 +74,46 @@ function SingleRandom({ range, visible, timeUnit }) {
     isPlural
   );
 
-  const paths = usePathsBezier({
+  /////RADIAL PATHS
+  // Compute similarity matrices for input and output tokens
+  const inputSimilarityMatrix = useComputeSimilarity({
+    newEmbeddings: newInputEmbeddings,
+  });
+  const outputSimilarityMatrix = useComputeSimilarity({
+    newEmbeddings: newOutputEmbeddings,
+  });
+
+  // Create radial paths for input tokens
+  const inputRadialPaths = usePathsRadial({
+    tokens: inputTokens,
+    similarityMatrix: inputSimilarityMatrix,
+    wordPosCalc: inputPosCalc.wordPosCalc,
+    yMargin: inputPosCalc.yMargin,
+    isblack,
+    createRadialPath,
+    similarityThreshold: 0.2,
+    strokeWidthMultiplier: 2,
+    type: "input",
+    show: !isAnimating,
+  });
+
+  // Create radial paths for output tokens
+  const outputRadialPaths = usePathsRadial({
+    tokens: outputTokens,
+    similarityMatrix: outputSimilarityMatrix,
+    wordPosCalc: outputPosCalc.wordPosCalc,
+    yMargin: outputPosCalc.yMargin,
+    isblack,
+    createRadialPath,
+    similarityThreshold: 0.2,
+    strokeWidthMultiplier: 2,
+    type: "output",
+    show: !isAnimating,
+  });
+
+  /////BEZIER PATHS
+
+  const bezierPaths = usePathsBezier({
     inputTokens,
     outputTokens,
     crossSimilarityMatrix,
@@ -82,6 +126,12 @@ function SingleRandom({ range, visible, timeUnit }) {
     strokeWidthMultiplier: 4,
     isPlural,
   });
+
+  // Combine all paths
+  const paths = useMemo(
+    () => [...inputRadialPaths, ...outputRadialPaths, ...bezierPaths],
+    [inputRadialPaths, outputRadialPaths, bezierPaths]
+  );
 
   const tokensOpacity = useMemo(
     () => (level >= 6 ? 0 : isblack ? 1 : 0),

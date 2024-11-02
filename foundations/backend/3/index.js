@@ -6,10 +6,12 @@ import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
-import { createBezierPathV3 } from "../shared/utils/createPath";
+import {
+  createBezierPathV3,
+  createRadialPath,
+} from "../shared/utils/createPath";
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
-import { createRadialPath } from "../shared/utils/createPath";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
