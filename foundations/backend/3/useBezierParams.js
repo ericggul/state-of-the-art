@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import { generateBezierParams } from "../shared/hooks/useBezierBase";
 
-export function useBezierParams(
+export default function useBezierParams(
   xRange,
   yRange,
   visible,
