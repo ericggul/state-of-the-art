@@ -103,7 +103,7 @@ export default function TestBackend() {
 
       <S.Viewport style={{ background: isblack ? "black" : "white" }}>
         <BackendComponent
-          range={{ x: [0.05, 0.95], y: [0.05, 0.95] }}
+          range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
           visible={true}
           timeUnit={timeUnit}
         />

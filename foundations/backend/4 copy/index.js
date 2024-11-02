@@ -21,20 +21,15 @@ function SingleRandom({ range, visible, timeUnit }) {
     newInputEmbeddings,
     newOutputEmbeddings
   );
-  const { xRange, yRange, isAnimating } = useAnimationState(
-    isblack,
-    visible,
-    subLevel
-  );
+  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
 
   const posCalcProps = useMemo(
     () => ({
       isAnimating,
       range,
       timeUnit,
-      subLevel,
     }),
-    [isAnimating, range, timeUnit, subLevel]
+    [isAnimating, range, timeUnit]
   );
 
   const inputPosCalc = usePosCalc({
@@ -56,8 +51,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     yRange,
     visible,
     isAnimating,
-    timeUnit,
-    subLevel
+    timeUnit
   );
 
   const paths = usePathsBezier({
@@ -69,7 +63,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     bezierParams,
     isblack,
     createBezierPath: createBezierPathV4,
-    similarityThreshold: 0.15,
+    similarityThreshold: 0.2,
     strokeWidthMultiplier: 4,
     isV4: true,
   });

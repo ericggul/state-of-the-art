@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
@@ -6,9 +6,9 @@ const getRandom = (min, max) => Math.random() * (max - min) + min;
 export default function usePosCalc({
   tokens,
   isAnimating,
+  range,
   timeUnit,
   type,
-  subLevel,
 }) {
   const {
     windowWidth,
@@ -19,41 +19,12 @@ export default function usePosCalc({
   } = useBasePosCalc({ tokens, type });
   const [tokenPositions, setTokenPositions] = useState([]);
 
-  const range = useMemo(() => {
-    if (subLevel === 0) {
-      return {
-        x: [0.3, 0.7],
-        y: [0.3, 0.7],
-      };
-    } else if (subLevel === 1) {
-      return {
-        x: [0.2, 0.8],
-        y: [0.2, 0.8],
-      };
-    } else {
-      return {
-        x: [0.1, 0.9],
-        y: [0.1, 0.9],
-      };
-    }
-  }, [subLevel]);
-
   const generateRandomPositions = useCallback(() => {
-    if (subLevel === 1) {
-      return tokens.map(() => ({
-        x: getRandom(range.x[0], range.x[1]) * windowWidth,
-        y:
-          (type === "input"
-            ? getRandom(range.y[0], (range.y[1] - range.y[0]) / 2)
-            : getRandom((range.y[1] - range.y[0]) / 2, range.y[1])) *
-          windowHeight,
-      }));
-    }
     return tokens.map(() => ({
       x: getRandom(range.x[0], range.x[1]) * windowWidth,
       y: getRandom(range.y[0], range.y[1]) * windowHeight,
     }));
-  }, [tokens, range, windowWidth, windowHeight, subLevel]);
+  }, [tokens, range, windowWidth, windowHeight]);
 
   useEffect(() => {
     if (isAnimating) {
@@ -63,17 +34,9 @@ export default function usePosCalc({
       }, 100 * timeUnit);
       return () => clearInterval(intervalId);
     } else {
-      if (subLevel === 0) {
-        setTokenPositions(generateStaticPositions());
-      }
+      setTokenPositions(generateStaticPositions());
     }
-  }, [
-    generateRandomPositions,
-    generateStaticPositions,
-    isAnimating,
-    timeUnit,
-    subLevel,
-  ]);
+  }, [generateRandomPositions, generateStaticPositions, isAnimating, timeUnit]);
 
   const wordPosCalc = useCallback(
     (idx) => {
