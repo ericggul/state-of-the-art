@@ -107,7 +107,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     createBezierPath: createBezierPathV3,
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 4,
-    isSingular: false,
+    isPlural: false,
   });
 
   // Combine all paths

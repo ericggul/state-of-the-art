@@ -1,26 +1,35 @@
 import { useState, useEffect } from "react";
 
+const LEVEL_CONFIG = {
+  0: { xRange: 0.5, yRange: 18 },
+  1: { xRange: 2.5, yRange: 20 },
+  2: { xRange: 1, yRange: 20 },
+};
+
 export function useAnimationState(isblack, visible, subLevel) {
-  const [xRange, setXRange] = useState(0.5);
-  const [yRange, setYRange] = useState(18);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [state, setState] = useState({
+    xRange: LEVEL_CONFIG[0].xRange,
+    yRange: LEVEL_CONFIG[0].yRange,
+    isAnimating: false,
+  });
 
   useEffect(() => {
-    if (subLevel === 0) {
-      setXRange(0.5);
-      setYRange(18);
-    }
-    if (subLevel === 1) {
-      setXRange(2.5);
-      setYRange(20);
-    }
-    if (subLevel === 2) {
-      setXRange(3);
-      setYRange(30);
-    }
+    const config = LEVEL_CONFIG[subLevel] ?? LEVEL_CONFIG[0];
 
-    setIsAnimating(isblack && visible);
+    if (isblack || subLevel === 2) {
+      setState({
+        xRange: config.xRange,
+        yRange: config.yRange,
+        isAnimating: isblack && visible,
+      });
+    } else {
+      setState({
+        xRange: 0,
+        yRange: 0,
+        isAnimating: false,
+      });
+    }
   }, [isblack, visible, subLevel]);
 
-  return { xRange, yRange, isAnimating };
+  return state;
 }

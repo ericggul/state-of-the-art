@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import { generateBezierParams } from "../shared/hooks/useBezierBase";
 
@@ -9,57 +9,54 @@ export default function useBezierParams(
   yRange,
   visible,
   isAnimating,
-  timeUnit
+  timeUnit,
+  isPlural
 ) {
-  const [bezierParams, setBezierParams] = useState({});
-
-  const updateBezierParams = useCallback(() => {
-    if (!visible || !isAnimating) return;
-
-    const newParams = {};
-    inputTokens.forEach((_, i) => {
-      outputTokens.forEach((_, j) => {
-        const key = `${i}-${j}`;
-        newParams[key] = generateBezierParams(xRange, yRange);
-      });
-    });
-
-    setBezierParams(newParams);
-  }, [inputTokens, outputTokens, xRange, yRange, visible, isAnimating]);
-
-  useRandomInterval(updateBezierParams, 1 * timeUnit, 10 * timeUnit, visible);
-
-  return bezierParams;
-}
-
-export function useBezierParamsSingular(
-  xRange,
-  yRange,
-  visible,
-  isAnimating,
-  timeUnit
-) {
-  const [bezierParams, setBezierParams] = useState(() =>
+  // For subLevel 0 (singular)
+  const [singleParams, setSingleParams] = useState(() =>
     generateBezierParams(0, 0)
   );
+  // For subLevel 1,2 (plural)
+  const [multiParams, setMultiParams] = useState({});
 
-  const shouldUpdate = visible && isAnimating;
+  const shouldUpdate = useMemo(
+    () => visible && isAnimating,
+    [visible, isAnimating]
+  );
 
-  useEffect(() => {
+  const updateMultiParams = useCallback(() => {
     if (!shouldUpdate) return;
-    setBezierParams(generateBezierParams(xRange, yRange));
+
+    const newParams = inputTokens.reduce((acc, _, i) => {
+      outputTokens.forEach((_, j) => {
+        acc[`${i}-${j}`] = generateBezierParams(xRange, yRange);
+      });
+      return acc;
+    }, {});
+
+    setMultiParams(newParams);
+  }, [inputTokens, outputTokens, xRange, yRange, shouldUpdate]);
+
+  const updateSingleParams = useCallback(() => {
+    if (shouldUpdate) {
+      setSingleParams(generateBezierParams(xRange, yRange));
+    }
   }, [xRange, yRange, shouldUpdate]);
 
+  // Effect for singular mode initial update
+  useEffect(() => {
+    if (!isPlural) {
+      updateSingleParams();
+    }
+  }, [xRange, yRange, shouldUpdate, isPlural]);
+
+  // Random interval for updates
   useRandomInterval(
-    useCallback(() => {
-      if (shouldUpdate) {
-        setBezierParams(generateBezierParams(xRange, yRange));
-      }
-    }, [xRange, yRange, shouldUpdate]),
-    timeUnit,
-    10 * timeUnit,
+    !isPlural ? updateSingleParams : updateMultiParams,
+    2 * timeUnit,
+    30 * timeUnit,
     visible
   );
 
-  return bezierParams;
+  return !isPlural ? singleParams : multiParams;
 }

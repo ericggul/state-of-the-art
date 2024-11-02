@@ -57,7 +57,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     visible,
     isAnimating,
     timeUnit,
-    subLevel
+    !((subLevel === 0 && isAnimating) || (subLevel === 1 && !isAnimating))
   );
 
   const paths = usePathsBezier({
@@ -69,9 +69,12 @@ function SingleRandom({ range, visible, timeUnit }) {
     bezierParams,
     isblack,
     createBezierPath: createBezierPathV4,
-    similarityThreshold: 0.15,
+    similarityThreshold: 0.2,
     strokeWidthMultiplier: 4,
-    isSingular: true,
+    isPlural: !(
+      (subLevel === 0 && isAnimating) ||
+      (subLevel === 1 && !isAnimating)
+    ),
   });
 
   return (
@@ -81,7 +84,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     >
       <div
         style={{
-          opacity: isblack ? 0 : 1,
+          opacity: isblack ? 0 : 0,
           transition: "opacity 0.5s",
           transitionDelay: ".1s",
         }}

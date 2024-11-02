@@ -3,6 +3,12 @@ import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
+const getRangeConfig = {
+  0: { x: [0.2, 0.8], y: [0.2, 0.8] },
+  1: { x: [0.2, 0.8], y: [0.2, 0.8] },
+  2: { x: [0.2, 0.8], y: [0.2, 0.8] },
+};
+
 export default function usePosCalc({
   tokens,
   isAnimating,
@@ -19,41 +25,32 @@ export default function usePosCalc({
   } = useBasePosCalc({ tokens, type });
   const [tokenPositions, setTokenPositions] = useState([]);
 
-  const range = useMemo(() => {
-    if (subLevel === 0) {
-      return {
-        x: [0.3, 0.7],
-        y: [0.3, 0.7],
-      };
-    } else if (subLevel === 1) {
-      return {
-        x: [0.2, 0.8],
-        y: [0.2, 0.8],
-      };
-    } else {
-      return {
-        x: [0.1, 0.9],
-        y: [0.1, 0.9],
-      };
-    }
-  }, [subLevel]);
+  const range = useMemo(
+    () => getRangeConfig[subLevel] ?? getRangeConfig[2],
+    [subLevel]
+  );
 
   const generateRandomPositions = useCallback(() => {
+    const basePosition = () => ({
+      x: getRandom(range.x[0], range.x[1]) * windowWidth,
+    });
+
     if (subLevel === 1) {
+      const midPoint = (range.y[1] - range.y[0]) / 2;
       return tokens.map(() => ({
-        x: getRandom(range.x[0], range.x[1]) * windowWidth,
+        ...basePosition(),
         y:
           (type === "input"
-            ? getRandom(range.y[0], (range.y[1] - range.y[0]) / 2)
-            : getRandom((range.y[1] - range.y[0]) / 2, range.y[1])) *
-          windowHeight,
+            ? getRandom(range.y[0], midPoint)
+            : getRandom(midPoint, range.y[1])) * windowHeight,
       }));
     }
+
     return tokens.map(() => ({
-      x: getRandom(range.x[0], range.x[1]) * windowWidth,
+      ...basePosition(),
       y: getRandom(range.y[0], range.y[1]) * windowHeight,
     }));
-  }, [tokens, range, windowWidth, windowHeight, subLevel]);
+  }, [tokens, range, windowWidth, windowHeight, subLevel, type]);
 
   useEffect(() => {
     if (isAnimating) {
