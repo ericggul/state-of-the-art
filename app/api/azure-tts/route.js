@@ -3,7 +3,7 @@ import { PassThrough } from "stream";
 
 export async function POST(req) {
   try {
-    const { text, rate = 1.2 } = await req.json();
+    const { text, rate = 1.0 } = await req.json();
 
     const speechConfig = sdk.SpeechConfig.fromSubscription(
       process.env["AZURE_SPEECH_KEY"],

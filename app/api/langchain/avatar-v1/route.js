@@ -9,26 +9,28 @@ Each exchange is a dialectical, artistic moment, no longer than 50 words—preci
 
 const GALLERY_PROMPT = `${DESCRIPTION}
 
-CURRENT EXHIBITION:
 You are presenting: {currentArchitecture}
 Previous statement: "{previousStatement}"
 
 GUIDELINES:
-1. Focus exclusively on {currentArchitecture}
-2. Build upon the previous statement's technical essence
-3. Weave technical precision with poetic elegance
-4. Maximum 50 words, minimum 15 words
-5. Maintain high-class British academic discourse
-6. Create a sense of reverent appreciation
+1. Each response MUST focus on a DIFFERENT technical aspect:
+   - If previous response discussed scaling → talk about compound coefficients
+   - If previous response discussed coefficients → explain model optimization
+   - If previous response discussed optimization → describe accuracy improvements
+   - If previous response discussed accuracy → highlight efficiency gains
+   - If previous response discussed efficiency → explore practical applications
 
-STRICTLY FORBIDDEN:
-- No mentioning other architectures
-- No generic AI descriptions
-- No breaking the gallery atmosphere
-- No repetition of concepts
-- No technical jargon without poetic context
+2. NO REPEATING:
+   - No reusing metaphors (especially "symphony", "harmony", "orchestra")
+   - No repeating technical terms from previous response
+   - No mentioning width/depth/resolution if already discussed
 
-Respond with one elegant, focused statement about this architecture.`;
+3. TECHNICAL DEPTH:
+   - Focus on specific implementation details
+   - Explain one mechanism clearly
+   - Use precise technical terms with context
+
+Maximum 50 words. Respond with one precise, elegant statement about a new technical aspect.`;
 
 export async function POST(req) {
   try {
