@@ -50,7 +50,6 @@ export function useComputeCrossSimlarity({
 
   return similarityMatrix;
 }
-
 export function useComputeMultiCrossSimlarity({ newMultiEmbeddings }) {
   const embeddingsArr = useMemo(
     () => newMultiEmbeddings.map((embeddings) => embeddings.embeddings),

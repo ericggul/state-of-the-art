@@ -7,9 +7,7 @@ import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "../shared/hooks/useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createBezierPathV3 } from "../shared/utils/createPath";
-import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
-import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
-import { createRadialPath } from "../shared/utils/createPath";
+import { usePathsBezier } from "../shared/hooks/usePaths";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -55,42 +53,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     timeUnit
   );
 
-  // Compute similarity matrices for input and output tokens
-  const inputSimilarityMatrix = useComputeSimilarity({
-    newEmbeddings: newInputEmbeddings,
-  });
-  const outputSimilarityMatrix = useComputeSimilarity({
-    newEmbeddings: newOutputEmbeddings,
-  });
-
-  // Create radial paths for input tokens
-  const inputRadialPaths = usePathsRadial({
-    tokens: inputTokens,
-    similarityMatrix: inputSimilarityMatrix,
-    wordPosCalc: inputPosCalc.wordPosCalc,
-    yMargin: inputPosCalc.yMargin,
-    isblack,
-    createRadialPath,
-    similarityThreshold: 0.2,
-    strokeWidthMultiplier: 2,
-    type: "input",
-  });
-
-  // Create radial paths for output tokens
-  const outputRadialPaths = usePathsRadial({
-    tokens: outputTokens,
-    similarityMatrix: outputSimilarityMatrix,
-    wordPosCalc: outputPosCalc.wordPosCalc,
-    yMargin: outputPosCalc.yMargin,
-    isblack,
-    createRadialPath,
-    similarityThreshold: 0.2,
-    strokeWidthMultiplier: 2,
-    type: "output",
-  });
-
-  // Existing Bezier paths between input and output tokens
-  const bezierPaths = usePathsBezier({
+  const paths = usePathsBezier({
     inputTokens,
     outputTokens,
     crossSimilarityMatrix,
@@ -103,12 +66,6 @@ function SingleRandom({ range, visible, timeUnit }) {
     strokeWidthMultiplier: 4,
     isV4: false,
   });
-
-  // Combine all paths
-  const paths = useMemo(
-    () => [...inputRadialPaths, ...outputRadialPaths, ...bezierPaths],
-    [inputRadialPaths, outputRadialPaths, bezierPaths]
-  );
 
   return (
     <S.Container
