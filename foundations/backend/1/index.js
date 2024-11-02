@@ -37,7 +37,7 @@ function LevelOne({ visible }) {
     }, ANIM_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [isAnimating, tokens.length, ANIM_INTERVAL]);
+  }, [isAnimating, tokens.length, ANIM_INTERVAL, subLevel]);
 
   const paths = usePathsV1({
     tokens,

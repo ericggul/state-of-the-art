@@ -19,7 +19,7 @@ export default function useRadialParams(
     } else if (subLevel === 1) {
       setRadialIdx(getRandom(0.2, 0.8));
     } else {
-      setRadialIdx(getRandom(0, 10.0));
+      setRadialIdx(getRandom(0.3, 12.0));
     }
   }, [visible, isAnimating]);
 

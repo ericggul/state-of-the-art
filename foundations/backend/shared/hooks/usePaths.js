@@ -177,7 +177,7 @@ export function usePathsV2({
 }) {
   const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
   const opacityMultiply = useMemo(
-    () => [1, 0.6, 0.3][subLevel] || 1,
+    () => [1, 0.7, 0.7][subLevel] || 1,
     [subLevel]
   );
 
@@ -253,7 +253,7 @@ export function usePathsV2({
                 })}
                 stroke={strokeColor}
                 fill="none"
-                strokeWidth={similarity ** 3 * 3 + 0.2}
+                strokeWidth={similarity ** 2 * 4}
               />
 
               <text
