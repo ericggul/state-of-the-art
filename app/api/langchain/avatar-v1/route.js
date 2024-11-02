@@ -41,7 +41,7 @@ export async function POST(req) {
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      model: "gpt-4",
+      model: "gpt-4o",
       temperature: 0.7,
       maxTokens: 80,
     });

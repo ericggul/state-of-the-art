@@ -7,12 +7,6 @@ import useDebounce from "@/utils/hooks/useDebounce";
 export default function useViseme() {
   const { latestSpeech, currentArchitectures } = useScreenStore();
 
-  const currentArchitectureRef = useRef("");
-
-  useEffect(() => {
-    currentArchitectureRef.current = currentArchitectures[0]?.name || "";
-  }, [currentArchitectures]);
-
   const [visemeMessage, setVisemeMessage] = useState({});
   const [conversationHistory, setConversationHistory] = useState([]);
   const [nextSpeech, setNextSpeech] = useState(null);
@@ -81,7 +75,7 @@ export default function useViseme() {
       console.log("📤 Requesting Langchain response for:", targetModel);
       const response = await axios.post("/api/langchain/avatar-v1", {
         messages: [{ role: "user", content: lastSpeech }],
-        currentArchitecture: currentArchitectureRef.current || targetModel, // Pass the current architecture name
+        currentArchitecture: targetModel, // Pass the current architecture name
       });
 
       if (!response.data?.content) {
