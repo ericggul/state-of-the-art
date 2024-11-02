@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 const LEVEL_CONFIG = {
   0: { xRange: 0.5, yRange: 18 },
   1: { xRange: 2.5, yRange: 20 },
-  2: { xRange: 1, yRange: 20 },
+  2: { xRange: 1.5, yRange: 15 },
   default: { xRange: 0, yRange: 0 },
 };
 

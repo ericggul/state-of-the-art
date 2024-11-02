@@ -18,10 +18,12 @@ const backends = {
   2: Backend2,
   3: Backend3,
   4: Backend4,
+  5: Backend4,
+  6: Backend4,
 };
 
 export default function TestBackend() {
-  const { isblack, level, setLevel, subLevel } = useStore();
+  const { isblack, level, setLevel, subLevel, setLoop } = useStore();
   const [timeUnit, setTimeUnit] = useState(1);
   const [followLevel, setFollowLevel] = useState(true);
   const [fixedLevel, setFixedLevel] = useState(level);
@@ -38,19 +40,11 @@ export default function TestBackend() {
 
   // Use either the store level or fixed level based on followLevel setting
   const currentLevel = followLevel ? level : fixedLevel;
-  const BackendComponent =
-    currentLevel >= 4 ? Backend4 : backends[currentLevel];
+  const BackendComponent = backends[currentLevel];
 
   return (
     <S.TestContainer>
       <S.Controls>
-        <S.ControlGroup>
-          <S.Title>Backend Test Environment</S.Title>
-          <Link href="/">
-            <S.BackButton>← Back to Main</S.BackButton>
-          </Link>
-        </S.ControlGroup>
-
         <S.ControlGroup>
           <S.Label>Level Control:</S.Label>
           <S.Button
@@ -64,7 +58,7 @@ export default function TestBackend() {
         <S.ControlGroup>
           <S.Label>Current Level:</S.Label>
           <S.LevelDisplay>
-            Level {currentLevel >= 4 ? "4+" : currentLevel}
+            Level {currentLevel}
             <S.SubLevel>(SubLevel {subLevel})</S.SubLevel>
           </S.LevelDisplay>
         </S.ControlGroup>
@@ -79,17 +73,14 @@ export default function TestBackend() {
                 if (followLevel) {
                   setLevel(numId);
                 } else {
+                  setLoop(numId * 3);
                   setFixedLevel(numId);
                 }
               }}
-              $active={
-                currentLevel >= 4
-                  ? Number(id) >= 4
-                  : currentLevel === Number(id)
-              }
+              $active={currentLevel === Number(id)}
               $disabled={followLevel}
             >
-              Backend {id >= 4 ? "4+" : id}
+              Backend {id}
             </S.Button>
           ))}
         </S.ControlGroup>
