@@ -4,7 +4,7 @@ import usePosCalc from "./usePosCalc";
 import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
-import { useAnimationState } from "../shared/hooks/useAnimationState";
+import { useAnimationState } from "./useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createBezierPathV3 } from "../shared/utils/createPath";
 import { usePathsBezier } from "../shared/hooks/usePaths";

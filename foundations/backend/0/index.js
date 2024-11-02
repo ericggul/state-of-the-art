@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import * as S from "./styles";
 import useStore from "@/components/backend/store";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import TokenComponent from "./TokenComponent";
-import { useAnimationState } from "../shared/hooks/useAnimationState";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 function LevelZero({ visible }) {
@@ -19,7 +18,7 @@ function LevelZero({ visible }) {
   const { wordPosCalc, wordInterval } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
   const [animState, setAnimState] = useState(0);
-  const { isAnimating } = useAnimationState(isblack, visible);
+  const isAnimating = useMemo(() => isblack && visible, [isblack, visible]);
 
   // Handle target word progression
   useEffect(() => {

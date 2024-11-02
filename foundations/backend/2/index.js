@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import useRadialParams from "./useRadialParams";
 import useStore from "@/components/backend/store";
 import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
-import { useAnimationState } from "../shared/hooks/useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createRadialPath } from "../shared/utils/createPath";
 import { usePathsV2 } from "../shared/hooks/usePaths";
@@ -13,7 +12,8 @@ function SingleRandom({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
   const { tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
-  const { xRange, yRange, isAnimating } = useAnimationState(isblack, visible);
+
+  const isAnimating = useMemo(() => isblack && visible, [isblack, visible]);
 
   const posCalc = usePosCalc({ tokens });
   const radialIdx = useRadialParams(visible, isAnimating, timeUnit, subLevel);

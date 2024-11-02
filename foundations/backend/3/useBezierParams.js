@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+
 import { generateBezierParams } from "../shared/hooks/useBezierBase";
 
 export default function useBezierParams(

@@ -6,7 +6,6 @@ import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeS
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
-import { useAnimationState } from "../shared/hooks/useAnimationState";
 
 function LevelOne({ visible }) {
   const {
@@ -20,7 +19,7 @@ function LevelOne({ visible }) {
   });
   const { wordPosCalc, yMargin } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
-  const { isAnimating } = useAnimationState(isblack, visible);
+  const isAnimating = useMemo(() => isblack && visible, [isblack, visible]);
 
   const ANIM_INTERVAL = useMemo(
     () => [300, 200, 100][subLevel] || 200,
