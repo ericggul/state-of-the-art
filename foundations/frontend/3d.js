@@ -182,7 +182,7 @@ export default function Visualisation({
               />
             )}
           </group>
-          <AvatarModel />
+          {/* <AvatarModel /> */}
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
           <PostProcessing />
           <PositionalAudio distance={cameraDistance * 0.2} />

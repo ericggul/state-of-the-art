@@ -29,6 +29,14 @@ export default function useViseme() {
 
     isPlayingRef.current = false;
 
+    // Add random delay between 2-3 seconds
+    const delay = Math.random() * 1000 + 500; // Random between 2000-3000ms
+    console.log(
+      `⏳ Adding ${Math.round(delay)}ms pause for natural speech rhythm`
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, delay));
+
     if (pendingTTSRef.current) {
       console.log("✨ Found pending TTS, playing immediately");
       const message = pendingTTSRef.current;
@@ -49,7 +57,7 @@ export default function useViseme() {
     }
   };
 
-  // Generate next speech using GPT-4
+  // Generate next speech using Langchain Avatar
   const generateNextSpeech = async () => {
     if (nextSpeechGenerationRef.current) {
       console.log("⚠️ Speech generation already in progress");
@@ -63,19 +71,18 @@ export default function useViseme() {
       const lastSpeech =
         conversationHistory[conversationHistory.length - 1]?.content || "";
 
-      // Generate GPT response first
-      console.log("📤 Requesting GPT response for:", targetModel);
-      const response = await axios.post("/api/openai/gpt-4o-avatar", {
-        text: lastSpeech,
-        targetModel,
-        params: { temperature: 0.7 },
+      // Updated request to match simplified API
+      console.log("📤 Requesting Langchain response for:", targetModel);
+      const response = await axios.post("/api/langchain/avatar-v1", {
+        messages: [{ role: "user", content: lastSpeech }],
+        currentArchitecture: targetModel, // Pass the current architecture name
       });
 
-      if (!response.data?.message?.content) {
+      if (!response.data?.content) {
         throw new Error("Unexpected response format");
       }
 
-      const newSpeech = response.data.message.content;
+      const newSpeech = response.data.content;
       console.log("📥 Received new speech:", newSpeech);
 
       setConversationHistory((prev) => {
