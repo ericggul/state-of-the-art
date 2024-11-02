@@ -4,9 +4,9 @@ import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 const getRangeConfig = {
-  0: { x: [0.2, 0.8], y: [0.2, 0.8] },
+  0: { x: [0, 1], y: [0.3, 0.7] },
   1: { x: [0.25, 0.75], y: [0.25, 0.75] },
-  2: { x: [0.15, 0.85], y: [0.15, 0.85] },
+  2: { x: [0.3, 0.7], y: [0, 1] },
 };
 
 export default function usePosCalc({

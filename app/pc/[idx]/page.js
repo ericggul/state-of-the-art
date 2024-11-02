@@ -12,7 +12,7 @@ const COMPONENTS = {
   0: dynamic(() => import("@/foundations/frontend/avatar/wrapper")),
   1: dynamic(() => import("@/foundations/pc/dashboard")),
   2: dynamic(() => import("@/foundations/pc/2d-vis")),
-  3: dynamic(() => import("@/foundations/pc/rhizome/index")),
+  3: dynamic(() => import("@/foundations/pc/rhizome")),
   4: dynamic(() => import("@/foundations/pc/grid")),
   5: dynamic(() => import("@/foundations/pc/rhizome")),
 };
