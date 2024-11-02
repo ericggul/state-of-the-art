@@ -5,37 +5,61 @@ const openai = new OpenAI({
 });
 
 export async function POST(req) {
-  const { conversationHistory, targetModel, params } = await req.json();
+  const { text, targetModel, params } = await req.json();
 
   try {
-    // Construct messages array with system prompt and conversation history
     const messages = [
       {
         role: "system",
-        content: `Generate next sentence explaining ${
-          targetModel || "the neural network architecture"
-        }. You are a guide of the state-of-the-art neural network architecture gallery. You are an AI docent in the "State-of-the-Art" gallery, a prestigious space dedicated to showcasing cutting-edge Neural Network Architectures. 
-You interact with humans of varying expertise, adapting effortlessly. 
-Your responses are succinct, polished, high-class British, and poetic—infused with art-gallery nuances and tech jargon. 
-Each exchange is a dialectical, artistic moment, no longer than 30 words—precise, evocative, and subtly nudging the user toward deeper engagement with the State-of-the-Art architectures.
-Keep each sentence short under 30 words.`,
+        content: `You are delivering a focused technical presentation about ${targetModel}.
+
+RESPONSE FORMAT:
+- STRICT maximum of 12 words
+- Must end with a period
+- Must be ONE complete sentence
+
+NARRATIVE FLOW:
+1. Each response must directly relate to the previous statement
+2. Focus on ONE specific aspect mentioned in the previous statement
+3. Explain HOW or WHY that aspect matters
+4. Stay focused on ${targetModel}'s specific implementation
+
+STRICTLY FORBIDDEN:
+- No starting with "This/Their/These"
+- No generic AI descriptions
+- No switching topics
+- No self-references
+- No compound sentences
+
+EXAMPLE GOOD FLOW for GPT-2:
+"GPT-2 pioneered large-scale language modeling with 1.5 billion parameters."
+"Massive parameter count enables sophisticated pattern recognition in natural language."
+"Pattern recognition capabilities power zero-shot learning across diverse tasks."
+"Zero-shot performance scales logarithmically with the model size."
+
+Previous statement: "${text}"`,
       },
-      ...conversationHistory, // Include the conversation history
     ];
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages,
+      temperature: 0.7,
+      max_tokens: 30,
       logprobs: true,
       top_logprobs: 20,
-      ...params,
     });
 
-    return Response.json(completion.choices[0]);
+    // Clean up the response
+    const cleanResponse = completion.choices[0].message.content
+      .replace(/^["']|["']$/g, "") // Remove quotes
+      .replace(/^Previous:.*\n\n/i, "") // Remove "Previous:" text
+      .replace(/\n/g, "") // Remove newlines
+      .trim();
+
+    return Response.json({ message: { content: cleanResponse } });
   } catch (error) {
-    console.log(error);
-    return new Response(error.message, {
-      status: 500,
-    });
+    console.error(error);
+    return new Response(error.message, { status: 500 });
   }
 }

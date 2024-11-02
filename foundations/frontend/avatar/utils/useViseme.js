@@ -13,64 +13,100 @@ export default function useViseme() {
   const previousAudioRef = useRef(null);
   const isPlayingRef = useRef(false);
 
+  const pendingTTSRef = useRef(null);
+  const nextSpeechGenerationRef = useRef(null);
+
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
+
+  console.log(currentArchitectures, conversationHistory);
 
   // Handle audio end and trigger next speech
   const handleAudioEnd = async () => {
+    console.log("🔚 Audio ended, checking next steps...", {
+      hasPendingTTS: !!pendingTTSRef.current,
+      hasNextSpeech: !!nextSpeech,
+    });
+
     isPlayingRef.current = false;
-    if (nextSpeech) {
-      const speech = nextSpeech;
-      setNextSpeech(null);
-      await getViseme({ text: speech });
-    } else {
+
+    if (pendingTTSRef.current) {
+      console.log("✨ Found pending TTS, playing immediately");
+      const message = pendingTTSRef.current;
+      pendingTTSRef.current = null;
+      previousAudioRef.current = message.audioPlayer;
+      setVisemeMessage(message);
+      isPlayingRef.current = true;
+
+      message.audioPlayer.currentTime = 0;
+      message.audioPlayer.volume = 1;
+      message.audioPlayer.play();
+
+      // Start generating next speech immediately
       generateNextSpeech();
+    } else {
+      console.log("🆕 No pending content, generating new speech");
+      await generateNextSpeech();
     }
   };
 
-  console.log(conversationHistory);
   // Generate next speech using GPT-4
   const generateNextSpeech = async () => {
-    if (isPlayingRef.current || nextSpeech) return;
+    if (nextSpeechGenerationRef.current) {
+      console.log("⚠️ Speech generation already in progress");
+      return;
+    }
+    console.log("🎯 Starting next speech generation");
+    nextSpeechGenerationRef.current = true;
 
     try {
       const targetModel = currentArchitectures[0]?.name || "";
+      const lastSpeech =
+        conversationHistory[conversationHistory.length - 1]?.content || "";
 
-      // Send the entire conversation history to the API
+      // Generate GPT response first
+      console.log("📤 Requesting GPT response for:", targetModel);
       const response = await axios.post("/api/openai/gpt-4o-avatar", {
-        text:
-          conversationHistory[conversationHistory.length - 1]?.content || "",
-        conversationHistory: conversationHistory.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
+        text: lastSpeech,
         targetModel,
-        params: {
-          temperature: 0.7,
-        },
+        params: { temperature: 0.7 },
       });
 
       if (!response.data?.message?.content) {
-        console.error("Unexpected response format:", response.data);
-        return;
+        throw new Error("Unexpected response format");
       }
 
       const newSpeech = response.data.message.content;
+      console.log("📥 Received new speech:", newSpeech);
 
-      // Update conversation history with the new response
-      setConversationHistory((prev) => [
-        ...prev,
-        { role: "assistant", content: newSpeech },
-      ]);
+      setConversationHistory((prev) => {
+        const recentHistory = prev.slice(-8);
+        return [...recentHistory, { content: newSpeech }];
+      });
 
-      // Either play the speech now or queue it
-      if (!isPlayingRef.current) {
-        await getViseme({ text: newSpeech });
-      } else {
-        setNextSpeech(newSpeech);
-      }
+      console.log("🎵 Generating TTS for new speech");
+      const audioRes = await axios.post(
+        "/api/azure-tts",
+        { text: newSpeech },
+        { responseType: "blob" }
+      );
+
+      const audio = audioRes.data;
+      const visemes = JSON.parse(audioRes.headers.visemes);
+      const audioUrl = URL.createObjectURL(audio);
+      const audioPlayer = new Audio(audioUrl);
+      audioPlayer.addEventListener("ended", handleAudioEnd);
+
+      const message = { visemes, audioPlayer };
+      console.log("🎵 TTS generation complete, storing as pending");
+
+      // Store in ref instead of state
+      pendingTTSRef.current = message;
+      setNextSpeech(null);
     } catch (error) {
-      console.error("Failed to generate next speech:", error);
+      console.error("❌ Speech generation error:", error);
       isPlayingRef.current = false;
+    } finally {
+      nextSpeechGenerationRef.current = false;
     }
   };
 
@@ -100,65 +136,62 @@ export default function useViseme() {
       }
       setNextSpeech(null);
 
-      // Append new user message instead of resetting conversation
-      setConversationHistory((prev) => [
-        ...prev,
-        { role: "user", content: debouncedSpeech },
-      ]);
-
+      // Start fresh with the new topic
+      setConversationHistory([{ content: debouncedSpeech }]);
       getViseme({ text: debouncedSpeech });
     }
   }, [debouncedSpeech]);
 
-  async function getViseme({ text }) {
+  // Modified getViseme to start next generation earlier
+  async function getViseme({ text, preGeneratedTTS = null }) {
     try {
-      isPlayingRef.current = true;
-      const audioRes = await axios.post(
-        "/api/azure-tts",
-        { text },
-        { responseType: "blob" }
-      );
+      console.log("🎤 Starting getViseme", {
+        hasPreGeneratedTTS: !!preGeneratedTTS,
+      });
+
+      let message;
+      if (preGeneratedTTS) {
+        message = preGeneratedTTS;
+        console.log("📦 Using pre-generated TTS");
+      } else {
+        console.log("🔄 Generating new TTS");
+        const audioRes = await axios.post(
+          "/api/azure-tts",
+          { text },
+          { responseType: "blob" }
+        );
+
+        const audio = audioRes.data;
+        const visemes = JSON.parse(audioRes.headers.visemes);
+        const audioUrl = URL.createObjectURL(audio);
+        const audioPlayer = new Audio(audioUrl);
+        audioPlayer.addEventListener("ended", handleAudioEnd);
+
+        message = { visemes, audioPlayer };
+        console.log("✅ TTS generation complete");
+      }
 
       if (previousAudioRef.current) {
+        console.log("🔉 Fading out previous audio");
         fadeOutAudio(previousAudioRef.current);
       }
 
-      const audio = audioRes.data;
-      const visemes = JSON.parse(audioRes.headers.visemes);
-      const audioUrl = URL.createObjectURL(audio);
-      const audioPlayer = new Audio(audioUrl);
-
-      if (previousAudioRef.current?.src) {
-        URL.revokeObjectURL(previousAudioRef.current.src);
-      }
-
-      audioPlayer.addEventListener("ended", handleAudioEnd);
-
-      let message = {
-        visemes,
-        audioPlayer,
-      };
-
-      setTimeout(() => {
-        message.audioPlayer.currentTime = 0;
-        message.audioPlayer.volume = 1;
-        message.audioPlayer.play();
-      }, 1000);
-
       previousAudioRef.current = message.audioPlayer;
       setVisemeMessage(message);
+      isPlayingRef.current = true;
+
+      // Start playing current speech and generate next immediately
+      message.audioPlayer.currentTime = 0;
+      message.audioPlayer.volume = 1;
+      message.audioPlayer.play();
+
+      // Start generating next speech right away
+      generateNextSpeech();
     } catch (e) {
-      console.error("TTS Error:", e.message);
+      console.error("❌ TTS Error:", e.message);
       isPlayingRef.current = false;
     }
   }
-
-  // Prepare next speech while current is playing
-  useEffect(() => {
-    if (isPlayingRef.current && !nextSpeech && !debouncedSpeech) {
-      generateNextSpeech();
-    }
-  }, [isPlayingRef.current, nextSpeech, debouncedSpeech]);
 
   // Cleanup on unmount
   useEffect(() => {
