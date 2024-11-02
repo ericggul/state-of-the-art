@@ -40,7 +40,9 @@ export default function TestBackend() {
 
   // Use either the store level or fixed level based on followLevel setting
   const currentLevel = followLevel ? level : fixedLevel;
-  const BackendComponent = backends[currentLevel];
+  // Clamp the level to maximum of 6
+  const clampedLevel = currentLevel >= 6 ? 6 : currentLevel;
+  const BackendComponent = backends[clampedLevel];
 
   return (
     <S.TestContainer>
@@ -58,7 +60,7 @@ export default function TestBackend() {
         <S.ControlGroup>
           <S.Label>Current Level:</S.Label>
           <S.LevelDisplay>
-            Level {currentLevel}
+            Level {currentLevel >= 6 ? "6+" : currentLevel}
             <S.SubLevel>(SubLevel {subLevel})</S.SubLevel>
           </S.LevelDisplay>
         </S.ControlGroup>
@@ -77,10 +79,14 @@ export default function TestBackend() {
                   setFixedLevel(numId);
                 }
               }}
-              $active={currentLevel === Number(id)}
+              $active={
+                Number(id) === 6
+                  ? currentLevel >= 6
+                  : currentLevel === Number(id)
+              }
               $disabled={followLevel}
             >
-              Backend {id}
+              Backend {id === "6" ? "6+" : id}
             </S.Button>
           ))}
         </S.ControlGroup>
