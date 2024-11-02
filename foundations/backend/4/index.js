@@ -127,16 +127,22 @@ function SingleRandom({ range, visible, timeUnit }) {
     isPlural,
   });
 
-  // Combine all paths
-  const paths = useMemo(
-    () => [...inputRadialPaths, ...outputRadialPaths, ...bezierPaths],
-    [inputRadialPaths, outputRadialPaths, bezierPaths]
-  );
-
   const tokensOpacity = useMemo(
     () => (level >= 6 ? 0 : isblack ? 1 : 0),
     [level, isblack]
   );
+
+  const allPaths = useMemo(() => {
+    if (!visible) return [];
+
+    const paths = [];
+
+    paths.push(...bezierPaths);
+    if (!isAnimating) {
+      paths.push(...inputRadialPaths, ...outputRadialPaths);
+    }
+    return paths;
+  }, [visible, isAnimating, bezierPaths, inputRadialPaths, outputRadialPaths]);
 
   return (
     <S.Container
@@ -151,7 +157,7 @@ function SingleRandom({ range, visible, timeUnit }) {
           outputPosCalc={outputPosCalc}
         />
       </div>
-      <S.Pic>{paths}</S.Pic>
+      <S.Pic>{allPaths}</S.Pic>
     </S.Container>
   );
 }

@@ -112,11 +112,18 @@ function SingleRandom({ range, visible, timeUnit }) {
     isPlural: false,
   });
 
-  // Combine all paths
-  const paths = useMemo(
-    () => [...inputRadialPaths, ...outputRadialPaths, ...bezierPaths],
-    [inputRadialPaths, outputRadialPaths, bezierPaths]
-  );
+  // Batch path updates
+  const allPaths = useMemo(() => {
+    if (!visible) return [];
+
+    const paths = [];
+
+    paths.push(...bezierPaths);
+    if (!isAnimating) {
+      paths.push(...inputRadialPaths, ...outputRadialPaths);
+    }
+    return paths;
+  }, [visible, isAnimating, bezierPaths, inputRadialPaths, outputRadialPaths]);
 
   return (
     <S.Container
@@ -138,7 +145,7 @@ function SingleRandom({ range, visible, timeUnit }) {
         />
       </div>
 
-      <S.Pic>{paths}</S.Pic>
+      <S.Pic>{allPaths}</S.Pic>
     </S.Container>
   );
 }

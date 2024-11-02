@@ -288,65 +288,66 @@ export function usePathsV2({
   ]);
 }
 
-export function usePathsBezier(params) {
-  const {
-    inputTokens,
-    outputTokens,
-    crossSimilarityMatrix,
-    inputPosCalc,
-    outputPosCalc,
-    bezierParams,
-    isblack,
-    createBezierPath,
-    similarityThreshold = 0.2,
-    strokeWidthMultiplier = 4,
-    isPlural = false,
-  } = params;
+export function usePathsBezier({
+  inputTokens,
+  outputTokens,
+  crossSimilarityMatrix,
+  inputPosCalc,
+  outputPosCalc,
+  bezierParams,
+  isblack,
+  createBezierPath,
+  similarityThreshold,
+  strokeWidthMultiplier,
+  isPlural,
+}) {
+  const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
+
+  // Memoize similarity calculations
+  const validPaths = useMemo(() => {
+    const paths = [];
+    inputTokens.forEach((_, i) => {
+      outputTokens.forEach((_, j) => {
+        const similarity = crossSimilarityMatrix[i][j];
+        if (similarity > similarityThreshold) {
+          paths.push({ i, j, similarity });
+        }
+      });
+    });
+    return paths;
+  }, [inputTokens, outputTokens, crossSimilarityMatrix, similarityThreshold]);
 
   return useMemo(() => {
-    return inputTokens.flatMap((_, i) =>
-      outputTokens
-        .map((_, j) => {
-          const similarity = crossSimilarityMatrix[i][j];
-          if (similarity <= similarityThreshold) return null;
+    return validPaths.map(({ i, j, similarity }) => {
+      const [x1, y1] = inputPosCalc.wordPosCalc(i);
+      const [x2, y2] = outputPosCalc.wordPosCalc(j);
 
-          const [x1, y1] = inputPosCalc.wordPosCalc(i);
-          const [x2, y2] = outputPosCalc.wordPosCalc(j);
+      const bezierParam = isPlural
+        ? (bezierParams && bezierParams[`${i}-${j}`]) || BEZIER_DEFAULT
+        : bezierParams;
 
-          const bezierParam = isPlural
-            ? bezierParams && Object.keys(bezierParams).length > 0
-              ? bezierParams[`${i}-${j}`] ?? BEZIER_DEFAULT
-              : BEZIER_DEFAULT
-            : bezierParams;
-
-          return (
-            <path
-              key={`arc-${i}-${j}`}
-              d={createBezierPath(x1, y1, x2, y2, bezierParam, {
-                inputMargin: inputPosCalc.yMargin,
-                outputMargin: outputPosCalc.yMargin,
-              })}
-              stroke={isblack ? "white" : "black"}
-              fill="none"
-              strokeWidth={Math.pow(similarity, 3) * strokeWidthMultiplier}
-            />
-          );
-        })
-        .filter(Boolean)
-    );
+      return (
+        <path
+          key={`arc-${i}-${j}`}
+          d={createBezierPath(x1, y1, x2, y2, bezierParam, {
+            inputMargin: inputPosCalc.yMargin,
+            outputMargin: outputPosCalc.yMargin,
+          })}
+          stroke={strokeColor}
+          fill="none"
+          strokeWidth={Math.pow(similarity, 3) * strokeWidthMultiplier}
+        />
+      );
+    });
   }, [
-    inputTokens,
-    outputTokens,
-    crossSimilarityMatrix,
+    validPaths,
     inputPosCalc,
     outputPosCalc,
     bezierParams,
-    isblack,
     createBezierPath,
-    similarityThreshold,
+    strokeColor,
     strokeWidthMultiplier,
     isPlural,
-    BEZIER_DEFAULT,
   ]);
 }
 
@@ -357,63 +358,57 @@ export function usePathsRadial({
   yMargin,
   isblack,
   createRadialPath,
-  similarityThreshold = 0.2,
-  strokeWidthMultiplier = 2,
+  similarityThreshold,
+  strokeWidthMultiplier,
   type,
   show,
 }) {
   const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
   const direction = type === "input" ? 0 : 1;
 
-  return useMemo(() => {
-    console.log(`Radial paths ${type} show:`, show);
+  // Pre-calculate valid paths
+  const validPaths = useMemo(() => {
+    if (!show) return [];
 
-    if (!show) {
-      console.log(`Returning empty array for ${type} radial paths`);
-      return [];
-    }
-
-    const paths = tokens.flatMap((_, i) =>
-      tokens
-        .map((_, j) => {
-          if (i >= j) return null;
-          const similarity = similarityMatrix[i][j];
-          if (similarity <= similarityThreshold) return null;
-
-          const [x1, y1] = wordPosCalc(i);
-          const [x2, y2] = wordPosCalc(j);
-
-          return (
-            <path
-              key={`${type}-radial-${i}-${j}`}
-              d={createRadialPath(x1, y1, x2, y2, {
-                margin: yMargin,
-                radialIdx: 1,
-                dir: direction,
-              })}
-              stroke={strokeColor}
-              fill="none"
-              strokeWidth={Math.pow(similarity, 3) * strokeWidthMultiplier}
-              style={{ display: show ? "block" : "none" }}
-            />
-          );
-        })
-        .filter(Boolean)
-    );
-
-    console.log(`Generated ${paths.length} paths for ${type}`);
+    const paths = [];
+    tokens.forEach((_, i) => {
+      for (let j = i + 1; j < tokens.length; j++) {
+        const similarity = similarityMatrix[i][j];
+        if (similarity > similarityThreshold) {
+          paths.push({ i, j, similarity });
+        }
+      }
+    });
     return paths;
+  }, [tokens, similarityMatrix, similarityThreshold, show]);
+
+  return useMemo(() => {
+    return validPaths.map(({ i, j, similarity }) => {
+      const [x1, y1] = wordPosCalc(i);
+      const [x2, y2] = wordPosCalc(j);
+
+      return (
+        <path
+          key={`${type}-radial-${i}-${j}`}
+          d={createRadialPath(x1, y1, x2, y2, {
+            margin: yMargin,
+            radialIdx: 1,
+            dir: direction,
+          })}
+          stroke={strokeColor}
+          fill="none"
+          strokeWidth={Math.pow(similarity, 3) * strokeWidthMultiplier}
+        />
+      );
+    });
   }, [
-    tokens,
-    similarityMatrix,
+    validPaths,
     wordPosCalc,
     yMargin,
-    isblack,
     createRadialPath,
-    similarityThreshold,
     strokeColor,
     strokeWidthMultiplier,
     direction,
-    show,
+    type,
   ]);
 }
