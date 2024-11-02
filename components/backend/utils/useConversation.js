@@ -50,7 +50,7 @@ export default function useConversation() {
 
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.6, 2.0);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 2.0);
 
       const response = await axios.post("/api/openai/gpt-4o-poem", {
         text,

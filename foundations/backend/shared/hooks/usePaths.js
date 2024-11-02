@@ -360,13 +360,20 @@ export function usePathsRadial({
   similarityThreshold = 0.2,
   strokeWidthMultiplier = 2,
   type,
+  show,
 }) {
   const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
-
   const direction = type === "input" ? 0 : 1;
 
   return useMemo(() => {
-    return tokens.flatMap((_, i) =>
+    console.log(`Radial paths ${type} show:`, show);
+
+    if (!show) {
+      console.log(`Returning empty array for ${type} radial paths`);
+      return [];
+    }
+
+    const paths = tokens.flatMap((_, i) =>
       tokens
         .map((_, j) => {
           if (i >= j) return null;
@@ -378,7 +385,7 @@ export function usePathsRadial({
 
           return (
             <path
-              key={`radial-${i}-${j}`}
+              key={`${type}-radial-${i}-${j}`}
               d={createRadialPath(x1, y1, x2, y2, {
                 margin: yMargin,
                 radialIdx: 1,
@@ -387,11 +394,15 @@ export function usePathsRadial({
               stroke={strokeColor}
               fill="none"
               strokeWidth={Math.pow(similarity, 3) * strokeWidthMultiplier}
+              style={{ display: show ? "block" : "none" }}
             />
           );
         })
         .filter(Boolean)
     );
+
+    console.log(`Generated ${paths.length} paths for ${type}`);
+    return paths;
   }, [
     tokens,
     similarityMatrix,
@@ -403,5 +414,6 @@ export function usePathsRadial({
     strokeColor,
     strokeWidthMultiplier,
     direction,
+    show,
   ]);
 }

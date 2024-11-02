@@ -16,6 +16,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     isblack,
     inputEmbeddings: newInputEmbeddings,
     outputEmbeddings: newOutputEmbeddings,
+    subLevel,
   } = useStore();
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
@@ -46,13 +47,12 @@ function SingleRandom({ range, visible, timeUnit }) {
   });
 
   const bezierParams = useBezierParams(
-    inputTokens,
-    outputTokens,
     xRange,
     yRange,
     visible,
     isAnimating,
-    timeUnit
+    timeUnit,
+    subLevel
   );
 
   // Compute similarity matrices for input and output tokens
@@ -74,6 +74,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 2,
     type: "input",
+    show: !isAnimating,
   });
 
   // Create radial paths for output tokens
@@ -87,6 +88,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 2,
     type: "output",
+    show: !isAnimating,
   });
 
   // Existing Bezier paths between input and output tokens

@@ -2,14 +2,13 @@ import { useState, useCallback } from "react";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import { generateBezierParams } from "../shared/hooks/useBezierBase";
 
-export default function useBezierParams(
-  inputTokens,
-  outputTokens,
+export function useBezierParams(
   xRange,
   yRange,
   visible,
   isAnimating,
-  timeUnit
+  timeUnit,
+  subLevel
 ) {
   const [bezierParams, setBezierParams] = useState(generateBezierParams(0, 0));
 
