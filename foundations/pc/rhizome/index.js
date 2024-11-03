@@ -4,18 +4,18 @@ import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
 import { DURATION, getVersionColor, getMajorVersion } from "./constants";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v4";
-import useScreenStore from "@/components/screen/store"; 
+import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 
 // Function to identify and remove redundant links while keeping the exact same format
 const cleanRedundantLinks = (links) => {
   // Map to track unique connections using both directions
   const connectionMap = new Map();
-  
+
   // First pass - identify all connections and keep the one with higher value
-  links.forEach(link => {
-    const key = [link.source, link.target].sort((a,b) => a-b).join('-');
-    
+  links.forEach((link) => {
+    const key = [link.source, link.target].sort((a, b) => a - b).join("-");
+
     if (!connectionMap.has(key) || connectionMap.get(key).value < link.value) {
       connectionMap.set(key, link);
     }
@@ -30,7 +30,7 @@ const cleanRedundantLinks = (links) => {
   // Reassign sequential IDs while keeping everything else identical
   return cleanedLinks.map((link, index) => ({
     ...link,
-    id: index + 1
+    id: index + 1,
   }));
 };
 
@@ -46,10 +46,13 @@ export default function Rhizome() {
   // Transform data once
   const data = useMemo(() => {
     const cleanedLinks = cleanRedundantLinks(DATA_NODES_LINKS.links);
-    
+
     console.log("Original links count:", DATA_NODES_LINKS.links.length);
     console.log("Cleaned links count:", cleanedLinks.length);
-    console.log("Removed duplicates:", DATA_NODES_LINKS.links.length - cleanedLinks.length);
+    console.log(
+      "Removed duplicates:",
+      DATA_NODES_LINKS.links.length - cleanedLinks.length
+    );
     console.log("Cleaned links:", cleanedLinks);
 
     return {
@@ -146,7 +149,7 @@ export default function Rhizome() {
       .duration(DURATION)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
       .attr("opacity", 0.7)
-      .attr("r", 3)
+      .attr("r", 1)
       .attr("stroke", (d) =>
         d.majorVersion
           ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
@@ -288,13 +291,13 @@ export default function Rhizome() {
   useEffect(() => {
     if (listRef.current && relatedModels.length > 0) {
       const list = listRef.current;
-      let currentIndex = 0;
+      let currentIndex = 1;
 
       const scrollToNextItem = () => {
         const items = list.children;
         if (currentIndex >= items.length) {
           // Reset to top when reaching the end
-          currentIndex = 0;
+          currentIndex = 1;
           list.scrollTo({
             top: 0,
             behavior: "smooth",

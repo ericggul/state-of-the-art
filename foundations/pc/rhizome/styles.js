@@ -43,6 +43,8 @@ export const RelatedPanel = styled.div`
   display: flex;
   flex-direction: column;
 
+  transition: all 0.3s ease;
+
   &::-webkit-scrollbar {
     width: 4px;
     background: rgba(0, 255, 255, 0.05);
@@ -92,14 +94,8 @@ export const RelatedItem = styled.div`
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  min-height: 90px;
+  min-height: 60px;
   flex-shrink: 0;
-
-  &:hover {
-    transform: translateX(-5px);
-    background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.04})`};
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
-  }
 
   &::before {
     content: "";

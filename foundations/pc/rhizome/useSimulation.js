@@ -36,9 +36,9 @@ export const useSimulation = (svgRef, dimensions, data) => {
         d3
           .forceLink(data.links)
           .id((d) => d.name)
-          .distance(80) // Increased from 60 to spread links more
+          .distance(20) // Increased from 60 to spread links more
       )
-      .force("charge", d3.forceManyBody().strength(-400)) // Increased repulsion from -300
+      .force("charge", d3.forceManyBody().strength(-300)) // Increased repulsion from -300
       .force(
         "boundary",
         forceBoundary(

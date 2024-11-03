@@ -34,7 +34,7 @@ export default function TypewriterText({ text, speed = 50 }) {
   const playTypingSound = () => {
     if (typingSynthRef.current) {
       try {
-        typingSynthRef.current.triggerAttackRelease("C2", "16n");
+        // typingSynthRef.current.triggerAttackRelease("C2", "16n");
       } catch (e) {
         console.log(e);
       }
@@ -44,7 +44,8 @@ export default function TypewriterText({ text, speed = 50 }) {
   const playErasingSound = () => {
     if (erasingSynthRef.current) {
       try {
-        erasingSynthRef.current.triggerAttackRelease("A1", "16n");
+        // erasingSynthRef.current.triggerAttackRelease("A1", "16n");
+        typingSynthRef.current.triggerAttackRelease("C2", "16n");
       } catch (e) {
         console.log(e);
       }
