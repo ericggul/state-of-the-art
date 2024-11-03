@@ -11,9 +11,9 @@ function MobileSelector() {
   const searchParams = useSearchParams();
   const version = searchParams.get("v");
 
-  const MobileComponent = version === "1" ? MobileV1 : MobileV2;
+  // const MobileComponent = version === "1" ? MobileV1 : MobileV2;
 
-  return <MobileComponent />;
+  return <MobileV2 />;
 }
 
 export default function MobileWrapper() {
