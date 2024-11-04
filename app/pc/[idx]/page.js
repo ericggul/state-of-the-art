@@ -47,6 +47,8 @@ export default function RelationPage() {
   // 동적으로 컴포넌트 선택
   const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);
 
+  console.log(showFrontend, showBackend);
+
   return (
     <>
       {showFrontend && <FrontendComponent />}

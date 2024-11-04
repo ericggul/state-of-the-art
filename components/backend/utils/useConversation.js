@@ -2,6 +2,11 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import useStore from "@/components/backend/store";
 
+//time configs
+//Should change accordingly to the testing status
+export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
+export const WHITE_TIME = [4000, 4000, 3000, 1500, 2000, 1000, 1000];
+
 const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
@@ -86,6 +91,10 @@ export default function useConversation() {
       const uniqueTokens = [...new Set(tokens)];
       const embeddings = await getEmbeddingsForTokens(uniqueTokens);
 
+      const timeout =
+        EXTRA_BLACK_TIME[Math.min(level, EXTRA_BLACK_TIME.length - 1)];
+      await new Promise((r) => setTimeout(r, timeout));
+
       const result = {
         embeddings,
         tokens,
@@ -101,7 +110,7 @@ export default function useConversation() {
   }
 
   async function getNextText() {
-    const timeout = level >= 4 ? 1000 : 2000;
+    const timeout = WHITE_TIME[Math.min(level, WHITE_TIME.length - 1)];
     await new Promise((r) => setTimeout(r, timeout));
     hasFetchedText.current = false;
     setGetNewText(true);

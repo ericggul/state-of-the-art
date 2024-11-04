@@ -7,7 +7,6 @@ import { OrbitControls } from "@react-three/drei";
 import Model from "../model";
 
 export default function AvatarWrapper() {
-  console.log("wrapper");
   return (
     <S.Container>
       <Suspense>
@@ -22,7 +21,11 @@ export default function AvatarWrapper() {
           <ambientLight intensity={3} color="white" />
           <pointLight position={[0, 0, 20]} intensity={3} color="white" />
           <pointLight position={[0, 0, -20]} intensity={3} color="white" />
-          <Model position={[0, -1, 0]} scale={[2, 2, 2]} rotation={[0, 0, 0]} />
+          <Model
+            position={[0, -2.5, 0]}
+            scale={[2, 2, 2]}
+            rotation={[0, 0, 0]}
+          />
           <OrbitControls />
         </Canvas>
       </Suspense>

@@ -24,27 +24,16 @@ export default function useViseme() {
 
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
 
-  console.log(currentArchitectures, conversationHistory);
-
   // Handle audio end and trigger next speech
   const handleAudioEnd = async () => {
-    console.log("🔚 Audio ended, checking next steps...", {
-      hasPendingTTS: !!pendingTTSRef.current,
-      hasNextSpeech: !!nextSpeech,
-    });
-
     isPlayingRef.current = false;
 
     // Add random delay between 2-3 seconds
     const delay = Math.random() * 1000 + 500; // Random between 2000-3000ms
-    console.log(
-      `⏳ Adding ${Math.round(delay)}ms pause for natural speech rhythm`
-    );
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 
     if (pendingTTSRef.current) {
-      console.log("✨ Found pending TTS, playing immediately");
       const message = pendingTTSRef.current;
       pendingTTSRef.current = null;
       previousAudioRef.current = message.audioPlayer;
@@ -55,10 +44,8 @@ export default function useViseme() {
       message.audioPlayer.volume = 1;
       message.audioPlayer.play();
 
-      // Start generating next speech immediately
       generateNextSpeech();
     } else {
-      console.log("🆕 No pending content, generating new speech");
       await generateNextSpeech();
     }
   };
@@ -66,10 +53,8 @@ export default function useViseme() {
   // Generate next speech using Langchain Avatar
   const generateNextSpeech = async () => {
     if (nextSpeechGenerationRef.current) {
-      console.log("⚠️ Speech generation already in progress");
       return;
     }
-    console.log("🎯 Starting next speech generation");
     nextSpeechGenerationRef.current = true;
 
     try {
@@ -77,11 +62,9 @@ export default function useViseme() {
       const lastSpeech =
         conversationHistory[conversationHistory.length - 1]?.content || "";
 
-      // Updated request to match simplified API
-      console.log("📤 Requesting Langchain response for:", targetModel);
       const response = await axios.post("/api/langchain/avatar-v1", {
         messages: [{ role: "user", content: lastSpeech }],
-        currentArchitecture: currentArchitectureRef.current || targetModel, // Pass the current architecture name
+        currentArchitecture: currentArchitectureRef.current || targetModel,
       });
 
       if (!response.data?.content) {
@@ -89,14 +72,12 @@ export default function useViseme() {
       }
 
       const newSpeech = response.data.content;
-      console.log("📥 Received new speech:", newSpeech);
 
       setConversationHistory((prev) => {
         const recentHistory = prev.slice(-8);
         return [...recentHistory, { content: newSpeech }];
       });
 
-      console.log("🎵 Generating TTS for new speech");
       const audioRes = await axios.post(
         "/api/azure-tts",
         { text: newSpeech },
@@ -110,9 +91,7 @@ export default function useViseme() {
       audioPlayer.addEventListener("ended", handleAudioEnd);
 
       const message = { visemes, audioPlayer };
-      console.log("🎵 TTS generation complete, storing as pending");
 
-      // Store in ref instead of state
       pendingTTSRef.current = message;
       setNextSpeech(null);
     } catch (error) {
@@ -158,16 +137,10 @@ export default function useViseme() {
   // Modified getViseme to start next generation earlier
   async function getViseme({ text, preGeneratedTTS = null }) {
     try {
-      console.log("🎤 Starting getViseme", {
-        hasPreGeneratedTTS: !!preGeneratedTTS,
-      });
-
       let message;
       if (preGeneratedTTS) {
         message = preGeneratedTTS;
-        console.log("📦 Using pre-generated TTS");
       } else {
-        console.log("🔄 Generating new TTS");
         const audioRes = await axios.post(
           "/api/azure-tts",
           { text },
@@ -181,11 +154,9 @@ export default function useViseme() {
         audioPlayer.addEventListener("ended", handleAudioEnd);
 
         message = { visemes, audioPlayer };
-        console.log("✅ TTS generation complete");
       }
 
       if (previousAudioRef.current) {
-        console.log("🔉 Fading out previous audio");
         fadeOutAudio(previousAudioRef.current);
       }
 
@@ -193,12 +164,10 @@ export default function useViseme() {
       setVisemeMessage(message);
       isPlayingRef.current = true;
 
-      // Start playing current speech and generate next immediately
       message.audioPlayer.currentTime = 0;
       message.audioPlayer.volume = 1;
       message.audioPlayer.play();
 
-      // Start generating next speech right away
       generateNextSpeech();
     } catch (e) {
       console.error("❌ TTS Error:", e.message);

@@ -20,11 +20,7 @@ export default function Model(props) {
     rotation: [Math.PI * 0.05, 0, 0],
   };
 
-  // Merge default props with passed props
-  const mergedProps = { ...defaultProps, ...props };
-
   //////TEMPORARY TESTING: MESSAGE STORAGE
-
   const { visemeMessage } = useViseme();
   const { blink } = useBlink();
 
@@ -129,10 +125,8 @@ export default function Model(props) {
   }, [animation, actions]);
 
   return (
-    <group {...mergedProps} dispose={null} ref={group}>
-      <Center>
-        <primitive object={scene} />
-      </Center>
+    <group {...props} dispose={null} ref={group}>
+      <primitive object={scene} />
     </group>
   );
 }
