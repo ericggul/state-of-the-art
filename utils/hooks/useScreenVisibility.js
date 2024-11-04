@@ -13,10 +13,10 @@ export default function useScreenVisibility({ mobileVisibility }) {
     } else {
       timeoutRef1.current = setTimeout(() => {
         setShowBackend(true);
-      }, 0);
+      }, 3000);
       timeoutRef2.current = setTimeout(() => {
         setShowFrontend(false);
-      }, 0);
+      }, 5000);
     }
 
     return () => {
