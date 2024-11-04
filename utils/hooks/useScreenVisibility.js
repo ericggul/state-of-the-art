@@ -16,7 +16,7 @@ export default function useScreenVisibility({ mobileVisibility }) {
       }, 3000);
       timeoutRef2.current = setTimeout(() => {
         setShowFrontend(false);
-      }, 5000);
+      }, 3000);
     }
 
     return () => {

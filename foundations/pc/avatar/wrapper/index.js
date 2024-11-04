@@ -7,6 +7,7 @@ import { OrbitControls } from "@react-three/drei";
 import Model from "../model";
 
 export default function AvatarWrapper() {
+  console.log("wrapper");
   return (
     <S.Container>
       <Suspense>

@@ -9,7 +9,7 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
 // 컴포넌트 매핑 객체
 const COMPONENTS = {
-  0: dynamic(() => import("@/foundations/frontend/avatar/wrapper")),
+  0: dynamic(() => import("@/foundations/pc/avatar/wrapper")),
   1: dynamic(() => import("@/foundations/pc/dashboard")),
   2: dynamic(() => import("@/foundations/pc/2d-vis")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),

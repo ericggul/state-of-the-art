@@ -15,7 +15,7 @@ import RNNLayers from "../arch/layers/RNNLayers";
 import VAELayers from "../arch/layers/VAELayers";
 import SelfSupervisedLayers from "../arch/layers/SelfSupervisedLayers";
 
-import AvatarModel from "@/foundations/frontend/avatar/model";
+import AvatarModel from "@/foundations/pc/avatar/model";
 import CommonScene from "../utils/CommonScene";
 
 //current target versions

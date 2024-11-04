@@ -4,7 +4,6 @@ import useStore from "@/components/backend/store";
 
 const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
 
-const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function useConversation() {
   const {
     conversations,
@@ -111,54 +110,33 @@ export default function useConversation() {
   async function getEmbeddingsForTokens(tokens) {
     try {
       const embeddings = {};
+
+      // Tokens that need to be fetched (not in cache)
       const tokensToFetch = tokens.filter(
         (token) => !embeddingsCache.current[token]
       );
 
-      const CONCURRENT_REQUESTS_LIMIT = 9;
-      const MAX_RETRIES = 3; // Maximum number of retries for failed requests
+      // Limit the number of concurrent requests to prevent rate limiting
+      const CONCURRENT_REQUESTS_LIMIT = 8;
 
-      // Updated processBatch function with retry logic
+      // Function to process tokens in batches
       const processBatch = async (batch) => {
         const promises = batch.map(async (token) => {
-          let retries = 0;
-          while (retries < MAX_RETRIES) {
-            try {
-              const response = await axios.post("/api/openai/embeddings", {
-                text: token,
-                dim: 128,
-              });
+          const response = await axios.post("/api/openai/embeddings", {
+            text: token,
+            dim: 128,
+          });
 
-              if (!response.data || !Array.isArray(response.data)) {
-                throw new Error("Invalid response data from embeddings API");
-              }
-
-              const embedding = response.data[0].embedding.map((el) =>
-                parseFloat(el.toFixed(6))
-              );
-              embeddingsCache.current[token] = embedding;
-              embeddings[token] = embedding;
-              return; // Success - exit the retry loop
-            } catch (error) {
-              retries++;
-              console.warn(
-                `Failed to fetch embedding for token "${token}", attempt ${retries}/${MAX_RETRIES}`
-              );
-              if (retries === MAX_RETRIES) {
-                console.error(`All retries failed for token "${token}"`, error);
-                // On final retry, use a default or empty embedding to allow the process to continue
-                //random embedding implement
-                const defaultEmbedding = new Array(128).fill(getRandom(-1, 1));
-                embeddingsCache.current[token] = defaultEmbedding;
-                embeddings[token] = defaultEmbedding;
-              } else {
-                // Wait before retrying (exponential backoff)
-                await new Promise((r) =>
-                  setTimeout(r, 1000 * Math.pow(2, retries))
-                );
-              }
-            }
+          if (!response.data || !Array.isArray(response.data)) {
+            throw new Error("Invalid response data from embeddings API");
           }
+
+          // Store the embedding in cache and in the embeddings object
+          const embedding = response.data[0].embedding.map((el) =>
+            parseFloat(el.toFixed(6))
+          );
+          embeddingsCache.current[token] = embedding;
+          embeddings[token] = embedding;
         });
 
         await Promise.all(promises);
@@ -185,6 +163,7 @@ export default function useConversation() {
           embeddings[token] = embeddingsCache.current[token];
         }
       }
+      console.log(embeddings);
       return embeddings;
     } catch (e) {
       console.error("Failed to fetch embeddings for tokens:", e);

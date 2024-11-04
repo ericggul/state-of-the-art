@@ -24,7 +24,7 @@ import ReinforcementLayers from "./arch/layers/ReinforcementLayers";
 import HopfieldLayers from "./arch/layers/HopfieldLayers";
 import BoltzmannLayers from "./arch/layers/BoltzmannLayers";
 
-import AvatarModel from "@/foundations/frontend/avatar/model";
+import AvatarModel from "@/foundations/pc/avatar/model";
 import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
 import PositionalAudio from "./utils/PositionalAudio";
