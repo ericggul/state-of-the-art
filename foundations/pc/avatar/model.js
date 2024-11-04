@@ -20,6 +20,8 @@ export default function Model(props) {
     rotation: [Math.PI * 0.05, 0, 0],
   };
 
+  const [wireframe, setWireframe] = useState(false);
+
   //////TEMPORARY TESTING: MESSAGE STORAGE
   const { visemeMessage } = useViseme();
   const { blink } = useBlink();
@@ -28,30 +30,57 @@ export default function Model(props) {
   const { scene } = useGLTF(AVATAR_URL);
   const { animations } = useGLTF(ANIMATIONS_URL);
   const { actions, mixer } = useAnimations(animations, group);
+
   const [animation, setAnimation] = useState("Idle");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const isInitializedRef = useRef(false);
 
-  //SCENE STYLING
-  useEffect(() => {
-    scene.traverse((child) => {
-      if (child.material) {
-        child.material = new MeshStandardMaterial({
-          map: child.material.map,
-          skinning: true,
-        });
-      }
-    });
-  }, [scene]);
+  // Helper function to randomly select animation from a group
+  const getRandomAnimation = (type) => {
+    const animations = {
+      talking: ["Talking", "Talking2", "Talking3", "Talking4", "Talking5"],
+      idle: ["Idle", "Idle2"],
+    };
+    const options = animations[type];
+    return options[Math.floor(Math.random() * options.length)];
+  };
 
-  //BASIC ANIMATION CONTROL
+  console.log("animation", animation);
+
+  // Enhanced animation control
   useEffect(() => {
-    if (visemeMessage) {
-      setAnimation(Math.random() < 0.5 ? "Talking" : "Talking2");
-    } else {
-      setAnimation("Idle");
+    // Skip if this is the first render
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true;
+      return;
     }
-  }, [visemeMessage]);
 
-  //USE FRAME
+    const handleAnimationChange = async () => {
+      console.log("visemeMessage", visemeMessage);
+      console.log("audio paused", visemeMessage?.audioPlayer?.paused);
+
+      // If there's no visemeMessage or audio is ended/paused, go to idle
+      if (!visemeMessage || visemeMessage?.audioPlayer?.paused) {
+        if (!animation.startsWith("Idle")) {
+          console.log("Going back to idle");
+          setAnimation(getRandomAnimation("idle"));
+        }
+        return;
+      }
+
+      // Only start talking if we have active audio
+      if (visemeMessage?.audioPlayer?.paused === false) {
+        if (!animation.startsWith("Talk")) {
+          console.log("Starting to talk");
+          setAnimation(getRandomAnimation("talking"));
+        }
+      }
+    };
+
+    handleAnimationChange();
+  }, [visemeMessage?.audioPlayer?.paused, visemeMessage]); // Watch both the message and paused state
+
+  // Add a separate effect for transition animations during talking
   useFrame(({ camera }) => {
     // Smile
     lerpMorphTarget("mouthSmile", 0.5, 0.2);
@@ -73,14 +102,6 @@ export default function Model(props) {
           }
           break;
         }
-      }
-      if (
-        actions[animation].time >
-        actions[animation].getClip().duration - ANIMATION_FADE_TIME
-      ) {
-        setAnimation((animation) =>
-          animation === "Talking" ? "Talking2" : "Talking"
-        ); // Could load more type of animations and randomization here
       }
     }
 

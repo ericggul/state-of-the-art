@@ -26,10 +26,11 @@ export default function useViseme() {
 
   // Handle audio end and trigger next speech
   const handleAudioEnd = async () => {
+    console.log("audio end");
     isPlayingRef.current = false;
 
     // Add random delay between 2-3 seconds
-    const delay = Math.random() * 1000 + 500; // Random between 2000-3000ms
+    const delay = Math.random() * 2000 + 5000; // Random between 2000-3000ms
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -42,6 +43,7 @@ export default function useViseme() {
 
       message.audioPlayer.currentTime = 0;
       message.audioPlayer.volume = 1;
+      console.log("audio start");
       message.audioPlayer.play();
 
       generateNextSpeech();
