@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import forceBoundary from "d3-force-boundary";
 import { linkArc, drag } from "./utils";
-import { getVersionColor } from "./constants";
+import { FORCE, VISUAL, LAYOUT, getVersionColor } from "./constants";
 
 export const useSimulation = (svgRef, dimensions, data) => {
   const simulationRef = useRef(null);
@@ -17,8 +17,8 @@ export const useSimulation = (svgRef, dimensions, data) => {
     svg.selectAll("*").remove();
 
     boundaryRef.current = {
-      width: dimensions.width * 0.9,
-      height: dimensions.height * 0.95, // Increased from 0.9 to use more vertical space
+      width: dimensions.width * VISUAL.BOUNDARY.WIDTH_FACTOR,
+      height: dimensions.height * VISUAL.BOUNDARY.HEIGHT_FACTOR,
     };
 
     const g = svg
@@ -36,20 +36,21 @@ export const useSimulation = (svgRef, dimensions, data) => {
         d3
           .forceLink(data.links)
           .id((d) => d.name)
-          .distance(20) // Increased from 60 to spread links more
+          .distance(FORCE.LINK.DISTANCE)
+          .strength(FORCE.LINK.STRENGTH)
       )
-      .force("charge", d3.forceManyBody().strength(-300)) // Increased repulsion from -300
+      .force("charge", d3.forceManyBody().strength(FORCE.CHARGE.STRENGTH))
       .force(
         "boundary",
         forceBoundary(
           -boundaryRef.current.width / 2,
-          -boundaryRef.current.height / 1.1, // Changed from 1.2 to 1.1 for more vertical space
+          -boundaryRef.current.height / 1.1,
           boundaryRef.current.width / 2,
-          boundaryRef.current.height / 1.1 // Changed from 1.2 to 1.1 for more vertical space
+          boundaryRef.current.height / 1.1
         )
       )
-      .alphaDecay(0.03)
-      .velocityDecay(0.45);
+      .alphaDecay(FORCE.ALPHA_DECAY)
+      .velocityDecay(FORCE.VELOCITY_DECAY);
 
     // Simplified, performance-focused links
     const links = g

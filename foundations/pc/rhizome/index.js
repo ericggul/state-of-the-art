@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
-import { DURATION, getVersionColor, getMajorVersion } from "./constants";
+import {
+  DURATION,
+  getVersionColor,
+  getMajorVersion,
+  LAYOUT,
+  VISUAL,
+  ANIMATION,
+} from "./constants";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v4";
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
@@ -135,8 +142,12 @@ export default function Rhizome() {
       const time = Date.now() * 0.001; // Current time in seconds
       data.nodes.forEach((node) => {
         // Create organic movement using sine waves with different frequencies
-        const wiggleX = Math.sin(time + node.x * 0.01) * 0.3;
-        const wiggleY = Math.cos(time + node.y * 0.01) * 0.3;
+        const wiggleX =
+          Math.sin(time + node.x * ANIMATION.WIGGLE.FREQUENCY) *
+          ANIMATION.WIGGLE.AMPLITUDE;
+        const wiggleY =
+          Math.cos(time + node.y * ANIMATION.WIGGLE.FREQUENCY) *
+          ANIMATION.WIGGLE.AMPLITUDE;
         node.vx += wiggleX * alpha;
         node.vy += wiggleY * alpha;
       });
@@ -148,8 +159,8 @@ export default function Rhizome() {
       .transition()
       .duration(DURATION)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
-      .attr("opacity", 0.7)
-      .attr("r", 1)
+      .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
+      .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
       .attr("stroke", (d) =>
         d.majorVersion
           ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
@@ -161,7 +172,7 @@ export default function Rhizome() {
       .selectAll("text")
       .transition()
       .duration(DURATION)
-      .attr("font-size", "0.8vw")
+      .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
       .attr("fill", "hsla(180, 100%, 50%, 0.2)");
 
     // Only proceed with highlighting if there's a selected architecture
@@ -172,12 +183,18 @@ export default function Rhizome() {
       );
 
       if (!nodeToHighlight.empty()) {
+        // Get the actual node data that corresponds to the highlighted element
+        const highlightedNode = data.nodes.find(
+          (node) => node.text === currentNode
+        );
+
+        // Now we can use highlightedNode in the force calculation
         simulation.force("centerHighlighted", (alpha) => {
-          const k = alpha * 1.2;
-          const highlightedNode = nodeToHighlight.datum();
-          const targetX = boundaryWidth * 0.5;
-          const targetY = -boundaryHeight * 0.6;
-          const verticalSpread = boundaryRef.current.height / 1.5;
+          const k = alpha * LAYOUT.HIGHLIGHT.FORCE.STRENGTH;
+          const targetX = boundaryWidth * LAYOUT.HIGHLIGHT.TARGET.X_FACTOR;
+          const targetY = -boundaryHeight * LAYOUT.HIGHLIGHT.TARGET.Y_FACTOR;
+          const verticalSpread =
+            boundaryRef.current.height / LAYOUT.VERTICAL_SPREAD_FACTOR;
 
           data.nodes.forEach((node) => {
             if (!nodePositionsRef.current.has(node.id)) {
@@ -187,13 +204,13 @@ export default function Rhizome() {
               );
             }
             const randomY = nodePositionsRef.current.get(node.id);
-            const jitter = (Math.random() - 0.5) * 0.2;
+            const jitter = (Math.random() - 0.5) * ANIMATION.JITTER;
 
             if (node === highlightedNode) {
               const dx = targetX - node.x + jitter;
               const dy = targetY - node.y + jitter;
               node.vx += dx * k;
-              node.vy += dy * k * 0.4;
+              node.vy += dy * k * LAYOUT.HIGHLIGHT.FORCE.VERTICAL_FACTOR;
             } else {
               const isConnected = data.links.some(
                 (link) =>
@@ -202,15 +219,27 @@ export default function Rhizome() {
               );
 
               if (isConnected) {
-                const dx = boundaryWidth * -0.3 - node.x + jitter;
-                const dy = randomY * 0.5 - node.y + jitter;
-                node.vx += dx * k * 0.5;
-                node.vy += dy * k * 0.3;
+                const dx =
+                  boundaryWidth * LAYOUT.HIGHLIGHT.CONNECTED.X_FACTOR -
+                  node.x +
+                  jitter;
+                const dy =
+                  randomY * LAYOUT.HIGHLIGHT.CONNECTED.Y_SPREAD -
+                  node.y +
+                  jitter;
+                node.vx += dx * k * LAYOUT.HIGHLIGHT.FORCE.CONNECTED_FACTOR;
+                node.vy += dy * k * LAYOUT.HIGHLIGHT.FORCE.CONNECTED_FACTOR;
               } else {
-                const dx = boundaryWidth * -0.4 - node.x + jitter;
-                const dy = randomY * 0.7 - node.y + jitter;
-                node.vx += dx * k * 0.4;
-                node.vy += dy * k * 0.3;
+                const dx =
+                  boundaryWidth * LAYOUT.HIGHLIGHT.UNCONNECTED.X_FACTOR -
+                  node.x +
+                  jitter;
+                const dy =
+                  randomY * LAYOUT.HIGHLIGHT.UNCONNECTED.Y_SPREAD -
+                  node.y +
+                  jitter;
+                node.vx += dx * k * LAYOUT.HIGHLIGHT.FORCE.UNCONNECTED_FACTOR;
+                node.vy += dy * k * LAYOUT.HIGHLIGHT.FORCE.UNCONNECTED_FACTOR;
               }
             }
           });
@@ -222,25 +251,31 @@ export default function Rhizome() {
           .transition()
           .duration(DURATION)
           .attr("fill", (d) => d3.color(d.color).brighter(1.2))
-          .attr("opacity", 1)
-          .attr("r", 8)
+          .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
+          .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
           .attr("stroke", "rgba(255, 255, 255, 0.9)")
-          .attr("stroke-width", 2.5);
+          .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);
 
         nodeToHighlight
           .select("text")
           .transition()
           .duration(DURATION)
-          .attr("font-size", "1.5vw")
+          .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
           .attr("fill", "hsla(180, 100%, 50%, 0.95)")
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
         // Increase both alpha and alphaTarget for more continuous movement
-        simulation.alpha(0.3).alphaTarget(0.4).restart();
+        simulation
+          .alpha(ANIMATION.ALPHA.INITIAL)
+          .alphaTarget(ANIMATION.ALPHA.TARGET)
+          .restart();
       }
     } else {
       // When no node is selected, maintain some movement
-      simulation.alpha(0.2).alphaTarget(0.2).restart();
+      simulation
+        .alpha(ANIMATION.ALPHA.IDLE)
+        .alphaTarget(ANIMATION.ALPHA.IDLE)
+        .restart();
     }
   }, [currentArchitectures, dimensions, data]);
 
@@ -317,7 +352,10 @@ export default function Rhizome() {
       list.scrollTo({ top: 0 });
 
       // Set up interval for scrolling
-      const intervalId = setInterval(scrollToNextItem, 2000);
+      const intervalId = setInterval(
+        scrollToNextItem,
+        ANIMATION.SCROLL_INTERVAL
+      );
 
       return () => {
         clearInterval(intervalId);

@@ -1,8 +1,11 @@
 import * as d3 from "d3";
+import { VISUAL } from "./constants";
 
 export const linkArc = (d) => {
-  const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
-  return `M${d.source.x},${d.source.y} A${r},${r} 0 0,1 ${d.target.x},${d.target.y}`;
+  const dx = d.target.x - d.source.x;
+  const dy = d.target.y - d.source.y;
+  const dr = Math.sqrt(dx * dx + dy * dy) * VISUAL.LINK.CURVE_FACTOR;
+  return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
 };
 
 export const drag = (simulation) => {
