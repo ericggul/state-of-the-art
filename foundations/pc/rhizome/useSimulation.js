@@ -21,6 +21,16 @@ export const useSimulation = (svgRef, dimensions, data) => {
       height: dimensions.height * VISUAL.BOUNDARY.HEIGHT_FACTOR,
     };
 
+    data.nodes.forEach((node) => {
+      if (typeof node.x === "undefined") {
+        node.x =
+          dimensions.width / 2 + (Math.random() - 0.5) * dimensions.width * 0.5;
+        node.y =
+          dimensions.height / 2 +
+          (Math.random() - 0.5) * dimensions.height * 0.5;
+      }
+    });
+
     const g = svg
       .append("g")
       .attr(
@@ -97,8 +107,24 @@ export const useSimulation = (svgRef, dimensions, data) => {
 
     // Optimized tick function
     simulation.on("tick", () => {
-      links.attr("d", linkArc);
-      nodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
+      links.attr("d", (d) => {
+        if (
+          isNaN(d.source.x) ||
+          isNaN(d.source.y) ||
+          isNaN(d.target.x) ||
+          isNaN(d.target.y)
+        ) {
+          return null;
+        }
+        return linkArc(d);
+      });
+
+      nodes.attr("transform", (d) => {
+        if (isNaN(d.x) || isNaN(d.y)) {
+          return null;
+        }
+        return `translate(${d.x},${d.y})`;
+      });
     });
 
     simulationRef.current = simulation;

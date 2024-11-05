@@ -14,31 +14,18 @@ import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizom
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 
-// Function to identify and remove redundant links while keeping the exact same format
+// Move cleanRedundantLinks outside the component
 const cleanRedundantLinks = (links) => {
-  // Map to track unique connections using both directions
   const connectionMap = new Map();
-
-  // First pass - identify all connections and keep the one with higher value
   links.forEach((link) => {
     const key = [link.source, link.target].sort((a, b) => a - b).join("-");
-
     if (!connectionMap.has(key) || connectionMap.get(key).value < link.value) {
       connectionMap.set(key, link);
     }
   });
-
-  // Convert back to array and preserve original format
-  const cleanedLinks = Array.from(connectionMap.values());
-
-  // Sort by ID to maintain order
-  cleanedLinks.sort((a, b) => a.id - b.id);
-
-  // Reassign sequential IDs while keeping everything else identical
-  return cleanedLinks.map((link, index) => ({
-    ...link,
-    id: index + 1,
-  }));
+  return Array.from(connectionMap.values())
+    .sort((a, b) => a.id - b.id)
+    .map((link, index) => ({ ...link, id: index + 1 }));
 };
 
 export default function Rhizome() {
@@ -50,19 +37,9 @@ export default function Rhizome() {
   const listRef = useRef(null);
   const scrollIntervalRef = useRef(null);
 
-  // Transform data once
-  const data = useMemo(() => {
-    const cleanedLinks = cleanRedundantLinks(DATA_NODES_LINKS.links);
-
-    console.log("Original links count:", DATA_NODES_LINKS.links.length);
-    console.log("Cleaned links count:", cleanedLinks.length);
-    console.log(
-      "Removed duplicates:",
-      DATA_NODES_LINKS.links.length - cleanedLinks.length
-    );
-    console.log("Cleaned links:", cleanedLinks);
-
-    return {
+  // Transform data once with empty dependency array since DATA_NODES_LINKS never changes
+  const data = useMemo(
+    () => ({
       nodes: DATA_NODES_LINKS.nodes.map((node) => ({
         ...node,
         id: node.name,
@@ -70,19 +47,16 @@ export default function Rhizome() {
         majorVersion: getMajorVersion(node.version),
         color: getVersionColor(getMajorVersion(node.version)),
       })),
-      links: cleanedLinks.map((link) => {
-        const sourceNode = DATA_NODES_LINKS.nodes[link.source - 1];
-        const targetNode = DATA_NODES_LINKS.nodes[link.target - 1];
-        return {
-          ...link,
-          source: sourceNode.name,
-          target: targetNode.name,
-          value: link.value,
-          isCycle: false,
-        };
-      }),
-    };
-  }, []);
+      links: cleanRedundantLinks(DATA_NODES_LINKS.links).map((link) => ({
+        ...link,
+        source: DATA_NODES_LINKS.nodes[link.source - 1].name,
+        target: DATA_NODES_LINKS.nodes[link.target - 1].name,
+        value: link.value,
+        isCycle: false,
+      })),
+    }),
+    []
+  ); // Empty dependency array since DATA_NODES_LINKS is constant
 
   console.log(data);
 
