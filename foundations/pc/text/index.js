@@ -86,7 +86,9 @@ const LayerText = React.memo(
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
-  const { structure } = useModelStructure(currentArchitectures);
+  const {
+    visualization: { structure },
+  } = useModelStructure(currentArchitectures);
   const containerRef = useRef(null);
 
   // Auto-scrolling effect

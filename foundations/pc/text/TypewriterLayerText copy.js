@@ -7,6 +7,23 @@ const TypewriterContainer = styled.span`
   min-width: 1ch;
 `;
 
+// Create a shared synth instance
+let sharedSynth = null;
+const getSharedSynth = () => {
+  if (!sharedSynth && typeof window !== "undefined") {
+    sharedSynth = new Tone.MembraneSynth({
+      envelope: {
+        attack: 0.001,
+        decay: 0.1,
+        sustain: 0,
+        release: 0.1,
+      },
+    }).toDestination();
+    sharedSynth.volume.value = -20; // Reverted to original volume
+  }
+  return sharedSynth;
+};
+
 export default React.memo(function TypewriterLayerText({
   text,
   speed = 30,
@@ -14,7 +31,6 @@ export default React.memo(function TypewriterLayerText({
   enableSound = true,
   startDelay = 0,
 }) {
-  const typingSynthRef = useRef(null);
   const lastPlayedTime = useRef(0);
   const [parts, setParts] = useState({
     name: "",
@@ -36,32 +52,23 @@ export default React.memo(function TypewriterLayerText({
     [text]
   );
 
-  // Memoize sound setup
-  const setupSound = React.useCallback(() => {
-    if (typeof window !== "undefined" && enableSound) {
-      typingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      typingSynthRef.current.volume.value = -20 - depth * 2;
-    }
-  }, [enableSound, depth]);
+  const playTypingSound = useCallback(() => {
+    if (!enableSound) return;
 
-  useEffect(() => {
-    setupSound();
-    return () => typingSynthRef.current?.dispose();
-  }, [setupSound]);
+    const now = Date.now();
+    // Reduced minimum gap to 30ms for more frequent sounds
+    if (now - lastPlayedTime.current < 30) return;
 
-  const playTypingSound = () => {
-    if (typingSynthRef.current && enableSound) {
-      const now = Date.now();
-      if (now - lastPlayedTime.current < 30) return;
-
+    const synth = getSharedSynth();
+    if (synth) {
       try {
-        typingSynthRef.current.triggerAttackRelease(`C${3 + depth}`, "32n");
+        synth.triggerAttackRelease(`C${3 + depth}`, "32n");
         lastPlayedTime.current = now;
       } catch (e) {
-        console.log(e);
+        console.warn("Sound playback error:", e);
       }
     }
-  };
+  }, [depth, enableSound]);
 
   useEffect(() => {
     let timeoutId;
@@ -95,6 +102,7 @@ export default React.memo(function TypewriterLayerText({
               [currentPart]: partText.substring(0, partIndex),
             }));
             if (partIndex > 0 && partIndex % 2 === 0) {
+              // Play sound every other character
               playTypingSound();
             }
             partIndex++;
@@ -114,11 +122,12 @@ export default React.memo(function TypewriterLayerText({
     };
 
     timeoutId = setTimeout(startTyping, startDelay);
+
     return () => {
       isActive = false;
       clearTimeout(timeoutId);
     };
-  }, [text, speed, startDelay, matches]);
+  }, [text, speed, startDelay, matches, playTypingSound]);
 
   return (
     <TypewriterContainer>
