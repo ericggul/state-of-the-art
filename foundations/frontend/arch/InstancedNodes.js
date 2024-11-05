@@ -53,7 +53,9 @@ const InstancedNodes = React.memo(
             <meshStandardMaterial
               {...style.material}
               color={color}
-              wireframe={false}
+              // wireframe={!isProjector}
+              opacity={isProjector ? 1 : 0.1}
+              transparent={!isProjector}
             />
             {positions.map((position, i) => (
               <Instance

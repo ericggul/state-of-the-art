@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Text } from "@react-three/drei";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
@@ -37,6 +37,12 @@ const Sublayer = ({
 
   const grid = gridConfig[sublayer.type] || DEFAULT_GRID;
 
+  console.log(sublayer, position);
+
+  const fontSize = useMemo(() => {
+    return (size[0] ** 0.5 + size[1] ** 0.5 + size[2] ** 0.5) * 0.2;
+  }, [size]);
+
   return (
     <group position={position}>
       <InstancedNodes
@@ -63,14 +69,15 @@ const Sublayer = ({
         <group position={[0, size[1] * 0.6, 0]}>
           <Text
             position={[0, 0, 0]}
-            rotation={[Math.PI / 2, Math.PI, Math.PI]}
-            fontSize={(size[0] + size[1] + size[2]) * 0.05}
+            rotation={[0, 0, 0]}
+            fontSize={fontSize}
             color={"white"}
             anchorX="center"
             anchorY="middle"
             textAlign="center"
+            opacity={0.5}
           >
-            {`${sublayer.name}\n(${sublayer.type})`}
+            {`${sublayer.name}\n(${size})`}
           </Text>
         </group>
       )}

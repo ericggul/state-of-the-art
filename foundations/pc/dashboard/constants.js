@@ -191,7 +191,7 @@ export const MODELS_LIST = [
     authors: "Warren McCulloch and Walter Pitts",
     citations: 18434,
     explanation:
-      "Introduced the first mathematical model of a neuron, laying the foundation for neural network research.",
+      "McCulloch and Pitts modeled neurons using binary logic to represent neural firing, creating mathematical descriptions of neural networks.",
     architecture: ["Input", "Threshold", "Output"],
     highlights: [
       "First mathematical model of artificial neuron",
