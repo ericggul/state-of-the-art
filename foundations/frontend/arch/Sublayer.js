@@ -8,6 +8,20 @@ import useScreenStore from "@/components/screen/store";
 export const INTERLAYER_MARGIN_X = 1.6;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
+const DEFAULT_GRID = {
+  xCount: 3,
+  yCount: 3,
+  xInterval: 10,
+  yInterval: 10,
+};
+
+const NON_PROJECTOR_GRID = {
+  xCount: 1,
+  yCount: 1,
+  xInterval: 10,
+  yInterval: 10,
+};
+
 const Sublayer = ({
   position,
   sublayer,
@@ -21,12 +35,7 @@ const Sublayer = ({
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
 
-  const grid = gridConfig[sublayer.type] || {
-    xCount: 3,
-    yCount: 3,
-    xInterval: 10,
-    yInterval: 10,
-  };
+  const grid = gridConfig[sublayer.type] || DEFAULT_GRID;
 
   return (
     <group position={position}>
@@ -54,12 +63,12 @@ const Sublayer = ({
         <group position={[0, size[1] * 0.6, 0]}>
           <Text
             position={[0, 0, 0]}
-            fontSize={(size[0] + size[1]) * 0.01}
+            rotation={[Math.PI / 2, Math.PI, Math.PI]}
+            fontSize={(size[0] + size[1] + size[2]) * 0.05}
             color={"white"}
             anchorX="center"
             anchorY="middle"
             textAlign="center"
-            maxWidth={size[0]}
           >
             {`${sublayer.name}\n(${sublayer.type})`}
           </Text>

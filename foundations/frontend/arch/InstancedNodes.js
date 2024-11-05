@@ -50,7 +50,11 @@ const InstancedNodes = React.memo(
         {isProjector && (
           <Instances limit={instanceCount}>
             <boxGeometry args={instanceSize} />
-            <meshStandardMaterial {...style.material} color={color} wireframe />
+            <meshStandardMaterial
+              {...style.material}
+              color={color}
+              wireframe={false}
+            />
             {positions.map((position, i) => (
               <Instance
                 key={i}
@@ -62,7 +66,7 @@ const InstancedNodes = React.memo(
           </Instances>
         )}
 
-        {!isProjector &&
+        {/* {!isProjector &&
           sublayer &&
           uniqueXPositions.map((xPos, i) => (
             <group
@@ -72,17 +76,16 @@ const InstancedNodes = React.memo(
             >
               <Text
                 position={[0, instanceSize[1] * 0.6, 0]}
-                fontSize={instanceSize[0] * 0.1}
+                fontSize={(instanceSize[0] + instanceSize[1]) * 0.002}
                 color={"white"}
                 anchorX="center"
                 anchorY="middle"
                 textAlign="center"
-                maxWidth={instanceSize[0]}
               >
-                {`${sublayer.name}\n(${sublayer.type})`}
+                {`${sublayer.type}`}
               </Text>
             </group>
-          ))}
+          ))} */}
       </group>
     );
   }
