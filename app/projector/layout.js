@@ -1,9 +1,5 @@
 export const metadata = {
-  title: "Screen | ",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
+  title: "Projector | State of the Art",
   robots: {
     index: true,
     follow: true,

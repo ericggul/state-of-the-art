@@ -20,7 +20,12 @@ export default function ScreenWrapper() {
     handleNewSpeech,
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    setIsProjector,
   } = useScreenStore();
+
+  useEffect(() => {
+    setIsProjector(true);
+  }, []);
 
   const socket = useSocketScreen({
     layerIdx: 0,

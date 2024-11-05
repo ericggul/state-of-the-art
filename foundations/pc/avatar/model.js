@@ -45,8 +45,6 @@ export default function Model(props) {
     return options[Math.floor(Math.random() * options.length)];
   };
 
-  console.log("animation", animation);
-
   // Enhanced animation control
   useEffect(() => {
     // Skip if this is the first render
@@ -56,13 +54,9 @@ export default function Model(props) {
     }
 
     const handleAnimationChange = async () => {
-      console.log("visemeMessage", visemeMessage);
-      console.log("audio paused", visemeMessage?.audioPlayer?.paused);
-
       // If there's no visemeMessage or audio is ended/paused, go to idle
       if (!visemeMessage || visemeMessage?.audioPlayer?.paused) {
         if (!animation.startsWith("Idle")) {
-          console.log("Going back to idle");
           setAnimation(getRandomAnimation("idle"));
         }
         return;
@@ -71,7 +65,6 @@ export default function Model(props) {
       // Only start talking if we have active audio
       if (visemeMessage?.audioPlayer?.paused === false) {
         if (!animation.startsWith("Talk")) {
-          console.log("Starting to talk");
           setAnimation(getRandomAnimation("talking"));
         }
       }

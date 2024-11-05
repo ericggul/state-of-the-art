@@ -5,6 +5,7 @@ const useScreenStore = create((set) => ({
   latestSpeech: "",
   mobileVisibility: true,
   styleIndex: 0,
+  isProjector: true,
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
@@ -40,6 +41,8 @@ const useScreenStore = create((set) => ({
   handleNewMobileOrientationSpike: (data) => {
     set({ styleIndex: Math.floor(data.spikeCount) % 15 });
   },
+
+  setIsProjector: (isProjector) => set({ isProjector }),
 }));
 
 export default useScreenStore;

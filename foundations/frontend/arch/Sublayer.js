@@ -31,7 +31,6 @@ const Sublayer = ({
       <InstancedNodes
         xCount={grid.xCount}
         yCount={grid.yCount}
-        //New Method: Automatically calculate xInterval and yInterval based on size and grid size
         xInterval={
           useGivenInterval
             ? grid.xInterval
@@ -42,10 +41,6 @@ const Sublayer = ({
             ? grid.yInterval
             : (size[1] / grid.yCount) * INTERLAYER_MARGIN_Y
         }
-        //Old Method: Use the xInterval and yInterval from the grid
-        // xInterval={grid.xInterval}
-        // yInterval={grid.yInterval}
-        // nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         style={style}
         color={style.colors.inner}

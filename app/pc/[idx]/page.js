@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
@@ -30,7 +31,13 @@ export default function RelationPage() {
     handleNewSpeech,
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    setIsProjector,
   } = useScreenStore();
+
+  // Set isProjector to false on mount
+  useEffect(() => {
+    setIsProjector(false);
+  }, []);
 
   const socket = useSocketScreen({
     layerIdx: idx,
@@ -46,8 +53,6 @@ export default function RelationPage() {
 
   // 동적으로 컴포넌트 선택
   const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);
-
-  console.log(showFrontend, showBackend);
 
   return (
     <>

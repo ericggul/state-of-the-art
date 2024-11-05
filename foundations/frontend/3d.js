@@ -159,7 +159,7 @@ export default function Visualisation({
     ModelComponent = BasicNNLayers;
   }
 
-  // console.log(structure);
+  console.log(structure);
 
   return (
     <Canvas

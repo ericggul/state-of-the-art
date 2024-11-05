@@ -7,15 +7,15 @@ const Frontend = dynamic(() => import("@/components/frontend"));
 
 const CURRENT_TESTING_VERSION = "v2.0.2";
 
-export default function ScreenWrapper() {
+export default function ProjectorWrapper() {
   return (
     <Suspense>
-      <Screen isTesting={true} />
+      <Projector isTesting={true} />
     </Suspense>
   );
 }
 
-function Screen() {
+function Projector() {
   const [version, setVersion] = useState(CURRENT_TESTING_VERSION);
 
   return (
