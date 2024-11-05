@@ -91,29 +91,14 @@ export default function Rhizome() {
 
   // Highlighting effect
   useEffect(() => {
-    if (!simulationRef.current || !nodesRef.current) return;
+    if (!simulationRef.current || !nodesRef.current || !linksRef.current)
+      return;
 
     const simulation = simulationRef.current;
     const { width: boundaryWidth, height: boundaryHeight } =
       boundaryRef.current;
 
-    // Add continuous wiggle force
-    simulation.force("wiggle", (alpha) => {
-      const time = Date.now() * 0.001; // Current time in seconds
-      data.nodes.forEach((node) => {
-        // Create organic movement using sine waves with different frequencies
-        const wiggleX =
-          Math.sin(time + node.x * ANIMATION.WIGGLE.FREQUENCY) *
-          ANIMATION.WIGGLE.AMPLITUDE;
-        const wiggleY =
-          Math.cos(time + node.y * ANIMATION.WIGGLE.FREQUENCY) *
-          ANIMATION.WIGGLE.AMPLITUDE;
-        node.vx += wiggleX * alpha;
-        node.vy += wiggleY * alpha;
-      });
-    });
-
-    // Reset nodes state
+    // Reset all nodes to default state first
     nodesRef.current
       .selectAll("circle")
       .transition()
@@ -126,7 +111,7 @@ export default function Rhizome() {
           ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
           : "none"
       )
-      .attr("stroke-width", 1);
+      .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH);
 
     nodesRef.current
       .selectAll("text")
@@ -135,7 +120,13 @@ export default function Rhizome() {
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
       .attr("fill", "hsla(180, 100%, 50%, 0.2)");
 
-    // Only proceed with highlighting if there's a selected architecture
+    // Reset all links to default state
+    linksRef.current
+      .transition()
+      .duration(DURATION)
+      .attr("opacity", VISUAL.LINK.OPACITY)
+      .attr("stroke-width", VISUAL.LINK.STROKE_WIDTH);
+
     if (currentArchitectures?.length) {
       const currentNode = currentArchitectures[0].name;
       const nodeToHighlight = nodesRef.current.filter(
@@ -143,18 +134,80 @@ export default function Rhizome() {
       );
 
       if (!nodeToHighlight.empty()) {
-        // Get the actual node data that corresponds to the highlighted element
-        const highlightedNode = data.nodes.find(
-          (node) => node.text === currentNode
-        );
+        // Find connected nodes
+        const connectedNodes = new Set();
+        linksRef.current.each((link) => {
+          if (link.source.text === currentNode)
+            connectedNodes.add(link.target.text);
+          if (link.target.text === currentNode)
+            connectedNodes.add(link.source.text);
+        });
 
-        // Now we can use highlightedNode in the force calculation
+        // Highlight main node
+        nodeToHighlight
+          .select("circle")
+          .transition()
+          .duration(DURATION)
+          .attr("fill", (d) => d3.color(d.color).brighter(1.2))
+          .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
+          .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
+          .attr("stroke", "rgba(255, 255, 255, 0.9)")
+          .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);
+
+        nodeToHighlight
+          .select("text")
+          .transition()
+          .duration(DURATION)
+          .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
+          .attr("fill", "hsla(180, 100%, 50%, 0.95)")
+          .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
+
+        // Highlight connected nodes
+        nodesRef.current.each(function (d) {
+          if (connectedNodes.has(d.text)) {
+            d3.select(this)
+              .select("circle")
+              .transition()
+              .duration(DURATION)
+              .attr("r", VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS)
+              .attr("opacity", VISUAL.NODE.SUB_HIGHLIGHTED.OPACITY)
+              .attr("stroke-width", VISUAL.NODE.SUB_HIGHLIGHTED.STROKE_WIDTH);
+
+            d3.select(this)
+              .select("text")
+              .transition()
+              .duration(DURATION)
+              .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
+              .attr("fill", "hsla(180, 100%, 50%, 0.8)");
+          }
+        });
+
+        // Highlight connected links
+        linksRef.current.each(function (link) {
+          if (
+            link.source.text === currentNode ||
+            link.target.text === currentNode
+          ) {
+            d3.select(this)
+              .transition()
+              .duration(DURATION)
+              .attr("opacity", VISUAL.LINK.HIGHLIGHTED.OPACITY)
+              .attr("stroke-width", VISUAL.LINK.HIGHLIGHTED.STROKE_WIDTH);
+          }
+        });
+
+        // Continue with the force simulation logic...
         simulation.force("centerHighlighted", (alpha) => {
           const k = alpha * LAYOUT.HIGHLIGHT.FORCE.STRENGTH;
           const targetX = boundaryWidth * LAYOUT.HIGHLIGHT.TARGET.X_FACTOR;
           const targetY = -boundaryHeight * LAYOUT.HIGHLIGHT.TARGET.Y_FACTOR;
           const verticalSpread =
             boundaryRef.current.height / LAYOUT.VERTICAL_SPREAD_FACTOR;
+
+          // Get the current highlighted node data
+          const highlightedNode = data.nodes.find(
+            (node) => node.text === currentArchitectures?.[0]?.name
+          );
 
           data.nodes.forEach((node) => {
             if (!nodePositionsRef.current.has(node.id)) {
@@ -205,26 +258,7 @@ export default function Rhizome() {
           });
         });
 
-        // Highlight transitions
-        nodeToHighlight
-          .select("circle")
-          .transition()
-          .duration(DURATION)
-          .attr("fill", (d) => d3.color(d.color).brighter(1.2))
-          .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
-          .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
-          .attr("stroke", "rgba(255, 255, 255, 0.9)")
-          .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);
-
-        nodeToHighlight
-          .select("text")
-          .transition()
-          .duration(DURATION)
-          .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
-          .attr("fill", "hsla(180, 100%, 50%, 0.95)")
-          .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
-
-        // Increase both alpha and alphaTarget for more continuous movement
+        // Continue with the force simulation logic...
         simulation
           .alpha(ANIMATION.ALPHA.INITIAL)
           .alphaTarget(ANIMATION.ALPHA.TARGET)
@@ -326,6 +360,7 @@ export default function Rhizome() {
   return (
     <S.Container>
       {/* <video src="/videos/test.mp4" autoPlay loop muted /> */}
+
       <svg ref={svgRef} width="100%" height="100%" />
       {currentArchitectures?.length > 0 && relatedModels.length > 0 && (
         <S.RelatedPanel>

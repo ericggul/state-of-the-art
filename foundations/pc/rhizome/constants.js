@@ -19,8 +19,8 @@ export const ANIMATION = {
 // Force Simulation Constants
 export const FORCE = {
   LINK: {
-    DISTANCE: 120,
-    STRENGTH: 0.1,
+    DISTANCE: 80,
+    STRENGTH: 0.3,
   },
   CHARGE: {
     STRENGTH: -250,
@@ -44,11 +44,21 @@ export const VISUAL = {
       STROKE_WIDTH: 3,
       FONT_SIZE: "1.8vw",
     },
+    SUB_HIGHLIGHTED: {
+      RADIUS: 6,
+      OPACITY: 0.95,
+      STROKE_WIDTH: 2,
+      FONT_SIZE: "1.2vw",
+    },
   },
   LINK: {
-    CURVE_FACTOR: 0.85,
-    STROKE_WIDTH: 0.8,
-    OPACITY: 0.3,
+    CURVE_FACTOR: 0.6,
+    STROKE_WIDTH: 1.2,
+    OPACITY: 0.4,
+    HIGHLIGHTED: {
+      OPACITY: 0.8,
+      STROKE_WIDTH: 2,
+    },
   },
   TEXT: {
     FONT_SIZE: {
@@ -68,14 +78,14 @@ export const LAYOUT = {
   HIGHLIGHT: {
     TARGET: {
       X_FACTOR: 0.6,
-      Y_FACTOR: 0.6,
+      Y_FACTOR: 0.7,
     },
     CONNECTED: {
-      X_FACTOR: -0.3,
-      Y_SPREAD: 0.5,
+      X_FACTOR: 0.3,
+      Y_SPREAD: 0.4,
     },
     UNCONNECTED: {
-      X_FACTOR: -0.4,
+      X_FACTOR: -0.55,
       Y_SPREAD: 0.7,
     },
     FORCE: {

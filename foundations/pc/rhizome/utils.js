@@ -33,16 +33,62 @@ export const drag = (simulation) => {
     .on("end", dragended);
 };
 
-export const updateNodeHighlight = (d, nodes) => {
+export const updateNodeHighlight = (d, nodes, links) => {
+  // Find connected nodes
+  const connectedNodes = new Set();
+  links.each((link) => {
+    if (link.source.id === d.id) connectedNodes.add(link.target.id);
+    if (link.target.id === d.id) connectedNodes.add(link.source.id);
+  });
+
+  // Update main highlighted node
   const circle = d3.select(`#circle-${d.id}`);
   const text = nodes.filter((n) => n.text === d.text).selectAll("text");
 
-  circle.transition().duration(150).attr("fill", "hsl(180, 100%, 93%)");
+  // Main node highlight (keep existing logic)
+  circle
+    .transition()
+    .duration(150)
+    .attr("fill", "hsl(180, 100%, 93%)")
+    .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
+    .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
+    .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);
+
   text
     .transition()
     .duration(150)
-    .attr("x", "1vw")
-    .attr("y", ".4vw")
-    .attr("font-size", "10vw")
+    .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
     .attr("fill", "white");
+
+  // Sub-highlight connected nodes
+  nodes.each((node) => {
+    if (connectedNodes.has(node.id)) {
+      d3.select(`#circle-${node.id}`)
+        .transition()
+        .duration(150)
+        .attr("r", VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS)
+        .attr("opacity", VISUAL.NODE.SUB_HIGHLIGHTED.OPACITY)
+        .attr("stroke-width", VISUAL.NODE.SUB_HIGHLIGHTED.STROKE_WIDTH);
+
+      nodes
+        .filter((n) => n.id === node.id)
+        .selectAll("text")
+        .transition()
+        .duration(150)
+        .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
+        .attr("opacity", 0.8);
+    }
+  });
+
+  // Highlight connected links
+  links.each(function (link) {
+    const isConnected = link.source.id === d.id || link.target.id === d.id;
+    if (isConnected) {
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("opacity", VISUAL.LINK.HIGHLIGHTED.OPACITY)
+        .attr("stroke-width", VISUAL.LINK.HIGHLIGHTED.STROKE_WIDTH);
+    }
+  });
 };

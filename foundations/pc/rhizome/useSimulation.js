@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import forceBoundary from "d3-force-boundary";
 import { linkArc, drag } from "./utils";
-import { FORCE, VISUAL, LAYOUT, getVersionColor } from "./constants";
+import { FORCE, VISUAL, LAYOUT, getVersionColor, DURATION } from "./constants";
 
 export const useSimulation = (svgRef, dimensions, data) => {
   const simulationRef = useRef(null);
@@ -91,12 +91,13 @@ export const useSimulation = (svgRef, dimensions, data) => {
 
     nodes
       .append("circle")
-      .attr("r", 0.5)
+      .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
       .attr("id", (d) => `circle-${d.id}`)
       .attr("fill", (d) => getVersionColor(d.majorVersion))
-      .attr("opacity", 0.9)
+      .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
       .attr("stroke", "#fff")
-      .attr("stroke-width", 0.5);
+      .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH)
+      .call(drag(simulation));
 
     // Simplified text
     nodes
