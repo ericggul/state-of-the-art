@@ -14,7 +14,7 @@ const CURRENT_TESTING_VERSION = "v4.3.5";
 const DEBOUNCE_DELAY = 1000; // 300ms delay, adjust as needed
 
 export default function ScreenFrontend({ isTesting, initVersion = null }) {
-  const { currentArchitectures } = useScreenStore();
+  const { currentArchitectures, isProjector } = useScreenStore();
 
   const version = useMemo(
     () =>
@@ -26,10 +26,20 @@ export default function ScreenFrontend({ isTesting, initVersion = null }) {
 
   // console.log(version, currentArchitectures);
 
-  return <Architecture version={version} isTesting={isTesting} />;
+  return (
+    <Architecture
+      version={version}
+      isTesting={isTesting}
+      isProjector={isProjector}
+    />
+  );
 }
 
-function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
+function Architecture({
+  version = CURRENT_TESTING_VERSION,
+  isTesting,
+  isProjector,
+}) {
   const flattenedModels = useMemo(() => flattenModels(MODELS), []);
   const refinedFlattened = useMemo(
     () => filterAndRefineModels(flattenedModels),
@@ -42,15 +52,15 @@ function Architecture({ version = CURRENT_TESTING_VERSION, isTesting }) {
 
   const debouncedVersion = useDebounce(version, DEBOUNCE_DELAY);
 
-  console.log(
-    refinedFlattened,
-    refinedFlattened.map((model) => model.name)
-  );
+  // console.log(
+  //   refinedFlattened,
+  //   refinedFlattened.map((model) => model.name)
+  // );
 
   return (
     <S.Container>
       <Architecture3D version={debouncedVersion} isTesting={isTesting} />
-      {relevantModel && <ArchitectureUI model={relevantModel} />}
+      {relevantModel && isProjector && <ArchitectureUI model={relevantModel} />}
       {/* <S.Overlay /> */}
     </S.Container>
   );

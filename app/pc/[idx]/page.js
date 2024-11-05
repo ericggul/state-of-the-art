@@ -12,7 +12,8 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 const COMPONENTS = {
   0: dynamic(() => import("@/foundations/pc/avatar/wrapper")),
   1: dynamic(() => import("@/foundations/pc/dashboard")),
-  2: dynamic(() => import("@/foundations/pc/2d-vis")),
+  // 2: dynamic(() => import("@/foundations/pc/2d-vis")),
+  2: dynamic(() => import("@/components/frontend")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
   4: dynamic(() => import("@/foundations/pc/grid")),
   5: dynamic(() => import("@/foundations/pc/rhizome")),
