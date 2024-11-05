@@ -39,7 +39,7 @@ export const RelatedPanel = styled.div`
   position: absolute;
   bottom: 2rem;
   left: 2rem;
-  background: rgba(0, 0, 0, 0.8);
+  background: transparent;
   border: 1px solid rgba(0, 255, 255, 0.3);
   border-radius: 2px;
   padding: 0.8vw;
@@ -51,7 +51,7 @@ export const RelatedPanel = styled.div`
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(2px);
 
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
   transition: all 0.3s ease;

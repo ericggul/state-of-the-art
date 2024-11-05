@@ -13,7 +13,7 @@ export const ANIMATION = {
     IDLE: 0.15,
   },
   JITTER: 0.4,
-  SCROLL_INTERVAL: 2500,
+  SCROLL_INTERVAL: 1000,
 };
 
 // Force Simulation Constants

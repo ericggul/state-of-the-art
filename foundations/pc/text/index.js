@@ -127,7 +127,7 @@ export default function TextComponent() {
               key={`${layer.name}-${idx}`}
               layer={layer}
               showGrid={true}
-              startDelay={idx * 600 + 200}
+              startDelay={idx * 600 + 50}
             />
           ))}
         </div>
