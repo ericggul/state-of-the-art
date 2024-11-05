@@ -368,7 +368,7 @@ export default function Rhizome() {
       {/* <video src="/videos/test.mp4" autoPlay loop muted /> */}
 
       <svg ref={svgRef} width="100%" height="100%" />
-      {currentArchitectures?.length > 0 && relatedModels.length > 0 && (
+      {/* {currentArchitectures?.length > 0 && relatedModels.length > 0 && (
         <S.RelatedPanel>
           <S.PanelTitle>
             Connected to {currentArchitectures[0].name}
@@ -386,7 +386,7 @@ export default function Rhizome() {
             ))}
           </S.RelatedList>
         </S.RelatedPanel>
-      )}
+      )} */}
     </S.Container>
   );
 }

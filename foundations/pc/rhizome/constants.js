@@ -52,7 +52,7 @@ export const VISUAL = {
     },
   },
   LINK: {
-    CURVE_FACTOR: 0.6,
+    CURVE_FACTOR: 0.55,
     STROKE_WIDTH: 1.2,
     OPACITY: 0.4,
     HIGHLIGHTED: {
