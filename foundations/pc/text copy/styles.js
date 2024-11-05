@@ -15,58 +15,16 @@ export const StructureText = styled.pre`
   line-height: 1.5;
   text-align: left;
   width: 100%;
-  height: 100%;
-  overflow-y: scroll;
   overflow-x: auto;
   white-space: pre;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   .type {
     color: #888;
     margin-left: 8px;
   }
 
-  .dims {
-    color: #00ff00;
-    margin-left: 8px;
-  }
-
-  .params {
-    color: #ff00ff;
-    margin-left: 8px;
-    font-size: 12px;
-  }
-
-  .grid {
-    color: #ffff00;
-    margin-left: 8px;
-    font-size: 12px;
-  }
-
-  .depth-0 {
-    color: #00ffff;
-  }
-  .depth-1 {
-    color: #00ccff;
-  }
-  .depth-2 {
-    color: #0099ff;
-  }
-  .depth-3 {
-    color: #0066ff;
-  }
-  .depth-4 {
-    color: #0033ff;
-  }
-
   .model-structure {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
   }
 `;
