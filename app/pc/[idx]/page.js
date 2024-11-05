@@ -20,7 +20,6 @@ const COMPONENTS = {
   4: dynamic(() => import("@/foundations/pc/text/index-old")),
 
   5: dynamic(() => import("@/foundations/pc/grid")),
-  6: dynamic(() => import("@/foundations/pc/rhizome")),
 };
 
 const Backend = dynamic(() => import("@/components/backend"));

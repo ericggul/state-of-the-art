@@ -83,11 +83,11 @@ export const LAYOUT = {
       Y_FACTOR: 0.9,
     },
     CONNECTED: {
-      X_FACTOR: 0.3,
+      X_FACTOR: 0.4,
       Y_SPREAD: 1.0,
     },
     UNCONNECTED: {
-      X_FACTOR: -0.55,
+      X_FACTOR: -0.5,
       Y_SPREAD: 0.9,
     },
     FORCE: {
