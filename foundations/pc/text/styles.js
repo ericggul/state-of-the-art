@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
 export const Container = styled.div`
@@ -8,6 +8,22 @@ export const Container = styled.div`
   padding: 2rem;
   font-family: "Fira Code", monospace;
 `;
+
+const scrollbarHide = css`
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const depthColors = {
+  0: "#00ffff",
+  1: "#00ccff",
+  2: "#0099ff",
+  3: "#0066ff",
+  4: "#0033ff",
+};
 
 export const StructureText = styled.pre`
   color: #00ffff;
@@ -19,16 +35,16 @@ export const StructureText = styled.pre`
   overflow-y: scroll;
   overflow-x: auto;
   white-space: pre;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  ${scrollbarHide}
 
   .tree-line {
     color: #666;
     user-select: none;
+
+    .branch-char {
+      color: #888;
+      font-weight: bold;
+    }
   }
 
   .tree-content {
@@ -59,21 +75,13 @@ export const StructureText = styled.pre`
     font-size: 12px;
   }
 
-  .depth-0 {
-    color: #00ffff;
-  }
-  .depth-1 {
-    color: #00ccff;
-  }
-  .depth-2 {
-    color: #0099ff;
-  }
-  .depth-3 {
-    color: #0066ff;
-  }
-  .depth-4 {
-    color: #0033ff;
-  }
+  ${Object.entries(depthColors).map(
+    ([depth, color]) => css`
+      .depth-${depth} {
+        color: ${color};
+      }
+    `
+  )}
 
   .model-structure {
     display: flex;

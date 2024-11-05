@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import * as Tone from "tone";
 
@@ -7,14 +7,13 @@ const TypewriterContainer = styled.span`
   min-width: 1ch;
 `;
 
-export default function TypewriterLayerText({
+export default React.memo(function TypewriterLayerText({
   text,
   speed = 30,
   depth = 0,
   enableSound = true,
   startDelay = 0,
 }) {
-  const [displayText, setDisplayText] = useState("");
   const typingSynthRef = useRef(null);
   const [parts, setParts] = useState({
     name: "",
@@ -24,15 +23,30 @@ export default function TypewriterLayerText({
     grid: "",
   });
 
-  useEffect(() => {
+  // Memoize text parsing
+  const matches = React.useMemo(
+    () => ({
+      name: text.split("[")[0].trim(),
+      dims: text.match(/\[(.*?)\]/)?.[0] || "",
+      type: text.match(/<(.*?)>/)?.[0] || "",
+      params: text.match(/\((.*?)\)/)?.[0] || "",
+      grid: text.match(/\{(.*?)\}/)?.[0] || "",
+    }),
+    [text]
+  );
+
+  // Memoize sound setup
+  const setupSound = React.useCallback(() => {
     if (typeof window !== "undefined" && enableSound) {
       typingSynthRef.current = new Tone.MembraneSynth().toDestination();
       typingSynthRef.current.volume.value = -20 - depth * 2;
     }
-    return () => {
-      if (typingSynthRef.current) typingSynthRef.current.dispose();
-    };
-  }, []);
+  }, [enableSound, depth]);
+
+  useEffect(() => {
+    setupSound();
+    return () => typingSynthRef.current?.dispose();
+  }, [setupSound]);
 
   const playTypingSound = () => {
     if (typingSynthRef.current && enableSound) {
@@ -45,15 +59,6 @@ export default function TypewriterLayerText({
   };
 
   useEffect(() => {
-    // Parse the text into parts
-    const matches = {
-      name: text.split("[")[0].trim(),
-      dims: text.match(/\[(.*?)\]/)?.[0] || "",
-      type: text.match(/<(.*?)>/)?.[0] || "",
-      params: text.match(/\((.*?)\)/)?.[0] || "",
-      grid: text.match(/\{(.*?)\}/)?.[0] || "",
-    };
-
     let timeoutId;
 
     const startTyping = () => {
@@ -110,4 +115,4 @@ export default function TypewriterLayerText({
       {parts.grid && <span className="grid">{parts.grid}</span>}
     </TypewriterContainer>
   );
-}
+});

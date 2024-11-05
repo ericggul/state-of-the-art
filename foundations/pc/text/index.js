@@ -1,69 +1,88 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
 
-const formatDimensions = (dims) => {
-  if (!dims) return "";
-  if (Array.isArray(dims)) return `[${dims.join(" × ")}]`;
-  return `[${dims}]`;
-};
+// Memoize LayerText component
+const LayerText = React.memo(
+  ({ layer, depth = 0, showGrid = false, startDelay = 0 }) => {
+    // Move formatting functions inside the component
+    const formatDimensions = useCallback((dims) => {
+      if (!dims) return "";
+      if (Array.isArray(dims)) return `[${dims.join(" × ")}]`;
+      return `[${dims}]`;
+    }, []);
 
-const formatParams = (params) => {
-  if (!params) return "";
-  return Object.entries(params)
-    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-    .join(", ");
-};
+    const formatParams = useCallback((params) => {
+      if (!params) return "";
+      return Object.entries(params)
+        .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+        .join(", ");
+    }, []);
 
-const LayerText = ({ layer, depth = 0, showGrid = false, startDelay = 0 }) => {
-  const indent = "  ".repeat(depth);
-  const dimensionText = formatDimensions(layer.dimensions);
-  const paramsText = formatParams(layer.parameters);
-  const gridText = showGrid && layer.type ? formatParams(layer.grid) : "";
+    const indent = "  ".repeat(depth);
+    const branchChar = depth === 0 ? "└─" : "├─";
+    const verticalLine = depth > 1 ? "│ ".repeat(depth - 1) : "";
 
-  const branchChar = depth === 0 ? "└─" : "├─";
-  const verticalLine = depth > 1 ? "│ ".repeat(depth - 1) : "";
+    const dimensionText = useMemo(
+      () => formatDimensions(layer.dimensions),
+      [layer.dimensions, formatDimensions]
+    );
 
-  const fullText = `${layer.name}${dimensionText}${
-    layer.type ? ` <${layer.type}>` : ""
-  }${paramsText ? ` (${paramsText})` : ""}${gridText ? ` {${gridText}}` : ""}`;
+    const paramsText = useMemo(
+      () => formatParams(layer.parameters),
+      [layer.parameters, formatParams]
+    );
 
-  const baseDelay = depth * 200;
+    const gridText = useMemo(
+      () => (showGrid && layer.type ? formatParams(layer.grid) : ""),
+      [showGrid, layer.type, layer.grid, formatParams]
+    );
 
-  return (
-    <>
-      <div className="tree-content">
-        <span className="tree-line">
-          {indent}
-          {verticalLine}
-          {branchChar}
-        </span>{" "}
-        <span className={`depth-${depth}`}>
-          <TypewriterLayerText
-            text={fullText}
-            speed={20 + depth * 2}
-            depth={depth}
-            enableSound={depth < 3}
-            startDelay={startDelay + baseDelay}
-          />
-        </span>
-      </div>
-      <div className="sublayers">
-        {layer.sublayers?.map((sublayer, idx, arr) => (
-          <LayerText
-            key={`${sublayer.name}-${idx}-${depth}`}
-            layer={sublayer}
-            depth={depth + 1}
-            showGrid={showGrid}
-            startDelay={startDelay + baseDelay + idx * 100}
-          />
-        ))}
-      </div>
-    </>
-  );
-};
+    const fullText = useMemo(
+      () =>
+        `${layer.name}${dimensionText}${layer.type ? ` <${layer.type}>` : ""}${
+          paramsText ? ` (${paramsText})` : ""
+        }${gridText ? ` {${gridText}}` : ""}`,
+      [layer.name, dimensionText, layer.type, paramsText, gridText]
+    );
+
+    const baseDelay = depth * 200;
+
+    return (
+      <>
+        <div className="tree-content">
+          <span className="tree-line">
+            {indent}
+            {verticalLine}
+            <span className="branch-char">{branchChar}</span>
+          </span>{" "}
+          <span className={`depth-${depth}`}>
+            <TypewriterLayerText
+              text={fullText}
+              speed={20 + depth * 2}
+              depth={depth}
+              enableSound={depth < 3}
+              startDelay={startDelay + baseDelay}
+            />
+          </span>
+        </div>
+        <div className="sublayers">
+          {layer.sublayers?.map((sublayer, idx) => (
+            <LayerText
+              key={`${sublayer.name}-${idx}-${depth}`}
+              layer={sublayer}
+              depth={depth + 1}
+              showGrid={showGrid}
+              startDelay={startDelay + baseDelay + idx * 100}
+            />
+          ))}
+        </div>
+      </>
+    );
+  }
+);
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
@@ -103,7 +122,7 @@ export default function TextComponent() {
               key={`${layer.name}-${idx}`}
               layer={layer}
               showGrid={true}
-              startDelay={idx * 300}
+              startDelay={idx * 600}
             />
           ))}
         </div>
