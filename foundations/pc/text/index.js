@@ -86,9 +86,12 @@ const LayerText = React.memo(
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
+  // const {
+  //   visualization: { structure },
+  // } = useModelStructure(currentArchitectures);
   const {
     visualization: { structure },
-  } = useModelStructure(currentArchitectures);
+  } = useModelStructure(currentArchitectures, 150);
   const containerRef = useRef(null);
 
   // Auto-scrolling effect
@@ -124,7 +127,7 @@ export default function TextComponent() {
               key={`${layer.name}-${idx}`}
               layer={layer}
               showGrid={true}
-              startDelay={idx * 600}
+              startDelay={idx * 600 + 200}
             />
           ))}
         </div>

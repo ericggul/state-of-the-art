@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
+import { useRelatedModels } from "./hooks/useRelatedModels";
+import RelatedPanel from "./components/RelatedPanel";
 import {
   DURATION,
   getVersionColor,
@@ -20,8 +22,6 @@ export default function Rhizome() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const synthRef = useRef(null);
   const nodePositionsRef = useRef(new Map());
-  const listRef = useRef(null);
-  const scrollIntervalRef = useRef(null);
 
   // Simplified data transformation
   const data = useMemo(
@@ -284,109 +284,17 @@ export default function Rhizome() {
     nodePositionsRef.current.clear();
   }, [currentArchitectures]);
 
-  // Get related models and their relationships
-  const relatedModels = useMemo(() => {
-    if (!currentArchitectures?.length) return [];
-
-    const currentModel = currentArchitectures[0].name;
-    const nodeMap = new Map(
-      DATA_NODES_LINKS.nodes.map((node) => [node.id, node])
-    );
-
-    return DATA_NODES_LINKS.links
-      .filter((link) => {
-        const sourceNode = nodeMap.get(link.source);
-        const targetNode = nodeMap.get(link.target);
-        return (
-          (sourceNode?.name === currentModel ||
-            targetNode?.name === currentModel) &&
-          link.relation
-        );
-      })
-      .map((link) => {
-        const sourceNode = nodeMap.get(link.source);
-        const targetNode = nodeMap.get(link.target);
-        const connectedNode =
-          sourceNode?.name === currentModel ? targetNode : sourceNode;
-
-        return {
-          name: connectedNode?.name || "",
-          relation: link.relation,
-          value: link.value,
-          version: connectedNode?.version,
-        };
-      })
-      .filter((model) => model.name) // Remove any invalid entries
-      .sort((a, b) => b.value - a.value);
-  }, [currentArchitectures]);
-
-  console.log("Related Models:", relatedModels);
-
-  // Auto-scroll animation
-  useEffect(() => {
-    if (listRef.current && relatedModels.length > 0) {
-      const list = listRef.current;
-      let currentIndex = 1;
-
-      const scrollToNextItem = () => {
-        const items = list.children;
-        if (currentIndex >= items.length) {
-          // Reset to top when reaching the end
-          currentIndex = 1;
-          list.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        } else {
-          // Scroll to next item
-          const nextItem = items[currentIndex];
-          nextItem.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-          currentIndex++;
-        }
-      };
-
-      // Initial scroll to top
-      list.scrollTo({ top: 0 });
-
-      // Set up interval for scrolling
-      const intervalId = setInterval(
-        scrollToNextItem,
-        ANIMATION.SCROLL_INTERVAL
-      );
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [relatedModels]);
+  const relatedModels = useRelatedModels(currentArchitectures);
 
   return (
     <S.Container>
-      {/* <video src="/videos/test.mp4" autoPlay loop muted /> */}
-
       <svg ref={svgRef} width="100%" height="100%" />
-      {/* {currentArchitectures?.length > 0 && relatedModels.length > 0 && (
-        <S.RelatedPanel>
-          <S.PanelTitle>
-            Connected to {currentArchitectures[0].name}
-          </S.PanelTitle>
-          <S.RelatedList ref={listRef}>
-            {relatedModels.map((model, index) => (
-              <S.RelatedItem key={index} $strength={model.value / 10}>
-                <S.ModelHeader>
-                  <S.ModelName>{model.name}</S.ModelName>
-                  <S.ModelVersion>{model.version}</S.ModelVersion>
-                </S.ModelHeader>
-                <S.RelationText>{model.relation}</S.RelationText>
-                <S.ConnectionStrength $value={model.value / 10} />
-              </S.RelatedItem>
-            ))}
-          </S.RelatedList>
-        </S.RelatedPanel>
-      )} */}
+      {currentArchitectures?.length > 0 && (
+        <RelatedPanel
+          currentModel={currentArchitectures[0].name}
+          relatedModels={relatedModels}
+        />
+      )}
     </S.Container>
   );
 }

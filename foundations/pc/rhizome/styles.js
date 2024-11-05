@@ -38,93 +38,87 @@ const glowAnimation = keyframes`
 export const RelatedPanel = styled.div`
   position: absolute;
   bottom: 2rem;
-  right: 2rem;
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  border-radius: 4px;
-  padding: 1.8rem;
-  max-width: 400px;
-  height: 33vh;
+  left: 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 2px;
+  padding: 0.8vw;
+  max-width: 24vw;
+  height: 24vh;
   overflow: hidden;
-  animation: ${glowAnimation} 2s infinite;
-  backdrop-filter: blur(8px);
-  font-family: monospace;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9vw;
   z-index: 1000;
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(4px);
 
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
   transition: all 0.3s ease;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
     background: rgba(0, 255, 255, 0.05);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.3);
-    border-radius: 2px;
+    background: rgba(0, 255, 255, 0.2);
   }
-
-  box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.1);
 `;
 
 export const PanelTitle = styled.div`
   color: #00ffff;
-  font-size: 1.1em;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  font-size: 1vw;
+  font-weight: 500;
+  margin-bottom: 0.5vw;
+  padding-bottom: 0.3vw;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
   flex-shrink: 0;
+  opacity: 0.9;
 `;
 
 export const RelatedList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   overflow-y: auto;
-  padding-right: 0.5rem;
+  padding-right: 0.3rem;
   flex-grow: 1;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
     background: rgba(0, 255, 255, 0.05);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.3);
-    border-radius: 2px;
+    background: rgba(0, 255, 255, 0.2);
   }
 `;
 
 export const RelatedItem = styled.div`
-  padding: 0.8rem;
-  border-radius: 4px;
-  background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.03})`};
-  border: 1px solid ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.4})`};
-  backdrop-filter: blur(4px);
-  transform: perspective(1000px) translateZ(0);
-  transition: all 0.3s ease;
+  padding: 0.4vw;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.3})`};
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  min-height: 60px;
+  min-height: 3vw;
   flex-shrink: 0;
 
   &::before {
-    content: "";
+    content: "└─";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background: ${(props) => `rgba(0, 255, 255, ${props.$strength})`};
-    box-shadow: 0 0 10px ${(props) => `rgba(0, 255, 255, ${props.$strength})`};
+    top: 0.4vw;
+    left: 0.2vw;
+    color: rgba(0, 255, 255, 0.4);
+    font-size: 0.85vw;
   }
 
   &:hover {
-    transform: perspective(1000px) translateZ(5px);
-    background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.05})`};
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(0, 255, 255, ${(props) => props.$strength * 0.5});
   }
 `;
 
@@ -132,43 +126,45 @@ export const ModelHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
+  padding-left: 1rem;
 `;
 
 export const ModelName = styled.div`
   color: #00ffff;
-  font-weight: bold;
-  font-size: 1.1em;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+  font-size: 0.95vw;
+  letter-spacing: 0.02vw;
+  opacity: 0.9;
 `;
 
 export const ModelVersion = styled.div`
-  color: rgba(0, 255, 255, 0.7);
-  font-size: 0.8em;
-  padding: 0.2em 0.5em;
-  background: rgba(0, 255, 255, 0.1);
-  border-radius: 3px;
-  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: rgba(0, 255, 255, 0.6);
+  font-size: 0.8vw;
+  padding: 0.1vw 0.3vw;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 2px;
+  border: 1px solid rgba(0, 255, 255, 0.1);
 `;
 
 export const RelationText = styled.div`
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.85em;
-  line-height: 1.4;
-  margin: 0.4rem 0;
-  padding-left: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85vw;
+  line-height: 1.3;
+  margin: 0.2vw 0;
+  padding-left: 1vw;
+  font-family: monospace;
 `;
 
 export const ConnectionStrength = styled.div`
-  height: 3px;
-  margin-top: 0.8rem;
+  height: 1px;
+  margin-top: 0.4rem;
+  margin-left: 1rem;
   background: linear-gradient(
     to right,
-    rgba(0, 255, 255, ${(props) => props.$value * 1.2}) 0%,
-    rgba(0, 255, 255, ${(props) => props.$value * 0.6})
+    rgba(0, 255, 255, ${(props) => props.$value * 0.8}) 0%,
+    rgba(0, 255, 255, ${(props) => props.$value * 0.4})
       ${(props) => props.$value * 100}%,
     transparent 100%
   );
-  box-shadow: 0 0 15px rgba(0, 255, 255, ${(props) => props.$value * 0.6});
+  box-shadow: 0 0 8px rgba(0, 255, 255, ${(props) => props.$value * 0.3});
 `;

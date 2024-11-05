@@ -79,16 +79,16 @@ export const LAYOUT = {
     TARGET: {
       // X_FACTOR: 0.6,
       // Y_FACTOR: 0.7,
-      X_FACTOR: 0.5,
-      Y_FACTOR: 0.9,
+      X_FACTOR: 0.7,
+      Y_FACTOR: 0.8,
     },
     CONNECTED: {
-      X_FACTOR: 0.4,
-      Y_SPREAD: 1.0,
+      X_FACTOR: 0.2,
+      Y_SPREAD: 0.8,
     },
     UNCONNECTED: {
-      X_FACTOR: -0.5,
-      Y_SPREAD: 0.9,
+      X_FACTOR: -0.4,
+      Y_SPREAD: 0.8,
     },
     FORCE: {
       STRENGTH: 0.9,
