@@ -14,20 +14,6 @@ import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizom
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 
-// Move cleanRedundantLinks outside the component
-const cleanRedundantLinks = (links) => {
-  const connectionMap = new Map();
-  links.forEach((link) => {
-    const key = [link.source, link.target].sort((a, b) => a - b).join("-");
-    if (!connectionMap.has(key) || connectionMap.get(key).value < link.value) {
-      connectionMap.set(key, link);
-    }
-  });
-  return Array.from(connectionMap.values())
-    .sort((a, b) => a.id - b.id)
-    .map((link, index) => ({ ...link, id: index + 1 }));
-};
-
 export default function Rhizome() {
   const { currentArchitectures } = useScreenStore();
   const svgRef = useRef(null);
@@ -37,7 +23,7 @@ export default function Rhizome() {
   const listRef = useRef(null);
   const scrollIntervalRef = useRef(null);
 
-  // Transform data once with empty dependency array since DATA_NODES_LINKS never changes
+  // Simplified data transformation
   const data = useMemo(
     () => ({
       nodes: DATA_NODES_LINKS.nodes.map((node) => ({
@@ -47,7 +33,7 @@ export default function Rhizome() {
         majorVersion: getMajorVersion(node.version),
         color: getVersionColor(getMajorVersion(node.version)),
       })),
-      links: cleanRedundantLinks(DATA_NODES_LINKS.links).map((link) => ({
+      links: DATA_NODES_LINKS.links.map((link) => ({
         ...link,
         source: DATA_NODES_LINKS.nodes[link.source - 1].name,
         target: DATA_NODES_LINKS.nodes[link.target - 1].name,
@@ -56,7 +42,7 @@ export default function Rhizome() {
       })),
     }),
     []
-  ); // Empty dependency array since DATA_NODES_LINKS is constant
+  );
 
   console.log(data);
 
@@ -339,6 +325,7 @@ export default function Rhizome() {
 
   return (
     <S.Container>
+      {/* <video src="/videos/test.mp4" autoPlay loop muted /> */}
       <svg ref={svgRef} width="100%" height="100%" />
       {currentArchitectures?.length > 0 && relatedModels.length > 0 && (
         <S.RelatedPanel>

@@ -17,27 +17,32 @@ export const Container = styled.div`
     width: 100%;
     height: 100%;
   }
+
+  video {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const glowAnimation = keyframes`
-  0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); }
-  100% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); }
+  0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 35px rgba(0, 255, 255, 0.4); }
+  100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
 `;
 
 export const RelatedPanel = styled.div`
   position: absolute;
   bottom: 2rem;
   right: 2rem;
-  background: rgba(0, 0, 0, 0.85);
-  border: 1px solid #00ffff;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(0, 255, 255, 0.4);
   border-radius: 4px;
-  padding: 1.5rem;
+  padding: 1.8rem;
   max-width: 400px;
   height: 33vh;
   overflow: hidden;
   animation: ${glowAnimation} 2s infinite;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   font-family: monospace;
   z-index: 1000;
   display: flex;
@@ -54,6 +59,8 @@ export const RelatedPanel = styled.div`
     background: rgba(0, 255, 255, 0.3);
     border-radius: 2px;
   }
+
+  box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.1);
 `;
 
 export const PanelTitle = styled.div`
@@ -89,8 +96,10 @@ export const RelatedList = styled.div`
 export const RelatedItem = styled.div`
   padding: 0.8rem;
   border-radius: 4px;
-  background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.02})`};
-  border: 1px solid ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.3})`};
+  background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.03})`};
+  border: 1px solid ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.4})`};
+  backdrop-filter: blur(4px);
+  transform: perspective(1000px) translateZ(0);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -107,6 +116,11 @@ export const RelatedItem = styled.div`
     background: ${(props) => `rgba(0, 255, 255, ${props.$strength})`};
     box-shadow: 0 0 10px ${(props) => `rgba(0, 255, 255, ${props.$strength})`};
   }
+
+  &:hover {
+    transform: perspective(1000px) translateZ(5px);
+    background: ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.05})`};
+  }
 `;
 
 export const ModelHeader = styled.div`
@@ -119,8 +133,9 @@ export const ModelHeader = styled.div`
 export const ModelName = styled.div`
   color: #00ffff;
   font-weight: bold;
-  font-size: 1em;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  font-size: 1.1em;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
 `;
 
 export const ModelVersion = styled.div`
@@ -141,14 +156,14 @@ export const RelationText = styled.div`
 `;
 
 export const ConnectionStrength = styled.div`
-  height: 2px;
+  height: 3px;
   margin-top: 0.8rem;
   background: linear-gradient(
     to right,
-    rgba(0, 255, 255, ${(props) => props.$value}) 0%,
-    rgba(0, 255, 255, ${(props) => props.$value * 0.5})
+    rgba(0, 255, 255, ${(props) => props.$value * 1.2}) 0%,
+    rgba(0, 255, 255, ${(props) => props.$value * 0.6})
       ${(props) => props.$value * 100}%,
     transparent 100%
   );
-  box-shadow: 0 0 10px rgba(0, 255, 255, ${(props) => props.$value * 0.5});
+  box-shadow: 0 0 15px rgba(0, 255, 255, ${(props) => props.$value * 0.6});
 `;

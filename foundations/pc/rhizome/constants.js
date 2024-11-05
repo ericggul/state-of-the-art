@@ -4,23 +4,23 @@ import * as d3 from "d3";
 export const DURATION = 200;
 export const ANIMATION = {
   WIGGLE: {
-    FREQUENCY: 0.01,
-    AMPLITUDE: 0.3,
+    FREQUENCY: 0.008,
+    AMPLITUDE: 3.5,
   },
   ALPHA: {
-    INITIAL: 0.3,
-    TARGET: 0.4,
-    IDLE: 0.2,
+    INITIAL: 0.4,
+    TARGET: 0.7,
+    IDLE: 0.15,
   },
-  JITTER: 0.2,
-  SCROLL_INTERVAL: 2000,
+  JITTER: 0.4,
+  SCROLL_INTERVAL: 2500,
 };
 
 // Force Simulation Constants
 export const FORCE = {
   LINK: {
     DISTANCE: 120,
-    STRENGTH: 0.2,
+    STRENGTH: 0.1,
   },
   CHARGE: {
     STRENGTH: -250,
@@ -33,22 +33,22 @@ export const FORCE = {
 export const VISUAL = {
   NODE: {
     DEFAULT: {
-      RADIUS: 0.5,
-      OPACITY: 0.9,
-      STROKE_WIDTH: 0.5,
-      FONT_SIZE: "0.8vw",
+      RADIUS: 2.0,
+      OPACITY: 0.85,
+      STROKE_WIDTH: 1,
+      FONT_SIZE: "0.75vw",
     },
     HIGHLIGHTED: {
-      RADIUS: 8,
+      RADIUS: 12,
       OPACITY: 1,
-      STROKE_WIDTH: 2.5,
-      FONT_SIZE: "1.5vw",
+      STROKE_WIDTH: 3,
+      FONT_SIZE: "1.8vw",
     },
   },
   LINK: {
-    CURVE_FACTOR: 0.7,
-    STROKE_WIDTH: 1,
-    OPACITY: 0.4,
+    CURVE_FACTOR: 0.85,
+    STROKE_WIDTH: 0.8,
+    OPACITY: 0.3,
   },
   TEXT: {
     FONT_SIZE: {
@@ -67,8 +67,8 @@ export const VISUAL = {
 export const LAYOUT = {
   HIGHLIGHT: {
     TARGET: {
-      X_FACTOR: 0.5,
-      Y_FACTOR: -0.6,
+      X_FACTOR: 0.6,
+      Y_FACTOR: 0.6,
     },
     CONNECTED: {
       X_FACTOR: -0.3,
@@ -79,9 +79,9 @@ export const LAYOUT = {
       Y_SPREAD: 0.7,
     },
     FORCE: {
-      STRENGTH: 1.2,
+      STRENGTH: 0.9,
       VERTICAL_FACTOR: 0.4,
-      CONNECTED_FACTOR: 0.5,
+      CONNECTED_FACTOR: 0.8,
       UNCONNECTED_FACTOR: 0.4,
     },
   },
@@ -90,17 +90,20 @@ export const LAYOUT = {
 
 // Color Scale
 export const getVersionColor = (majorVersion) => {
-  const colorScale = d3.scaleOrdinal().domain([1, 2, 3, 4, 5, 6, 7, 8]).range([
-    "hsl(160, 85%, 60%)", // Blue-green
-    "hsl(170, 90%, 45%)", // Deep sea green
-    "hsl(180, 80%, 65%)", // Medium cyan
-    "hsl(190, 85%, 50%)", // Ocean blue
-    "hsl(200, 75%, 60%)", // Sky blue
-    "hsl(165, 80%, 55%)", // Forest green
-    "hsl(175, 85%, 40%)", // Dark cyan
-    "hsl(185, 70%, 55%)", // Steel blue
-  ]);
-  return majorVersion ? colorScale(majorVersion) : "rgba(255, 255, 255, 0.5)";
+  const colorScale = d3
+    .scaleOrdinal()
+    .domain([1, 2, 3, 4, 5, 6, 7, 8])
+    .range([
+      "hsl(160, 100%, 65%)",
+      "hsl(170, 100%, 50%)",
+      "hsl(180, 100%, 70%)",
+      "hsl(190, 100%, 55%)",
+      "hsl(200, 100%, 65%)",
+      "hsl(165, 100%, 60%)",
+      "hsl(175, 100%, 45%)",
+      "hsl(185, 100%, 60%)",
+    ]);
+  return majorVersion ? colorScale(majorVersion) : "rgba(255, 255, 255, 0.6)";
 };
 
 export const getMajorVersion = (version) => {
