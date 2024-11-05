@@ -9,59 +9,28 @@ import { flattenModels, filterAndRefineModels } from "./utils";
 import useDebounce from "@/utils/hooks/useDebounce";
 
 import useScreenStore from "@/components/screen/store";
+import { useModelStructure } from "./utils";
 
 const CURRENT_TESTING_VERSION = "v4.3.5";
 const DEBOUNCE_DELAY = 1000; // 300ms delay, adjust as needed
 
 export default function ScreenFrontend({ isTesting, initVersion = null }) {
-  const { currentArchitectures, isProjector } = useScreenStore();
+  const { currentArchitectures } = useScreenStore();
+  const { visualization } = useModelStructure(currentArchitectures);
 
-  const version = useMemo(
-    () =>
-      currentArchitectures.length > 0
-        ? currentArchitectures[0].version
-        : initVersion,
-    [currentArchitectures, initVersion]
-  );
-
-  // console.log(version, currentArchitectures);
-
-  return (
-    <Architecture
-      version={version}
-      isTesting={isTesting}
-      isProjector={isProjector}
-    />
-  );
-}
-
-function Architecture({
-  version = CURRENT_TESTING_VERSION,
-  isTesting,
-  isProjector,
-}) {
-  const flattenedModels = useMemo(() => flattenModels(MODELS), []);
-  const refinedFlattened = useMemo(
-    () => filterAndRefineModels(flattenedModels),
-    [flattenedModels]
-  );
-  const relevantModel = useMemo(
-    () => flattenedModels.find((model) => model.version === version) || null,
-    [flattenedModels, version]
-  );
-
-  const debouncedVersion = useDebounce(version, DEBOUNCE_DELAY);
-
-  // console.log(
-  //   refinedFlattened,
-  //   refinedFlattened.map((model) => model.name)
-  // );
+  const version = currentArchitectures?.[0]?.version || initVersion;
 
   return (
     <S.Container>
-      <Architecture3D version={debouncedVersion} isTesting={isTesting} />
-      {relevantModel && <ArchitectureUI model={relevantModel} />}
-      {/* <S.Overlay /> */}
+      <Architecture3D
+        version={version}
+        isTesting={isTesting}
+        modelName={visualization.modelName}
+        structure={visualization.structure}
+      />
+      {currentArchitectures?.[0] && (
+        <ArchitectureUI model={currentArchitectures[0]} />
+      )}
     </S.Container>
   );
 }

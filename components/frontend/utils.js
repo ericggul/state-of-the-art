@@ -1,3 +1,7 @@
+import { getModelStructure } from "@/foundations/frontend/arch-models";
+import { useState, useEffect } from "react";
+import useDebounce from "@/utils/hooks/useDebounce";
+
 export const flattenModels = (models) => {
   let flattened = [];
 
@@ -44,3 +48,54 @@ export const filterModels = (models) =>
         model.citation !== "" ||
         model.explanation !== "")
   );
+
+const formatModelName = (name) => {
+  return name
+    .replace(/\(([^)]+)\)/g, "_$1")
+    .replace(/[- ]/g, "_")
+    .replace(/\./g, "")
+    .toUpperCase()
+    .trim()
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "")
+    .replace(/[^A-Z0-9_]/g, "");
+};
+
+export const useModelStructure = (
+  currentArchitectures,
+  debounceDelay = 1000
+) => {
+  const [modelName, setModelName] = useState(null);
+  const [structure, setStructure] = useState([]);
+
+  const debouncedModelName = useDebounce(modelName, debounceDelay);
+  const debouncedStructure = useDebounce(structure, debounceDelay);
+
+  useEffect(() => {
+    if (currentArchitectures?.length > 0) {
+      const rawModelName = currentArchitectures[0].name;
+      const formattedName = formatModelName(rawModelName);
+
+      setModelName(formattedName);
+      const modelStructure = getModelStructure(formattedName);
+
+      if (modelStructure) {
+        setStructure(modelStructure);
+      } else {
+        console.warn(
+          `No model structure found for ${formattedName} (original: ${rawModelName})`
+        );
+        setStructure([]);
+      }
+    }
+  }, [currentArchitectures]);
+
+  return {
+    visualization: {
+      modelName: debouncedModelName,
+      structure: debouncedStructure,
+    },
+    modelName,
+    structure,
+  };
+};
