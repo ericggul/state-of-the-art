@@ -1,9 +1,7 @@
 import React from "react";
+import { Text } from "@react-three/drei";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
-
-// export const INTERLAYER_MARGIN_X = 1.3;
-// export const INTERLAYER_MARGIN_Y = 3.0;
 
 import useScreenStore from "@/components/screen/store";
 
@@ -23,21 +21,12 @@ const Sublayer = ({
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
 
-  const grid = isProjector
-    ? gridConfig[sublayer.type] || {
-        xCount: 3,
-        yCount: 3,
-        xInterval: 10,
-        yInterval: 10,
-      }
-    : {
-        xCount: 1,
-        yCount: 1,
-        xInterval: 10,
-        yInterval: 10,
-      };
-
-  console.log(sublayer, style, model);
+  const grid = gridConfig[sublayer.type] || {
+    xCount: 3,
+    yCount: 3,
+    xInterval: 10,
+    yInterval: 10,
+  };
 
   return (
     <group position={position}>
@@ -58,7 +47,24 @@ const Sublayer = ({
         style={style}
         color={style.colors.inner}
         rotation={[Math.PI / 2, 0, 0]}
+        sublayer={sublayer}
       />
+
+      {!isProjector && (
+        <group position={[0, size[1] * 0.6, 0]}>
+          <Text
+            position={[0, 0, 0]}
+            fontSize={(size[0] + size[1]) * 0.01}
+            color={"white"}
+            anchorX="center"
+            anchorY="middle"
+            textAlign="center"
+            maxWidth={size[0]}
+          >
+            {`${sublayer.name}\n(${sublayer.type})`}
+          </Text>
+        </group>
+      )}
     </group>
   );
 };

@@ -32,14 +32,6 @@ const InstancedNodes = React.memo(
       return temp;
     }, [xCount, yCount, xInterval, yInterval]);
 
-    // Get unique X positions for text
-    const uniqueXPositions = useMemo(() => {
-      return Array.from(
-        { length: xCount },
-        (_, i) => xInterval * i - ((xCount - 1) * xInterval) / 2
-      );
-    }, [xCount, xInterval]);
-
     const instanceSize = node ? node.size : nodeSize;
     const instanceCount = positions.length;
 
@@ -64,11 +56,11 @@ const InstancedNodes = React.memo(
 
         {!isProjector &&
           sublayer &&
-          uniqueXPositions.map((xPos, i) => (
+          positions.map((position, i) => (
             <group
               key={`text-${i}`}
-              position={[xPos, 0, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
+              position={position}
+              rotation={[-Math.PI / 2, 0, 0]} // Counter-rotate to face camera
             >
               <Text
                 position={[0, instanceSize[1] * 0.6, 0]}

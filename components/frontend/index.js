@@ -60,7 +60,7 @@ function Architecture({
   return (
     <S.Container>
       <Architecture3D version={debouncedVersion} isTesting={isTesting} />
-      {relevantModel && isProjector && <ArchitectureUI model={relevantModel} />}
+      {relevantModel && <ArchitectureUI model={relevantModel} />}
       {/* <S.Overlay /> */}
     </S.Container>
   );
