@@ -16,8 +16,11 @@ const COMPONENTS = {
   // 2: dynamic(() => import("@/components/frontend")),
   2: dynamic(() => import("@/foundations/pc/text")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
-  4: dynamic(() => import("@/foundations/pc/grid")),
-  5: dynamic(() => import("@/foundations/pc/rhizome")),
+
+  4: dynamic(() => import("@/foundations/pc/text/index-old")),
+
+  5: dynamic(() => import("@/foundations/pc/grid")),
+  6: dynamic(() => import("@/foundations/pc/rhizome")),
 };
 
 const Backend = dynamic(() => import("@/components/backend"));

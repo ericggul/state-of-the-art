@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
-import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
 
 const formatDimensions = (dims) => {
@@ -17,50 +16,30 @@ const formatParams = (params) => {
     .join(", ");
 };
 
-const LayerText = ({ layer, depth = 0, showGrid = false, startDelay = 0 }) => {
+const LayerText = ({ layer, depth = 0, showGrid = false }) => {
   const indent = "  ".repeat(depth);
   const dimensionText = formatDimensions(layer.dimensions);
   const paramsText = formatParams(layer.parameters);
   const gridText = showGrid && layer.type ? formatParams(layer.grid) : "";
 
-  const branchChar = depth === 0 ? "└─" : "├─";
-  const verticalLine = depth > 1 ? "│ ".repeat(depth - 1) : "";
-
-  const fullText = `${layer.name}${dimensionText}${
-    layer.type ? ` <${layer.type}>` : ""
-  }${paramsText ? ` (${paramsText})` : ""}${gridText ? ` {${gridText}}` : ""}`;
-
-  const baseDelay = depth * 200;
-
   return (
     <>
-      <div className="tree-content">
-        <span className="tree-line">
-          {indent}
-          {verticalLine}
-          {branchChar}
-        </span>{" "}
-        <span className={`depth-${depth}`}>
-          <TypewriterLayerText
-            text={fullText}
-            speed={20 + depth * 2}
-            depth={depth}
-            enableSound={depth < 3}
-            startDelay={startDelay + baseDelay}
-          />
-        </span>
+      <div>
+        {indent}
+        {depth === 0 ? "└─" : "├─"} {layer.name}
+        {dimensionText && <span className="dims">{dimensionText}</span>}
+        {layer.type && <span className="type">{`<${layer.type}>`}</span>}
+        {paramsText && <span className="params">{`(${paramsText})`}</span>}
+        {gridText && <span className="grid">{`{${gridText}}`}</span>}
       </div>
-      <div className="sublayers">
-        {layer.sublayers?.map((sublayer, idx, arr) => (
-          <LayerText
-            key={`${sublayer.name}-${idx}-${depth}`}
-            layer={sublayer}
-            depth={depth + 1}
-            showGrid={showGrid}
-            startDelay={startDelay + baseDelay + idx * 100}
-          />
-        ))}
-      </div>
+      {layer.sublayers?.map((sublayer, idx) => (
+        <LayerText
+          key={`${sublayer.name}-${idx}`}
+          layer={sublayer}
+          depth={depth + 1}
+          showGrid={showGrid}
+        />
+      ))}
     </>
   );
 };
@@ -103,7 +82,6 @@ export default function TextComponent() {
               key={`${layer.name}-${idx}`}
               layer={layer}
               showGrid={true}
-              startDelay={idx * 300}
             />
           ))}
         </div>

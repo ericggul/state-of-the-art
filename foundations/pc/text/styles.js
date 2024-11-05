@@ -26,13 +26,24 @@ export const StructureText = styled.pre`
     display: none;
   }
 
-  .type {
-    color: #888;
-    margin-left: 8px;
+  .tree-line {
+    color: #666;
+    user-select: none;
+  }
+
+  .tree-content {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5em;
   }
 
   .dims {
     color: #00ff00;
+    margin-left: 8px;
+  }
+
+  .type {
+    color: #888;
     margin-left: 8px;
   }
 
@@ -68,5 +79,6 @@ export const StructureText = styled.pre`
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    gap: 0.2rem;
   }
 `;
