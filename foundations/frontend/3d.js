@@ -58,10 +58,10 @@ export default function Visualisation({
   isTesting,
 }) {
   const { styleIndex } = useScreenStore();
+  const style = STYLE_STRATEGIES[styleIndex];
 
   const [modelName, setModelName] = useState("");
   const [structure, setStructure] = useState([]);
-  const style = STYLE_STRATEGIES[styleIndex];
   const modelGroupRef = useRef();
   const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 

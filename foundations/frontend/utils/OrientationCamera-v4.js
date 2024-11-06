@@ -7,7 +7,6 @@ import { useOrientationAudio } from "./useOrientationAudio";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
 const LERPING_FACTOR = 0.03;
-const ZOOM_LERPING_FACTOR = 0.1; // Faster lerping for zoom
 
 // Add zoom factor limits
 const ZOOM_LIMITS = {
@@ -21,7 +20,8 @@ export function OrientationCamera({
   initialZoom = ZOOM_LIMITS.DEFAULT,
 }) {
   const { camera } = useThree();
-  const externalZoomFactor = useScreenStore((state) => state.zoomFactor); // External zoom from store
+  const zoomFactor = useScreenStore((state) => state.zoomFactor);
+  const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
 
   const sensorDataRef = useRef({
     orientation: { alpha: 0, beta: 0, gamma: 0 },
@@ -35,7 +35,16 @@ export function OrientationCamera({
   const zoomFactorRef = useRef(initialZoom);
   const targetZoomFactorRef = useRef(initialZoom);
   const lastAccelRef = useRef(new THREE.Vector3());
-  const internalZoomRef = useRef(1); // Track internal zoom separately
+
+  // Update target zoom when store zoomFactor changes
+  useEffect(() => {
+    const clampedZoom = THREE.MathUtils.clamp(
+      zoomFactor,
+      ZOOM_LIMITS.MIN,
+      ZOOM_LIMITS.MAX
+    );
+    targetZoomFactorRef.current = clampedZoom;
+  }, [zoomFactor]);
 
   const {
     playShakeSound,
@@ -63,7 +72,8 @@ export function OrientationCamera({
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
-    // Handle internal zoom based on acceleration
+    // Update zoom based on acceleration
+    const zoomSpeed = 0.3;
     const currentAccel = new THREE.Vector3(
       acceleration.x,
       acceleration.y,
@@ -72,48 +82,49 @@ export function OrientationCamera({
     const accelDiff = currentAccel.sub(lastAccelRef.current);
     const accelMagnitude = accelDiff.length();
 
-    if (accelMagnitude > 0.05 && Math.abs(accelDiff.z) > 1.0) {
-      const zoomSpeed = 0.3;
-      const zoomDelta =
-        Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+    if (accelMagnitude > 0.05) {
+      if (Math.abs(accelDiff.z) > 1.0) {
+        const zoomDelta =
+          Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
 
-      if (
-        (zoomDelta > 0 && internalZoomRef.current < 1.5) ||
-        (zoomDelta < 0 && internalZoomRef.current > 1.5)
-      ) {
-        internalZoomRef.current = THREE.MathUtils.clamp(
-          internalZoomRef.current + zoomDelta,
-          ZOOM_LIMITS.MIN,
-          ZOOM_LIMITS.MAX
-        );
+        if (
+          (zoomDelta > 0 && zoomFactor < 1.5) ||
+          (zoomDelta < 0 && zoomFactor > 1.5)
+        ) {
+          const newZoom = THREE.MathUtils.clamp(
+            zoomFactor + zoomDelta,
+            ZOOM_LIMITS.MIN,
+            ZOOM_LIMITS.MAX
+          );
+          setZoomFactor(newZoom);
+        }
+
         playShakeSound(accelMagnitude);
       }
     }
 
     lastAccelRef.current.copy(currentAccel);
 
-    // Combine internal and external zoom factors
-    const combinedZoom = internalZoomRef.current * externalZoomFactor;
-
-    // Smooth interpolation of actual zoom
-    zoomFactorRef.current = lerp(
-      zoomFactorRef.current,
-      combinedZoom,
-      ZOOM_LERPING_FACTOR
-    );
-
-    // Distance interpolation
+    // Smoothly interpolate current distance towards target distance
     currentDistanceRef.current = lerp(
       currentDistanceRef.current,
       targetDistanceRef.current,
       LERPING_FACTOR
     );
 
-    // Position update with combined zoom
+    // Smoothly interpolate current zoom factor towards target zoom factor
+    zoomFactorRef.current = lerp(
+      zoomFactorRef.current,
+      targetZoomFactorRef.current,
+      LERPING_FACTOR
+    );
+
     const length = currentDistanceRef.current * zoomFactorRef.current;
+
     targetPositionRef.current
       .set(0, 0, length)
       .applyQuaternion(quaternionRef.current);
+
     camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
     camera.lookAt(0, 0, 0);
 
