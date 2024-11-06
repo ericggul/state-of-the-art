@@ -29,6 +29,13 @@ export const STYLE_STRATEGIES = [
       fov: 50,
       near: 0.1,
     },
+    postprocessing: {
+      bloom: {
+        intensity: 3,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
+    },
   },
   {
     name: "Subtle Red",

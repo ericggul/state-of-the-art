@@ -59,6 +59,11 @@ export function OrientationCamera({
     beta = beta; // Keep beta as is
     gamma = gamma; // Keep gamma as is
 
+    //ORIGINAL
+    // alpha = -alpha;
+    // beta = -beta;
+    // gamma = -gamma;
+
     // Convert degrees to radians for Three.js
     const alphaRad = THREE.MathUtils.degToRad(alpha);
     const betaRad = THREE.MathUtils.degToRad(beta);
@@ -121,7 +126,13 @@ export function OrientationCamera({
     camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
     camera.lookAt(0, 0, 0);
 
-    updateZoomAudio(zoomFactorRef.current);
+    // Clamp the audio zoom value between 0 and 1
+    const audioZoomValue = THREE.MathUtils.clamp(
+      zoomFactorRef.current / ZOOM_LIMITS.MAX,
+      0,
+      1
+    );
+    updateZoomAudio(audioZoomValue);
   });
 
   useEffect(() => {

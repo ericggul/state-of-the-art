@@ -24,13 +24,13 @@ export default function ModelContainer({
 }) {
   const rotationRef = useRef(0);
 
-  // Slow continuous rotation
-  useFrame(() => {
-    if (modelGroupRef.current) {
-      rotationRef.current += ROTATION_SPEED;
-      modelGroupRef.current.rotation.y = rotationRef.current;
-    }
-  });
+  //   // Slow continuous rotation
+  //   useFrame(() => {
+  //     if (modelGroupRef.current) {
+  //       rotationRef.current += ROTATION_SPEED;
+  //       modelGroupRef.current.rotation.y = rotationRef.current;
+  //     }
+  //   });
 
   const modelConfig = LAYER_CONFIGS[modelName];
   let ModelComponent;
