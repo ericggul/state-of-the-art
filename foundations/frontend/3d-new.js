@@ -46,42 +46,56 @@ export default function Visualisation({
 }) {
   const { styleIndex } = useScreenStore();
   const style = STYLE_STRATEGIES[styleIndex];
-
-  const [modelName, setModelName] = useState("");
-  const [structure, setStructure] = useState([]);
   const modelGroupRef = useRef();
-  const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 
-  useEffect(() => {
-    const name = getModelNameFromVersion(version);
-    if (name) {
-      setModelName(name);
-      const modelStructure = getModelStructure(name);
-      setStructure(modelStructure);
-    } else {
-      console.warn(`No model found for version: ${version}`);
-    }
-  }, [version]);
+  // Memoize these values to prevent unnecessary recalculations
+  const [modelData, setModelData] = useState({
+    name: "",
+    structure: [],
+    cameraDistance: INITIAL_CAMERA_DISTANCE,
+  });
 
-  useEffect(() => {
-    if (modelGroupRef.current && structure.length > 0) {
-      setTimeout(() => {
+  // Ref to track when the model has actually changed
+  const modelChangedRef = useRef(false);
+
+  // Function to handle model change
+  const handleModelChange = () => {
+    modelChangedRef.current = true;
+
+    // Recalculate camera distance
+    if (modelGroupRef.current) {
+      const calculateCameraDistance = () => {
         const box = new Box3().setFromObject(modelGroupRef.current);
         const size = new Vector3();
         box.getSize(size);
 
         const avgDimension = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2);
+        return avgDimension === 0 || !isFinite(avgDimension)
+          ? 400
+          : avgDimension * 0.23;
+      };
 
-        if (avgDimension === 0 || !isFinite(avgDimension)) {
-          console.warn("Invalid model size. Using default camera distance.");
-          setCameraDistance(400);
-        } else {
-          const distance = avgDimension * 0.23;
-          setCameraDistance(distance);
-        }
-      }, 500);
+      setModelData((prev) => ({
+        ...prev,
+        cameraDistance: calculateCameraDistance(),
+      }));
     }
-  }, [structure, modelName]);
+  };
+
+  // Effect for model initialization
+  useEffect(() => {
+    const name = getModelNameFromVersion(version);
+    if (name) {
+      const modelStructure = getModelStructure(name) || [];
+      setModelData((prev) => ({
+        ...prev,
+        name,
+        structure: modelStructure,
+      }));
+      // Reset the modelChanged flag
+      modelChangedRef.current = false;
+    }
+  }, [version]);
 
   return (
     <Canvas
@@ -95,12 +109,15 @@ export default function Visualisation({
       <Suspense fallback={null}>
         <CommonScene style={style}>
           <ModelContainer
-            modelName={modelName}
-            structure={structure}
+            modelName={modelData.name}
+            structure={modelData.structure}
             style={style}
             modelGroupRef={modelGroupRef}
+            onModelChange={handleModelChange}
           />
-          {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
+          {!isTesting && (
+            <OrientationCamera cameraDistance={modelData.cameraDistance} />
+          )}
           <PostProcessing />
         </CommonScene>
       </Suspense>
