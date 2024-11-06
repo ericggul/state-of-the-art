@@ -1,14 +1,15 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
 
-const lerp = (start, end, t) => start + (end - start) * t;
+const lerp = (start, end, t) => start * (1 - t) + end * t;
 const LERPING_FACTOR = 0.03;
-const ZOOM_LERPING_FACTOR = 0.1;
+const ZOOM_LERPING_FACTOR = 0.1; // Faster lerping for zoom
 
+// Add zoom factor limits
 const ZOOM_LIMITS = {
   MIN: 0.01,
   MAX: 3,
@@ -20,21 +21,21 @@ export function OrientationCamera({
   initialZoom = ZOOM_LIMITS.DEFAULT,
 }) {
   const { camera } = useThree();
-  const externalZoomFactor = useScreenStore((state) => state.zoomFactor);
+  const externalZoomFactor = useScreenStore((state) => state.zoomFactor); // External zoom from store
 
   const sensorDataRef = useRef({
     orientation: { alpha: 0, beta: 0, gamma: 0 },
     acceleration: { x: 0, y: 0, z: 0 },
   });
-
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
   const currentDistanceRef = useRef(cameraDistance);
   const targetDistanceRef = useRef(cameraDistance);
   const zoomFactorRef = useRef(initialZoom);
-  const internalZoomRef = useRef(1);
+  const targetZoomFactorRef = useRef(initialZoom);
   const lastAccelRef = useRef(new THREE.Vector3());
+  const internalZoomRef = useRef(1); // Track internal zoom separately
 
   const {
     playShakeSound,
@@ -50,18 +51,16 @@ export function OrientationCamera({
     handleNewMobileOrientation,
   });
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const { orientation, acceleration } = sensorDataRef.current;
-    let { alpha, beta, gamma } = orientation;
-
-    // Adjust the angles to synchronize the rotation direction
-    alpha = -alpha; // Invert alpha
-    beta = beta; // Keep beta as is
-    gamma = gamma; // Keep gamma as is
+    const { alpha, beta, gamma } = orientation;
 
     // Convert degrees to radians for Three.js
+    // const alphaRad = THREE.MathUtils.degToRad(-alpha);
     const alphaRad = THREE.MathUtils.degToRad(alpha);
+    // const betaRad = THREE.MathUtils.degToRad(-beta);
     const betaRad = THREE.MathUtils.degToRad(beta);
+    // const gammaRad = THREE.MathUtils.degToRad(-gamma);
     const gammaRad = THREE.MathUtils.degToRad(gamma);
 
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
@@ -73,7 +72,7 @@ export function OrientationCamera({
       acceleration.y,
       acceleration.z
     );
-    const accelDiff = currentAccel.clone().sub(lastAccelRef.current);
+    const accelDiff = currentAccel.sub(lastAccelRef.current);
     const accelMagnitude = accelDiff.length();
 
     if (accelMagnitude > 0.05 && Math.abs(accelDiff.z) > 1.0) {
@@ -83,7 +82,7 @@ export function OrientationCamera({
 
       if (
         (zoomDelta > 0 && internalZoomRef.current < 1.5) ||
-        (zoomDelta < 0 && internalZoomRef.current > 0.5)
+        (zoomDelta < 0 && internalZoomRef.current > 1.5)
       ) {
         internalZoomRef.current = THREE.MathUtils.clamp(
           internalZoomRef.current + zoomDelta,
@@ -131,12 +130,12 @@ export function OrientationCamera({
     return () => {
       camera.position.copy(originalPosition);
       camera.rotation.copy(originalRotation);
-      cleanupAudio();
+      cleanupAudio(); // Clean up the audio when component unmounts
     };
   }, [camera, cleanupAudio]);
 
   useEffect(() => {
-    // Update target distance when cameraDistance changes
+    // When cameraDistance changes, update targetDistanceRef
     targetDistanceRef.current = cameraDistance;
   }, [cameraDistance]);
 

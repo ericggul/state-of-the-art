@@ -93,3 +93,37 @@ export const TopReverse = styled.div`
 
   pointer-events: none;
 `;
+
+export const ZoomControls = styled.div`
+  position: absolute;
+  top: ${relVw(MARGIN_TOP)};
+  right: ${relVw(60)};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: ${relVw(10)};
+  pointer-events: auto !important;
+`;
+
+export const ZoomButton = styled.button`
+  width: ${relVw(40)};
+  height: ${relVw(40)};
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: ${relVw(20)};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--cardo);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+export const ZoomValue = styled.div`
+  font-size: ${relVw(20)};
+  width: ${relVw(60)};
+  text-align: center;
+`;

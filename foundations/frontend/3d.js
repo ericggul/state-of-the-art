@@ -8,26 +8,13 @@ import { Perf } from "r3f-perf";
 import useScreenStore from "@/components/screen/store";
 
 import { STYLE_STRATEGIES } from "./style";
-import { LAYER_CONFIGS, getModelStructure } from "./arch-models/_structure";
+import { getModelStructure } from "./arch-models/_structure";
 import { OBJECT_ARRAY } from "@/components/controller/constant/models/v3";
 
-import BasicNNLayers from "./arch/layers/BasicNNLayers";
-import CNNLayers from "./arch/layers/CNNLayers";
-import TransformerLayers from "./arch/layers/TransformerLayers";
-import RNNLayers from "./arch/layers/RNNLayers";
-import VAELayers from "./arch/layers/VAELayers";
-import SelfSupervisedLayers from "./arch/layers/SelfSupervisedLayers";
-import GANLayers from "./arch/layers/GANLayers";
-import DiffusionLayers from "./arch/layers/DiffusionLayers";
-import MultiModalLayers from "./arch/layers/MultiModalLayers";
-import ReinforcementLayers from "./arch/layers/ReinforcementLayers";
-import HopfieldLayers from "./arch/layers/HopfieldLayers";
-import BoltzmannLayers from "./arch/layers/BoltzmannLayers";
-
-import AvatarModel from "@/foundations/pc/avatar/model";
 import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
-import PositionalAudio from "./utils/PositionalAudio";
+
+import ModelContainer from "./components/ModelContainer";
 
 const CURRENT_TESTING_VERSION = "v4.0.3";
 // Utility function to convert model name to variable name
@@ -78,88 +65,23 @@ export default function Visualisation({
 
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {
-      // Delay the calculation to ensure the 3D objects are rendered
       setTimeout(() => {
         const box = new Box3().setFromObject(modelGroupRef.current);
         const size = new Vector3();
         box.getSize(size);
-        // console.log("size", size);
 
-        // Use the maximum dimension
-        const maxDimension = Math.max(size.x, size.y, size.z);
         const avgDimension = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2);
 
         if (avgDimension === 0 || !isFinite(avgDimension)) {
           console.warn("Invalid model size. Using default camera distance.");
-          setCameraDistance(400); // Default distance
+          setCameraDistance(400);
         } else {
           const distance = avgDimension * 0.23;
-          // console.log(
-          //   `Calculated camera distance for ${modelName}: `,
-          //   distance
-          // );
           setCameraDistance(distance);
         }
-      }, 500); // Adjust this delay if needed
+      }, 500);
     }
   }, [structure, modelName]);
-
-  const modelConfig = LAYER_CONFIGS[modelName];
-
-  let ModelComponent;
-  if (modelConfig) {
-    switch (modelConfig.type) {
-      case "basic_nn":
-        ModelComponent = BasicNNLayers;
-        break;
-      case "cnn":
-        ModelComponent = CNNLayers;
-        break;
-      case "transformer":
-        ModelComponent = TransformerLayers;
-        break;
-      case "rnn":
-        ModelComponent = RNNLayers;
-        break;
-      case "vae":
-        ModelComponent = VAELayers;
-        break;
-      case "self_supervised":
-        ModelComponent = SelfSupervisedLayers;
-        break;
-      case "gan":
-        ModelComponent = GANLayers;
-        break;
-      case "diffusion":
-        ModelComponent = DiffusionLayers;
-        break;
-      case "multi_modal":
-        ModelComponent = MultiModalLayers;
-        break;
-      case "reinforcement":
-        ModelComponent = ReinforcementLayers;
-        break;
-      case "hopfield":
-        ModelComponent = HopfieldLayers;
-        break;
-      case "boltzmann":
-        ModelComponent = BoltzmannLayers;
-        break;
-
-      default:
-        console.warn(
-          `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`
-        );
-        ModelComponent = BasicNNLayers;
-    }
-  } else {
-    console.warn(
-      `No configuration found for model: ${modelName}. Defaulting to BasicNNLayers.`
-    );
-    ModelComponent = BasicNNLayers;
-  }
-
-  console.log(structure);
 
   return (
     <Canvas
@@ -170,22 +92,16 @@ export default function Visualisation({
       }}
       gl={{ alpha: true, antialias: true }}
     >
-      {/* <Perf position="top-left" /> */}
       <Suspense fallback={null}>
         <CommonScene style={style}>
-          <group ref={modelGroupRef}>
-            {structure.length > 0 && (
-              <ModelComponent
-                structure={structure}
-                style={style}
-                model={modelName}
-              />
-            )}
-          </group>
-          {/* <AvatarModel /> */}
+          <ModelContainer
+            modelName={modelName}
+            structure={structure}
+            style={style}
+            modelGroupRef={modelGroupRef}
+          />
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
           <PostProcessing />
-          {/* <PositionalAudio distance={cameraDistance * 0.2} /> */}
         </CommonScene>
       </Suspense>
     </Canvas>
