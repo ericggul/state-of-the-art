@@ -147,6 +147,7 @@ export default function useViseme() {
           { responseType: "blob" }
         );
 
+        console.log("🚀 ~ getViseme ~ audioRes:", audioRes);
         const audio = audioRes.data;
         const visemes = JSON.parse(audioRes.headers.visemes);
         const audioUrl = URL.createObjectURL(audio);

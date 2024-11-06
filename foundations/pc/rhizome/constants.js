@@ -35,7 +35,7 @@ export const VISUAL = {
     DEFAULT: {
       RADIUS: 2.0,
       OPACITY: 0.5,
-      STROKE_WIDTH: 0.8,
+      STROKE_WIDTH: 1,
       FONT_SIZE: "0.75vw",
     },
     HIGHLIGHTED: {
@@ -53,10 +53,10 @@ export const VISUAL = {
   },
   LINK: {
     CURVE_FACTOR: 0.55,
-    STROKE_WIDTH: 1.2,
-    OPACITY: 0.4,
+    STROKE_WIDTH: 1.0,
+    OPACITY: 0.5,
     HIGHLIGHTED: {
-      OPACITY: 0.8,
+      OPACITY: 1.0,
       STROKE_WIDTH: 2,
     },
   },

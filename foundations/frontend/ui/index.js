@@ -9,7 +9,7 @@ export default function ProductPreview({ model }) {
 function UI({ model }) {
   return (
     <S.UIWrapper>
-      <S.TopLeft>State-of-the-art Architecture</S.TopLeft>
+      <S.TopLeft>State of the Art Gallery</S.TopLeft>
       <S.BottomLeft>
         <S.Title>{model.name}</S.Title>
         <S.TitleRight>

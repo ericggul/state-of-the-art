@@ -4,11 +4,13 @@ export const STYLE_STRATEGIES = [
     name: "Wireframe Blue with HAL",
     colors: {
       outer: "hsl(240, 65%, 28%)", // Deep, rich blue
-      inner: "hsl(240, 70%, 35%)", // Slightly brighter blue
+      inner: "hsl(230, 70%, 52%)", // Slightly brighter blue
       plane: "hsl(240, 50%, 15%)", // Dark, muted blue
+      conv: "hsl(180, 70%, 52%)", // Slightly brighter blue
+      attention: "hsl(240, 70%, 52%)", // Slightly brighter blue
     },
     material: {
-      metalness: 0.6,
+      metalness: 0.8,
       roughness: 0.4,
       transparent: true,
       opacity: 1,

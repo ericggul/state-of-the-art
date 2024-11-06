@@ -54,7 +54,7 @@ const Sublayer = ({
         }
         nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
         style={style}
-        color={style.colors.inner}
+        color={style.colors[sublayer.type] || style.colors.inner}
         rotation={[Math.PI / 2, 0, 0]}
         sublayer={sublayer}
       />

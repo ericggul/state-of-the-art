@@ -30,10 +30,10 @@ export default function useSocketScreenOrientation({
         "new-mobile-orientation-update",
         handleNewMobileOrientation
       );
-      socket.current.on(
-        "new-mobile-orientation-spike",
-        handleNewMobileOrientationSpike
-      );
+      // socket.current.on(
+      //   "new-mobile-orientation-spike",
+      //   handleNewMobileOrientationSpike
+      // );
     });
   };
 

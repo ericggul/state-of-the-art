@@ -6,6 +6,7 @@ const useScreenStore = create((set) => ({
   mobileVisibility: true,
   styleIndex: 0,
   isProjector: true,
+  zoomFactor: 1,
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
@@ -13,6 +14,8 @@ const useScreenStore = create((set) => ({
   setLatestSpeech: (speech) => set({ latestSpeech: speech }),
 
   setMobileVisibility: (visibility) => set({ mobileVisibility: visibility }),
+
+  setZoomFactor: (zoom) => set({ zoomFactor: zoom }),
 
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
@@ -38,9 +41,9 @@ const useScreenStore = create((set) => ({
     set({ mobileVisibility: data.isVisible });
   },
 
-  handleNewMobileOrientationSpike: (data) => {
-    set({ styleIndex: Math.floor(data.spikeCount) % 15 });
-  },
+  // handleNewMobileOrientationSpike: (data) => {
+  //   set({ styleIndex: Math.floor(data.spikeCount) % 15 });
+  // },
 
   setIsProjector: (isProjector) => set({ isProjector }),
 }));
