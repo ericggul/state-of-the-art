@@ -14,7 +14,7 @@ import { OBJECT_ARRAY } from "@/components/controller/constant/models/v3";
 import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
 
-import ModelContainer from "./components/ModelContainer-new";
+import ModelContainer from "./components/ModelContainer";
 
 const CURRENT_TESTING_VERSION = "v4.0.3";
 // Utility function to convert model name to variable name

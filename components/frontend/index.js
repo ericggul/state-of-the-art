@@ -2,14 +2,11 @@
 
 import { useMemo } from "react";
 import * as S from "./styles";
-import Architecture3D from "@/foundations/frontend/3d-new";
+import Architecture3D from "@/foundations/frontend/3d";
 import ArchitectureUI from "@/foundations/frontend/ui";
-import { MODELS } from "@/components/controller/constant/models/v3";
-import { flattenModels, filterAndRefineModels } from "./utils-new";
-import useDebounce from "@/utils/hooks/useDebounce";
 
 import useScreenStore from "@/components/screen/store";
-import { useModelStructure } from "./utils-new";
+import { useModelStructure } from "./utils";
 
 const CURRENT_TESTING_VERSION = "v4.3.5";
 const DEBOUNCE_DELAY = 1000; // 300ms delay, adjust as needed

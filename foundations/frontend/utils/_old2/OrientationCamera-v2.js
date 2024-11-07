@@ -3,26 +3,13 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 import useScreenStore from "@/components/screen/store";
-import { useOrientationAudio } from "./useOrientationAudio";
+import { useOrientationAudio } from "../useOrientationAudio";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
 const LERPING_FACTOR = 0.03;
 
-// Add zoom factor limits
-const ZOOM_LIMITS = {
-  MIN: 0.01,
-  MAX: 3,
-  DEFAULT: 1,
-};
-
-export function OrientationCamera({
-  cameraDistance = 100,
-  initialZoom = ZOOM_LIMITS.DEFAULT,
-}) {
+export function OrientationCamera({ cameraDistance = 100 }) {
   const { camera } = useThree();
-  const zoomFactor = useScreenStore((state) => state.zoomFactor);
-  const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
-
   const sensorDataRef = useRef({
     orientation: { alpha: 0, beta: 0, gamma: 0 },
     acceleration: { x: 0, y: 0, z: 0 },
@@ -32,19 +19,9 @@ export function OrientationCamera({
   const targetPositionRef = useRef(new THREE.Vector3());
   const currentDistanceRef = useRef(cameraDistance);
   const targetDistanceRef = useRef(cameraDistance);
-  const zoomFactorRef = useRef(initialZoom);
-  const targetZoomFactorRef = useRef(initialZoom);
+  const zoomFactorRef = useRef(1);
+  const targetZoomFactorRef = useRef(1);
   const lastAccelRef = useRef(new THREE.Vector3());
-
-  // Update target zoom when store zoomFactor changes
-  useEffect(() => {
-    const clampedZoom = THREE.MathUtils.clamp(
-      zoomFactor,
-      ZOOM_LIMITS.MIN,
-      ZOOM_LIMITS.MAX
-    );
-    targetZoomFactorRef.current = clampedZoom;
-  }, [zoomFactor]);
 
   const {
     playShakeSound,
@@ -55,9 +32,11 @@ export function OrientationCamera({
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
   };
+  const { handleNewMobileOrientationSpike } = useScreenStore();
 
   useSocketScreenOrientation({
     handleNewMobileOrientation,
+    handleNewMobileOrientationSpike,
   });
 
   useFrame((state, delta) => {
@@ -72,38 +51,53 @@ export function OrientationCamera({
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
-    // Update zoom based on acceleration
-    const zoomSpeed = 0.3;
-    const currentAccel = new THREE.Vector3(
-      acceleration.x,
-      acceleration.y,
-      acceleration.z
-    );
-    const accelDiff = currentAccel.sub(lastAccelRef.current);
+    // Update target zoom factor based on all acceleration axes
+    const zoomSpeed = 0.2; // Increased from 0.1
+    const accelPower = 1.4; // Increased from 1.2 for more dramatic changes
+
+    const { x, y, z } = acceleration;
+    const accelDiff = new THREE.Vector3(x, y, z).sub(lastAccelRef.current);
     const accelMagnitude = accelDiff.length();
 
     if (accelMagnitude > 0.05) {
-      if (Math.abs(accelDiff.z) > 1.0) {
-        const zoomDelta =
-          Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
+      // Increase sensitivity
+      const zoomDelta =
+        Math.sign(accelDiff.z) *
+        Math.pow(accelMagnitude, accelPower) *
+        zoomSpeed;
 
-        if (
-          (zoomDelta > 0 && zoomFactor < 1.5) ||
-          (zoomDelta < 0 && zoomFactor > 1.5)
-        ) {
-          const newZoom = THREE.MathUtils.clamp(
-            zoomFactor + zoomDelta,
-            ZOOM_LIMITS.MIN,
-            ZOOM_LIMITS.MAX
-          );
-          setZoomFactor(newZoom);
-        }
+      // Add larger increments to current zoom
+      targetZoomFactorRef.current += zoomDelta;
 
-        playShakeSound(accelMagnitude);
+      // Less resistance at the edges
+      const minZoom = 0.1; // Changed from 0.01 for better control
+      const maxZoom = 3;
+      const easingFactor = 0.6; // Increased from 0.3 for less resistance at extremes
+
+      if (targetZoomFactorRef.current > maxZoom - 0.5) {
+        const excess = targetZoomFactorRef.current - (maxZoom - 0.5);
+        targetZoomFactorRef.current = maxZoom - 0.5 + excess * easingFactor;
+      } else if (targetZoomFactorRef.current < minZoom + 0.5) {
+        const excess = minZoom + 0.5 - targetZoomFactorRef.current;
+        targetZoomFactorRef.current = minZoom + 0.5 - excess * easingFactor;
       }
+
+      targetZoomFactorRef.current = THREE.MathUtils.clamp(
+        targetZoomFactorRef.current,
+        minZoom,
+        maxZoom
+      );
+
+      playShakeSound(accelMagnitude);
+
+      console.log(
+        accelMagnitude.toFixed(2),
+        zoomDelta.toFixed(2),
+        targetZoomFactorRef.current.toFixed(3)
+      );
     }
 
-    lastAccelRef.current.copy(currentAccel);
+    lastAccelRef.current.copy(acceleration);
 
     // Smoothly interpolate current distance towards target distance
     currentDistanceRef.current = lerp(
@@ -119,15 +113,19 @@ export function OrientationCamera({
       LERPING_FACTOR
     );
 
+    // console.log(zoomFactorRef.current);
+
     const length = currentDistanceRef.current * zoomFactorRef.current;
 
     targetPositionRef.current
       .set(0, 0, length)
       .applyQuaternion(quaternionRef.current);
 
+    // Lerp the camera position for smooth movement
     camera.position.lerp(targetPositionRef.current, LERPING_FACTOR);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, 0, 0); // Ensure camera is always looking at the origin
 
+    // Update audio based on zoom factor
     updateZoomAudio(zoomFactorRef.current);
   });
 

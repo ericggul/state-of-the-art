@@ -3,7 +3,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 import useScreenStore from "@/components/screen/store";
-import { useOrientationAudio } from "./useOrientationAudio";
+import { useOrientationAudio } from "../useOrientationAudio";
 
 const lerp = (start, end, t) => start * (1 - t) + end * t;
 const LERPING_FACTOR = 0.03;
@@ -32,11 +32,9 @@ export function OrientationCamera({ cameraDistance = 100 }) {
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
   };
-  const { handleNewMobileOrientationSpike } = useScreenStore();
 
   useSocketScreenOrientation({
     handleNewMobileOrientation,
-    handleNewMobileOrientationSpike,
   });
 
   useFrame((state, delta) => {
@@ -62,22 +60,27 @@ export function OrientationCamera({ cameraDistance = 100 }) {
     const accelMagnitude = accelDiff.length();
 
     if (accelMagnitude > 0.05) {
-      const zoomDelta =
-        Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
-      targetZoomFactorRef.current += zoomDelta;
-      targetZoomFactorRef.current = THREE.MathUtils.clamp(
-        targetZoomFactorRef.current,
-        0.01,
-        3
-      );
+      // Only use significant z-axis movement
+      if (Math.abs(accelDiff.z) > 1.0) {
+        const zoomDelta =
+          Math.sign(accelDiff.z) * Math.pow(accelMagnitude, 1.6) * zoomSpeed;
 
-      playShakeSound(accelMagnitude);
+        // Add hysteresis to prevent rapid flipping
+        if (
+          (zoomDelta > 0 && targetZoomFactorRef.current < 1.5) ||
+          (zoomDelta < 0 && targetZoomFactorRef.current > 1.5)
+        ) {
+          targetZoomFactorRef.current += zoomDelta;
+        }
 
-      console.log(
-        accelMagnitude.toFixed(2),
-        zoomDelta.toFixed(2),
-        targetZoomFactorRef.current
-      );
+        targetZoomFactorRef.current = THREE.MathUtils.clamp(
+          targetZoomFactorRef.current,
+          0.01,
+          3
+        );
+
+        playShakeSound(accelMagnitude);
+      }
     }
 
     lastAccelRef.current.copy(currentAccel);
