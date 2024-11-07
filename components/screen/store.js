@@ -8,6 +8,8 @@ const useScreenStore = create((set) => ({
   isProjector: true,
   zoomFactor: 1,
 
+  deviceIndex: 5,
+
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
 
@@ -46,6 +48,7 @@ const useScreenStore = create((set) => ({
   // },
 
   setIsProjector: (isProjector) => set({ isProjector }),
+  setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
 }));
 
 export default useScreenStore;

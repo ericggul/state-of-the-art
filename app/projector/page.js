@@ -9,22 +9,22 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
-// const Backend = dynamic(() => import("@/foundations/test-backend/3-chaos/2"));
+const Transition = dynamic(() => import("@/components/screen/transition"));
 
 export default function ScreenWrapper() {
   const {
-    currentArchitectures,
-    latestSpeech,
     mobileVisibility,
     handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
     setIsProjector,
+    setDeviceIndex,
   } = useScreenStore();
 
   useEffect(() => {
     setIsProjector(true);
+    setDeviceIndex(4);
   }, []);
 
   const socket = useSocketScreen({
@@ -35,7 +35,7 @@ export default function ScreenWrapper() {
     handleNewMobileArchitecture,
   });
 
-  const { showFrontend, showBackend } = useScreenVisibility({
+  const { showFrontend, showBackend, showTransition } = useScreenVisibility({
     mobileVisibility,
   });
 
@@ -43,6 +43,7 @@ export default function ScreenWrapper() {
     <Suspense>
       {showFrontend && <Frontend />}
       {showBackend && <Backend showBackend={showBackend} />}
+      {showTransition && <Transition />}
     </Suspense>
   );
 }

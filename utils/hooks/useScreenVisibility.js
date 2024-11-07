@@ -3,6 +3,7 @@ import { Suspense, useEffect, useState, useRef } from "react";
 export default function useScreenVisibility({ mobileVisibility }) {
   const [showFrontend, setShowFrontend] = useState(true);
   const [showBackend, setShowBackend] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
   const timeoutRef1 = useRef(null);
   const timeoutRef2 = useRef(null);
 
@@ -10,9 +11,12 @@ export default function useScreenVisibility({ mobileVisibility }) {
     if (mobileVisibility) {
       setShowFrontend(true);
       setShowBackend(false);
+      setShowTransition(false);
     } else {
+      setShowTransition(true);
       timeoutRef1.current = setTimeout(() => {
         setShowBackend(true);
+        setShowTransition(false);
       }, 3000);
       timeoutRef2.current = setTimeout(() => {
         setShowFrontend(false);
@@ -29,5 +33,5 @@ export default function useScreenVisibility({ mobileVisibility }) {
     };
   }, [mobileVisibility]);
 
-  return { showFrontend, showBackend };
+  return { showFrontend, showBackend, showTransition };
 }

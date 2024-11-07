@@ -23,25 +23,26 @@ const COMPONENTS = {
 };
 
 const Backend = dynamic(() => import("@/components/backend"));
+const Transition = dynamic(() => import("@/components/screen/transition"));
 
 export default function RelationPage() {
   const { idx } = useParams();
 
   const {
-    currentArchitectures,
-    latestSpeech,
     mobileVisibility,
     handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
     handleNewMobileArchitecture,
     setIsProjector,
+    setDeviceIndex,
   } = useScreenStore();
 
   // Set isProjector to false on mount
   useEffect(() => {
     setIsProjector(false);
-  }, []);
+    setDeviceIndex(idx);
+  }, [idx]);
 
   const socket = useSocketScreen({
     layerIdx: idx,
@@ -51,7 +52,7 @@ export default function RelationPage() {
     handleNewMobileArchitecture,
   });
 
-  const { showFrontend, showBackend } = useScreenVisibility({
+  const { showFrontend, showBackend, showTransition } = useScreenVisibility({
     mobileVisibility,
   });
 
@@ -62,6 +63,7 @@ export default function RelationPage() {
     <>
       {showFrontend && <FrontendComponent />}
       {showBackend && <Backend showBackend={showBackend} />}
+      {showTransition && <Transition />}
     </>
   );
 }
