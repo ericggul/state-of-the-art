@@ -179,6 +179,7 @@ export default function useViseme() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      // Clean up previous audio
       if (previousAudioRef.current) {
         previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
         previousAudioRef.current.pause();
@@ -186,6 +187,23 @@ export default function useViseme() {
           URL.revokeObjectURL(previousAudioRef.current.src);
         }
       }
+
+      // Clean up pending TTS audio
+      if (pendingTTSRef.current?.audioPlayer) {
+        pendingTTSRef.current.audioPlayer.removeEventListener(
+          "ended",
+          handleAudioEnd
+        );
+        pendingTTSRef.current.audioPlayer.pause();
+        if (pendingTTSRef.current.audioPlayer.src) {
+          URL.revokeObjectURL(pendingTTSRef.current.audioPlayer.src);
+        }
+      }
+
+      // Reset all refs and state
+      pendingTTSRef.current = null;
+      nextSpeechGenerationRef.current = false;
+      isPlayingRef.current = false;
     };
   }, []);
 
