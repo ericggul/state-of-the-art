@@ -6,8 +6,8 @@ import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
 
 const lerp = (start, end, t) => start + (end - start) * t;
-const LERPING_FACTOR = 0.1;
-const ZOOM_LERPING_FACTOR = 0.1;
+const LERPING_FACTOR = 0.03;
+const ZOOM_LERPING_FACTOR = 0.03;
 
 const ZOOM_LIMITS = {
   MIN: 0.05,
@@ -55,14 +55,14 @@ export function OrientationCamera({
     let { alpha, beta, gamma } = orientation;
 
     // Adjust the angles to synchronize the rotation direction
-    alpha = -alpha; // Invert alpha
-    beta = beta; // Keep beta as is
-    gamma = gamma; // Keep gamma as is
+    // alpha = -alpha; // Invert alpha
+    // beta = beta; // Keep beta as is
+    // gamma = gamma; // Keep gamma as is
 
     //ORIGINAL
-    // alpha = -alpha;
-    // beta = -beta;
-    // gamma = -gamma;
+    alpha = -alpha;
+    beta = -beta;
+    gamma = -gamma;
 
     // Convert degrees to radians for Three.js
     const alphaRad = THREE.MathUtils.degToRad(alpha);
