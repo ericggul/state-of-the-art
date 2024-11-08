@@ -10,8 +10,8 @@ const LEVEL_CONFIG = {
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 const randomiseLevelConfig = () => {
-  const xRandom = getRandom(0.5, 2);
-  const yRandom = 20 - xRandom * 5 + getRandom(-2, 5);
+  const xRandom = getRandom(0.5, 2.5);
+  const yRandom = 15 - xRandom * 5 + getRandom(0, 2);
   return { xRange: xRandom, yRange: yRandom };
 };
 
@@ -32,6 +32,7 @@ export function useAnimationState({ isblack, visible, subLevel, level }) {
   );
 
   useEffect(() => {
+    console.log("config changed", config);
     setState({
       xRange: config.xRange,
       yRange: config.yRange,
