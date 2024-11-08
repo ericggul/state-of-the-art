@@ -9,6 +9,7 @@ export default function useScreenVisibility() {
   const [showTransition, setShowTransition] = useState(false);
   const timeoutRef1 = useRef(null);
   const timeoutRef2 = useRef(null);
+  const timeoutRef3 = useRef(null);
 
   useEffect(() => {
     if (mobileVisibility) {
@@ -18,10 +19,12 @@ export default function useScreenVisibility() {
     } else {
       setShowTransition(true);
       timeoutRef1.current = setTimeout(() => {
-        setShowBackend(true);
         setShowTransition(false);
-      }, 3000);
-      timeoutRef2.current = setTimeout(
+      }, 7000);
+      timeoutRef2.current = setTimeout(() => {
+        setShowBackend(true);
+      }, 10000);
+      timeoutRef3.current = setTimeout(
         () => {
           setShowFrontend(false);
         },
@@ -35,6 +38,9 @@ export default function useScreenVisibility() {
       }
       if (timeoutRef2.current) {
         clearTimeout(timeoutRef2.current);
+      }
+      if (timeoutRef3.current) {
+        clearTimeout(timeoutRef3.current);
       }
     };
   }, [mobileVisibility, isProjector]);

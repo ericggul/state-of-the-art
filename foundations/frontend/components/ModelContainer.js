@@ -15,6 +15,8 @@ import HopfieldLayers from "../arch/layers/HopfieldLayers";
 import BoltzmannLayers from "../arch/layers/BoltzmannLayers";
 import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type";
 
+import CommonScene from "../utils/CommonScene";
+
 export default function ModelContainer({
   modelName,
   structure,
@@ -78,19 +80,17 @@ export default function ModelContainer({
     typeStyle = DEFAULT_STYLE;
   }
 
-  const mergedStyle = {
-    ...typeStyle,
-  };
-
   return (
-    <group ref={modelGroupRef}>
-      {structure.length > 0 && (
-        <ModelComponent
-          structure={structure}
-          style={mergedStyle}
-          model={modelName}
-        />
-      )}
-    </group>
+    <CommonScene style={typeStyle}>
+      <group ref={modelGroupRef}>
+        {structure.length > 0 && (
+          <ModelComponent
+            structure={structure}
+            style={typeStyle}
+            model={modelName}
+          />
+        )}
+      </group>
+    </CommonScene>
   );
 }

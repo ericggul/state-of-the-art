@@ -6,8 +6,6 @@ export const STYLE_STRATEGIES = [
       outer: "hsl(240, 65%, 28%)", // Deep, rich blue
       inner: "hsl(230, 70%, 52%)", // Slightly brighter blue
       plane: "hsl(240, 50%, 15%)", // Dark, muted blue
-      conv: "hsl(180, 70%, 52%)", // Slightly brighter blue
-      attention: "hsl(240, 70%, 52%)", // Slightly brighter blue
     },
     material: {
       metalness: 0.8,
@@ -16,18 +14,10 @@ export const STYLE_STRATEGIES = [
       opacity: 1,
     },
     lighting: {
-      environment: "apartment",
-      envIntensity: 0.3, // Reduced to make the red light more prominent
-      pointLight: { position: [0, 200, 0], intensity: 0.5 }, // Reduced intensity
-      directionalLight: { position: [0, 150, -100], intensity: 0.3 }, // Reduced intensity
-      ambientLight: { intensity: 0.2 }, // Reduced intensity
-    },
-    shadows: true,
-    emissive: false,
-    camera: {
-      position: [0, 0, 80],
-      fov: 50,
-      near: 0.1,
+      environment: "night",
+      envIntensity: 0.1,
+      pointLight: { position: [0, 50, 0], intensity: 2 },
+      ambientLight: { intensity: 0.1 },
     },
     postprocessing: {
       bloom: {
@@ -35,6 +25,13 @@ export const STYLE_STRATEGIES = [
         luminanceThreshold: 0.4,
         luminanceSmoothing: 0.9,
       },
+    },
+    shadows: true,
+    emissive: false,
+    camera: {
+      position: [0, 0, 80],
+      fov: 50,
+      near: 0.1,
     },
   },
   {

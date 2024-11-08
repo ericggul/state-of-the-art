@@ -8,7 +8,6 @@ import { Perf } from "r3f-perf";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 
-import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
 import ModelContainer from "./components/ModelContainer";
 
@@ -50,18 +49,20 @@ export default function Visualisation({ isTesting, initVersion }) {
         near: 0.1,
         far: 500000,
       }}
-      gl={{ alpha: true, antialias: true }}
+      gl={{
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      }}
     >
       <Suspense fallback={null}>
-        <CommonScene>
-          <ModelContainer
-            modelName={modelName}
-            structure={structure}
-            modelGroupRef={modelGroupRef}
-          />
-          {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
-          <PostProcessing />
-        </CommonScene>
+        <ModelContainer
+          modelName={modelName}
+          structure={structure}
+          modelGroupRef={modelGroupRef}
+        />
+        {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
+        <PostProcessing />
       </Suspense>
     </Canvas>
   );

@@ -52,13 +52,27 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Transformer",
     colors: {
-      outer: "hsl(280, 70%, 45%)", // Purple theme
-      inner: "hsl(280, 65%, 35%)",
-      attention: "hsl(280, 80%, 55%)",
+      outer: "#7d7d7d", // Metallic gray for the outer parts
+      inner: "hsl(240, 100%, 40%)", // Bold deep blue for inner layers
+      highlight: "#333333", // Darker metallic tone for edges
     },
     material: {
-      ...BASE_STYLE.material,
-      metalness: 0.9,
+      metalness: 0.8,
+      roughness: 0.2,
+      transparent: false,
+    },
+    shadows: true,
+    emissive: false,
+    lighting: {
+      environment: "apartment",
+      pointLight: { position: [0, 200, 0], intensity: 1 },
+      directionalLight: { position: [0, 150, 100], intensity: 1 },
+      ambientLight: { intensity: 0.5 },
+    },
+    camera: {
+      position: [0, 0, 80],
+      fov: 45,
+      near: 0.1,
     },
   },
 
@@ -96,9 +110,30 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "GAN",
     colors: {
-      outer: "hsl(0, 70%, 45%)", // Red theme
-      inner: "hsl(0, 65%, 35%)",
-      generator: "hsl(0, 80%, 55%)",
+      outer: "#ff00ff",
+      inner: "#00ffff",
+      highlight: "#ffff00",
+    },
+    material: {
+      metalness: 0.9,
+      roughness: 0.2,
+      transparent: true,
+      opacity: 0.8,
+    },
+    shadows: true,
+    emissive: true, // Important for neon effect
+    lighting: {
+      environment: "night",
+      envIntensity: 0.1,
+      pointLight: { position: [0, 50, 0], intensity: 2 },
+      ambientLight: { intensity: 0.1 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 3,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
     },
   },
 
@@ -106,15 +141,42 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Diffusion Model",
     colors: {
-      outer: "hsl(320, 70%, 45%)", // Magenta theme
-      inner: "hsl(320, 65%, 35%)",
-      noise: "hsl(320, 80%, 55%)",
+      outer: "#c0c0c0", // Polished stainless steel
+      inner: "#a0a0a0", // Slightly darker for depth
+      environment: "#4a4a4a", // Urban environment reflection
+    },
+    material: {
+      metalness: 1.0,
+      roughness: 0.1,
+      envMapIntensity: 1.5,
+      transparent: false,
+    },
+    lighting: {
+      environment: "city",
+      envIntensity: 1.2,
+      directionalLight: { position: [10, 20, 10], intensity: 0.8 },
+      ambientLight: { intensity: 0.4 },
+    },
+    shadows: false,
+    emissive: false,
+    camera: {
+      position: [0, 0, 100],
+      fov: 35,
+      near: 0.1,
     },
     postprocessing: {
-      bloom: {
-        intensity: 2,
-        luminanceThreshold: 0.3,
+      reflection: {
+        intensity: 1.5,
+        blur: 0.5,
       },
+      chromaticAberration: {
+        offset: 0.005,
+      },
+    },
+    layout: {
+      layerHeight: 16,
+      encoderPosition: -65,
+      decoderPosition: 65,
     },
   },
 
@@ -122,13 +184,15 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Multi-Modal Network",
     colors: {
-      outer: "hsl(150, 70%, 45%)", // Turquoise theme
-      inner: "hsl(150, 65%, 35%)",
-      modal: "hsl(150, 80%, 55%)",
+      outer: "#7d7d7d", // Darker bronze-like metallic tone
+      inner: "#1b1b1b", // Dark reflective window-like material
+      windowGlow: "hsl(240, 10%, 20%)", // Subtle dark glow
     },
     material: {
-      ...BASE_STYLE.material,
-      metalness: 0.85,
+      metalness: 0.9,
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.6,
     },
   },
 

@@ -15,9 +15,9 @@ const HAL_9000_LIGHT = {
   decay: 1.5, // Quadratic light falloff
 };
 
-export default function CommonScene({ children }) {
-  const styleIndex = useScreenStore((state) => state.styleIndex);
-  const style = STYLE_STRATEGIES[styleIndex];
+export default function CommonScene({ children, style }) {
+  // const styleIndex = useScreenStore((state) => state.styleIndex);
+  // const style = STYLE_STRATEGIES[styleIndex];
 
   return (
     <>
