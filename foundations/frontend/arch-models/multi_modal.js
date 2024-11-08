@@ -1736,7 +1736,7 @@ export const LAYER_CONFIGS = {
     type: "multi_modal",
   },
   BLIP_2: {
-    layerHeight: 300,
+    layerHeight: 400,
     keyPrefix: "blip2",
     type: "multi_modal",
   },
@@ -1863,24 +1863,24 @@ export const GRID_CONFIGS = {
     input: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
     cnn_encoder: { xCount: 14, yCount: 14, xInterval: 2, yInterval: 2 },
     perceiver_resampler: {
-      xCount: 512,
+      xCount: 256,
       yCount: 1,
       xInterval: 3,
       yInterval: 3,
     },
     transformer_decoder: {
-      xCount: NUM_LAYERS_FLAMINGO,
+      xCount: 12,
       yCount: 1,
       xInterval: 2,
       yInterval: 2,
     },
     attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
     cross_attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 512, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
 
   BLIP_2: {
-    input: { xCount: 40, yCount: 40, xInterval: 2, yInterval: 2 },
+    input: { xCount: 20, yCount: 20, xInterval: 2, yInterval: 2 },
     vision_transformer: {
       xCount: NUM_VISION_LAYERS,
       yCount: 1,
@@ -1916,7 +1916,7 @@ export const GRID_CONFIGS = {
     vision_transformer: {
       xCount: NUM_VISION_LAYERS,
       yCount: 1,
-      xInterval: 4,
+      xInterval: 10,
       yInterval: 2,
     },
     transformer_decoder: {
@@ -1939,7 +1939,7 @@ export const GRID_CONFIGS = {
       yInterval: 2,
     },
     cross_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
 
   FLORENCE: {
@@ -1958,7 +1958,7 @@ export const GRID_CONFIGS = {
     text_encoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
     transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     attention: { xCount: 12, yCount: 6, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 768, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 500, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     diffusion_prior: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
     decoder_diffusion: { xCount: 16, yCount: 8, xInterval: 2, yInterval: 2 },
     unet: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },

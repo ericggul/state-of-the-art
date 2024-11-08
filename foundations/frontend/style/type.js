@@ -26,9 +26,30 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Basic Neural Network",
     colors: {
-      outer: "hsl(230, 70%, 50%)",
-      inner: "hsl(235, 60%, 40%)",
-      plane: "hsl(240, 60%, 20%)",
+      outer: "#ff00ff",
+      inner: "#ff00ff",
+      highlight: "#ffff00",
+    },
+    material: {
+      metalness: 0.9,
+      roughness: 0.2,
+      transparent: true,
+      opacity: 0.8,
+    },
+    shadows: true,
+    emissive: true, // Important for neon effect
+    lighting: {
+      environment: "night",
+      envIntensity: 0.1,
+      pointLight: { position: [0, 50, 0], intensity: 2 },
+      ambientLight: { intensity: 0.1 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 3,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
     },
   },
 
@@ -148,7 +169,7 @@ export const TYPE_STYLES = {
     material: {
       metalness: 1.0,
       roughness: 0.1,
-      envMapIntensity: 1.5,
+      envMapIntensity: 1.0,
       transparent: false,
     },
     lighting: {
@@ -159,14 +180,9 @@ export const TYPE_STYLES = {
     },
     shadows: false,
     emissive: false,
-    camera: {
-      position: [0, 0, 100],
-      fov: 35,
-      near: 0.1,
-    },
     postprocessing: {
       reflection: {
-        intensity: 1.5,
+        intensity: 2.0,
         blur: 0.5,
       },
       chromaticAberration: {
@@ -184,16 +200,24 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Multi-Modal Network",
     colors: {
-      outer: "#7d7d7d", // Darker bronze-like metallic tone
-      inner: "#1b1b1b", // Dark reflective window-like material
-      windowGlow: "hsl(240, 10%, 20%)", // Subtle dark glow
+      outer: "hsl(0, 65%, 58%)", // Deep, rich red
+      inner: "hsl(200, 100%, 70%)", // Slightly brighter red
+      plane: "hsl(355, 90%, 55%)", // Dark, muted red
     },
     material: {
-      metalness: 0.9,
-      roughness: 0.3,
-      transparent: true,
-      opacity: 0.6,
+      metalness: 0.5, // Kept the same
+      roughness: 0.2, // Kept the same
+      transparent: false,
     },
+    lighting: {
+      environment: "studio", // Kept 'studio' for the gallery-like feel
+      envIntensity: 0.1, // Further reduced for a more subdued look
+      // pointLight: { position: [0, 200, 0], intensity: 1.5 },
+      // directionalLight: { position: [0, 150, -100], intensity: 0.5 },
+      ambientLight: { intensity: 1.0 },
+    },
+    // shadows: true,
+    emissive: false,
   },
 
   reinforcement: {
@@ -228,13 +252,30 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Boltzmann Machine",
     colors: {
-      outer: "hsl(45, 70%, 45%)", // Gold theme
-      inner: "hsl(45, 65%, 35%)",
-      energy: "hsl(45, 80%, 55%)",
+      outer: "#ff00ff",
+      inner: "hsl(30, 70%, 80%)",
+      highlight: "#ffff00",
     },
     material: {
-      ...BASE_STYLE.material,
-      metalness: 0.95,
+      metalness: 1.0,
+      roughness: 0.2,
+      transparent: true,
+      opacity: 0.8,
+    },
+    shadows: true,
+    emissive: true, // Important for neon effect
+    lighting: {
+      environment: "night",
+      envIntensity: 1,
+      pointLight: { position: [0, 50, 0], intensity: 2 },
+      ambientLight: { intensity: 0.1 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 10,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
     },
   },
 };

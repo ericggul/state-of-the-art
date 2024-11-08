@@ -20,10 +20,10 @@ export default function useScreenVisibility() {
       setShowTransition(true);
       timeoutRef1.current = setTimeout(() => {
         setShowTransition(false);
-      }, 7000);
+      }, 5000);
       timeoutRef2.current = setTimeout(() => {
         setShowBackend(true);
-      }, 10000);
+      }, 6500);
       timeoutRef3.current = setTimeout(
         () => {
           setShowFrontend(false);
