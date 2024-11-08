@@ -8,7 +8,6 @@ const audioURL = "/audio/beep.mp3";
 export default function Transition() {
   const [activate, setActivate] = useState(false);
   const { deviceIndex } = useScreenStore();
-  console.log(deviceIndex);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

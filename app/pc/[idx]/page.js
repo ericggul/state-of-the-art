@@ -29,7 +29,6 @@ export default function RelationPage() {
   const { idx } = useParams();
 
   const {
-    mobileVisibility,
     handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
@@ -52,9 +51,7 @@ export default function RelationPage() {
     handleNewMobileArchitecture,
   });
 
-  const { showFrontend, showBackend, showTransition } = useScreenVisibility({
-    mobileVisibility,
-  });
+  const { showFrontend, showBackend, showTransition } = useScreenVisibility();
 
   // 동적으로 컴포넌트 선택
   const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);

@@ -13,7 +13,6 @@ const Transition = dynamic(() => import("@/components/screen/transition"));
 
 export default function ScreenWrapper() {
   const {
-    mobileVisibility,
     handleNewControllerArchitectures,
     handleNewSpeech,
     handleNewVisibilityChange,
@@ -35,9 +34,7 @@ export default function ScreenWrapper() {
     handleNewMobileArchitecture,
   });
 
-  const { showFrontend, showBackend, showTransition } = useScreenVisibility({
-    mobileVisibility,
-  });
+  const { showFrontend, showBackend, showTransition } = useScreenVisibility();
 
   return (
     <Suspense>
