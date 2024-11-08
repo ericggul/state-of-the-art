@@ -16,6 +16,8 @@ import PostProcessing from "./utils/PostProcessing";
 
 import ModelContainer from "./components/ModelContainer";
 
+import { useModelStructure } from "@/components/frontend/utils";
+
 const CURRENT_TESTING_VERSION = "v4.0.3";
 // Utility function to convert model name to variable name
 function convertToVariableName(name) {
@@ -40,28 +42,33 @@ function getModelNameFromVersion(version) {
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 
-export default function Visualisation({
-  version = CURRENT_TESTING_VERSION,
-  isTesting,
-}) {
-  const { styleIndex } = useScreenStore();
+export default function Visualisation({ isTesting, initVersion }) {
+  const { styleIndex, currentArchitectures } = useScreenStore();
+  const {
+    visualization: { modelName, structure },
+  } = useModelStructure(currentArchitectures);
+
+  const version = currentArchitectures?.[0]?.version || initVersion;
+
   const style = STYLE_STRATEGIES[styleIndex];
 
-  const [modelName, setModelName] = useState("");
-  const [structure, setStructure] = useState([]);
   const modelGroupRef = useRef();
   const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 
-  useEffect(() => {
-    const name = getModelNameFromVersion(version);
-    if (name) {
-      setModelName(name);
-      const modelStructure = getModelStructure(name);
-      setStructure(modelStructure);
-    } else {
-      console.warn(`No model found for version: ${version}`);
-    }
-  }, [version]);
+  console.log(modelName, structure);
+
+  // const [modelName, setModelName] = useState("");
+  // const [structure, setStructure] = useState([]);
+  // useEffect(() => {
+  //   const name = getModelNameFromVersion(version);
+  //   if (name) {
+  //     setModelName(name);
+  //     const modelStructure = getModelStructure(name);
+  //     setStructure(modelStructure);
+  //   } else {
+  //     console.warn(`No model found for version: ${version}`);
+  //   }
+  // }, [version]);
 
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {

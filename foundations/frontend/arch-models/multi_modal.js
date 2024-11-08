@@ -1943,13 +1943,13 @@ export const GRID_CONFIGS = {
   },
 
   FLORENCE: {
-    input: { xCount: 40, yCount: 40, xInterval: 1, yInterval: 1 },
+    input: { xCount: 20, yCount: 20, xInterval: 1, yInterval: 1 },
     vision_transformer: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
     text_encoder: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     transformer_layer: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
     attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
-    contrastive: { xCount: 16, yCount: 16, xInterval: 2, yInterval: 2 },
+    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    contrastive: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
     learnable_temp: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
   },
 

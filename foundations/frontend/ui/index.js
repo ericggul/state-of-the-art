@@ -3,11 +3,15 @@ import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 
 // Main component to render the neural network
-export default function ProductPreview({ model }) {
-  return <UI model={model} />;
+export default function ProductPreview() {
+  const currentModel = useScreenStore((state) => state.currentArchitectures);
+  console.log(currentModel);
+
+  return <>{currentModel?.[0] && <UI model={currentModel[0]} />}</>;
 }
 
 function UI({ model }) {
+  console.log(model, "14");
   const zoomFactor = useScreenStore((state) => state.zoomFactor);
   const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
 
