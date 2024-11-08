@@ -15,7 +15,7 @@ const randomiseRangeConfig = () => {
   const xRandom = getRandom(startOff, 0.48);
   // const yRandom = getRandom(0, 1);
   let yRandom;
-  if (Math.random() < 0.5) {
+  if (Math.random() < 0.7) {
     yRandom = 0.5 + startOff - xRandom;
   } else {
     yRandom = getRandom(0, 1);
@@ -62,7 +62,31 @@ export default function usePosCalc({
     [subLevel, level >= 6]
   );
 
-  console.log(range);
+  // Generate positions for all tokens
+  const getYPosition = useCallback(
+    (type) => {
+      switch (type) {
+        case "input":
+          return getRandom(0.1, 0.3) * windowHeight;
+        case "output":
+          return getRandom(0.7, 0.9) * windowHeight;
+        case "center":
+        default:
+          return windowHeight / 2;
+      }
+    },
+    [windowHeight]
+  );
+
+  const generatePseudoStaticPositions = useCallback(() => {
+    const yPos = getYPosition(type);
+
+    return tokens.map((_, idx) => {
+      const xPos = getRandom(range.x[0], range.x[1]) * windowWidth;
+
+      return { x: xPos, y: yPos };
+    });
+  }, [tokens, range, windowWidth, type]);
 
   const generateRandomPositions = useCallback(() => {
     const basePosition = () => ({
@@ -92,10 +116,10 @@ export default function usePosCalc({
       setTokenPositions(generateRandomPositions());
       const intervalId = setInterval(() => {
         setTokenPositions(generateRandomPositions());
-      }, 100 * timeUnit);
+      }, getRandom(100, 300) * timeUnit);
       return () => clearInterval(intervalId);
     } else {
-      if (subLevel === 0 || level === 4) {
+      if (level === 4 || subLevel === 0) {
         setTokenPositions(generateStaticPositions());
       }
     }
