@@ -11,6 +11,30 @@ export default function DiffusionLayers({ structure, style, model }) {
   const layers = useMemo(() => {
     let cumulativeHeight = 0;
 
+    // Helper function to process sublayers recursively
+    const processSublayers = (sublayers, parentY = 0) => {
+      if (!sublayers) return [];
+
+      let localCumulativeHeight = 0;
+      return sublayers.map((sublayer, index) => {
+        const sublayerHeight = sublayer.dimensions?.[1] || 20;
+        const y = localCumulativeHeight + sublayerHeight / 2;
+        localCumulativeHeight += sublayerHeight + sublayerGap;
+
+        // Process nested sublayers if they exist
+        const processedNestedSublayers = processSublayers(
+          sublayer.sublayers,
+          y + parentY
+        );
+
+        return {
+          ...sublayer,
+          position: [0, y + parentY, 0],
+          sublayers: processedNestedSublayers,
+        };
+      });
+    };
+
     const layersWithPositions = structure.map((layer, i) => {
       const layerHeight = layer.sublayers
         ? layer.sublayers.reduce(
@@ -23,29 +47,20 @@ export default function DiffusionLayers({ structure, style, model }) {
       const y = cumulativeHeight + layerHeight / 2;
       cumulativeHeight += layerHeight + layerGap;
 
-      let sublayerCumulativeHeight = -layerHeight / 2;
-      const sublayersWithPositions = layer.sublayers
-        ? layer.sublayers.map((sublayer, j) => {
-            const sublayerHeight = sublayer.dimensions?.[1] || 20;
-            const sublayerY = sublayerCumulativeHeight + sublayerHeight / 2;
-            sublayerCumulativeHeight += sublayerHeight + sublayerGap;
-            return {
-              ...sublayer,
-              position: [0, sublayerY, 0],
-            };
-          })
-        : [];
+      // Process all levels of sublayers
+      const processedSublayers = processSublayers(layer.sublayers, y);
 
       return {
         ...layer,
         position: [0, cumulativeHeight, 0],
-        sublayers: sublayersWithPositions,
+        sublayers: processedSublayers,
       };
     });
 
     const totalHeight = cumulativeHeight - layerGap;
     const centerOffset = totalHeight / 2;
 
+    // Center all positions
     return layersWithPositions.map((layer) => ({
       ...layer,
       position: [
@@ -53,13 +68,22 @@ export default function DiffusionLayers({ structure, style, model }) {
         layer.position[1] - centerOffset,
         layer.position[2],
       ],
-      sublayers: layer.sublayers.map((sublayer) => ({
+      sublayers: layer.sublayers?.map((sublayer) => ({
         ...sublayer,
         position: [
           sublayer.position[0],
-          sublayer.position[1] + layer.position[1] - centerOffset,
+          sublayer.position[1] - centerOffset,
           sublayer.position[2],
         ],
+        // Recursively adjust nested sublayer positions
+        sublayers: sublayer.sublayers?.map((nestedSublayer) => ({
+          ...nestedSublayer,
+          position: [
+            nestedSublayer.position[0],
+            nestedSublayer.position[1] - centerOffset,
+            nestedSublayer.position[2],
+          ],
+        })),
       })),
     }));
   }, [structure, model, layerGap, sublayerGap]);

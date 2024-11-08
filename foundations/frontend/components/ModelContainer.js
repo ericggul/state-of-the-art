@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+
 import { LAYER_CONFIGS, getModelStructure } from "../arch-models/_structure";
 import BasicNNLayers from "../arch/layers/BasicNNLayers";
 import CNNLayers from "../arch/layers/CNNLayers";
@@ -13,29 +13,20 @@ import MultiModalLayers from "../arch/layers/MultiModalLayers";
 import ReinforcementLayers from "../arch/layers/ReinforcementLayers";
 import HopfieldLayers from "../arch/layers/HopfieldLayers";
 import BoltzmannLayers from "../arch/layers/BoltzmannLayers";
-
-const ROTATION_SPEED = 0.0005; // Adjust this value to change rotation speed
+import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type";
 
 export default function ModelContainer({
   modelName,
   structure,
-  style,
   modelGroupRef,
 }) {
-  const rotationRef = useRef(0);
-
-  //   // Slow continuous rotation
-  //   useFrame(() => {
-  //     if (modelGroupRef.current) {
-  //       rotationRef.current += ROTATION_SPEED;
-  //       modelGroupRef.current.rotation.y = rotationRef.current;
-  //     }
-  //   });
-
   const modelConfig = LAYER_CONFIGS[modelName];
   let ModelComponent;
+  let typeStyle;
 
   if (modelConfig) {
+    typeStyle = TYPE_STYLES[modelConfig.type] || DEFAULT_STYLE;
+
     switch (modelConfig.type) {
       case "basic_nn":
         ModelComponent = BasicNNLayers;
@@ -84,12 +75,21 @@ export default function ModelContainer({
       `No configuration found for model: ${modelName}. Defaulting to BasicNNLayers.`
     );
     ModelComponent = BasicNNLayers;
+    typeStyle = DEFAULT_STYLE;
   }
+
+  const mergedStyle = {
+    ...typeStyle,
+  };
 
   return (
     <group ref={modelGroupRef}>
       {structure.length > 0 && (
-        <ModelComponent structure={structure} style={style} model={modelName} />
+        <ModelComponent
+          structure={structure}
+          style={mergedStyle}
+          model={modelName}
+        />
       )}
     </group>
   );

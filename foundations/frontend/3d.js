@@ -6,69 +6,22 @@ import { Box3, Vector3 } from "three";
 import { Perf } from "r3f-perf";
 
 import useScreenStore from "@/components/screen/store";
-
-import { STYLE_STRATEGIES } from "./style";
-import { getModelStructure } from "./arch-models/_structure";
-import { OBJECT_ARRAY } from "@/components/controller/constant/models/v3";
+import { useModelStructure } from "@/components/frontend/utils";
 
 import CommonScene from "./utils/CommonScene";
 import PostProcessing from "./utils/PostProcessing";
-
 import ModelContainer from "./components/ModelContainer";
-
-import { useModelStructure } from "@/components/frontend/utils";
-
-const CURRENT_TESTING_VERSION = "v4.0.3";
-// Utility function to convert model name to variable name
-function convertToVariableName(name) {
-  return name
-    .toUpperCase()
-    .replace(/[^A-Z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, ""); // Remove leading and trailing underscores
-}
-
-// Utility function to map version to model name
-function getModelNameFromVersion(version) {
-  const model = OBJECT_ARRAY.find((item) => item.version === version);
-  return model ? convertToVariableName(model.name) : null;
-}
-
-//styleidx
-//0: subtle red
-//1: judd red
-//2: seagram green
-//3: subtle green
-//4: subtle blue
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 
 export default function Visualisation({ isTesting, initVersion }) {
-  const { styleIndex, currentArchitectures } = useScreenStore();
+  const { currentArchitectures } = useScreenStore();
   const {
     visualization: { modelName, structure },
   } = useModelStructure(currentArchitectures);
 
-  const version = currentArchitectures?.[0]?.version || initVersion;
-
-  const style = STYLE_STRATEGIES[styleIndex];
-
   const modelGroupRef = useRef();
   const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
-
-  console.log(modelName, structure);
-
-  // const [modelName, setModelName] = useState("");
-  // const [structure, setStructure] = useState([]);
-  // useEffect(() => {
-  //   const name = getModelNameFromVersion(version);
-  //   if (name) {
-  //     setModelName(name);
-  //     const modelStructure = getModelStructure(name);
-  //     setStructure(modelStructure);
-  //   } else {
-  //     console.warn(`No model found for version: ${version}`);
-  //   }
-  // }, [version]);
 
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {
@@ -100,11 +53,10 @@ export default function Visualisation({ isTesting, initVersion }) {
       gl={{ alpha: true, antialias: true }}
     >
       <Suspense fallback={null}>
-        <CommonScene style={style}>
+        <CommonScene>
           <ModelContainer
             modelName={modelName}
             structure={structure}
-            style={style}
             modelGroupRef={modelGroupRef}
           />
           {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
