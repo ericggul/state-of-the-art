@@ -10,12 +10,28 @@ const getRangeConfig = {
 };
 
 const randomiseRangeConfig = () => {
-  const xRandom = getRandom(0, 1);
-  // const yRandom = 1 - xRandom;
-  const yRandom = getRandom(0, 1);
+  const startOff = getRandom(-0.1, 0);
+
+  const xRandom = getRandom(startOff, 0.48);
+  // const yRandom = getRandom(0, 1);
+  let yRandom;
+  if (Math.random() < 0.5) {
+    yRandom = 0.5 + startOff - xRandom;
+  } else {
+    yRandom = getRandom(0, 1);
+  }
 
   return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
 };
+
+// const randomiseRangeConfig = () => {
+//   const x1Random = getRandom(0, 0.3);
+//   const x2Random = getRandom(0.7, 1);
+//   const y1Random = getRandom(0, 0.3);
+//   const y2Random = getRandom(0.7, 1);
+
+//   return { x: [x1Random, x2Random], y: [y1Random, y2Random] };
+// };
 
 export default function usePosCalc({
   tokens,
@@ -38,7 +54,15 @@ export default function usePosCalc({
   //   () => getRangeConfig[subLevel] ?? randomiseRangeConfig(),
   //   [subLevel]
   // );
-  const range = useMemo(randomiseRangeConfig, [subLevel]);
+  const range = useMemo(
+    () =>
+      level >= 6
+        ? randomiseRangeConfig()
+        : getRangeConfig[subLevel] ?? randomiseRangeConfig(),
+    [subLevel, level >= 6]
+  );
+
+  console.log(range);
 
   const generateRandomPositions = useCallback(() => {
     const basePosition = () => ({

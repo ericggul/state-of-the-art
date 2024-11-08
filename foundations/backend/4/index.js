@@ -28,15 +28,19 @@ function SingleRandom({ range, visible, timeUnit }) {
     newOutputEmbeddings
   );
 
-  const { xRange, yRange, isAnimating } = useAnimationState(
+  const { xRange, yRange, isAnimating } = useAnimationState({
     isblack,
     visible,
-    subLevel
-  );
+    subLevel,
+    level,
+  });
 
   const isPlural = useMemo(
     () =>
-      !((subLevel === 0 && isAnimating) || (subLevel === 1 && !isAnimating)),
+      !(
+        (subLevel % 3 === 0 && isAnimating) ||
+        (subLevel % 3 === 1 && !isAnimating)
+      ),
     [subLevel, isAnimating]
   );
 

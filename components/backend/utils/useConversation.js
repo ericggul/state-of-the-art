@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 
 //time configs
 //Should change accordingly to the testing status
 export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-export const WHITE_TIME = [4000, 4000, 3000, 1500, 2000, 1000, 1000];
+export const WHITE_TIME = [3000, 4000, 3000, 1500, 2000, 1000, 1000];
 
 const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
 
@@ -22,6 +23,12 @@ export default function useConversation() {
     setLevel,
     isblack,
   } = useStore();
+
+  const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const timeScale = useMemo(
+    () => (deviceIndex >= 0 && deviceIndex <= 4 ? deviceIndex / 4 : 1),
+    [deviceIndex]
+  );
 
   const [getNewText, setGetNewText] = useState(true);
   const hasFetchedText = useRef(false);
@@ -56,7 +63,7 @@ export default function useConversation() {
 
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.1);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.2);
 
       const endpoint =
         level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
@@ -92,6 +99,7 @@ export default function useConversation() {
       const embeddings = await getEmbeddingsForTokens(uniqueTokens);
 
       const timeout =
+        timeScale *
         EXTRA_BLACK_TIME[Math.min(level, EXTRA_BLACK_TIME.length - 1)];
       await new Promise((r) => setTimeout(r, timeout));
 
