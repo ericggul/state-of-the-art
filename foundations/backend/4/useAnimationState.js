@@ -7,6 +7,14 @@ const LEVEL_CONFIG = {
   default: { xRange: 0, yRange: 0 },
 };
 
+const getRandom = (min, max) => Math.random() * (max - min) + min;
+
+const randomiseLevelConfig = () => {
+  const xRandom = getRandom(0.5, 2.5);
+  const yRandom = 22.5 - xRandom * 5 + getRandom(-2, 5);
+  return { xRange: xRandom, yRange: yRandom };
+};
+
 export function useAnimationState(isblack, visible, subLevel) {
   const [state, setState] = useState(() => ({
     ...LEVEL_CONFIG[0],
@@ -15,11 +23,18 @@ export function useAnimationState(isblack, visible, subLevel) {
 
   const config = useMemo(
     () =>
-      isblack || subLevel === 2
-        ? LEVEL_CONFIG[subLevel] ?? LEVEL_CONFIG[0]
-        : LEVEL_CONFIG.default,
+      isblack || subLevel === 2 ? randomiseLevelConfig() : LEVEL_CONFIG.default,
     [isblack, subLevel]
   );
+
+  console.log("config", config);
+  // const config = useMemo(
+  //   () =>
+  //     isblack || subLevel === 2
+  //       ? LEVEL_CONFIG[subLevel] ?? LEVEL_CONFIG[0]
+  //       : LEVEL_CONFIG.default,
+  //   [isblack, subLevel]
+  // );
 
   useEffect(() => {
     setState({

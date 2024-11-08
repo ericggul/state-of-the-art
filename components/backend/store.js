@@ -54,7 +54,10 @@ const useStore = create((set) => ({
     set({
       loop: value,
       level: Math.floor(value / 3),
-      subLevel: Math.min(Math.floor(value % 3), 2),
+      subLevel:
+        value >= 18
+          ? Math.min(Math.floor(value % 6), 5)
+          : Math.min(Math.floor(value % 3), 2),
     }),
   level: 0,
   subLevel: 0,
