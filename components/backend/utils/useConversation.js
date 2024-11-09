@@ -6,7 +6,7 @@ import useScreenStore from "@/components/screen/store";
 //time configs
 //Should change accordingly to the testing status
 export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 4000];
+export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 3000];
 
 //TEMPORARY TIME CONFIG FOR TESTING
 // export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 5000];

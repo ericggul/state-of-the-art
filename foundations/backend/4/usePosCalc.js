@@ -15,7 +15,7 @@ const randomiseRangeConfig = () => {
   const xRandom = getRandom(startOff, 0.45);
   // const yRandom = getRandom(0, 1);
   let yRandom;
-  if (Math.random() < 0.55) {
+  if (Math.random() < 0.5) {
     yRandom = 0.5 + startOff - xRandom;
   } else {
     yRandom = getRandom(0, 1);
