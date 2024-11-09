@@ -88,9 +88,7 @@ const LayerText = React.memo(
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
-  // const {
-  //   visualization: { structure },
-  // } = useModelStructure(currentArchitectures);
+
   const {
     visualization: { structure },
   } = useModelStructure(currentArchitectures, 150);

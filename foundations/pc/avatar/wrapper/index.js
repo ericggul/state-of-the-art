@@ -3,8 +3,9 @@ import { Suspense } from "react";
 import * as S from "./styles";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Environment } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import Model from "../model";
+import { AvatarOrientationCamera } from "../utils/AvatarOrientationCamera";
 
 export default function AvatarWrapper() {
   return (
@@ -85,12 +86,13 @@ export default function AvatarWrapper() {
             rotation={[0, 0, 0]}
           />
 
-          <OrbitControls
+          {/* <OrbitControls
             minPolarAngle={Math.PI / 4}
             maxPolarAngle={Math.PI / 2}
             enableZoom={true}
             enablePan={false}
-          />
+          /> */}
+          <AvatarOrientationCamera cameraDistance={3} />
         </Canvas>
       </Suspense>
     </S.Container>
