@@ -56,10 +56,10 @@ export default function usePosCalc({
   // );
   const range = useMemo(
     () =>
-      level >= 6
+      level >= 5
         ? randomiseRangeConfig()
         : getRangeConfig[subLevel] ?? randomiseRangeConfig(),
-    [subLevel, level >= 6]
+    [subLevel, level >= 5]
   );
 
   useEffect(() => {

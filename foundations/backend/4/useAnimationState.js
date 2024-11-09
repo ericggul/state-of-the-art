@@ -24,11 +24,11 @@ export function useAnimationState({ isblack, visible, subLevel, level }) {
   const config = useMemo(
     () =>
       isblack || subLevel === 2
-        ? level >= 6
+        ? level >= 5
           ? randomiseLevelConfig()
           : LEVEL_CONFIG[subLevel] ?? LEVEL_CONFIG[1]
         : LEVEL_CONFIG.default,
-    [isblack, subLevel, level]
+    [isblack, subLevel, level >= 5]
   );
 
   useEffect(() => {

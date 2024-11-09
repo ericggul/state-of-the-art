@@ -9,7 +9,7 @@ export default function ScreenFrontend({ isTesting, initVersion = null }) {
   return (
     <S.Container>
       <Architecture3D isTesting={isTesting} initVersion={initVersion} />
-      <ArchitectureUI />
+      {/* <ArchitectureUI /> */}
     </S.Container>
   );
 }

@@ -4,6 +4,14 @@ import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
 import { Box3, Vector3 } from "three";
 import { Perf } from "r3f-perf";
+import {
+  Fisheye,
+  Stars,
+  Sparkles,
+  Environment,
+  Cloud,
+  Grid,
+} from "@react-three/drei";
 
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
@@ -45,7 +53,7 @@ export default function Visualisation({ isTesting, initVersion }) {
   return (
     <Canvas
       camera={{
-        fov: 75,
+        fov: 90,
         near: 0.1,
         far: 500000,
       }}
@@ -56,6 +64,22 @@ export default function Visualisation({ isTesting, initVersion }) {
       }}
     >
       <Suspense fallback={null}>
+        <Environment preset="sunset" background={false} />
+        <fog attach="fog" args={["#202020", 5, 400000]} />
+        <Sparkles count={200} scale={200} size={2} speed={0.4} opacity={0.1} />
+
+        <Stars
+          radius={100000}
+          depth={50}
+          count={3000}
+          factor={2}
+          saturation={0.5}
+          fade={true}
+          speed={0.05}
+          randomness={0.5}
+        />
+        <Grid />
+
         <ModelContainer
           modelName={modelName}
           structure={structure}
