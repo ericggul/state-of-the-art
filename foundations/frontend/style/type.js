@@ -1,4 +1,4 @@
-const BASE_STYLE = {
+export const BASE_STYLE = {
   material: {
     metalness: 0.8,
     roughness: 0.4,
@@ -22,6 +22,19 @@ const BASE_STYLE = {
 };
 
 export const TYPE_STYLES = {
+  nonProjector: {
+    ...BASE_STYLE,
+    colors: {
+      outer: "white",
+      inner: "white",
+      plane: "white",
+    },
+    material: {
+      ...BASE_STYLE.material,
+      transparent: true,
+      opacity: 0.8,
+    },
+  },
   basic_nn: {
     ...BASE_STYLE,
     name: "Basic Neural Network",
@@ -285,8 +298,14 @@ export const DEFAULT_STYLE = {
   ...BASE_STYLE,
   name: "Default",
   colors: {
-    outer: "hsl(240, 65%, 28%)",
-    inner: "hsl(230, 70%, 52%)",
-    plane: "hsl(240, 50%, 15%)",
+    outer: "#c0c0c0", // Polished stainless steel
+    inner: "#a0a0a0", // Slightly darker for depth
+    environment: "#4a4a4a", // Urban environment reflection
+  },
+  material: {
+    metalness: 1.0,
+    roughness: 0.1,
+    envMapIntensity: 1.0,
+    transparent: false,
   },
 };

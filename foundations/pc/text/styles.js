@@ -11,9 +11,9 @@ export const Container = styled.div`
 
 export const Canvas = styled.div`
   ${WholeContainer}
-  width: 60vw;
+  width: 80vw;
   right: 0;
-  left: 40vw;
+  left: 20vw;
 
   canvas {
     position: absolute;
