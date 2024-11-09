@@ -59,8 +59,9 @@ export const CarouselItem = styled.div`
   transform: ${(props) => `
     translate(-50%, -50%)
     rotateY(${props.$angle}deg)
-    translateZ(${props.$isHighlighted ? 80 : 60}vw)
-    ${props.$isHighlighted ? "scale(2)" : "scale(1)"}
+    translateZ(60vw)
+    translateY(${props.$verticalLevel * 15}vh)
+    ${props.$isHighlighted ? "scale(1.5)" : "scale(1)"}
   `};
   transition: transform 0.5s ease, opacity 0.5s ease;
   opacity: ${(props) => (props.$isHighlighted ? 1 : 0.6)};

@@ -54,11 +54,15 @@ export default function Carousel() {
       const isHighlighted = highlightedVersions.includes(model.version);
       const angle = (index * 360) / OBJECT_ARRAY.length;
 
+      // Distribute items across 3 vertical levels
+      const verticalLevel = (index % 3) - 1; // Will give -1, 0, or 1
+
       return (
         <S.CarouselItem
           key={model.version}
           $isHighlighted={isHighlighted}
           $angle={angle}
+          $verticalLevel={verticalLevel}
         >
           <S.ModelName $isHighlighted={isHighlighted}>{model.name}</S.ModelName>
           <S.ModelVersion $isHighlighted={isHighlighted}>
