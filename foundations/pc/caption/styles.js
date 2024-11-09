@@ -7,7 +7,7 @@ export const Container = styled.div`
   height: 100vh;
   background-color: #000;
   color: #0f0;
-  perspective: 1000px;
+  perspective: 2000px;
   overflow: hidden;
 `;
 
@@ -42,15 +42,16 @@ export const CarouselWrapper = styled.div`
   transform-style: preserve-3d;
   transition: transform 1s ease;
   transform: ${(props) => `rotateY(${props.$rotation}deg)`};
+  will-change: transform;
 `;
 
 export const CarouselItem = styled.div`
   position: absolute;
-  width: 15vw;
-  height: 15vw;
+  width: 12vw;
+  height: ${(12 * 9) / 16}vw;
   left: 50%;
   top: 50%;
-  padding: 1vw;
+  padding: 0.5vw;
   background-color: ${(props) => (props.$isHighlighted ? "#0f03" : "#0f01")};
   border: 0.05vw solid #0f0;
   border-radius: 0.5vw;
@@ -58,12 +59,13 @@ export const CarouselItem = styled.div`
   transform: ${(props) => `
     translate(-50%, -50%)
     rotateY(${props.$angle}deg)
-    translateZ(${40}vw)
-    ${props.$isHighlighted ? "scale(1.5)" : "scale(1)"}
+    translateZ(${props.$isHighlighted ? 80 : 60}vw)
+    ${props.$isHighlighted ? "scale(2)" : "scale(1)"}
   `};
-  transition: all 0.5s ease;
+  transition: transform 0.5s ease, opacity 0.5s ease;
   opacity: ${(props) => (props.$isHighlighted ? 1 : 0.6)};
   box-shadow: ${(props) => (props.$isHighlighted ? "0 0 2vw #0f0" : "none")};
+  will-change: transform;
 
   &:hover {
     opacity: 0.8;
@@ -72,14 +74,16 @@ export const CarouselItem = styled.div`
 `;
 
 export const ModelName = styled.div`
-  font-size: ${(props) => (props.$isHighlighted ? "1.2vw" : "0.8vw")};
+  font-size: ${(props) => (props.$isHighlighted ? "1.5vw" : "1vw")};
   font-weight: bold;
   margin-bottom: 0.5vw;
   text-align: center;
+  font-family: "Times New Roman", Times, serif;
 `;
 
 export const ModelVersion = styled.div`
-  font-size: ${(props) => (props.$isHighlighted ? "1vw" : "0.7vw")};
+  font-size: ${(props) => (props.$isHighlighted ? "1.2vw" : "0.8vw")};
   opacity: 0.7;
   text-align: center;
+  font-family: "Times New Roman", Times, serif;
 `;

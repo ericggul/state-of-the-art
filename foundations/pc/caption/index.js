@@ -48,28 +48,31 @@ export default function Carousel() {
     }
   }, [highlightedVersions]);
 
+  // Memoized carousel items for performance
+  const carouselItems = useMemo(() => {
+    return OBJECT_ARRAY.map((model, index) => {
+      const isHighlighted = highlightedVersions.includes(model.version);
+      const angle = (index * 360) / OBJECT_ARRAY.length;
+
+      return (
+        <S.CarouselItem
+          key={model.version}
+          $isHighlighted={isHighlighted}
+          $angle={angle}
+        >
+          <S.ModelName $isHighlighted={isHighlighted}>{model.name}</S.ModelName>
+          <S.ModelVersion $isHighlighted={isHighlighted}>
+            {model.version}
+          </S.ModelVersion>
+        </S.CarouselItem>
+      );
+    });
+  }, [highlightedVersions]);
+
   return (
     <S.Container>
       <S.CarouselWrapper $rotation={rotation}>
-        {OBJECT_ARRAY.map((model, index) => {
-          const isHighlighted = highlightedVersions.includes(model.version);
-          const angle = (index * 360) / OBJECT_ARRAY.length;
-
-          return (
-            <S.CarouselItem
-              key={model.version}
-              $isHighlighted={isHighlighted}
-              $angle={angle}
-            >
-              <S.ModelName $isHighlighted={isHighlighted}>
-                {model.name}
-              </S.ModelName>
-              <S.ModelVersion $isHighlighted={isHighlighted}>
-                {model.version}
-              </S.ModelVersion>
-            </S.CarouselItem>
-          );
-        })}
+        {carouselItems}
       </S.CarouselWrapper>
     </S.Container>
   );
