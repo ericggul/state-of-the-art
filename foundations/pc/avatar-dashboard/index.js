@@ -5,10 +5,15 @@ import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import Model from "../avatar/model";
+import DashboardPanels from "./DashboardPanels";
+import { DEFAULT_MODEL } from "../dashboard/constants";
+
+import TwoDDashboard from "../dashboard";
 
 export default function AvatarWrapper() {
   return (
     <S.Container>
+      <TwoDDashboard />
       <Suspense>
         <Canvas
           camera={{ position: [0, 0, 3] }}
@@ -26,7 +31,10 @@ export default function AvatarWrapper() {
             scale={[2, 2, 2]}
             rotation={[0, 0, 0]}
           />
-          <OrbitControls />
+
+          {/* <DashboardPanels model={DEFAULT_MODEL} /> */}
+
+          <OrbitControls enableZoom={true} enablePan={true} />
         </Canvas>
       </Suspense>
     </S.Container>
