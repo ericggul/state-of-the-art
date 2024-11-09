@@ -298,9 +298,12 @@ export const DEFAULT_STYLE = {
   ...BASE_STYLE,
   name: "Default",
   colors: {
-    outer: "#c0c0c0", // Polished stainless steel
-    inner: "#a0a0a0", // Slightly darker for depth
-    environment: "#4a4a4a", // Urban environment reflection
+    // outer: "#c0c0c0", // Polished stainless steel
+    // inner: "#a0a0a0", // Slightly darker for depth
+    // environment: "#4a4a4a", // Urban environment reflection
+    outer: "white",
+    inner: "white",
+    plane: "white",
   },
   material: {
     metalness: 1.0,

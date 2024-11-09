@@ -3,7 +3,8 @@ import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
-import Background3D from "./bg-3d";
+
+import Architecture3D from "@/foundations/frontend/3d";
 
 // Memoize LayerText component
 const LayerText = React.memo(
@@ -122,7 +123,7 @@ export default function TextComponent() {
   return (
     <S.Container>
       <S.Canvas>
-        <Background3D />
+        <Architecture3D />
       </S.Canvas>
 
       <S.StructureText ref={containerRef}>

@@ -21,7 +21,7 @@ import ModelContainer from "./components/ModelContainer";
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 
-export default function Visualisation({ isTesting }) {
+export default function Visualisation({ isTesting = false }) {
   const { currentArchitectures } = useScreenStore();
   const {
     visualization: { modelName, structure },

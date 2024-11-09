@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 
 import { LAYER_CONFIGS, getModelStructure } from "../arch-models/_structure";
 import BasicNNLayers from "../arch/layers/BasicNNLayers";
@@ -35,6 +35,10 @@ const MODEL_COMPONENTS = {
   boltzmann: BoltzmannLayers,
 };
 
+// Add style helper function outside component
+const getProjectorStyle = (isProjector, typeStyle) =>
+  isProjector ? typeStyle : DEFAULT_STYLE;
+
 export default function ModelContainer({
   modelName,
   structure,
@@ -42,34 +46,42 @@ export default function ModelContainer({
 }) {
   const isProjector = useScreenStore((state) => state.isProjector);
   const modelConfig = LAYER_CONFIGS[modelName];
-  let ModelComponent;
-  let typeStyle;
 
-  if (modelConfig) {
-    typeStyle = TYPE_STYLES[modelConfig.type] || DEFAULT_STYLE;
-    ModelComponent = MODEL_COMPONENTS[modelConfig.type];
+  // Memoize component and typeStyle selection
+  const { ModelComponent, typeStyle } = useMemo(() => {
+    if (modelConfig) {
+      const style = TYPE_STYLES[modelConfig.type] || DEFAULT_STYLE;
+      const component = MODEL_COMPONENTS[modelConfig.type];
 
-    if (!ModelComponent) {
-      console.warn(
-        `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`
-      );
-      ModelComponent = BasicNNLayers;
+      if (!component) {
+        console.warn(
+          `Unknown model type: ${modelConfig.type}. Defaulting to BasicNNLayers.`
+        );
+        return { ModelComponent: BasicNNLayers, typeStyle: style };
+      }
+
+      return { ModelComponent: component, typeStyle: style };
     }
-  } else {
+
     console.warn(
       `No configuration found for model: ${modelName}. Defaulting to BasicNNLayers.`
     );
-    ModelComponent = BasicNNLayers;
-    typeStyle = DEFAULT_STYLE;
-  }
+    return { ModelComponent: BasicNNLayers, typeStyle: DEFAULT_STYLE };
+  }, [modelConfig, modelName]);
+
+  // Memoize final style calculation
+  const finalStyle = useMemo(
+    () => getProjectorStyle(isProjector, typeStyle),
+    [isProjector, typeStyle]
+  );
 
   return (
-    <CommonScene style={isProjector ? typeStyle : DEFAULT_STYLE}>
+    <CommonScene style={finalStyle}>
       <group ref={modelGroupRef}>
         {structure.length > 0 && (
           <ModelComponent
             structure={structure}
-            style={isProjector ? typeStyle : DEFAULT_STYLE}
+            style={finalStyle}
             model={modelName}
           />
         )}
