@@ -30,10 +30,15 @@ const Sublayer = ({
   model,
   useGivenInterval = false,
 }) => {
+  const { isProjector } = useScreenStore();
   const size = sublayer.dimensions || [20, 8, 8];
   let gridConfig = GRID_CONFIGS[model] || {};
 
-  const grid = gridConfig[sublayer.type] || DEFAULT_GRID;
+  const grid = isProjector
+    ? gridConfig[sublayer.type] || DEFAULT_GRID
+    : DEFAULT_GRID;
+
+  console.log(grid, style);
 
   return (
     <group position={position}>

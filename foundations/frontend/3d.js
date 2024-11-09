@@ -21,7 +21,7 @@ import ModelContainer from "./components/ModelContainer";
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 
-export default function Visualisation({ isTesting, initVersion }) {
+export default function Visualisation({ isTesting }) {
   const { currentArchitectures } = useScreenStore();
   const {
     visualization: { modelName, structure },
@@ -64,20 +64,6 @@ export default function Visualisation({ isTesting, initVersion }) {
       }}
     >
       <Suspense fallback={null}>
-        <Environment preset="sunset" background={false} />
-        <fog attach="fog" args={["#202020", 5, 400000]} />
-        <Sparkles count={200} scale={200} size={2} speed={0.4} opacity={0.1} />
-
-        <Stars
-          radius={100000}
-          depth={50}
-          count={3000}
-          factor={2}
-          saturation={0.5}
-          fade={true}
-          speed={0.05}
-          randomness={0.5}
-        />
         <Grid />
 
         <ModelContainer

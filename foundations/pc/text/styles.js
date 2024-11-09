@@ -9,6 +9,21 @@ export const Container = styled.div`
   font-family: "Fira Code", monospace;
 `;
 
+export const Canvas = styled.div`
+  ${WholeContainer}
+  width: 60vw;
+  right: 0;
+  left: 40vw;
+
+  canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 const scrollbarHide = css`
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -36,6 +51,8 @@ export const StructureText = styled.pre`
   overflow-x: auto;
   white-space: pre;
   ${scrollbarHide}
+
+  z-index: 100;
 
   .tree-line {
     color: #666;

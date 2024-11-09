@@ -3,6 +3,7 @@ import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
+import Background3D from "./bg-3d";
 
 // Memoize LayerText component
 const LayerText = React.memo(
@@ -120,6 +121,10 @@ export default function TextComponent() {
 
   return (
     <S.Container>
+      <S.Canvas>
+        <Background3D />
+      </S.Canvas>
+
       <S.StructureText ref={containerRef}>
         <div className="model-structure">
           {structure.map((layer, idx) => (

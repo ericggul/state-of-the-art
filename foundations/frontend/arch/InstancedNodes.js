@@ -47,47 +47,24 @@ const InstancedNodes = React.memo(
 
     return (
       <group rotation={rotation}>
-        {isProjector && (
-          <Instances limit={instanceCount}>
-            <boxGeometry args={instanceSize} />
-            <meshStandardMaterial
-              {...style.material}
-              color={color}
-              // wireframe={!isProjector}
-              opacity={isProjector ? 1 : 0.1}
-              transparent={!isProjector}
+        <Instances limit={instanceCount}>
+          <boxGeometry args={instanceSize} />
+          <meshStandardMaterial
+            {...style.material}
+            color={color}
+            wireframe={!isProjector}
+            // opacity={isProjector ? 1 : 0.1}
+            // transparent={!isProjector}
+          />
+          {positions.map((position, i) => (
+            <Instance
+              key={i}
+              position={position}
+              castShadow={style.shadows}
+              receiveShadow={style.shadows}
             />
-            {positions.map((position, i) => (
-              <Instance
-                key={i}
-                position={position}
-                castShadow={style.shadows}
-                receiveShadow={style.shadows}
-              />
-            ))}
-          </Instances>
-        )}
-
-        {/* {!isProjector &&
-          sublayer &&
-          uniqueXPositions.map((xPos, i) => (
-            <group
-              key={`text-${i}`}
-              position={[xPos, 0, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
-            >
-              <Text
-                position={[0, instanceSize[1] * 0.6, 0]}
-                fontSize={(instanceSize[0] + instanceSize[1]) * 0.002}
-                color={"white"}
-                anchorX="center"
-                anchorY="middle"
-                textAlign="center"
-              >
-                {`${sublayer.type}`}
-              </Text>
-            </group>
-          ))} */}
+          ))}
+        </Instances>
       </group>
     );
   }

@@ -28,6 +28,8 @@ export const BACKPROPAGATION_ALGORITHM = [
   { name: "Hidden Layer", type: "hidden", neurons: 6 },
   { name: "Hidden Layer", type: "hidden", neurons: 5 },
   { name: "Hidden Layer", type: "hidden", neurons: 6 },
+  { name: "Hidden Layer", type: "hidden", neurons: 5 },
+  { name: "Hidden Layer", type: "hidden", neurons: 4 },
   { name: "Output Layer", type: "output", neurons: 4 },
 ];
 
