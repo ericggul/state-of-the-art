@@ -3,6 +3,8 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 
+const LERP_FACTOR = 0.03; // Reduced for smoother movement
+
 export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const { camera } = useThree();
 
@@ -43,7 +45,7 @@ export function AvatarOrientationCamera({ cameraDistance = 3 }) {
     targetPositionRef.current
       .set(0, 0, cameraDistance)
       .applyQuaternion(quaternionRef.current);
-    camera.position.lerp(targetPositionRef.current, 0.1);
+    camera.position.lerp(targetPositionRef.current, LERP_FACTOR);
     camera.lookAt(0, 0, 0);
   });
 

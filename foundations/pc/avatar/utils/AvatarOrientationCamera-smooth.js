@@ -3,6 +3,10 @@ import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 
+const LERP_FACTOR = 0.05; // Reduced for smoother movement
+const MIN_POLAR_ANGLE = Math.PI / 4;
+const MAX_POLAR_ANGLE = Math.PI / 2;
+
 export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const { camera } = useThree();
 
@@ -13,6 +17,7 @@ export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
+  const currentQuaternionRef = useRef(new THREE.Quaternion());
 
   const handleNewMobileOrientation = (data) => {
     sensorDataRef.current = data;
@@ -36,14 +41,26 @@ export function AvatarOrientationCamera({ cameraDistance = 3 }) {
     const betaRad = THREE.MathUtils.degToRad(beta);
     const gammaRad = THREE.MathUtils.degToRad(gamma);
 
-    eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
+    // Apply polar angle constraints
+    const constrainedBeta = THREE.MathUtils.clamp(
+      betaRad,
+      MIN_POLAR_ANGLE - Math.PI / 2,
+      MAX_POLAR_ANGLE - Math.PI / 2
+    );
+
+    eulerRef.current.set(constrainedBeta, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
-    // Update camera position
+    // Smooth quaternion interpolation
+    currentQuaternionRef.current.slerp(quaternionRef.current, LERP_FACTOR);
+
+    // Update camera position with smoothed quaternion
     targetPositionRef.current
       .set(0, 0, cameraDistance)
-      .applyQuaternion(quaternionRef.current);
-    camera.position.lerp(targetPositionRef.current, 0.1);
+      .applyQuaternion(currentQuaternionRef.current);
+
+    // Smooth position interpolation
+    camera.position.lerp(targetPositionRef.current, LERP_FACTOR);
     camera.lookAt(0, 0, 0);
   });
 

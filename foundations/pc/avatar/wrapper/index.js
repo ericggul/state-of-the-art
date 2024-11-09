@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import Model from "../model";
-import { AvatarOrientationCamera } from "../utils/AvatarOrientationCamera";
+import { AvatarOrientationCamera } from "../utils/AvatarOrientationCamera-raw";
 
 export default function AvatarWrapper() {
   return (
