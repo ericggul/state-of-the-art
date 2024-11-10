@@ -72,12 +72,6 @@ export const TYPE_STYLES = {
       inner: "hsl(180, 65%, 35%)",
       conv: "hsl(180, 80%, 55%)",
     },
-    postprocessing: {
-      bloom: {
-        intensity: 1.5,
-        luminanceThreshold: 0.4,
-      },
-    },
   },
 
   transformer: {

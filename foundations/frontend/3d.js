@@ -18,6 +18,7 @@ export default function Visualisation({ isTesting = false }) {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
+  const isProjector = useScreenStore((state) => state.isProjector);
   const {
     visualization: { modelName, structure },
   } = useModelStructure(currentArchitectures);
@@ -65,7 +66,7 @@ export default function Visualisation({ isTesting = false }) {
           modelGroupRef={modelGroupRef}
         />
         {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
-        <PostProcessing />
+        {!isProjector && <PostProcessing />}
         <TransitionPostProcessing />
       </Suspense>
     </Canvas>
