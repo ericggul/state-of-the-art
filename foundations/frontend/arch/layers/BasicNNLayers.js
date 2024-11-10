@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, memo } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
+import useScreenStore from "@/components/screen/store";
 
 // Optimized structure generation with memoized configs
 const generateStructure = (modelStructure, model) => {
@@ -50,6 +51,8 @@ GridNodes.displayName = "GridNodes";
 // Optimized SingleLayer component
 const SingleLayer = memo(
   ({ position, grid, node, unexpandedNode, type, expanded, style }) => {
+    const isProjector = useScreenStore((state) => state.isProjector);
+
     const springConfig = {
       mass: 3,
       tension: 140,
@@ -68,6 +71,7 @@ const SingleLayer = memo(
       () => ({
         ...style.material,
         color: style.colors[type] || style.colors.inner,
+        wireframe: !isProjector,
       }),
       [style, type]
     );

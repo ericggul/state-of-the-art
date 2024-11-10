@@ -5,6 +5,7 @@ const useScreenStore = create((set) => ({
   latestSpeech: "",
   mobileVisibility: null,
   stage: "Idle",
+  isIntro: true,
   isTransition: false,
   isProjector: true,
   zoomFactor: 1,
@@ -20,6 +21,7 @@ const useScreenStore = create((set) => ({
   setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
   setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),
   setStage: (stage) => set({ stage }),
+  setIsIntro: (isIntro) => set({ isIntro }),
   setIsTransition: (isTransition) => set({ isTransition }),
 
   handleNewControllerArchitectures: (data) => {
@@ -102,10 +104,8 @@ const useScreenStore = create((set) => ({
 
       if (state.stage !== "Frontend") {
         updates.stage = "Frontend";
-        // updates.mobileVisibility = true;
       }
 
-      console.log("updates", updates);
       return Object.keys(updates).length ? updates : state;
     });
   },

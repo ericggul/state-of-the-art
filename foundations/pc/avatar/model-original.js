@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF, useAnimations, Center } from "@react-three/drei";
 import { MathUtils, MeshStandardMaterial } from "three";
-import useScreenStore from "@/components/screen/store";
 
 import useBlink from "./utils/useBlink";
 import useViseme from "./utils/useViseme";
@@ -21,8 +20,7 @@ export default function Model(props) {
     rotation: [Math.PI * 0.05, 0, 0],
   };
 
-  const [wireframe, setWireframe] = useState(true);
-  const [opacity, setOpacity] = useState(1);
+  const [wireframe, setWireframe] = useState(false);
 
   //////TEMPORARY TESTING: MESSAGE STORAGE
   const { visemeMessage } = useViseme();
@@ -34,10 +32,8 @@ export default function Model(props) {
   const { actions, mixer } = useAnimations(animations, group);
 
   const [animation, setAnimation] = useState("Idle");
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const isInitializedRef = useRef(false);
-
-  // Store original materials map
-  const materialsMapRef = useRef(new Map());
 
   // Helper function to randomly select animation from a group
   const getRandomAnimation = (type) => {
@@ -141,53 +137,6 @@ export default function Model(props) {
       actions[animation]?.fadeOut(ANIMATION_FADE_TIME);
     };
   }, [animation, actions]);
-
-  // Simplified initial setup
-  useEffect(() => {
-    // Store original materials and set wireframe
-    scene.traverse((child) => {
-      if (child.isMesh && child.material) {
-        materialsMapRef.current.set(child.uuid, child.material);
-        child.material = new MeshStandardMaterial({
-          wireframe: true,
-          color: 0xffffff,
-          emissive: 0xffffff,
-          emissiveIntensity: 0.5,
-          transparent: true,
-          opacity: 1,
-        });
-      }
-    });
-
-    // Start transition after 3s
-    const timer = setTimeout(() => setWireframe(false), 3000);
-    return () => clearTimeout(timer);
-  }, [scene]);
-
-  // Smoother transition with slower fade
-  useFrame(() => {
-    if (!wireframe && opacity > 0) {
-      const newOpacity = Math.max(0, opacity - 0.01); // Slower fade
-      setOpacity(newOpacity);
-
-      if (newOpacity === 0) {
-        // Only swap materials once at the end
-        scene.traverse((child) => {
-          if (child.isMesh) {
-            const original = materialsMapRef.current.get(child.uuid);
-            if (original) child.material = original;
-          }
-        });
-      } else {
-        // Just update opacity during transition
-        scene.traverse((child) => {
-          if (child.isMesh && child.material) {
-            child.material.opacity = newOpacity;
-          }
-        });
-      }
-    }
-  });
 
   return (
     <group {...props} dispose={null} ref={group}>
