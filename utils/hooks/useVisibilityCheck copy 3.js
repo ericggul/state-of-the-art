@@ -1,91 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-export default function useVisibilityCheck({
-  socket,
-  mobileId,
-  isTrackingVisibility = true,
-} = {}) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isReady, setIsReady] = useState(false);
-  const isInitialized = useRef(false);
+const EVENT_TYPES = {
+  VISIBILITY: "visibilitychange",
+  FOCUS: "focus",
+  BLUR: "blur",
+  BEFORE_UNLOAD: "beforeunload",
+  UNLOAD: "unload",
+  PAGE_HIDE: "pagehide",
+  PAGE_SHOW: "pageshow",
+};
 
-  // Wait for 1 second before starting any functionality
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Handle visibility state changes
-  const handleVisibilityChange = useCallback(() => {
-    setIsVisible(!document.hidden);
-  }, []);
-
-  const handleFocus = useCallback(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    if (document.hidden) setIsVisible(false);
-  }, []);
-
-  const handlePageHide = useCallback(() => {
-    if (document.hidden) setIsVisible(false);
-  }, []);
-
-  const handlePageShow = useCallback(() => {
-    setIsVisible(true);
-  }, []);
-
-  // Set up visibility tracking only after the page is ready
-  useEffect(() => {
-    if (!isReady || !isTrackingVisibility || isInitialized.current) return;
-
-    isInitialized.current = true;
-
-    const cleanupListeners = setupEventListeners({
-      handleVisibilityChange,
-      handleFocus,
-      handleBlur,
-      handlePageHide,
-      handlePageShow,
-    });
-
-    return () => {
-      cleanupListeners();
-      isInitialized.current = false;
-    };
-  }, [
-    isReady,
-    isTrackingVisibility,
-    handleVisibilityChange,
-    handleFocus,
-    handleBlur,
-    handlePageHide,
-    handlePageShow,
-  ]);
-
-  // Socket emissions only happen after isReady
-  useEffect(() => {
-    if (!isReady || !socket?.current) return;
-
-    try {
-      socket.current.emit("mobile-new-visibility-change", {
-        isVisible,
-        mobileId,
-      });
-      console.log("✅ Socket emission successful");
-    } catch (e) {
-      console.error("❌ Socket emission error:", e);
-    }
-  }, [isReady, isVisible, socket, mobileId]);
-
-  return isVisible;
-}
-// Event Listener Setup
-function setupEventListeners(handlers) {
+const setupEventListeners = (handlers) => {
   document.addEventListener(
     "visibilitychange",
     handlers.handleVisibilityChange
@@ -109,4 +34,85 @@ function setupEventListeners(handlers) {
     window.removeEventListener("pagehide", handlers.handlePageHide);
     window.removeEventListener("pageshow", handlers.handlePageShow);
   };
+};
+
+export default function useVisibilityCheck({
+  socket,
+  mobileId,
+  isTrackingVisibility = true,
+} = {}) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isReady, setIsReady] = useState(false);
+  const isInitialized = useRef(false);
+
+  // Wait for document to be ready
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setIsReady(true);
+    } else {
+      const handleReady = () => setIsReady(true);
+      window.addEventListener("load", handleReady);
+      return () => window.removeEventListener("load", handleReady);
+    }
+  }, []);
+
+  // Handle visibility state changes
+  const handleVisibilityChange = useCallback(() => {
+    setIsVisible(!document.hidden);
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    if (document.hidden) setIsVisible(false);
+  }, []);
+
+  const handlePageHide = useCallback(() => {
+    if (document.hidden) setIsVisible(false);
+  }, []);
+
+  const handlePageShow = useCallback(() => {
+    setIsVisible(true);
+  }, []);
+
+  // Set up visibility tracking only after document is ready
+  useEffect(() => {
+    if (!isReady || !isTrackingVisibility || isInitialized.current) return;
+
+    isInitialized.current = true;
+    return setupEventListeners({
+      handleVisibilityChange,
+      handleFocus,
+      handleBlur,
+      handlePageHide,
+      handlePageShow,
+    });
+  }, [
+    isReady,
+    isTrackingVisibility,
+    handleVisibilityChange,
+    handleFocus,
+    handleBlur,
+    handlePageHide,
+    handlePageShow,
+  ]);
+
+  // Socket emissions
+  useEffect(() => {
+    if (!isReady || !socket?.current) return;
+
+    try {
+      socket.current.emit("mobile-new-visibility-change", {
+        isVisible,
+        mobileId,
+      });
+      console.log("✅ Socket emission successful");
+    } catch (e) {
+      console.error("❌ Socket emission error:", e);
+    }
+  }, [isReady, isVisible, socket, mobileId]);
+
+  return isVisible;
 }
