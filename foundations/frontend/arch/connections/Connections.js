@@ -1,39 +1,38 @@
-import React, { useMemo, Suspense } from "react";
+import React, { useMemo, memo } from "react";
 import * as THREE from "three";
 
-function Connections({ layersExpanded, structure, style }) {
-  const connectionsExpanded = useMemo(() => {
-    if (!layersExpanded || layersExpanded.length === 0) {
-      return structure.slice(0, -1).map(() => ({ from: false, to: false }));
-    }
-    return layersExpanded.slice(0, -1).map((layer, i) => ({
-      from: layer,
-      to: layersExpanded[i + 1],
-    }));
-  }, [layersExpanded, structure]);
+const SingleLine = memo(({ from, to, style }) => {
+  const geometry = useMemo(() => {
+    const start = new THREE.Vector3().fromArray(from);
+    const end = new THREE.Vector3().fromArray(to);
+    const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+    return new THREE.BufferGeometry().setFromPoints([start, mid, end]);
+  }, [from, to]);
+
+  const lineMaterialProps = useMemo(
+    () => ({
+      color: style?.colors?.connection || style?.colors?.inner || "blue",
+      transparent: true,
+      opacity: style?.material?.opacity || 1,
+      linewidth: style?.connection?.linewidth || 1,
+      linecap: "round",
+      linejoin: "round",
+      emissive: style?.material?.emissive,
+      emissiveIntensity: style?.material?.emissiveIntensity || 1,
+    }),
+    [style]
+  );
 
   return (
-    <Suspense fallback={<div>Loading Connections...</div>}>
-      {structure.slice(0, -1).map((_, i) => (
-        <SingleConnection
-          key={i}
-          layerFrom={structure[i]}
-          layerTo={structure[i + 1]}
-          expanded={connectionsExpanded[i] || { from: false, to: false }}
-          style={style}
-        />
-      ))}
-    </Suspense>
+    <line geometry={geometry}>
+      <lineBasicMaterial {...lineMaterialProps} />
+    </line>
   );
-}
+});
 
-function SingleConnection({ layerFrom, layerTo, expanded, style }) {
+const SingleConnection = memo(({ layerFrom, layerTo, expanded, style }) => {
   const connections = useMemo(() => {
-    if (!layerFrom || !layerTo || !expanded) {
-      return [];
-    }
-
-    const temp = [];
+    if (!layerFrom || !layerTo || !expanded) return [];
 
     const fromXCount = expanded.from ? layerFrom.grid.xCount : 1;
     const fromYCount = expanded.from ? layerFrom.grid.yCount : 1;
@@ -45,8 +44,16 @@ function SingleConnection({ layerFrom, layerTo, expanded, style }) {
     const toXInterval = expanded.to ? layerTo.grid.xInterval : 0;
     const toYInterval = expanded.to ? layerTo.grid.yInterval : 0;
 
-    for (let fromI = 0; fromI < fromXCount; fromI++) {
-      for (let fromJ = 0; fromJ < fromYCount; fromJ++) {
+    return Array.from(
+      { length: fromXCount * fromYCount * toXCount * toYCount },
+      (_, index) => {
+        const fromI = Math.floor(index / (fromYCount * toXCount * toYCount));
+        const fromJ = Math.floor(
+          (index % (fromYCount * toXCount * toYCount)) / (toXCount * toYCount)
+        );
+        const toI = Math.floor((index % (toXCount * toYCount)) / toYCount);
+        const toJ = index % toYCount;
+
         const fromXPos =
           fromXInterval * fromI -
           ((fromXCount - 1) * fromXInterval) / 2 +
@@ -55,73 +62,54 @@ function SingleConnection({ layerFrom, layerTo, expanded, style }) {
           fromYInterval * fromJ -
           ((fromYCount - 1) * fromYInterval) / 2 +
           layerFrom.position[1];
+        const toXPos =
+          toXInterval * toI -
+          ((toXCount - 1) * toXInterval) / 2 +
+          layerTo.position[0];
+        const toYPos =
+          toYInterval * toJ -
+          ((toYCount - 1) * toYInterval) / 2 +
+          layerTo.position[1];
 
-        for (let toI = 0; toI < toXCount; toI++) {
-          for (let toJ = 0; toJ < toYCount; toJ++) {
-            const toXPos =
-              toXInterval * toI -
-              ((toXCount - 1) * toXInterval) / 2 +
-              layerTo.position[0];
-            const toYPos =
-              toYInterval * toJ -
-              ((toYCount - 1) * toYInterval) / 2 +
-              layerTo.position[1];
-
-            temp.push({
-              from: [fromXPos, fromYPos, layerFrom.position[2]],
-              to: [toXPos, toYPos, layerTo.position[2]],
-            });
-          }
-        }
+        return {
+          from: [fromXPos, fromYPos, layerFrom.position[2]],
+          to: [toXPos, toYPos, layerTo.position[2]],
+        };
       }
-    }
-
-    return temp;
+    );
   }, [layerFrom, layerTo, expanded]);
 
-  return (
-    <>
-      {connections.map((connection, i) => (
-        <SingleLine
-          key={i}
-          from={connection.from}
-          to={connection.to}
-          style={style}
-        />
-      ))}
-    </>
-  );
-}
+  return connections.map((connection, i) => (
+    <SingleLine key={i} {...connection} style={style} />
+  ));
+});
 
-function SingleLine({ from, to, style }) {
-  const geometry = useMemo(() => {
-    const start = new THREE.Vector3().fromArray(from);
-    const end = new THREE.Vector3().fromArray(to);
-    const mid = new THREE.Vector3().lerpVectors(start, end, 0.5);
+const Connections = memo(({ layersExpanded, structure, style }) => {
+  const connectionsExpanded = useMemo(() => {
+    if (!layersExpanded?.length) {
+      return structure.slice(0, -1).map(() => ({ from: false, to: false }));
+    }
+    return layersExpanded.slice(0, -1).map((layer, i) => ({
+      from: layer,
+      to: layersExpanded[i + 1],
+    }));
+  }, [layersExpanded, structure]);
 
-    const points = [start, mid, end];
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [from, to]);
+  return structure
+    .slice(0, -1)
+    .map((_, i) => (
+      <SingleConnection
+        key={i}
+        layerFrom={structure[i]}
+        layerTo={structure[i + 1]}
+        expanded={connectionsExpanded[i] || { from: false, to: false }}
+        style={style}
+      />
+    ));
+});
 
-  const lineMaterialProps = {
-    color: style?.colors?.connection || style?.colors?.inner || "blue",
-    transparent: true,
-    opacity: style?.material?.opacity || 1,
-    linewidth: style?.connection?.linewidth || 1,
-    linecap: "round",
-    linejoin: "round",
-  };
-
-  if (style?.material?.emissive) {
-    lineMaterialProps.emissive = style.material.emissive;
-    lineMaterialProps.emissiveIntensity = style.material.emissiveIntensity || 1;
-  }
-
-  return (
-    <line geometry={geometry}>
-      <lineBasicMaterial {...lineMaterialProps} />
-    </line>
-  );
-}
+Connections.displayName = "Connections";
+SingleConnection.displayName = "SingleConnection";
+SingleLine.displayName = "SingleLine";
 
 export default Connections;

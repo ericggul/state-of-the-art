@@ -51,15 +51,17 @@ GridNodes.displayName = "GridNodes";
 const SingleLayer = memo(
   ({ position, grid, node, unexpandedNode, type, expanded, style }) => {
     const springConfig = {
-      mass: 1,
-      tension: 170,
-      friction: 26,
+      mass: 3,
+      tension: 140,
+      friction: 28,
       clamp: false,
+      velocity: 0.01,
     };
 
     const { scale } = useSpring({
       scale: expanded ? 1 : 0,
       config: springConfig,
+      delay: 100,
     });
 
     const nodeMaterialProps = useMemo(
@@ -106,13 +108,15 @@ const BasicNNLayers = memo(({ structure, style, model }) => {
     new Array(structure.length).fill(false)
   );
 
+  // Cycle through all layers
   useEffect(() => {
     const interval = setInterval(() => {
       setExpandedLayerIdx((i) => (i + 1) % structure.length);
-    }, 500);
+    }, 800);
     return () => clearInterval(interval);
   }, [structure.length]);
 
+  // Update which layers are expanded
   useEffect(() => {
     setLayersExpanded((prev) =>
       prev.map((_, i) => Math.abs(i - expandedLayerIdx) < 2)
