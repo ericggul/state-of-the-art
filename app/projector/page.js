@@ -7,7 +7,7 @@ import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
-const Idle = dynamic(() => import("@/components/screen/idle-projector"));
+const Idle = dynamic(() => import("@/components/screen/idle"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
@@ -41,8 +41,11 @@ export default function ScreenWrapper() {
 
   return (
     <Suspense>
-      {stage === "Idle" && <Idle />}
       {stage === "Frontend" && <Frontend />}
+      {(stage === "Idle" || stage === "Frontend") && (
+        <Idle $isFrontend={stage === "Frontend"} type="projector" />
+      )}
+
       {stage === "Backend" && <Backend />}
       {isTransition && <Transition />}
     </Suspense>

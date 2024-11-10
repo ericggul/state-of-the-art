@@ -12,16 +12,13 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 const COMPONENTS = {
   0: dynamic(() => import("@/foundations/pc/avatar/wrapper")),
   1: dynamic(() => import("@/foundations/pc/dashboard")),
-  // 2: dynamic(() => import("@/foundations/pc/2d-vis")),
-  // 2: dynamic(() => import("@/components/frontend")),
   2: dynamic(() => import("@/foundations/pc/text")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
-
   4: dynamic(() => import("@/foundations/pc/text/index-old")),
   5: dynamic(() => import("@/foundations/pc/caption")),
 };
 
-const Idle = dynamic(() => import("@/components/screen/idle-pc"));
+const Idle = dynamic(() => import("@/components/screen/idle"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
@@ -62,8 +59,10 @@ export default function RelationPage() {
 
   return (
     <>
-      {stage === "Idle" && <Idle />}
       {stage === "Frontend" && <FrontendComponent />}
+      {(stage === "Idle" || stage === "Frontend") && (
+        <Idle $isFrontend={stage === "Frontend"} type="pc" />
+      )}
       {stage === "Backend" && <Backend />}
       {isTransition && <Transition />}
     </>

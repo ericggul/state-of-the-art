@@ -1,0 +1,43 @@
+"use client";
+
+import { memo, useState, useEffect } from "react";
+import * as S from "./styles";
+
+import dynamic from "next/dynamic";
+
+const IdlePC = dynamic(() => import("@/components/screen/idle/pc"));
+const IdleProjector = dynamic(() =>
+  import("@/components/screen/idle/projector")
+);
+
+const Idle = memo(function Idle({ $isFrontend, type }) {
+  const [unmount, setUnmount] = useState(false);
+
+  useEffect(() => {
+    if ($isFrontend) {
+      const timer = setTimeout(() => {
+        setUnmount(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setUnmount(false);
+    }
+  }, [$isFrontend]);
+
+  console.log(unmount, $isFrontend);
+
+  return (
+    <S.Container $isFrontend={$isFrontend}>
+      {!unmount && (
+        <>
+          {type === "pc" && <IdlePC $isFrontend={$isFrontend} />}
+          {type === "projector" && <IdleProjector $isFrontend={$isFrontend} />}
+        </>
+      )}
+    </S.Container>
+  );
+});
+
+Idle.displayName = "Idle";
+export default Idle;

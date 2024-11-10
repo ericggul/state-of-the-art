@@ -5,7 +5,6 @@ const useScreenStore = create((set) => ({
   latestSpeech: "",
   mobileVisibility: null,
   stage: "Idle",
-  isIntro: true,
   isTransition: false,
   isProjector: true,
   zoomFactor: 1,
@@ -21,7 +20,6 @@ const useScreenStore = create((set) => ({
   setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
   setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),
   setStage: (stage) => set({ stage }),
-  setIsIntro: (isIntro) => set({ isIntro }),
   setIsTransition: (isTransition) => set({ isTransition }),
 
   handleNewControllerArchitectures: (data) => {
