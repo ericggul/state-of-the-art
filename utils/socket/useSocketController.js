@@ -4,7 +4,7 @@ import io from "socket.io-client"; // Moved import inside the module
 export default function useSocketController({
   handleNewResponse,
   handleNewMobileInit,
-  handleNewVisibilityChange,
+  handleNewMobileVisibility,
 }) {
   const socket = useRef(null);
   const initialized = useRef(false);
@@ -40,7 +40,7 @@ export default function useSocketController({
       });
       socket.current.on("new-mobile-visibility-change", (data) => {
         console.log("Received new-mobile-visibility-change:", data);
-        handleNewVisibilityChange(data);
+        handleNewMobileVisibility(data);
       });
     });
   };

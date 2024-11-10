@@ -38,6 +38,7 @@ export default function mobileSetup({ socket, io }) {
   });
 
   ///////TEMPORARY WITHOUT CONTROLLER/////
+  //////CURRENTLY FOCUSED LOGIC/////
   //v2 logic
   socket.on("mobile-new-architecture", (data) => {
     socket.to("controller").emit("new-mobile-architecture", data);
@@ -45,7 +46,7 @@ export default function mobileSetup({ socket, io }) {
   });
 
   socket.on("mobile-new-speech", (data) => {
-    socket.to("screen").emit("new-controller-speech", data);
+    socket.to("screen").emit("new-mobile-speech", data);
   });
 
   //////VISIBILITY////

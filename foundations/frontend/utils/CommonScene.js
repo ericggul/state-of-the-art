@@ -16,9 +16,6 @@ const HAL_9000_LIGHT = {
 };
 
 export default function CommonScene({ children, style }) {
-  // const styleIndex = useScreenStore((state) => state.styleIndex);
-  // const style = STYLE_STRATEGIES[styleIndex];
-
   return (
     <>
       <Suspense fallback={null}>

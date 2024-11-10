@@ -30,10 +30,13 @@ export default function RelationPage() {
   const {
     handleNewControllerArchitectures,
     handleNewSpeech,
-    handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    handleNewMobileVisibility,
+    handleNewMobile,
     setIsProjector,
     setDeviceIndex,
+    stage,
+    isTransition,
   } = useScreenStore();
 
   // Set isProjector to false on mount
@@ -46,20 +49,22 @@ export default function RelationPage() {
     layerIdx: idx,
     handleNewControllerArchitectures,
     handleNewSpeech,
-    handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    handleNewMobileVisibility,
+    handleNewMobile,
   });
 
-  const { showFrontend, showBackend, showTransition } = useScreenVisibility();
+  useScreenVisibility();
 
   // 동적으로 컴포넌트 선택
   const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);
 
   return (
     <>
-      {showFrontend && <FrontendComponent />}
-      {showBackend && <Backend showBackend={showBackend} />}
-      {showTransition && <Transition />}
+      {stage === "Idle" && <Idle />}
+      {stage === "Frontend" && <FrontendComponent />}
+      {stage === "Backend" && <Backend />}
+      {isTransition && <Transition />}
     </>
   );
 }

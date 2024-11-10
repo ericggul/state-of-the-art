@@ -4,8 +4,9 @@ import io from "socket.io-client"; // Moved import inside the module
 export default function useSocketScreen({
   layerIdx = 0,
   handleNewControllerArchitectures = () => {},
-  handleNewSpeech,
-  handleNewVisibilityChange,
+  handleNewSpeech = () => {},
+  handleNewMobile = () => {},
+  handleNewMobileVisibility = () => {},
   handleNewMobileArchitecture = () => {},
 }) {
   const socket = useRef(null);
@@ -35,11 +36,18 @@ export default function useSocketScreen({
         "new-controller-architectures",
         handleNewControllerArchitectures
       );
-      socket.current.on("new-controller-speech", handleNewSpeech);
+      ////////////////////////////////////////////////////////////////
+
+      socket.current.on("new-mobile-init", handleNewMobile);
       socket.current.on(
         "new-mobile-visibility-change",
-        handleNewVisibilityChange
+        handleNewMobileVisibility
       );
+
+      ////////////////////////////////////////////////////////////////
+
+      socket.current.on("new-mobile-speech", handleNewSpeech);
+
       socket.current.on("new-mobile-architecture", handleNewMobileArchitecture);
     });
   };

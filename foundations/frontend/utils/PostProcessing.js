@@ -16,12 +16,6 @@ export default function Wrapper() {
 }
 
 function PostProcessing() {
-  const { mobileVisibility } = useScreenStore();
-
-  useEffect(() => {
-    console.log("PostProcessing rendered, mobileVisibility:", mobileVisibility);
-  }, [mobileVisibility]);
-
   return (
     <EffectComposer>
       <Glitch

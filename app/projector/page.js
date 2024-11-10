@@ -7,6 +7,7 @@ import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
+const Idle = dynamic(() => import("@/components/idle"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
@@ -15,10 +16,13 @@ export default function ScreenWrapper() {
   const {
     handleNewControllerArchitectures,
     handleNewSpeech,
-    handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    handleNewMobileVisibility,
+    handleNewMobile,
     setIsProjector,
     setDeviceIndex,
+    stage,
+    isTransition,
   } = useScreenStore();
 
   useEffect(() => {
@@ -30,17 +34,21 @@ export default function ScreenWrapper() {
     layerIdx: 0,
     handleNewControllerArchitectures,
     handleNewSpeech,
-    handleNewVisibilityChange,
     handleNewMobileArchitecture,
+    handleNewMobileVisibility,
+    handleNewMobile,
   });
 
-  const { showFrontend, showBackend, showTransition } = useScreenVisibility();
+  useScreenVisibility();
+
+  console.log(stage);
 
   return (
     <Suspense>
-      {showFrontend && <Frontend />}
-      {showBackend && <Backend showBackend={showBackend} />}
-      {showTransition && <Transition />}
+      {stage === "Idle" && <Idle />}
+      {stage === "Frontend" && <Frontend />}
+      {stage === "Backend" && <Backend />}
+      {isTransition && <Transition />}
     </Suspense>
   );
 }

@@ -28,7 +28,7 @@ export default function El() {
   const socket = useSocket({
     handleNewMobileConnect,
     handleNewMobileDisconnect,
-    handleNewVisibilityChange,
+    handleNewMobileVisibility,
   });
 
   const [visible, setVisible] = useState(true);
@@ -41,7 +41,7 @@ export default function El() {
     console.log("new mobile disconnected", data);
   }
 
-  function handleNewVisibilityChange(data) {
+  function handleNewMobileVisibility(data) {
     console.log("new visibility change", data);
     setVisible(data.isVisible);
   }

@@ -3,12 +3,13 @@ import { create } from "zustand";
 const useScreenStore = create((set) => ({
   currentArchitectures: [],
   latestSpeech: "",
-  mobileVisibility: true,
-  styleIndex: 0,
+  mobileVisibility: null,
+  stage: "Idle",
+  isTransition: false,
   isProjector: true,
   zoomFactor: 1,
-
   deviceIndex: 5,
+  targetMobileId: null,
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
@@ -38,17 +39,39 @@ const useScreenStore = create((set) => ({
     set({ latestSpeech: data.text || "" });
   },
 
-  handleNewVisibilityChange: (data) => {
+  //////stage-related logics////
+  handleNewMobileVisibility: (data) => {
     console.log("New visibility change received:", data);
     set({ mobileVisibility: data.isVisible });
   },
 
-  // handleNewMobileOrientationSpike: (data) => {
-  //   set({ styleIndex: Math.floor(data.spikeCount) % 15 });
-  // },
+  handleNewMobile: (data) => {
+    console.log("New join received:", data);
+    set((state) => {
+      if (state.targetMobileId) {
+        if (state.targetMobileId != data.mobileId) return state;
+      }
+      return { targetMobileId: data.mobileId, stage: "Frontend" };
+    });
+  },
 
+  handleReset: () =>
+    set({
+      targetMobileId: null,
+      stage: "Idle",
+      isTransition: false,
+      currentArchitectures: [],
+      mobileVisibility: null,
+    }),
+
+  //default states
   setIsProjector: (isProjector) => set({ isProjector }),
   setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
+
+  //set target mobile id: to be implemented, controller --> target mobile id
+  setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),
+  setStage: (stage) => set({ stage }),
+  setIsTransition: (isTransition) => set({ isTransition }),
 }));
 
 export default useScreenStore;

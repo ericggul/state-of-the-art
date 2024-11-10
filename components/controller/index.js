@@ -23,14 +23,14 @@ export default function Controller() {
     }
   };
 
-  function handleNewVisibilityChange(data) {
+  function handleNewMobileVisibility(data) {
     console.log("new visibility change", data);
   }
 
   const socket = useSocketController({
     handleNewResponse,
     handleNewMobileInit,
-    handleNewVisibilityChange,
+    handleNewMobileVisibility,
   });
 
   useEffect(() => {
