@@ -8,7 +8,9 @@ export const Container = styled.div`
   padding: 2vw;
   background: #000000;
   color: #00ffff;
-  font-family: "Orbitron", sans-serif;
+  font-family: ${(props) =>
+      props.$isTransition ? "Comic Sans MS" : "Orbitron"},
+    sans-serif;
 `;
 
 export const Header = styled.header`

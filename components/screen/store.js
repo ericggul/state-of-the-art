@@ -116,6 +116,7 @@ const useScreenStore = create((set) => ({
 
       if (state.stage !== "Frontend") {
         updates.stage = "Frontend";
+        // updates.mobileVisibility = true;
       }
 
       console.log("updates", updates);

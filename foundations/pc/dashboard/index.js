@@ -13,7 +13,8 @@ const DEFAULT_IMAGE =
   "https://via.placeholder.com/300x200.png?text=Model+Architecture";
 
 export default function Dashboard() {
-  const { currentArchitectures } = useStore();
+  const currentArchitectures = useStore((state) => state.currentArchitectures);
+  const isTransition = useStore((state) => state.isTransition);
   const [prevModel, setPrevModel] = useState(null);
   const [model, setModel] = useState(null);
 
@@ -54,7 +55,7 @@ export default function Dashboard() {
   };
 
   return (
-    <S.Container>
+    <S.Container $isTransition={isTransition}>
       <S.Header>
         <S.Title>
           <TypewriterText
