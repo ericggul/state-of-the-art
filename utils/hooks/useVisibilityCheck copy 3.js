@@ -1,43 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-
-// Constants
-const INIT_TIMEOUT = 300;
-const EVENT_TYPES = {
-  VISIBILITY: "visibilitychange",
-  FOCUS: "focus",
-  BLUR: "blur",
-  BEFORE_UNLOAD: "beforeunload",
-  UNLOAD: "unload",
-  PAGE_HIDE: "pagehide",
-  PAGE_SHOW: "pageshow",
-};
-
-// Event Listener Setup - Added back the missing function
-const setupEventListeners = (handlers) => {
-  document.addEventListener(
-    "visibilitychange",
-    handlers.handleVisibilityChange
-  );
-  window.addEventListener("focus", handlers.handleFocus);
-  window.addEventListener("blur", handlers.handleBlur);
-  window.addEventListener("beforeunload", handlers.handlePageHide);
-  window.addEventListener("unload", handlers.handlePageHide);
-  window.addEventListener("pagehide", handlers.handlePageHide);
-  window.addEventListener("pageshow", handlers.handlePageShow);
-
-  return () => {
-    document.removeEventListener(
-      "visibilitychange",
-      handlers.handleVisibilityChange
-    );
-    window.removeEventListener("focus", handlers.handleFocus);
-    window.removeEventListener("blur", handlers.handleBlur);
-    window.removeEventListener("beforeunload", handlers.handlePageHide);
-    window.removeEventListener("unload", handlers.handlePageHide);
-    window.removeEventListener("pagehide", handlers.handlePageHide);
-    window.removeEventListener("pageshow", handlers.handlePageShow);
-  };
-};
+import { useState, useEffect, useCallback } from "react";
 
 export default function useVisibilityCheck({
   socket,
@@ -45,12 +6,7 @@ export default function useVisibilityCheck({
   isTrackingVisibility = true,
 } = {}) {
   const [isVisible, setIsVisible] = useState(true);
-  const isInitialized = useRef(false);
-
-  console.log("🔄 Hook Reinitialized, Initial State:", {
-    isVisible,
-    isInitialized: isInitialized.current,
-  });
+  console.log("🔄 Hook Reinitialized, Initial State:", { isVisible });
 
   // Memoize handlers to prevent recreation on each render
   const handleVisibilityChange = useCallback(() => {
@@ -172,14 +128,9 @@ export default function useVisibilityCheck({
       return;
     }
 
-    if (isInitialized.current) {
-      console.log("🔄 Hook already initialized, skipping setup");
-      return;
-    }
-
     console.log("🚀 Setting up visibility tracking");
-    isInitialized.current = true;
 
+    // Wait for page to be fully loaded
     const initTimeout = setTimeout(() => {
       console.log("⚡ Initial visibility check:", {
         documentHidden: document.hidden,
@@ -188,26 +139,31 @@ export default function useVisibilityCheck({
         time: new Date().toISOString(),
       });
 
-      // Only update if not already initialized
-      if (!document.hidden) {
-        setIsVisible(true);
-      }
+      // Only trust document.hidden for initial state
+      setIsVisible(!document.hidden);
     }, 300);
 
+    // Event listeners setup
     console.log("📡 Attaching event listeners");
-    const cleanupListeners = setupEventListeners({
-      handleVisibilityChange,
-      handleFocus,
-      handleBlur,
-      handlePageHide,
-      handlePageShow,
-    });
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("beforeunload", handlePageHide);
+    window.addEventListener("unload", handlePageHide);
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
 
     return () => {
       console.log("🧹 Cleaning up event listeners");
       clearTimeout(initTimeout);
-      cleanupListeners();
-      isInitialized.current = false;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("beforeunload", handlePageHide);
+      window.removeEventListener("unload", handlePageHide);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
     };
   }, [
     isTrackingVisibility,
