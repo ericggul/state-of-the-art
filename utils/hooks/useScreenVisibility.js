@@ -11,8 +11,6 @@ export default function useScreenVisibility() {
     isTransition,
   } = useScreenStore();
 
-  console.log("useScreenVisibility", mobileVisibility, isProjector);
-
   const timeoutRef1 = useRef(null);
   const timeoutRef2 = useRef(null);
   const timeoutRef3 = useRef(null);

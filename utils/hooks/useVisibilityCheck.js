@@ -13,7 +13,7 @@ export default function useVisibilityCheck({
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 1000);
+    }, 30);
 
     return () => clearTimeout(timer);
   }, []);

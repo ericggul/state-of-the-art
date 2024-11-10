@@ -9,7 +9,6 @@ const QR_LINK = "https://sota-xdlab.net/mobile";
 
 const Idle = memo(function Idle() {
   const [windowWidth, windowHeight] = useResize();
-  console.log("🔄 windowWidth, windowHeight", { windowWidth, windowHeight });
 
   return (
     <S.Container>

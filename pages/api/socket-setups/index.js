@@ -7,6 +7,10 @@ export default function mobileSetup({ socket, io }) {
     socket.emit("mobile-init", { mobileId });
     socket.to("controller").emit("new-mobile-init", { mobileId });
     socket.to("screen").emit("new-mobile-init", { mobileId });
+    socket.to("screen").emit("new-mobile-visibility-change", {
+      isVisible: true,
+      mobileId,
+    });
   });
 
   socket.on("screen-init", (data) => {

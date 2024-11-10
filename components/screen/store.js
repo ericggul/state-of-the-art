@@ -83,13 +83,7 @@ const useScreenStore = create((set) => ({
       const updates = {};
 
       console.log("state", state, data.isVisible);
-      if (state.mobileVisibility !== data.isVisible) {
-        updates.mobileVisibility = data.isVisible;
-      }
-
-      // if (state.stage === "Idle") {
-      //   updates.stage = data.isVisible ? "Frontend" : "Backend";
-      // }
+      updates.mobileVisibility = data.isVisible;
 
       console.log("updates", updates);
       return Object.keys(updates).length ? updates : state;
