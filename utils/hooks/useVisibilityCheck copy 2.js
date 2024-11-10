@@ -41,19 +41,14 @@ export default function useVisibilityCheck({
   mobileId,
   isTrackingVisibility = true,
 } = {}) {
-  // Initialize with actual document visibility state
-  const [isVisible, setIsVisible] = useState(!document.hidden);
+  const [isVisible, setIsVisible] = useState(true);
   const isInitialized = useRef(false);
 
   // Handle visibility state changes
   const handleVisibilityChange = useCallback(() => {
     alert("🔄 handleVisibilityChange");
     if (document.readyState !== "complete") return;
-    const newVisibility = !document.hidden;
-    alert(
-      `Document hidden: ${document.hidden}, Setting visibility to: ${newVisibility}`
-    );
-    setIsVisible(newVisibility);
+    setIsVisible(!document.hidden);
   }, []);
 
   const handleFocus = useCallback(() => {
