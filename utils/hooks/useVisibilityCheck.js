@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-// Constants
-const INIT_TIMEOUT = 300;
 const EVENT_TYPES = {
   VISIBILITY: "visibilitychange",
   FOCUS: "focus",
@@ -12,7 +10,6 @@ const EVENT_TYPES = {
   PAGE_SHOW: "pageshow",
 };
 
-// Event Listener Setup - Added back the missing function
 const setupEventListeners = (handlers) => {
   document.addEventListener(
     "visibilitychange",
@@ -47,154 +44,34 @@ export default function useVisibilityCheck({
   const [isVisible, setIsVisible] = useState(true);
   const isInitialized = useRef(false);
 
-  console.log("🔄 Hook Reinitialized, Initial State:", {
-    isVisible,
-    isInitialized: isInitialized.current,
-  });
-
-  // Memoize handlers to prevent recreation on each render
+  // Handle visibility state changes
   const handleVisibilityChange = useCallback(() => {
-    // Don't update visibility during page transitions
-    if (document.readyState !== "complete") {
-      console.log("🔄 Ignoring visibility change during page load");
-      return;
-    }
-
-    const isPageVisible = !document.hidden;
-    const hasFocus = document.hasFocus();
-    // During page refresh, trust document.hidden more than focus
-    const newVisibility = isPageVisible;
-
-    console.log("👁️ Visibility Change Detected:", {
-      trigger: "visibilitychange",
-      isPageVisible,
-      hasFocus,
-      newVisibility,
-      currentState: isVisible,
-      documentHidden: document.hidden,
-      readyState: document.readyState,
-      time: new Date().toISOString(),
-    });
-
-    setIsVisible(newVisibility);
-  }, [isVisible]);
+    if (document.readyState !== "complete") return;
+    setIsVisible(!document.hidden);
+  }, []);
 
   const handleFocus = useCallback(() => {
-    console.log("🎯 Focus Event:", {
-      trigger: "focus",
-      currentState: isVisible,
-      documentHidden: document.hidden,
-      hasFocus: document.hasFocus(),
-      time: new Date().toISOString(),
-    });
     setIsVisible(true);
-  }, [isVisible]);
+  }, []);
 
   const handleBlur = useCallback(() => {
-    console.log("💨 Blur Event:", {
-      trigger: "blur",
-      currentState: isVisible,
-      documentHidden: document.hidden,
-      hasFocus: document.hasFocus(),
-      time: new Date().toISOString(),
-    });
-
-    if (document.hidden) {
-      console.log(
-        "📱 Setting visibility to false due to hidden document during blur"
-      );
-      setIsVisible(false);
-    }
-  }, [isVisible]);
+    if (document.hidden) setIsVisible(false);
+  }, []);
 
   const handlePageHide = useCallback(() => {
-    console.log("🔌 Page Hide Event:", {
-      trigger: "pagehide/unload",
-      currentState: isVisible,
-      documentHidden: document.hidden,
-      hasFocus: document.hasFocus(),
-      socketExists: !!socket?.current,
-      time: new Date().toISOString(),
-    });
-
-    if (socket?.current && document.hidden) {
-      console.log("🔄 Attempting socket disconnect on page hide");
-      try {
-        socket.current.emit("mobile-new-visibility-change", {
-          isVisible: false,
-          mobileId,
-        });
-        socket.current.disconnect();
-        console.log("✅ Socket disconnected successfully");
-      } catch (e) {
-        console.error("❌ Socket disconnect error:", e);
-      }
-    }
-
-    if (document.hidden) {
-      console.log("📱 Setting visibility to false on page hide");
-      setIsVisible(false);
-    }
-  }, [socket, mobileId, isVisible]);
+    if (document.hidden) setIsVisible(false);
+  }, []);
 
   const handlePageShow = useCallback(() => {
-    console.log("🌟 Page Show Event:", {
-      trigger: "pageshow",
-      currentState: isVisible,
-      documentHidden: document.hidden,
-      hasFocus: document.hasFocus(),
-      socketExists: !!socket?.current,
-      socketDisconnected: socket?.current?.disconnected,
-      time: new Date().toISOString(),
-    });
-
     setIsVisible(true);
+  }, []);
 
-    if (socket?.current && socket.current.disconnected) {
-      console.log("🔄 Attempting socket reconnect on page show");
-      try {
-        socket.current.connect();
-        socket.current.emit("mobile-new-visibility-change", {
-          isVisible: true,
-          mobileId,
-        });
-        console.log("✅ Socket reconnected successfully");
-      } catch (e) {
-        console.error("❌ Socket reconnect error:", e);
-      }
-    }
-  }, [socket, mobileId, isVisible]);
-
-  // Setup visibility tracking
+  // Set up visibility tracking
   useEffect(() => {
-    if (!isTrackingVisibility) {
-      console.log("⏸️ Visibility tracking disabled");
-      return;
-    }
+    if (!isTrackingVisibility || isInitialized.current) return;
 
-    if (isInitialized.current) {
-      console.log("🔄 Hook already initialized, skipping setup");
-      return;
-    }
-
-    console.log("🚀 Setting up visibility tracking");
     isInitialized.current = true;
 
-    const initTimeout = setTimeout(() => {
-      console.log("⚡ Initial visibility check:", {
-        documentHidden: document.hidden,
-        hasFocus: document.hasFocus(),
-        readyState: document.readyState,
-        time: new Date().toISOString(),
-      });
-
-      // Only update if not already initialized
-      if (!document.hidden) {
-        setIsVisible(true);
-      }
-    }, 300);
-
-    console.log("📡 Attaching event listeners");
     const cleanupListeners = setupEventListeners({
       handleVisibilityChange,
       handleFocus,
@@ -204,8 +81,6 @@ export default function useVisibilityCheck({
     });
 
     return () => {
-      console.log("🧹 Cleaning up event listeners");
-      clearTimeout(initTimeout);
       cleanupListeners();
       isInitialized.current = false;
     };
@@ -218,24 +93,18 @@ export default function useVisibilityCheck({
     handlePageShow,
   ]);
 
-  // Handle socket emissions
+  // Handle socket emissions based on visibility changes
   useEffect(() => {
-    if (socket?.current) {
-      console.log("📡 Socket emission for visibility change:", {
+    if (!socket?.current) return;
+
+    try {
+      socket.current.emit("mobile-new-visibility-change", {
         isVisible,
         mobileId,
-        time: new Date().toISOString(),
       });
-
-      try {
-        socket.current.emit("mobile-new-visibility-change", {
-          isVisible,
-          mobileId,
-        });
-        console.log("✅ Socket emission successful");
-      } catch (e) {
-        console.error("❌ Socket emission error:", e);
-      }
+      console.log("✅ Socket emission successful");
+    } catch (e) {
+      console.error("❌ Socket emission error:", e);
     }
   }, [isVisible, socket, mobileId]);
 
