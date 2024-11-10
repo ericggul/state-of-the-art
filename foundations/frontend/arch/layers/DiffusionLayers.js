@@ -66,7 +66,7 @@ export default function DiffusionLayers({ structure, style, model }) {
 
   console.log(layers);
 
-  const renderLayer = (layer, i, parentKey = "") => {
+  const renderLayer = (layer, i, parentKey = "", idxSum = 0) => {
     const key = parentKey ? `${parentKey}-${i}` : `${model}-${layer.name}-${i}`;
 
     return (
@@ -80,10 +80,15 @@ export default function DiffusionLayers({ structure, style, model }) {
                   sublayer={sublayer}
                   style={style}
                   model={model}
-                  idx={i * 3 + j}
+                  idx={idxSum + i + j * 3}
                 />
                 {sublayer.sublayers?.map((nestedSublayer, k) =>
-                  renderLayer(nestedSublayer, k, `${key}-${sublayer.name}-${j}`)
+                  renderLayer(
+                    nestedSublayer,
+                    k,
+                    `${key}-${sublayer.name}-${j}`,
+                    idxSum + i * 2 + j * 3
+                  )
                 )}
               </React.Fragment>
             ))}
@@ -94,6 +99,7 @@ export default function DiffusionLayers({ structure, style, model }) {
             sublayer={layer}
             style={style}
             model={model}
+            idx={idxSum + i * 2}
           />
         )}
       </React.Fragment>

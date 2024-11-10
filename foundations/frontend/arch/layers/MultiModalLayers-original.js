@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import Sublayer from "../Sublayer";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
+const ANIM_SPEED = 0.33;
+
 export default function MultiModalLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model] || {};
   const layerGap = modelConfig.layerHeight || 10;
@@ -145,7 +147,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
-            idx={i}
+            idx={i * ANIM_SPEED}
           />
         ))}
       </group>
@@ -160,7 +162,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
-            idx={i + 1 / 3}
+            idx={(i + 1 / 3) * ANIM_SPEED}
           />
         ))}
       </group>
@@ -175,7 +177,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
-            idx={i + 2 / 3}
+            idx={(i + 2 / 3) * ANIM_SPEED}
           />
         ))}
       </group>

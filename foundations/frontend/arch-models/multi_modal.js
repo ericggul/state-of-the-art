@@ -2176,7 +2176,7 @@ export const LAYER_CONFIGS = {
     type: "multi_modal",
   },
   DALL_E: {
-    layerHeight: 300,
+    layerHeight: 400,
     keyPrefix: "dalle",
     type: "multi_modal",
   },
