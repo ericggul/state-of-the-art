@@ -28,13 +28,6 @@ const InstancedNodes = memo(function InstancedNodes({
     return temp;
   }, [xCount, yCount, xInterval, yInterval]);
 
-  const uniqueXPositions = useMemo(() => {
-    return Array.from(
-      { length: xCount },
-      (_, i) => xInterval * i - ((xCount - 1) * xInterval) / 2
-    );
-  }, [xCount, xInterval]);
-
   const instanceSize = node ? node.size : nodeSize;
   const instanceCount = positions.length;
 

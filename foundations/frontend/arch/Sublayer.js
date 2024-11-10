@@ -8,19 +8,12 @@ import useScreenStore from "@/components/screen/store";
 // export const INTERLAYER_MARGIN_X = 1.6;
 // export const INTERLAYER_MARGIN_Y = 3.0;
 
-export const INTERLAYER_MARGIN_X = 5;
+export const INTERLAYER_MARGIN_X = 1.6;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
 const DEFAULT_GRID = {
   xCount: 3,
   yCount: 3,
-  xInterval: 10,
-  yInterval: 10,
-};
-
-const NON_PROJECTOR_GRID = {
-  xCount: 1,
-  yCount: 1,
   xInterval: 10,
   yInterval: 10,
 };
