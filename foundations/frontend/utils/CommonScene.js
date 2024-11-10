@@ -13,14 +13,16 @@ const HAL_9000_LIGHT = {
 };
 
 export default function CommonScene({ children, style }) {
+  console.log("style", style.lighting.environment);
   return (
     <>
       <Suspense fallback={null}>
         <Environment
-          preset={style.lighting.environment || "warehouse"}
-          intensity={style.lighting.envIntensity || 1}
+          preset={style.lighting.environment || "apartment"}
+          intensity={style.lighting.envIntensity || 0.1}
         />
       </Suspense>
+      <ambientLight intensity={2} />
       {style.lighting.pointLight && (
         <pointLight {...style.lighting.pointLight} />
       )}
