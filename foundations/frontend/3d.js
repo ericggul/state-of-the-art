@@ -59,8 +59,6 @@ export default function Visualisation({ isTesting = false }) {
       }}
     >
       <Suspense fallback={null}>
-        <Grid />
-
         <ModelContainer
           modelName={modelName}
           structure={structure}

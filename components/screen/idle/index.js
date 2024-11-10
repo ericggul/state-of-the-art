@@ -31,8 +31,9 @@ const Idle = memo(function Idle({ $isFrontend, type }) {
     <S.Container $isFrontend={$isFrontend}>
       {!unmount && (
         <>
+          {/* {type === "projector" && <IdleProjector $isFrontend={$isFrontend} />} */}
+          <IdleProjector $isFrontend={$isFrontend} />
           {type === "pc" && <IdlePC $isFrontend={$isFrontend} />}
-          {type === "projector" && <IdleProjector $isFrontend={$isFrontend} />}
         </>
       )}
     </S.Container>

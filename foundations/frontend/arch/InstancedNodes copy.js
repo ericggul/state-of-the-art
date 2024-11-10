@@ -37,31 +37,17 @@ const InstancedNodes = memo(function InstancedNodes({
     <group rotation={rotation}>
       <Instances limit={instanceCount}>
         <boxGeometry args={instanceSize} />
-        <meshPhysicalMaterial
+        <meshStandardMaterial
           {...style.material}
           color={color}
           wireframe={!isProjector}
-          clearcoat={0.3}
-          clearcoatRoughness={0.1}
-          ior={1.7}
-          reflectivity={0.6}
-          transmission={0.05}
-          thickness={1}
-          iridescence={0.2}
-          iridescenceIOR={1.3}
-          iridescenceThicknessRange={[100, 400]}
-          sheen={0.1}
-          sheenRoughness={0.4}
-          sheenColor={"#ffffff"}
         />
         {positions.map((position, i) => (
           <Instance
             key={i}
             position={position}
-            // castShadow={style.shadows}
-            // receiveShadow={style.shadows}
-            castShadow={false}
-            receiveShadow={false}
+            castShadow={style.shadows}
+            receiveShadow={style.shadows}
           />
         ))}
       </Instances>
