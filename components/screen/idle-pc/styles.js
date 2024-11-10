@@ -26,7 +26,7 @@ export const QRCodeWrapper = styled.div`
   z-index: 100;
 
   svg {
-    width: 20vw;
-    height: 20vw;
+    width: 15vw;
+    height: 15vw;
   }
 `;

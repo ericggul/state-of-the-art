@@ -3,6 +3,7 @@ import { useSpring, animated } from "@react-spring/three";
 import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
+import useScreenStore from "@/components/screen/store";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
   // Pre-calculate the cumulative heights of layers
@@ -70,6 +71,7 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
   // ... (same as before)
 
   const [expanded, setExpanded] = useState(false);
+  const { isProjector } = useScreenStore();
 
   const { smoothedExpanded } = useSpring({
     smoothedExpanded: expanded ? 1 : 0,
@@ -132,14 +134,25 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
         scale-y={smoothedExpanded}
         scale-z={smoothedExpanded}
       >
-        <InstancedNodes {...grid} node={node} color={color} style={style} />
+        <InstancedNodes
+          {...grid}
+          node={node}
+          color={color}
+          style={style}
+          isProjector={isProjector}
+        />
       </animated.group>
       <animated.group
         scale-x={smoothedExpanded.to((v) => 1 - v)}
         scale-y={smoothedExpanded.to((v) => 1 - v)}
         scale-z={smoothedExpanded.to((v) => 1 - v)}
       >
-        <Node {...unexpandedNode} color={color} style={style} />
+        <Node
+          {...unexpandedNode}
+          color={color}
+          style={style}
+          isProjector={isProjector}
+        />
       </animated.group>
     </group>
   );

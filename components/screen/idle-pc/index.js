@@ -15,7 +15,7 @@ const Idle = memo(function Idle() {
       <S.QRCodeWrapper>
         <QRCodeSVG
           value={QR_LINK}
-          size={windowWidth * 0.2} // Customize size
+          size={windowWidth * 0.15} // Customize size
           fgColor="white"
           bgColor="transparent"
         />

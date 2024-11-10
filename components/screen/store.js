@@ -13,21 +13,13 @@ const useScreenStore = create((set) => ({
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
-
   setLatestSpeech: (speech) => set({ latestSpeech: speech }),
-
   setMobileVisibility: (visibility) => set({ mobileVisibility: visibility }),
-
   setZoomFactor: (zoom) => set({ zoomFactor: zoom }),
-
   setIsProjector: (isProjector) => set({ isProjector }),
-
   setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
-
   setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),
-
   setStage: (stage) => set({ stage }),
-
   setIsTransition: (isTransition) => set({ isTransition }),
 
   handleNewControllerArchitectures: (data) => {
