@@ -9,7 +9,7 @@ import VAELayers from "../arch/layers/VAELayers";
 import SelfSupervisedLayers from "../arch/layers/SelfSupervisedLayers";
 import GANLayers from "../arch/layers/GANLayers";
 import DiffusionLayers from "../arch/layers/DiffusionLayers";
-import MultiModalLayers from "../arch/layers/MultiModalLayers";
+import MultiModalLayers from "../arch/layers/MultiModalLayers-original";
 import ReinforcementLayers from "../arch/layers/ReinforcementLayers";
 import HopfieldLayers from "../arch/layers/HopfieldLayers";
 import BoltzmannLayers from "../arch/layers/BoltzmannLayers";

@@ -85,35 +85,33 @@ export default function MultiModalLayers({ structure, style, model }) {
     if (!layers || layers.length === 0) return [];
 
     const MAX_LAYERS_PER_COLUMN = 5;
-    // Separate X and Z gaps
-    const X_GAP = layerGap; // Increased X gap
-    const Z_GAP = layerGap * 0.1; // Decreased Z gap
+    const X_GAP = layerGap;
+    const Z_GAP = layerGap * 0.1;
 
-    // Adjusted modality offsets - increased X separation, decreased Z separation
-    const modalityOffset =
-      {
-        // Main modalities - wider X spread, tighter Z spread
-        image: [-layerGap * 2, 0, -layerGap * 0.1], // Left side
-        text: [layerGap * 2, 0, -layerGap * 0.1], // Right side
-        fusion: [0, 0, layerGap * 0.1], // Center, back
+    // Adjusted modality offsets to center around dense/fusion area
+    const modalityOffset = {
+      // Main modalities - adjusted to bring dense/fusion to center
+      image: [-layerGap * 4, 0, -layerGap * 0.1], // Further left
+      text: [layerGap * 4, 0, -layerGap * 0.1], // Further right
+      fusion: [0, 0, 0], // Center position
 
-        // Additional layer types - adjusted similarly
-        vision_transformer: [-layerGap * 1.8, 0, -layerGap * 0.08],
-        text_transformer: [layerGap * 1.8, 0, -layerGap * 0.08],
-        transformer_layer: [0, 0, layerGap * 0.08],
-        attention: [0, 0, 0],
-        cross_attention: [0, 0, layerGap * 0.05],
-        mlp: [0, 0, -layerGap * 0.05],
-        dense: [0, 0, layerGap * 0.06],
-        embedding: [0, 0, -layerGap * 0.06],
-        layernorm: [0, 0, 0],
-        input: [0, 0, -layerGap * 0.12],
-        output: [0, 0, layerGap * 0.12],
+      // Layer type offsets - adjusted relative to their modality
+      vision_transformer: [-layerGap * 3.5, 0, -layerGap * 0.08],
+      text_transformer: [layerGap * 3.5, 0, -layerGap * 0.08],
+      transformer_layer: [0, 0, layerGap * 0.08],
+      attention: [0, 0, 0],
+      cross_attention: [0, 0, layerGap * 0.05],
+      mlp: [0, 0, -layerGap * 0.05],
+      dense: [0, 0, 0], // Centered
+      embedding: [-layerGap * 2, 0, -layerGap * 0.06],
+      layernorm: [0, 0, 0],
+      input: [-layerGap * 5, 0, -layerGap * 0.12], // Further out
+      output: [layerGap * 5, 0, layerGap * 0.12], // Further out
 
-        default: [0, 0, 0],
-      }[modalityType] || modalityOffset.default;
+      default: [0, 0, 0],
+    }[modalityType] || [0, 0, 0];
 
-    const layersWithPositions = layers.map((layer, index) => {
+    return layers.map((layer, index) => {
       const layerWidth = Math.max(layer.dimensions?.[0] || 20, 1);
       const layerHeight = Math.max(layer.dimensions?.[1] || 20, 1);
       const layerDepth = Math.max(layer.dimensions?.[2] || 20, 1);
@@ -121,13 +119,19 @@ export default function MultiModalLayers({ structure, style, model }) {
       const col = Math.floor(index / MAX_LAYERS_PER_COLUMN);
       const depth = index % MAX_LAYERS_PER_COLUMN;
 
-      // Use different gaps for X and Z
       let x = col * (layerWidth + X_GAP);
-      let z = depth * (layerDepth + Z_GAP);
+      let z = depth * (layerDepth * 0.2 + Z_GAP);
 
+      // Apply modality offset
       x += modalityOffset[0];
       const y = modalityOffset[1];
       z += modalityOffset[2];
+
+      // Additional offset for dense/fusion layers
+      if (layer.type === "dense" || layer.type === "fusion") {
+        x = 0; // Force dense/fusion layers to x=0
+        z = 0; // Force dense/fusion layers to z=0
+      }
 
       return {
         ...layer,
@@ -139,32 +143,6 @@ export default function MultiModalLayers({ structure, style, model }) {
         dimensions: [layerWidth, layerHeight, layerDepth],
       };
     });
-
-    // Update total dimensions calculation with separate gaps
-    const numColumns = Math.ceil(layers.length / MAX_LAYERS_PER_COLUMN);
-    const numRows = Math.min(layers.length, MAX_LAYERS_PER_COLUMN);
-
-    const totalWidth =
-      numColumns * (layersWithPositions[0]?.dimensions[0] + X_GAP);
-    const totalDepth =
-      numRows * (layersWithPositions[0]?.dimensions[2] + Z_GAP);
-
-    const centerOffsetX = totalWidth / 2;
-    const centerOffsetZ = totalDepth / 2;
-
-    // Center in XZ plane and Y axis
-    return layersWithPositions.map((layer) => ({
-      ...layer,
-      position: [
-        Number.isFinite(layer.position[0])
-          ? layer.position[0] - centerOffsetX
-          : 0,
-        Number.isFinite(layer.position[1]) ? layer.position[1] : 0,
-        Number.isFinite(layer.position[2])
-          ? layer.position[2] - centerOffsetZ
-          : 0,
-      ],
-    }));
   };
 
   const positionedImageLayers = useMemo(
@@ -182,7 +160,6 @@ export default function MultiModalLayers({ structure, style, model }) {
 
   return (
     <group position={[0, 0, 0]}>
-      {/* Calculate overall center */}
       {(() => {
         const [centerX, centerY, centerZ] = calculateOverallCenter(
           positionedImageLayers,
