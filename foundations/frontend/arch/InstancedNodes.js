@@ -1,10 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 import { Instances, Instance } from "@react-three/drei";
-import { Text } from "@react-three/drei";
-import useScreenStore from "@/components/screen/store";
 
-const InstancedNodes = React.memo(
-  ({
+const InstancedNodes = memo(
+  function InstancedNodes({
     xCount,
     yCount,
     xInterval,
@@ -15,9 +13,8 @@ const InstancedNodes = React.memo(
     color,
     rotation = [Math.PI / 2, 0, 0],
     sublayer,
-  }) => {
-    const isProjector = useScreenStore((state) => state.isProjector);
-
+    isProjector,
+  }) {
     const positions = useMemo(() => {
       const temp = [];
       for (let i = 0; i < xCount; i++) {
@@ -32,7 +29,6 @@ const InstancedNodes = React.memo(
       return temp;
     }, [xCount, yCount, xInterval, yInterval]);
 
-    // Get unique X positions for text
     const uniqueXPositions = useMemo(() => {
       return Array.from(
         { length: xCount },
@@ -65,7 +61,26 @@ const InstancedNodes = React.memo(
         </Instances>
       </group>
     );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.xCount === nextProps.xCount &&
+      prevProps.yCount === nextProps.yCount &&
+      prevProps.xInterval === nextProps.xInterval &&
+      prevProps.yInterval === nextProps.yInterval &&
+      JSON.stringify(prevProps.nodeSize) ===
+        JSON.stringify(nextProps.nodeSize) &&
+      JSON.stringify(prevProps.node) === JSON.stringify(nextProps.node) &&
+      JSON.stringify(prevProps.style) === JSON.stringify(nextProps.style) &&
+      prevProps.color === nextProps.color &&
+      JSON.stringify(prevProps.rotation) ===
+        JSON.stringify(nextProps.rotation) &&
+      JSON.stringify(prevProps.sublayer) ===
+        JSON.stringify(nextProps.sublayer) &&
+      prevProps.isProjector === nextProps.isProjector
+    );
   }
 );
 
+InstancedNodes.displayName = "InstancedNodes";
 export default InstancedNodes;

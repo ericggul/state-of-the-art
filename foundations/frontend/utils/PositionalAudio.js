@@ -13,7 +13,7 @@ export default function PositionalAudio({
 }) {
   const sound = useRef();
   const { camera } = useThree();
-  const { mobileVisibility } = useScreenStore();
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {

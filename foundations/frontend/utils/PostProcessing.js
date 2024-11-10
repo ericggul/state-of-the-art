@@ -1,5 +1,4 @@
-//implement postprocessing glitch effect
-
+import React, { memo } from "react";
 import {
   EffectComposer,
   Glitch,
@@ -8,14 +7,7 @@ import {
 import { GlitchMode } from "postprocessing";
 import useScreenStore from "@/components/screen/store";
 
-export default function Wrapper() {
-  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
-  console.log("postprocessing", mobileVisibility);
-
-  return <>{!mobileVisibility && <PostProcessing />}</>;
-}
-
-function PostProcessing() {
+const PostProcessing = memo(function PostProcessing() {
   return (
     <EffectComposer>
       <Glitch
@@ -23,10 +15,22 @@ function PostProcessing() {
         duration={[0.2, 0.4]}
         strength={[0.5, 1.0]}
         mode={GlitchMode.CONSTANT_WILD}
-        active={true} // Always active
+        active={true}
         ratio={0.5}
       />
       <ChromaticAberration offset={[0.08, 0.08]} />
     </EffectComposer>
   );
-}
+});
+
+const Wrapper = memo(function Wrapper() {
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
+  console.log("postprocessing", mobileVisibility);
+
+  return <>{!mobileVisibility && <PostProcessing />}</>;
+});
+
+PostProcessing.displayName = "PostProcessing";
+Wrapper.displayName = "PostProcessingWrapper";
+
+export default Wrapper;

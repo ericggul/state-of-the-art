@@ -4,9 +4,6 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
-import useScreenStore from "@/components/screen/store";
-import { STYLE_STRATEGIES } from "@/foundations/frontend/style";
-
 const HAL_9000_LIGHT = {
   position: [0, 0, 0], // Center of the scene
   color: 0xff0000, // Bright red
