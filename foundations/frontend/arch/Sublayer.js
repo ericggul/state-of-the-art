@@ -38,8 +38,6 @@ const Sublayer = ({
     ? gridConfig[sublayer.type] || DEFAULT_GRID
     : DEFAULT_GRID;
 
-  console.log(grid, style);
-
   return (
     <group position={position}>
       <InstancedNodes

@@ -1,34 +1,35 @@
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useState, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
 
 export default function useScreenVisibility() {
-  const { mobileVisibility, isProjector, setStage, stage, setIsTransition } =
-    useScreenStore();
+  const {
+    mobileVisibility,
+    isProjector,
+    setStage,
+    stage,
+    setIsTransition,
+    isTransition,
+  } = useScreenStore();
 
-  const timers = useRef({});
+  const timeoutRef1 = useRef(null);
+  const timeoutRef2 = useRef(null);
+  const timeoutRef3 = useRef(null);
 
+  const isStageIdle = useMemo(() => stage === "Idle", [stage]);
   useEffect(() => {
-    if (stage === "Idle") return;
-
-    // Clear any existing timers
-    Object.values(timers.current).forEach(clearTimeout);
-    timers.current = {};
-
+    if (isStageIdle) return;
     if (mobileVisibility) {
       setStage("Frontend");
       setIsTransition(false);
     } else {
       setIsTransition(true);
-
-      timers.current.transition = setTimeout(() => {
+      timeoutRef1.current = setTimeout(() => {
         setIsTransition(false);
       }, 5000);
-
-      timers.current.backend = setTimeout(() => {
+      timeoutRef2.current = setTimeout(() => {
         setStage("Backend");
       }, 6000);
-
-      timers.current.stage = setTimeout(
+      timeoutRef3.current = setTimeout(
         () => {
           setStage(null);
         },
@@ -37,7 +38,15 @@ export default function useScreenVisibility() {
     }
 
     return () => {
-      Object.values(timers.current).forEach(clearTimeout);
+      if (timeoutRef1.current) {
+        clearTimeout(timeoutRef1.current);
+      }
+      if (timeoutRef2.current) {
+        clearTimeout(timeoutRef2.current);
+      }
+      if (timeoutRef3.current) {
+        clearTimeout(timeoutRef3.current);
+      }
     };
-  }, [stage, mobileVisibility, isProjector]);
+  }, [isStageIdle, mobileVisibility, isProjector]);
 }

@@ -41,8 +41,6 @@ export default function ScreenWrapper() {
 
   useScreenVisibility();
 
-  console.log(stage);
-
   return (
     <Suspense>
       {stage === "Idle" && <Idle />}

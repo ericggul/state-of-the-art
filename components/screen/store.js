@@ -63,14 +63,6 @@ const useScreenStore = create((set) => ({
         updates.currentArchitectures = data.currentArchitectures;
       }
 
-      if (state.stage !== "Frontend") {
-        updates.stage = "Frontend";
-      }
-
-      if (state.targetMobileId !== data.mobileId) {
-        updates.targetMobileId = data.mobileId;
-      }
-
       return Object.keys(updates).length ? updates : state;
     });
   },
@@ -94,13 +86,9 @@ const useScreenStore = create((set) => ({
         updates.mobileVisibility = data.isVisible;
       }
 
-      if (state.targetMobileId !== data.mobileId) {
-        updates.targetMobileId = data.mobileId;
-      }
-
-      if (state.stage === "Idle") {
-        updates.stage = data.isVisible ? "Frontend" : "Backend";
-      }
+      // if (state.stage === "Idle") {
+      //   updates.stage = data.isVisible ? "Frontend" : "Backend";
+      // }
 
       return Object.keys(updates).length ? updates : state;
     });
@@ -109,6 +97,11 @@ const useScreenStore = create((set) => ({
   handleNewMobile: (data) => {
     console.log("New join received:", data);
     set((state) => {
+      console.log(
+        "state",
+        state,
+        state.targetMobileId && state.targetMobileId !== data.mobileId
+      );
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
       }
