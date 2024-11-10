@@ -7,7 +7,7 @@ import UI from "./index";
 const AccelerometerWrapper = ({ socket, mobileId }) => {
   return (
     <>
-      <UI socket={socket} />
+      <UI socket={socket} mobileId={mobileId} />
       <AccelerometerHandler mobileId={mobileId} />
     </>
   );

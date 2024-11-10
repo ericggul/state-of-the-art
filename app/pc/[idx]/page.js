@@ -21,6 +21,7 @@ const COMPONENTS = {
   5: dynamic(() => import("@/foundations/pc/caption")),
 };
 
+const Idle = dynamic(() => import("@/components/idle"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 

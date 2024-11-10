@@ -9,139 +9,136 @@ import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 
-export default function Mobile({ socket }) {
-  // Flatten and refine the MODELS object into an array
-  const modelsArray = useMemo(() => {
-    const flattened = flattenModels(MODELS);
-    return filterModels(flattened);
-  }, []);
+// Constants
+const INTERSECTION_OPTIONS = {
+  root: null,
+  rootMargin: "0px",
+  threshold: 0.1,
+};
+
+const LIST_OBSERVER_OPTIONS = {
+  rootMargin: "-50% 0px -50% 0px",
+  threshold: 0,
+};
+
+const NEW_MODELS_COUNT = 10;
+
+export default function Mobile({ socket, mobileId }) {
+  const modelsArray = useMemo(() => filterModels(flattenModels(MODELS)), []);
 
   return (
     <S.Container>
-      <ModelList initialModels={modelsArray} socket={socket} />
+      <ModelList
+        initialModels={modelsArray}
+        socket={socket}
+        mobileId={mobileId}
+      />
     </S.Container>
   );
 }
 
-function ModelList({ initialModels, socket }) {
+function ModelList({ initialModels, socket, mobileId }) {
   const [models, setModels] = useState(initialModels);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
+
   const itemRefs = useRef([]);
   const listRef = useRef(null);
   const observerRef = useRef(null);
 
   const addMoreModels = useCallback(() => {
-    const newModels = [...Array(10)].map(() => {
-      const randomIndex = Math.floor(Math.random() * initialModels.length);
-      return initialModels[randomIndex];
-    });
-    setModels((prevModels) => [...prevModels, ...newModels]);
+    setModels((prevModels) => [
+      ...prevModels,
+      ...[...Array(NEW_MODELS_COUNT)].map(
+        () => initialModels[Math.floor(Math.random() * initialModels.length)]
+      ),
+    ]);
   }, [initialModels]);
 
+  // Infinite scroll observer
   useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.1,
-    };
-
     const callback = (entries) => {
-      const lastEntry = entries[entries.length - 1];
-      if (lastEntry.isIntersecting) {
+      if (entries[entries.length - 1].isIntersecting) {
         addMoreModels();
       }
     };
 
-    observerRef.current = new IntersectionObserver(callback, options);
+    observerRef.current = new IntersectionObserver(
+      callback,
+      INTERSECTION_OPTIONS
+    );
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
+    return () => observerRef.current?.disconnect();
   }, [addMoreModels]);
 
+  // Observe last item
   useEffect(() => {
     const lastItemRef = itemRefs.current[itemRefs.current.length - 1];
     if (lastItemRef && observerRef.current) {
       observerRef.current.observe(lastItemRef);
     }
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
+    return () => observerRef.current?.disconnect();
   }, [models]);
 
+  // Current item observer
   useEffect(() => {
-    const observerOptions = {
-      root: listRef.current,
-      rootMargin: "-50% 0px -50% 0px",
-      threshold: 0,
-    };
-
     const observerCallback = (entries) => {
       entries.forEach((entry) => {
-        const index = Number(entry.target.getAttribute("data-index"));
         if (entry.isIntersecting) {
+          const index = Number(entry.target.getAttribute("data-index"));
           setCurrentIndex(index);
-          // Reset manually selected index when scrolling
           setManuallySelectedIndex(null);
         }
       });
     };
 
-    const observer = new IntersectionObserver(
-      observerCallback,
-      observerOptions
-    );
-
-    itemRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
+    const observer = new IntersectionObserver(observerCallback, {
+      ...LIST_OBSERVER_OPTIONS,
+      root: listRef.current,
     });
 
-    return () => {
-      if (observer) {
-        observer.disconnect();
-      }
-    };
+    itemRefs.current.forEach((ref) => ref && observer.observe(ref));
+
+    return () => observer?.disconnect();
   }, [models]);
 
+  // Socket emission effect
   useEffect(() => {
+    const activeIndex = manuallySelectedIndex ?? currentIndex;
+    if (activeIndex === null || !socket?.current) return;
+
+    const activeModel = models[activeIndex];
     console.log(currentIndex);
-    const activeIndex =
-      manuallySelectedIndex !== null ? manuallySelectedIndex : currentIndex;
-    if (activeIndex !== null && socket && socket.current) {
-      console.log(models[activeIndex]);
-      try {
-        socket.current.emit("mobile-new-architecture", {
-          currentArchitectures: [models[activeIndex]],
-        });
-      } catch (e) {
-        console.log(e);
-      }
+    console.log(activeModel);
 
-      /////TEMPORARY TESTING WITHOUT CONTROLLER: SPEECH////////////////////////////////
-      if (models[activeIndex].explanation) {
-        const text =
-          models[activeIndex].name + " " + models[activeIndex].explanation;
+    try {
+      socket.current.emit("mobile-new-architecture", {
+        currentArchitectures: [activeModel],
+        mobileId,
+      });
+
+      if (activeModel.explanation) {
         socket.current.emit("mobile-new-speech", {
-          text,
+          text: `${activeModel.name} ${activeModel.explanation}`,
+          mobileId,
         });
       }
-      //////////////////////////////////////////////////////////////
+    } catch (e) {
+      console.log(e);
     }
-  }, [currentIndex, manuallySelectedIndex, models, socket]);
+  }, [currentIndex, manuallySelectedIndex, models, socket, mobileId]);
 
-  const handleItemClick = (index) => {
-    if (manuallySelectedIndex === index) {
-      setManuallySelectedIndex(null);
-    } else {
-      setManuallySelectedIndex(index);
-    }
-  };
+  const handleItemClick = useCallback((index) => {
+    setManuallySelectedIndex((prev) => (prev === index ? null : index));
+  }, []);
+
+  const isCurrentItem = useCallback(
+    (index) =>
+      manuallySelectedIndex === index ||
+      (manuallySelectedIndex === null && currentIndex === index),
+    [manuallySelectedIndex, currentIndex]
+  );
 
   return (
     <S.ModelList ref={listRef}>
@@ -150,15 +147,11 @@ function ModelList({ initialModels, socket }) {
           key={`${model.name}-${index}`}
           ref={(el) => (itemRefs.current[index] = el)}
           data-index={index}
-          $isCurrent={
-            manuallySelectedIndex === index ||
-            (manuallySelectedIndex === null && currentIndex === index)
-          }
+          $isCurrent={isCurrentItem(index)}
           onClick={() => handleItemClick(index)}
         >
           <S.ModelName>{model.name}</S.ModelName>
-          {(manuallySelectedIndex === index ||
-            (manuallySelectedIndex === null && currentIndex === index)) && (
+          {isCurrentItem(index) && (
             <S.ModelDetails>
               {model.explanation && <p>{model.explanation}</p>}
               {model.year && <p>Year: {model.year}</p>}

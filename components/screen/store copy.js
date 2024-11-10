@@ -32,18 +32,9 @@ const useScreenStore = create((set) => ({
 
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
-    set((state) => {
-      const updates = {};
-
-      if (!state.mobileVisibility) {
-        updates.mobileVisibility = true;
-      }
-
-      if (data.currentArchitectures?.length) {
-        updates.currentArchitectures = data.currentArchitectures;
-      }
-
-      return Object.keys(updates).length ? updates : state;
+    set({
+      mobileVisibility: true,
+      currentArchitectures: data.currentArchitectures || [],
     });
   },
 
@@ -53,15 +44,10 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {};
-
-      if (!state.mobileVisibility) {
-        updates.mobileVisibility = true;
-      }
-
-      if (data.currentArchitectures?.length) {
-        updates.currentArchitectures = data.currentArchitectures;
-      }
+      const updates = {
+        mobileVisibility: true,
+        currentArchitectures: data.currentArchitectures || [],
+      };
 
       if (state.stage !== "Frontend") {
         updates.stage = "Frontend";
@@ -71,15 +57,12 @@ const useScreenStore = create((set) => ({
         updates.targetMobileId = data.mobileId;
       }
 
-      return Object.keys(updates).length ? updates : state;
+      return updates;
     });
   },
 
   handleNewSpeech: (data) => {
-    set((state) => {
-      const newText = data.text || "";
-      return state.latestSpeech !== newText ? { latestSpeech: newText } : state;
-    });
+    set({ latestSpeech: data.text || "" });
   },
 
   handleNewMobileVisibility: (data) => {
@@ -88,21 +71,18 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {};
+      const updates = {
+        mobileVisibility: data.isVisible,
+        targetMobileId: data.mobileId,
+      };
 
-      if (state.mobileVisibility !== data.isVisible) {
-        updates.mobileVisibility = data.isVisible;
-      }
-
-      if (state.targetMobileId !== data.mobileId) {
-        updates.targetMobileId = data.mobileId;
-      }
-
+      console.log("state", state);
       if (state.stage === "Idle") {
         updates.stage = data.isVisible ? "Frontend" : "Backend";
+        console.log("updates", updates);
       }
 
-      return Object.keys(updates).length ? updates : state;
+      return updates;
     });
   },
 
@@ -112,40 +92,21 @@ const useScreenStore = create((set) => ({
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
       }
-
-      const updates = {};
-
-      if (state.targetMobileId !== data.mobileId) {
-        updates.targetMobileId = data.mobileId;
-      }
-
-      if (state.stage !== "Frontend") {
-        updates.stage = "Frontend";
-      }
-
-      console.log("updates", updates);
-      return Object.keys(updates).length ? updates : state;
-    });
-  },
-
-  handleReset: () => {
-    set((state) => {
-      const resetState = {
-        targetMobileId: null,
-        stage: "Idle",
-        isTransition: false,
-        currentArchitectures: [],
-        mobileVisibility: null,
+      return {
+        targetMobileId: data.mobileId,
+        stage: "Frontend",
       };
-
-      // Only update if any values are different
-      return Object.entries(resetState).some(
-        ([key, value]) => state[key] !== value
-      )
-        ? resetState
-        : state;
     });
   },
+
+  handleReset: () =>
+    set({
+      targetMobileId: null,
+      stage: "Idle",
+      isTransition: false,
+      currentArchitectures: [],
+      mobileVisibility: null,
+    }),
 }));
 
 export default useScreenStore;

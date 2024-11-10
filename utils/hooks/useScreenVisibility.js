@@ -1,28 +1,34 @@
-import { Suspense, useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 
 export default function useScreenVisibility() {
   const { mobileVisibility, isProjector, setStage, stage, setIsTransition } =
     useScreenStore();
 
-  const timeoutRef1 = useRef(null);
-  const timeoutRef2 = useRef(null);
-  const timeoutRef3 = useRef(null);
+  const timers = useRef({});
 
   useEffect(() => {
     if (stage === "Idle") return;
+
+    // Clear any existing timers
+    Object.values(timers.current).forEach(clearTimeout);
+    timers.current = {};
+
     if (mobileVisibility) {
       setStage("Frontend");
       setIsTransition(false);
     } else {
       setIsTransition(true);
-      timeoutRef1.current = setTimeout(() => {
+
+      timers.current.transition = setTimeout(() => {
         setIsTransition(false);
       }, 5000);
-      timeoutRef2.current = setTimeout(() => {
+
+      timers.current.backend = setTimeout(() => {
         setStage("Backend");
       }, 6000);
-      timeoutRef3.current = setTimeout(
+
+      timers.current.stage = setTimeout(
         () => {
           setStage(null);
         },
@@ -31,15 +37,7 @@ export default function useScreenVisibility() {
     }
 
     return () => {
-      if (timeoutRef1.current) {
-        clearTimeout(timeoutRef1.current);
-      }
-      if (timeoutRef2.current) {
-        clearTimeout(timeoutRef2.current);
-      }
-      if (timeoutRef3.current) {
-        clearTimeout(timeoutRef3.current);
-      }
+      Object.values(timers.current).forEach(clearTimeout);
     };
   }, [stage, mobileVisibility, isProjector]);
 }
