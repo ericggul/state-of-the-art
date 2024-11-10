@@ -548,572 +548,117 @@ export const DALL_E_2 = [
 
 /** DALL-E 3 **/
 export const DALL_E_3 = [
-  // Text Processing Stream
+  // Text Stream - CLIP Text Encoder
   {
     name: "Text Input",
     type: "input",
     dimensions: TEXT_INPUT_DIM,
     stream: "text",
   },
-
-  // CLIP Text Encoder
   {
     name: "CLIP Text Encoder",
     type: "text_encoder",
     dimensions: [77, 1, DALLE3_EMBED_DIM],
     stream: "text",
-    sublayers: Array.from(
-      { length: NUM_DALLE3_TRANSFORMER_LAYERS },
-      (_, i) => ({
-        name: `CLIP Layer ${i + 1}`,
-        type: "transformer_layer",
-        dimensions: [77, 1, DALLE3_EMBED_DIM],
-        sublayers: [
-          {
-            name: "Layer Norm 1",
-            type: "layernorm",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Self-Attention",
-            type: "attention",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Layer Norm 2",
-            type: "layernorm",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Feed Forward",
-            type: "mlp",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-        ],
-      })
-    ),
-  },
-
-  // T5 Text Encoder
-  {
-    name: "T5 Text Encoder",
-    type: "t5_encoder",
-    dimensions: [77, 1, DALLE3_EMBED_DIM],
-    stream: "text",
-    sublayers: Array.from(
-      { length: NUM_DALLE3_TRANSFORMER_LAYERS },
-      (_, i) => ({
-        name: `T5 Layer ${i + 1}`,
-        type: "transformer_layer",
-        dimensions: [77, 1, DALLE3_EMBED_DIM],
-        sublayers: [
-          {
-            name: "Layer Norm 1",
-            type: "layernorm",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Self-Attention",
-            type: "attention",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Layer Norm 2",
-            type: "layernorm",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Cross-Attention",
-            type: "cross_attention",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Layer Norm 3",
-            type: "layernorm",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Feed Forward",
-            type: "mlp",
-            dimensions: [77, 1, DALLE3_EMBED_DIM],
-          },
-        ],
-      })
-    ),
-  },
-
-  // Prior Network
-  {
-    name: "Diffusion Prior Network",
-    type: "diffusion_prior",
-    dimensions: [DALLE3_EMBED_DIM],
-    stream: "fusion",
     sublayers: [
-      {
-        name: "Time Embedding",
-        type: "time_embedding",
-        dimensions: [1, 1, DALLE3_EMBED_DIM],
-      },
-      ...Array.from({ length: NUM_PRIOR_TRANSFORMER_LAYERS }, (_, i) => ({
-        name: `Prior Transformer ${i + 1}`,
+      ...Array.from({ length: NUM_DALLE3_TRANSFORMER_LAYERS }, (_, i) => ({
+        name: `Text Layer ${i + 1}`,
         type: "transformer_layer",
-        dimensions: [1, 77, DALLE3_EMBED_DIM],
+        dimensions: [77, 1, DALLE3_EMBED_DIM],
         sublayers: [
           {
-            name: "Layer Norm 1",
-            type: "layernorm",
-            dimensions: [1, 77, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Cross-Attention",
-            type: "cross_attention",
-            dimensions: [1, 77, DALLE3_EMBED_DIM],
-          },
-          {
-            name: "Layer Norm 2",
-            type: "layernorm",
-            dimensions: [1, 77, DALLE3_EMBED_DIM],
+            name: "Self-Attention",
+            type: "attention",
+            dimensions: [77, 1, DALLE3_EMBED_DIM],
           },
           {
             name: "Feed Forward",
             type: "mlp",
-            dimensions: [1, 77, DALLE3_EMBED_DIM],
+            dimensions: [77, 1, DALLE3_EMBED_DIM],
           },
         ],
       })),
     ],
   },
 
-  // Base Diffusion Model
+  // Diffusion Prior
   {
-    name: "Base Diffusion Model",
-    type: "base_diffusion",
-    dimensions: [256, 256, DALLE3_DIFFUSION_DIM],
-    stream: "image",
+    name: "Diffusion Prior",
+    type: "diffusion_prior",
+    dimensions: [DALLE3_EMBED_DIM],
+    stream: "fusion",
     sublayers: [
       {
-        name: "Base UNet",
-        type: "unet",
+        name: "Prior Transformer",
+        type: "transformer_layer",
+        dimensions: [1, 77, DALLE3_EMBED_DIM],
         sublayers: [
-          // Down blocks
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Down Block ${i + 1}`,
-            type: "down_block",
-            dimensions: [
-              256 / Math.pow(2, i),
-              256 / Math.pow(2, i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-            ],
-            sublayers: [
-              {
-                name: `ResNet Block ${i + 1}.1`,
-                type: "resnet_block",
-                dimensions: [
-                  256 / Math.pow(2, i),
-                  256 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Cross-Attention ${i + 1}`,
-                type: "cross_attention",
-                dimensions: [
-                  256 / Math.pow(2, i),
-                  256 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `ResNet Block ${i + 1}.2`,
-                type: "resnet_block",
-                dimensions: [
-                  256 / Math.pow(2, i),
-                  256 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Downsample ${i + 1}`,
-                type: "conv",
-                dimensions: [
-                  256 / Math.pow(2, i + 1),
-                  256 / Math.pow(2, i + 1),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i + 1),
-                ],
-              },
-            ],
-          })),
-
-          // Bottleneck
           {
-            name: "Bottleneck",
-            type: "bottleneck",
-            dimensions: [16, 16, DALLE3_DIFFUSION_DIM * 16],
-            sublayers: [
-              {
-                name: "ResNet Block",
-                type: "resnet_block",
-                dimensions: [16, 16, DALLE3_DIFFUSION_DIM * 16],
-              },
-              {
-                name: "Cross-Attention",
-                type: "cross_attention",
-                dimensions: [16, 16, DALLE3_DIFFUSION_DIM * 16],
-              },
-              {
-                name: "ResNet Block 2",
-                type: "resnet_block",
-                dimensions: [16, 16, DALLE3_DIFFUSION_DIM * 16],
-              },
-            ],
+            name: "Cross-Attention",
+            type: "cross_attention",
+            dimensions: [1, 77, DALLE3_EMBED_DIM],
           },
-
-          // Up blocks
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Up Block ${4 - i}`,
-            type: "up_block",
-            dimensions: [
-              256 / Math.pow(2, 3 - i),
-              256 / Math.pow(2, 3 - i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-            ],
-            sublayers: [
-              {
-                name: `ResNet Block ${4 - i}.1`,
-                type: "resnet_block",
-                dimensions: [
-                  256 / Math.pow(2, 3 - i),
-                  256 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Cross-Attention ${4 - i}`,
-                type: "cross_attention",
-                dimensions: [
-                  256 / Math.pow(2, 3 - i),
-                  256 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `ResNet Block ${4 - i}.2`,
-                type: "resnet_block",
-                dimensions: [
-                  256 / Math.pow(2, 3 - i),
-                  256 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Upsample ${4 - i}`,
-                type: "conv_transpose",
-                dimensions: [
-                  256 / Math.pow(2, 2 - i),
-                  256 / Math.pow(2, 2 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 2 - i),
-                ],
-              },
-            ],
-          })),
+          {
+            name: "Feed Forward",
+            type: "mlp",
+            dimensions: [1, 77, DALLE3_EMBED_DIM],
+          },
         ],
       },
     ],
   },
 
-  // Upscaler Diffusion Model (256x256 → 1024x1024)
+  // Decoder Diffusion
   {
-    name: "Upscaler Diffusion",
-    type: "upscaler_diffusion",
-    dimensions: [1024, 1024, DALLE3_DIFFUSION_DIM],
+    name: "Decoder Diffusion",
+    type: "decoder_diffusion",
+    dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], DALLE3_DIFFUSION_DIM],
     stream: "image",
     sublayers: [
       {
-        name: "Upscaler UNet",
+        name: "UNet",
         type: "unet",
+        dimensions: [
+          SDXL_IMAGE_DIM[0],
+          SDXL_IMAGE_DIM[1],
+          DALLE3_DIFFUSION_DIM,
+        ],
         sublayers: [
-          // Condition Encoding
           {
-            name: "Low-Res Condition Encoder",
-            type: "condition_encoder",
-            dimensions: [256, 256, DALLE3_DIFFUSION_DIM],
-            sublayers: [
-              {
-                name: "Condition Conv",
-                type: "conv",
-                dimensions: [256, 256, DALLE3_DIFFUSION_DIM],
-              },
+            name: "Time Embedding",
+            type: "time_embedding",
+            dimensions: [DALLE3_DIFFUSION_DIM],
+          },
+          {
+            name: "Cross-Attention",
+            type: "cross_attention",
+            dimensions: [DALLE3_DIFFUSION_DIM, 77],
+            inputs: ["CLIP Text Encoder Output"],
+          },
+          {
+            name: "ResNet Blocks",
+            type: "resnet_block",
+            dimensions: [
+              SDXL_IMAGE_DIM[0],
+              SDXL_IMAGE_DIM[1],
+              DALLE3_DIFFUSION_DIM,
             ],
           },
-
-          // Down blocks with skip connections
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Upscaler Down Block ${i + 1}`,
-            type: "down_block",
-            dimensions: [
-              1024 / Math.pow(2, i),
-              1024 / Math.pow(2, i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-            ],
-            sublayers: [
-              {
-                name: `ResNet Block ${i + 1}.1`,
-                type: "resnet_block",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Cross-Attention ${i + 1}`,
-                type: "cross_attention",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Condition Cross-Attention ${i + 1}`,
-                type: "cross_attention",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `ResNet Block ${i + 1}.2`,
-                type: "resnet_block",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Downsample ${i + 1}`,
-                type: "conv",
-                dimensions: [
-                  1024 / Math.pow(2, i + 1),
-                  1024 / Math.pow(2, i + 1),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i + 1),
-                ],
-              },
-            ],
-          })),
-
-          // Bottleneck with additional conditioning
-          {
-            name: "Upscaler Bottleneck",
-            type: "bottleneck",
-            dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-            sublayers: [
-              {
-                name: "ResNet Block",
-                type: "resnet_block",
-                dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-              },
-              {
-                name: "Global Context Attention",
-                type: "attention",
-                dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-              },
-              {
-                name: "Condition Cross-Attention",
-                type: "cross_attention",
-                dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-              },
-            ],
-          },
-
-          // Up blocks with skip connections
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Upscaler Up Block ${4 - i}`,
-            type: "up_block",
-            dimensions: [
-              1024 / Math.pow(2, 3 - i),
-              1024 / Math.pow(2, 3 - i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-            ],
-            sublayers: [
-              {
-                name: `ResNet Block ${4 - i}.1`,
-                type: "resnet_block",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Cross-Attention ${4 - i}`,
-                type: "cross_attention",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Condition Cross-Attention ${4 - i}`,
-                type: "cross_attention",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `ResNet Block ${4 - i}.2`,
-                type: "resnet_block",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Upsample ${4 - i}`,
-                type: "conv_transpose",
-                dimensions: [
-                  1024 / Math.pow(2, 2 - i),
-                  1024 / Math.pow(2, 2 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 2 - i),
-                ],
-              },
-            ],
-          })),
         ],
       },
     ],
   },
 
-  // Refiner Diffusion Model (Final Details at 1024x1024)
-  {
-    name: "Refiner Diffusion",
-    type: "refiner_diffusion",
-    dimensions: [1024, 1024, DALLE3_DIFFUSION_DIM],
-    stream: "image",
-    sublayers: [
-      {
-        name: "Refiner UNet",
-        type: "unet",
-        sublayers: [
-          // Similar structure to upscaler but with specialized layers for refinement
-          // Down blocks
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Refiner Down Block ${i + 1}`,
-            type: "down_block",
-            dimensions: [
-              1024 / Math.pow(2, i),
-              1024 / Math.pow(2, i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-            ],
-            sublayers: [
-              {
-                name: `Detail Enhancement ${i + 1}.1`,
-                type: "detail_enhancement",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `ResNet Block ${i + 1}`,
-                type: "resnet_block",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-              {
-                name: `Fine-Detail Attention ${i + 1}`,
-                type: "attention",
-                dimensions: [
-                  1024 / Math.pow(2, i),
-                  1024 / Math.pow(2, i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, i),
-                ],
-              },
-            ],
-          })),
-
-          // Specialized refinement bottleneck
-          {
-            name: "Refinement Bottleneck",
-            type: "bottleneck",
-            dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-            sublayers: [
-              {
-                name: "Global Context Processing",
-                type: "attention",
-                dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-              },
-              {
-                name: "Detail Enhancement",
-                type: "detail_enhancement",
-                dimensions: [64, 64, DALLE3_DIFFUSION_DIM * 16],
-              },
-            ],
-          },
-
-          // Up blocks with detail enhancement
-          ...Array.from({ length: 4 }, (_, i) => ({
-            name: `Refiner Up Block ${4 - i}`,
-            type: "up_block",
-            dimensions: [
-              1024 / Math.pow(2, 3 - i),
-              1024 / Math.pow(2, 3 - i),
-              DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-            ],
-            sublayers: [
-              {
-                name: `Detail Enhancement ${4 - i}`,
-                type: "detail_enhancement",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Fine-Detail Attention ${4 - i}`,
-                type: "attention",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-              {
-                name: `Quality Enhancement ${4 - i}`,
-                type: "quality_enhancement",
-                dimensions: [
-                  1024 / Math.pow(2, 3 - i),
-                  1024 / Math.pow(2, 3 - i),
-                  DALLE3_DIFFUSION_DIM * Math.pow(2, 3 - i),
-                ],
-              },
-            ],
-          })),
-        ],
-      },
-    ],
-  },
-
-  // Final Output
+  // Output
   {
     name: "Generated Image",
     type: "output",
-    dimensions: [1024, 1024, 3],
+    dimensions: [SDXL_IMAGE_DIM[0], SDXL_IMAGE_DIM[1], 3],
     stream: "image",
   },
 ];
 
+/** FLAMINGO **/
 export const FLAMINGO = [
   // Visual Backbone (Perceiver ResNet)
   {
@@ -2409,44 +1954,18 @@ export const GRID_CONFIGS = {
   },
 
   DALL_E_3: {
-    // Text Input and Encoders
     input: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
-
-    // CLIP Text Encoder
-    clip_text_encoder: { xCount: 12, yCount: 1, xInterval: 2.5, yInterval: 2 },
-
-    // T5 Text Encoder
-    t5_encoder: { xCount: 12, yCount: 1, xInterval: 2.5, yInterval: 2 },
-
-    // Common transformer components
+    text_encoder: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
     transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
-    attention: { xCount: 8, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
-    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
-    layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-
-    // Prior Network
-    diffusion_prior: { xCount: 12, yCount: 12, xInterval: 2.5, yInterval: 2.5 },
-    prior_transformer: { xCount: 12, yCount: 1, xInterval: 2.5, yInterval: 2 },
-
-    // Base Diffusion (64x64 → 256x256)
-    base_diffusion: { xCount: 8, yCount: 8, xInterval: 3, yInterval: 3 },
-
-    // Upscaler (256x256 → 1024x1024)
-    upscaler_diffusion: { xCount: 16, yCount: 8, xInterval: 3, yInterval: 3 },
-    condition_encoder: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-
-    // Refiner (1024x1024 detail enhancement)
-    refiner_diffusion: { xCount: 16, yCount: 8, xInterval: 3, yInterval: 3 },
-    detail_enhancement: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-
-    // Common diffusion components
-    unet: { xCount: 12, yCount: 12, xInterval: 4, yInterval: 4 },
-    resnet_block: { xCount: 6, yCount: 6, xInterval: 3, yInterval: 3 },
-    cross_attention: { xCount: 12, yCount: 8, xInterval: 2, yInterval: 2 },
+    attention: { xCount: 12, yCount: 6, xInterval: 1, yInterval: 1 },
+    mlp: { xCount: 500, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    diffusion_prior: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
+    decoder_diffusion: { xCount: 16, yCount: 8, xInterval: 2, yInterval: 2 },
+    unet: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
+    cross_attention: { xCount: 8, yCount: 6, xInterval: 2, yInterval: 2 },
     time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-
-    // Output
-    output: { xCount: 64, yCount: 8, xInterval: 0.1, yInterval: 0.1 },
+    output: { xCount: 64, yCount: 32, xInterval: 1, yInterval: 1 },
   },
   COGVLM: {
     input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
