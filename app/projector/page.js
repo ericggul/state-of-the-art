@@ -15,7 +15,6 @@ const Transition = dynamic(() => import("@/components/screen/transition"));
 export default function ScreenWrapper() {
   const {
     handleNewControllerArchitectures,
-    handleNewSpeech,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
@@ -33,7 +32,6 @@ export default function ScreenWrapper() {
   const socket = useSocketScreen({
     layerIdx: 0,
     handleNewControllerArchitectures,
-    handleNewSpeech,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,

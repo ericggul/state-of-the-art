@@ -4,14 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
 import { Box3, Vector3 } from "three";
 import { Perf } from "r3f-perf";
-import {
-  Fisheye,
-  Stars,
-  Sparkles,
-  Environment,
-  Cloud,
-  Grid,
-} from "@react-three/drei";
+import { Grid } from "@react-three/drei";
 
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
@@ -22,7 +15,9 @@ import ModelContainer from "./components/ModelContainer";
 const INITIAL_CAMERA_DISTANCE = 10000;
 
 export default function Visualisation({ isTesting = false }) {
-  const { currentArchitectures } = useScreenStore();
+  const currentArchitectures = useScreenStore(
+    (state) => state.currentArchitectures
+  );
   const {
     visualization: { modelName, structure },
   } = useModelStructure(currentArchitectures);

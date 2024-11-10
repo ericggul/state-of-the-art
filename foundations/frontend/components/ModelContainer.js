@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, memo } from "react";
 
 import { LAYER_CONFIGS, getModelStructure } from "../arch-models/_structure";
 import BasicNNLayers from "../arch/layers/BasicNNLayers";
@@ -16,10 +16,8 @@ import BoltzmannLayers from "../arch/layers/BoltzmannLayers";
 import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type";
 
 import CommonScene from "../utils/CommonScene";
-//store
 import useScreenStore from "@/components/screen/store";
 
-// Move the mapping outside component for better performance
 const MODEL_COMPONENTS = {
   basic_nn: BasicNNLayers,
   cnn: CNNLayers,
@@ -35,21 +33,24 @@ const MODEL_COMPONENTS = {
   boltzmann: BoltzmannLayers,
 };
 
-// Add style helper function outside component
 const getProjectorStyle = (isProjector, typeStyle) =>
   isProjector ? typeStyle : DEFAULT_STYLE;
 
-export default function ModelContainer({
-  modelName,
-  structure,
-  modelGroupRef,
-}) {
-  const isProjector = useScreenStore((state) => state.isProjector);
-  const modelConfig = LAYER_CONFIGS[modelName];
+const ModelContainer = memo(
+  function ModelContainer({ modelName, structure, modelGroupRef }) {
+    const isProjector = useScreenStore((state) => state.isProjector);
+    const modelConfig = LAYER_CONFIGS[modelName];
 
-  // Memoize component and typeStyle selection
-  const { ModelComponent, typeStyle } = useMemo(() => {
-    if (modelConfig) {
+    console.log("44", modelName, structure);
+
+    const { ModelComponent, typeStyle } = useMemo(() => {
+      if (!modelConfig) {
+        console.warn(
+          `No configuration found for model: ${modelName}. Defaulting to BasicNNLayers.`
+        );
+        return { ModelComponent: BasicNNLayers, typeStyle: DEFAULT_STYLE };
+      }
+
       const style = TYPE_STYLES[modelConfig.type] || DEFAULT_STYLE;
       const component = MODEL_COMPONENTS[modelConfig.type];
 
@@ -61,31 +62,42 @@ export default function ModelContainer({
       }
 
       return { ModelComponent: component, typeStyle: style };
-    }
+    }, [modelConfig, modelName]);
 
-    console.warn(
-      `No configuration found for model: ${modelName}. Defaulting to BasicNNLayers.`
+    const finalStyle = useMemo(
+      () => getProjectorStyle(isProjector, typeStyle),
+      [isProjector, typeStyle]
     );
-    return { ModelComponent: BasicNNLayers, typeStyle: DEFAULT_STYLE };
-  }, [modelConfig, modelName]);
 
-  // Memoize final style calculation
-  const finalStyle = useMemo(
-    () => getProjectorStyle(isProjector, typeStyle),
-    [isProjector, typeStyle]
-  );
+    const shouldRenderModel = structure.length > 0;
 
-  return (
-    <CommonScene style={finalStyle}>
-      <group ref={modelGroupRef}>
-        {structure.length > 0 && (
-          <ModelComponent
-            structure={structure}
-            style={finalStyle}
-            model={modelName}
-          />
-        )}
-      </group>
-    </CommonScene>
-  );
-}
+    return (
+      <CommonScene style={finalStyle}>
+        <group ref={modelGroupRef}>
+          {shouldRenderModel && (
+            <ModelComponent
+              structure={structure}
+              style={finalStyle}
+              model={modelName}
+            />
+          )}
+        </group>
+      </CommonScene>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison function for memo
+    return (
+      prevProps.modelName === nextProps.modelName &&
+      prevProps.modelGroupRef === nextProps.modelGroupRef &&
+      prevProps.structure.length === nextProps.structure.length &&
+      prevProps.structure.every(
+        (item, index) =>
+          JSON.stringify(item) === JSON.stringify(nextProps.structure[index])
+      )
+    );
+  }
+);
+
+ModelContainer.displayName = "ModelContainer";
+export default ModelContainer;

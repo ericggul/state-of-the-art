@@ -6,11 +6,11 @@ import {
   ChromaticAberration,
 } from "@react-three/postprocessing";
 import { GlitchMode } from "postprocessing";
-import { useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
 
 export default function Wrapper() {
-  const { mobileVisibility } = useScreenStore();
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
+  console.log("postprocessing", mobileVisibility);
 
   return <>{!mobileVisibility && <PostProcessing />}</>;
 }
@@ -26,7 +26,7 @@ function PostProcessing() {
         active={true} // Always active
         ratio={0.5}
       />
-      <ChromaticAberration offset={[0.02, 0.02]} />
+      <ChromaticAberration offset={[0.08, 0.08]} />
     </EffectComposer>
   );
 }
