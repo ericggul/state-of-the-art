@@ -4,6 +4,7 @@ import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 import RNNConnections from "../connections/RNNConnections";
+import useScreenStore from "@/components/screen/store";
 
 const RNNLayers = React.memo(({ structure, style, model }) => {
   const [expandedLayers, setExpandedLayers] = useState({});
@@ -72,6 +73,8 @@ const RNNLayers = React.memo(({ structure, style, model }) => {
 const RNNLayer = React.memo(({ layer, style, model, onExpand }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const { isProjector } = useScreenStore();
+
   const { smoothedExpanded } = useSpring({
     smoothedExpanded: expanded ? 1 : 0,
     config: { mass: 1, tension: 120, friction: 13 },
@@ -131,6 +134,7 @@ const RNNLayer = React.memo(({ layer, style, model, onExpand }) => {
           node={expandedNode}
           color={color}
           style={style}
+          isProjector={isProjector}
         />
       </animated.group>
       <animated.group
@@ -138,7 +142,12 @@ const RNNLayer = React.memo(({ layer, style, model, onExpand }) => {
         scale-y={smoothedExpanded.to((v) => 1 - v)}
         scale-z={1}
       >
-        <Node {...unexpandedNode} color={color} style={style} />
+        <Node
+          {...unexpandedNode}
+          color={color}
+          style={style}
+          isProjector={isProjector}
+        />
       </animated.group>
     </group>
   );

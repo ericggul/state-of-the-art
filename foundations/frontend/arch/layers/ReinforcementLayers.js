@@ -21,7 +21,8 @@ function ReinforcementLayers({ structure, style, model }) {
     sublayers,
     basePositionX,
     basePositionY,
-    depth = 0
+    depth = 0,
+    inheritIdx = 0
   ) => {
     const sublayerCount = sublayers.length;
     return sublayers.map((sublayer, index) => {
@@ -37,7 +38,8 @@ function ReinforcementLayers({ structure, style, model }) {
               sublayer.sublayers,
               positionX,
               positionY,
-              depth + 1
+              depth + 1,
+              inheritIdx + index
             )}
           </group>
         );
@@ -50,6 +52,7 @@ function ReinforcementLayers({ structure, style, model }) {
             sublayer={sublayer}
             style={style}
             model={model}
+            idx={depth + inheritIdx}
           />
         );
       }
@@ -63,7 +66,8 @@ function ReinforcementLayers({ structure, style, model }) {
           [layer],
           layer.position,
           0, // Start Y position at 0 for each top-level layer
-          0 // Initial depth is 0
+          0, // Initial depth is 0,
+          0 // Initial inheritIdx is 0
         )}
       </group>
     ));

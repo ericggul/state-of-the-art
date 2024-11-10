@@ -80,6 +80,7 @@ export default function DiffusionLayers({ structure, style, model }) {
                   sublayer={sublayer}
                   style={style}
                   model={model}
+                  idx={i * 3 + j}
                 />
                 {sublayer.sublayers?.map((nestedSublayer, k) =>
                   renderLayer(nestedSublayer, k, `${key}-${sublayer.name}-${j}`)

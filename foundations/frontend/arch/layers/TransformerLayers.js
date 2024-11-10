@@ -69,6 +69,7 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
           layer={layer}
           style={style}
           model={model}
+          idx={i}
         />
       ));
     },
@@ -83,41 +84,44 @@ const TransformerLayers = React.memo(({ structure, style, model }) => {
   );
 });
 
-const TransformerLayer = React.memo(({ position, layer, style, model }) => {
-  const size = [30, 10, 10];
-  const gap = 10;
+const TransformerLayer = React.memo(
+  ({ position, layer, style, model, idx }) => {
+    const size = [30, 10, 10];
+    const gap = 10;
 
-  if (layer.sublayers) {
+    if (layer.sublayers) {
+      return (
+        <group position={position}>
+          {layer.sublayers.map((sublayer, i) => (
+            <Sublayer
+              key={`${layer.name}-sublayer-${i}`}
+              position={[
+                0,
+                (idx - (layer.sublayers.length - 1) / 2) * (size[1] + gap),
+                0,
+              ]}
+              idx={idx}
+              sublayer={sublayer}
+              style={style}
+              model={model}
+              expanded={true}
+            />
+          ))}
+        </group>
+      );
+    }
+
     return (
       <group position={position}>
-        {layer.sublayers.map((sublayer, idx) => (
-          <Sublayer
-            key={`${layer.name}-sublayer-${idx}`}
-            position={[
-              0,
-              (idx - (layer.sublayers.length - 1) / 2) * (size[1] + gap),
-              0,
-            ]}
-            sublayer={sublayer}
-            style={style}
-            model={model}
-            expanded={true}
-          />
-        ))}
+        <Node
+          size={layer.dimensions || size}
+          style={style}
+          color={style.colors[layer.type] || style.colors.outer}
+        />
       </group>
     );
   }
-
-  return (
-    <group position={position}>
-      <Node
-        size={layer.dimensions || size}
-        style={style}
-        color={style.colors[layer.type] || style.colors.outer}
-      />
-    </group>
-  );
-});
+);
 
 function calculateYPosition(index, totalLayers, layerHeight) {
   return (

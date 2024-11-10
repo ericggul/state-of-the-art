@@ -1,6 +1,6 @@
 import React from "react";
 
-const Node = React.memo(({ size, style, color, isProjector }) => {
+const Node = React.memo(({ size, style, color, isProjector = true }) => {
   return (
     <mesh castShadow={style.shadows} receiveShadow={style.shadows}>
       <boxGeometry args={size} />

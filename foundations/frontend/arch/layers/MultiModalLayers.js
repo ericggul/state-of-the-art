@@ -145,6 +145,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
+            idx={i}
           />
         ))}
       </group>
@@ -159,6 +160,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
+            idx={i + 1 / 3}
           />
         ))}
       </group>
@@ -173,6 +175,7 @@ export default function MultiModalLayers({ structure, style, model }) {
             style={style}
             model={model}
             useGivenInterval={true}
+            idx={i + 2 / 3}
           />
         ))}
       </group>

@@ -1,14 +1,10 @@
-import React, { useMemo, memo } from "react";
-import { Text } from "@react-three/drei";
+import React, { memo } from "react";
+import { useSpring, animated } from "@react-spring/three";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
-
 import useScreenStore from "@/components/screen/store";
 
-// export const INTERLAYER_MARGIN_X = 1.6;
-// export const INTERLAYER_MARGIN_Y = 3.0;
-
-export const INTERLAYER_MARGIN_X = 1.6;
+export const INTERLAYER_MARGIN_X = 3.0;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
 const DEFAULT_GRID = {
@@ -18,25 +14,36 @@ const DEFAULT_GRID = {
   yInterval: 10,
 };
 
-const Sublayer = memo(
-  function Sublayer({
-    position,
-    sublayer,
-    rotation,
-    style,
-    model,
-    useGivenInterval = false,
-  }) {
-    const isProjector = useScreenStore((state) => state.isProjector);
-    const size = sublayer.dimensions || [20, 8, 8];
-    let gridConfig = GRID_CONFIGS[model] || {};
+const Sublayer = memo(function Sublayer({
+  position,
+  sublayer,
+  style,
+  model,
+  idx = 0,
+  useGivenInterval = false,
+}) {
+  const { scale } = useSpring({
+    from: { scale: 0 },
+    to: { scale: 1 },
+    config: {
+      mass: 2,
+      tension: 180,
+      friction: 40,
+    },
+    delay: idx * 250,
+  });
 
-    const grid = isProjector
-      ? gridConfig[sublayer.type] || DEFAULT_GRID
-      : DEFAULT_GRID;
+  const isProjector = useScreenStore((state) => state.isProjector);
+  const size = sublayer.dimensions || [20, 8, 8];
+  let gridConfig = GRID_CONFIGS[model] || {};
 
-    return (
-      <group position={position}>
+  const grid = isProjector
+    ? gridConfig[sublayer.type] || DEFAULT_GRID
+    : DEFAULT_GRID;
+
+  return (
+    <group position={position}>
+      <animated.group scale={scale}>
         <InstancedNodes
           xCount={grid.xCount}
           yCount={grid.yCount}
@@ -57,23 +64,10 @@ const Sublayer = memo(
           sublayer={sublayer}
           isProjector={isProjector}
         />
-      </group>
-    );
-  },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.model === nextProps.model &&
-      prevProps.useGivenInterval === nextProps.useGivenInterval &&
-      JSON.stringify(prevProps.position) ===
-        JSON.stringify(nextProps.position) &&
-      JSON.stringify(prevProps.rotation) ===
-        JSON.stringify(nextProps.rotation) &&
-      JSON.stringify(prevProps.sublayer) ===
-        JSON.stringify(nextProps.sublayer) &&
-      JSON.stringify(prevProps.style) === JSON.stringify(nextProps.style)
-    );
-  }
-);
+      </animated.group>
+    </group>
+  );
+});
 
 Sublayer.displayName = "Sublayer";
 export default Sublayer;
