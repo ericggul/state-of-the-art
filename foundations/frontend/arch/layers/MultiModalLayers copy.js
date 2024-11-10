@@ -59,54 +59,49 @@ export default function MultiModalLayers({ structure, style, model }) {
 
   // Modified positioning strategy
   const positionLayers = (layers, modalityType) => {
-    if (!layers || layers.length === 0) return [];
-
     let cumulativeX = 0;
     const maxHeight = Math.max(
-      ...layers.map((layer) => layer.dimensions?.[1] || 20)
+      ...layers.map((layer) => layer.dimensions[1] || 20)
     );
 
     // Calculate radius and angle based on modality
-    const radius = 150;
+    const radius = 150; // Adjust for desired spread
     const angleOffset =
       {
-        image: -Math.PI / 4,
-        text: Math.PI / 4,
-        fusion: 0,
+        image: -Math.PI / 4, // 45 degrees left
+        text: Math.PI / 4, // 45 degrees right
+        fusion: 0, // Center
       }[modalityType] || 0;
 
     const layersWithPositions = layers.map((layer, index) => {
-      // Add safety checks for dimensions
-      const layerWidth = Math.max(layer.dimensions?.[0] || 20, 1);
-      const layerHeight = Math.max(layer.dimensions?.[1] || 20, 1);
+      const layerWidth = layer.dimensions[0] || 20;
+      const layerHeight = layer.dimensions[1] || 20;
 
-      // Ensure we don't divide by zero
-      const progress = layers.length <= 1 ? 0 : index / (layers.length - 1);
-      const angle = angleOffset + (progress * Math.PI) / 4;
+      // Calculate position along the arc
+      const progress = index / (layers.length - 1 || 1);
+      const angle = angleOffset + (progress * Math.PI) / 4; // 45 degree arc
 
       const x = Math.cos(angle) * radius + cumulativeX;
       const y = Math.sin(angle) * radius;
 
-      cumulativeX += layerWidth + (layerGap || 10);
+      cumulativeX += layerWidth + layerGap;
 
       return {
         ...layer,
-        position: [Number.isFinite(x) ? x : 0, Number.isFinite(y) ? y : 0, 0],
+        position: [x, y, 0],
       };
     });
 
     // Center the layers
-    const totalWidth = Math.max(cumulativeX - (layerGap || 10), 0);
+    const totalWidth = cumulativeX - layerGap;
     const centerOffset = totalWidth / 2;
 
     return layersWithPositions.map((layer) => ({
       ...layer,
       position: [
-        Number.isFinite(layer.position[0])
-          ? layer.position[0] - centerOffset
-          : 0,
-        Number.isFinite(layer.position[1]) ? layer.position[1] : 0,
-        Number.isFinite(layer.position[2]) ? layer.position[2] : 0,
+        layer.position[0] - centerOffset,
+        layer.position[1],
+        layer.position[2],
       ],
     }));
   };

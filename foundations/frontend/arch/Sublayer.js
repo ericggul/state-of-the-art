@@ -22,6 +22,7 @@ const Sublayer = memo(function Sublayer({
   idx = 0,
   useGivenInterval = false,
 }) {
+  console.log("sublayer", sublayer);
   const { scale } = useSpring({
     from: { scale: 0 },
     to: { scale: 1 },

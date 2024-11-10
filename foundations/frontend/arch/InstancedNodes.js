@@ -68,8 +68,6 @@ const InstancedNodes = memo(function InstancedNodes({
           <Instance
             key={i}
             position={position}
-            // castShadow={style.shadows}
-            // receiveShadow={style.shadows}
             castShadow={false}
             receiveShadow={false}
           />

@@ -210,7 +210,7 @@ export const TYPE_STYLES = {
     name: "Multi-Modal Network",
     colors: {
       outer: "hsl(0, 65%, 58%)", // Deep, rich red
-      inner: "hsl(200, 100%, 70%)", // Slightly brighter red
+      inner: "hsl(200, 90%, 50%)", // Slightly brighter red
       plane: "hsl(355, 90%, 55%)", // Dark, muted red
     },
     material: {
@@ -218,13 +218,13 @@ export const TYPE_STYLES = {
       roughness: 0.2, // Kept the same
       transparent: false,
     },
-    lighting: {
-      environment: "studio", // Kept 'studio' for the gallery-like feel
-      envIntensity: 0.1, // Further reduced for a more subdued look
-      // pointLight: { position: [0, 200, 0], intensity: 1.5 },
-      // directionalLight: { position: [0, 150, -100], intensity: 0.5 },
-      ambientLight: { intensity: 1.0 },
-    },
+    // lighting: {
+    //   environment: "studio", // Kept 'studio' for the gallery-like feel
+    //   envIntensity: 0.1, // Further reduced for a more subdued look
+    //   // pointLight: { position: [0, 200, 0], intensity: 1.5 },
+    //   // directionalLight: { position: [0, 150, -100], intensity: 0.5 },
+    //   ambientLight: { intensity: 1.0 },
+    // },
     // shadows: true,
     emissive: false,
   },

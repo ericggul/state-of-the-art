@@ -4,7 +4,6 @@ import { Canvas } from "@react-three/fiber";
 import { OrientationCamera } from "./utils/OrientationCamera";
 import { Box3, Vector3 } from "three";
 import { Perf } from "r3f-perf";
-import { Grid } from "@react-three/drei";
 
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";

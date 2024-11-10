@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense, useState } from "react";
 
-const Idle = dynamic(() => import("@/components/screen/idle-projector"));
+const Idle = dynamic(() => import("@/components/screen/idle/projector"));
 
 export default function IdleWrapper() {
   return (
