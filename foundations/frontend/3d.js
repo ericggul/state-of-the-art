@@ -9,6 +9,7 @@ import { Grid } from "@react-three/drei";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 
+import TransitionPostProcessing from "./utils/TransitionPostProcessing";
 import PostProcessing from "./utils/PostProcessing";
 import ModelContainer from "./components/ModelContainer";
 
@@ -66,6 +67,7 @@ export default function Visualisation({ isTesting = false }) {
         />
         {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
         <PostProcessing />
+        <TransitionPostProcessing />
       </Suspense>
     </Canvas>
   );

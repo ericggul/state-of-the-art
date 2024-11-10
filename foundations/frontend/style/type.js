@@ -46,8 +46,6 @@ export const TYPE_STYLES = {
     material: {
       metalness: 0.9,
       roughness: 0.2,
-      transparent: true,
-      opacity: 0.8,
     },
     shadows: true,
     emissive: true, // Important for neon effect
@@ -151,8 +149,6 @@ export const TYPE_STYLES = {
     material: {
       metalness: 0.9,
       roughness: 0.2,
-      transparent: true,
-      opacity: 0.8,
     },
     shadows: true,
     emissive: true, // Important for neon effect
@@ -272,8 +268,6 @@ export const TYPE_STYLES = {
     material: {
       metalness: 1.0,
       roughness: 0.2,
-      transparent: true,
-      opacity: 0.8,
     },
     shadows: true,
     emissive: true, // Important for neon effect

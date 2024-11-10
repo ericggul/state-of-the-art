@@ -4,7 +4,7 @@ import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
 import useScreenStore from "@/components/screen/store";
 
-export const INTERLAYER_MARGIN_X = 2.0;
+export const INTERLAYER_MARGIN_X = 2.5;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
 const DEFAULT_GRID = {

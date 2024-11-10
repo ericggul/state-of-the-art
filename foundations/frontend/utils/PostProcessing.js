@@ -1,36 +1,37 @@
 import React, { memo } from "react";
 import {
   EffectComposer,
-  Glitch,
-  ChromaticAberration,
+  Bloom,
+  SMAA,
+  BrightnessContrast,
+  HueSaturation,
+  Vignette,
 } from "@react-three/postprocessing";
-import { GlitchMode } from "postprocessing";
-import useScreenStore from "@/components/screen/store";
+import { BlendFunction } from "postprocessing";
 
 const PostProcessing = memo(function PostProcessing() {
   return (
     <EffectComposer>
-      <Glitch
-        delay={[0, 0]}
-        duration={[0.2, 0.4]}
-        strength={[0.5, 1.0]}
-        mode={GlitchMode.CONSTANT_WILD}
-        active={true}
-        ratio={0.5}
+      <SMAA />
+
+      {/* <Bloom
+        intensity={0.5}
+        luminanceThreshold={0.7}
+        luminanceSmoothing={0.9}
+        mipmapBlur={true}
+      /> */}
+
+      <BrightnessContrast
+        brightness={0.03}
+        contrast={0.1}
+        blendFunction={BlendFunction.NORMAL}
       />
-      <ChromaticAberration offset={[0.08, 0.08]} />
+
+      <HueSaturation saturation={0.1} hue={0} />
+
+      <Vignette darkness={1} offset={0} blendFunction={BlendFunction.NORMAL} />
     </EffectComposer>
   );
 });
 
-const Wrapper = memo(function Wrapper() {
-  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
-  console.log("postprocessing", mobileVisibility);
-
-  return <>{!mobileVisibility && <PostProcessing />}</>;
-});
-
-PostProcessing.displayName = "PostProcessing";
-Wrapper.displayName = "PostProcessingWrapper";
-
-export default Wrapper;
+export default PostProcessing;
