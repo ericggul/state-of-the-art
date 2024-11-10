@@ -13,7 +13,8 @@ export const BASE_STYLE = {
     near: 0.1,
   },
   lighting: {
-    environment: "apartment",
+    // environment: "apartment",
+    environment: "night",
     envIntensity: 0.3,
     pointLight: { position: [0, 200, 0], intensity: 0.5 },
     directionalLight: { position: [0, 150, -100], intensity: 0.3 },
@@ -52,8 +53,7 @@ export const TYPE_STYLES = {
     shadows: true,
     emissive: true, // Important for neon effect
     lighting: {
-      environment: "night",
-      envIntensity: 0.1,
+      envIntensity: 0,
       pointLight: { position: [0, 50, 0], intensity: 2 },
       ambientLight: { intensity: 0.1 },
     },
@@ -186,8 +186,8 @@ export const TYPE_STYLES = {
       transparent: false,
     },
     lighting: {
-      environment: "city",
-      envIntensity: 1.2,
+      // environment: "city",
+      envIntensity: 0.2,
       directionalLight: { position: [10, 20, 10], intensity: 0.8 },
       ambientLight: { intensity: 0.4 },
     },
@@ -223,7 +223,6 @@ export const TYPE_STYLES = {
       transparent: false,
     },
     lighting: {
-      environment: "studio", // Kept 'studio' for the gallery-like feel
       envIntensity: 0.1, // Further reduced for a more subdued look
       // pointLight: { position: [0, 200, 0], intensity: 1.5 },
       // directionalLight: { position: [0, 150, -100], intensity: 0.5 },

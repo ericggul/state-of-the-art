@@ -41,18 +41,20 @@ const InstancedNodes = memo(function InstancedNodes({
           {...style.material}
           color={color}
           wireframe={!isProjector}
-          clearcoat={0.3}
-          clearcoatRoughness={0.1}
-          ior={1.7}
-          reflectivity={0.6}
-          transmission={0.05}
-          thickness={1}
-          iridescence={0.2}
-          iridescenceIOR={1.3}
-          iridescenceThicknessRange={[100, 400]}
-          sheen={0.1}
-          sheenRoughness={0.4}
-          sheenColor={"#ffffff"}
+          clearcoat={0.6}
+          clearcoatRoughness={0.05}
+          ior={2.5}
+          reflectivity={0.8}
+          transmission={0.15}
+          thickness={2}
+          iridescence={0.4}
+          iridescenceIOR={1.8}
+          iridescenceThicknessRange={[200, 1000]}
+          sheen={0.3}
+          sheenRoughness={0.2}
+          sheenColor={"#fafafa"}
+          attenuationDistance={0.5}
+          attenuationColor={"#ffffff"}
         />
         {positions.map((position, i) => (
           <Instance
