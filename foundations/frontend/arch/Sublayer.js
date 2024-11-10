@@ -4,7 +4,7 @@ import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
 import useScreenStore from "@/components/screen/store";
 
-export const INTERLAYER_MARGIN_X = 3.0;
+export const INTERLAYER_MARGIN_X = 2.0;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
 const DEFAULT_GRID = {
@@ -26,9 +26,14 @@ const Sublayer = memo(function Sublayer({
     from: { scale: 0 },
     to: { scale: 1 },
     config: {
-      mass: 2,
-      tension: 180,
-      friction: 40,
+      //oroginal smoother
+      // mass: 2,
+      // tension: 180,
+      // friction: 40,
+      mass: 4,
+      tension: 120,
+      friction: 30,
+      clamp: false,
     },
     delay: idx * 250,
   });

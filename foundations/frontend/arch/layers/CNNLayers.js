@@ -6,6 +6,18 @@ import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 import useScreenStore from "@/components/screen/store";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
+  // Add spring animation for initial scale
+  const { scale } = useSpring({
+    from: { scale: 0 },
+    to: { scale: 1 },
+    config: {
+      mass: 4,
+      tension: 120,
+      friction: 30,
+      clamp: false,
+    },
+  });
+
   // Pre-calculate the cumulative heights of layers
   const layerPositions = [];
   let cumulativeHeight = 0;
@@ -38,33 +50,37 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
     cumulativeHeight + layerHeights[layerHeights.length - 1] / 2;
   const centerOffset = totalHeight / 2;
 
-  return structure.map((layer, i) => {
-    const y = layerPositions[i] - centerOffset;
+  return (
+    <animated.group scale={scale}>
+      {structure.map((layer, i) => {
+        const y = layerPositions[i] - centerOffset;
 
-    // Handle composite layers with sublayers (e.g., inception modules)
-    if (layer.sublayers) {
-      return (
-        <CompositeLayer
-          key={`${model}-layer-${i}`}
-          position={[0, y, 0]}
-          layer={layer}
-          style={style}
-          model={model}
-        />
-      );
-    }
+        // Handle composite layers with sublayers (e.g., inception modules)
+        if (layer.sublayers) {
+          return (
+            <CompositeLayer
+              key={`${model}-layer-${i}`}
+              position={[0, y, 0]}
+              layer={layer}
+              style={style}
+              model={model}
+            />
+          );
+        }
 
-    // Handle regular layers
-    return (
-      <CNNLayer
-        key={`${model}-layer-${i}`}
-        position={[0, y, 0]}
-        layer={layer}
-        style={style}
-        model={model}
-      />
-    );
-  });
+        // Handle regular layers
+        return (
+          <CNNLayer
+            key={`${model}-layer-${i}`}
+            position={[0, y, 0]}
+            layer={layer}
+            style={style}
+            model={model}
+          />
+        );
+      })}
+    </animated.group>
+  );
 });
 
 const CNNLayer = React.memo(({ position, layer, style, model }) => {

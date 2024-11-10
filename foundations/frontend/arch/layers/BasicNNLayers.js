@@ -1,27 +1,19 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, memo } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import * as THREE from "three";
 import Connections from "../connections/Connections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
-// Function to generate the structure
-function generateStructure(modelStructure, model) {
+// Optimized structure generation with memoized configs
+const generateStructure = (modelStructure, model) => {
   const layerConfig = LAYER_CONFIGS[model];
   const gridConfig = GRID_CONFIGS[model] || {};
+  const halfLength = (modelStructure.length - 1) / 2;
 
   return modelStructure.map((layer, i) => ({
     ...layer,
-    position: [
-      0,
-      0,
-      layerConfig.layerHeight * (i - (modelStructure.length - 1) / 2),
-    ],
-    node: {
-      size: [4, 4, 0.3],
-    },
-    unexpandedNode: {
-      size: [8, 8, 0.3],
-    },
+    position: [0, 0, layerConfig.layerHeight * (i - halfLength)],
+    node: { size: [4, 4, 0.3] },
+    unexpandedNode: { size: [8, 8, 0.3] },
     grid: {
       xCount: layer.neurons,
       yCount: layer.neurons,
@@ -29,9 +21,81 @@ function generateStructure(modelStructure, model) {
       yInterval: gridConfig[layer.type]?.yInterval || 5,
     },
   }));
-}
+};
 
-export default function BasicNNLayers({ structure, style, model }) {
+// Memoized grid component for better performance
+const GridNodes = memo(({ grid, nodeSize, nodeMaterialProps }) => (
+  <>
+    {new Array(grid.xCount).fill(0).map((_, i) => (
+      <group
+        key={`x-${i}`}
+        position={[grid.xInterval * (i - (grid.xCount - 1) / 2), 0, 0]}
+      >
+        {new Array(grid.yCount).fill(0).map((_, j) => (
+          <mesh
+            key={`y-${j}`}
+            position={[0, grid.yInterval * (j - (grid.yCount - 1) / 2), 0]}
+          >
+            <boxGeometry args={nodeSize} />
+            <meshStandardMaterial {...nodeMaterialProps} />
+          </mesh>
+        ))}
+      </group>
+    ))}
+  </>
+));
+
+GridNodes.displayName = "GridNodes";
+
+// Optimized SingleLayer component
+const SingleLayer = memo(
+  ({ position, grid, node, unexpandedNode, type, expanded, style }) => {
+    const springConfig = {
+      mass: 1,
+      tension: 170,
+      friction: 26,
+      clamp: false,
+    };
+
+    const { scale } = useSpring({
+      scale: expanded ? 1 : 0,
+      config: springConfig,
+    });
+
+    const nodeMaterialProps = useMemo(
+      () => ({
+        ...style.material,
+        color: style.colors[type] || style.colors.inner,
+      }),
+      [style, type]
+    );
+
+    if (!grid) return null;
+
+    return (
+      <group position={position}>
+        <animated.group scale={scale}>
+          <GridNodes
+            grid={grid}
+            nodeSize={node.size}
+            nodeMaterialProps={nodeMaterialProps}
+          />
+        </animated.group>
+        <animated.group scale={scale.to((v) => 1 - v)}>
+          <mesh>
+            <boxGeometry args={unexpandedNode.size} />
+            <meshStandardMaterial {...nodeMaterialProps} />
+          </mesh>
+        </animated.group>
+      </group>
+    );
+  }
+);
+
+SingleLayer.displayName = "SingleLayer";
+
+// Main component with optimized state management
+const BasicNNLayers = memo(({ structure, style, model }) => {
   const localStructure = useMemo(
     () => generateStructure(structure, model),
     [structure, model]
@@ -45,7 +109,7 @@ export default function BasicNNLayers({ structure, style, model }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setExpandedLayerIdx((i) => (i + 1) % structure.length);
-    }, 1000);
+    }, 500);
     return () => clearInterval(interval);
   }, [structure.length]);
 
@@ -72,67 +136,7 @@ export default function BasicNNLayers({ structure, style, model }) {
       />
     </group>
   );
-}
+});
 
-// Define the SingleLayer component directly in this file
-const SingleLayer = (props) => {
-  const { expanded, style } = props;
-
-  const [smoothedExpanded, api] = useSpring(() => ({
-    smoothedExpanded: 0,
-    config: { mass: 1, tension: 120, friction: 13 },
-  }));
-
-  useEffect(() => {
-    api.start({ smoothedExpanded: expanded ? 1 : 0 });
-  }, [expanded, api]);
-
-  const nodeMaterialProps = {
-    ...style.material,
-    color: style.colors[props.type] || style.colors.inner,
-  };
-
-  return (
-    <group position={props.position}>
-      {props.grid && (
-        <>
-          <animated.group scale={smoothedExpanded.smoothedExpanded}>
-            {new Array(props.grid.xCount).fill(0).map((_, i) => (
-              <group
-                key={`x-${i}`}
-                position={[
-                  props.grid.xInterval * (i - (props.grid.xCount - 1) / 2),
-                  0,
-                  0,
-                ]}
-              >
-                {new Array(props.grid.yCount).fill(0).map((_, j) => (
-                  <mesh
-                    key={`y-${j}`}
-                    position={[
-                      0,
-                      props.grid.yInterval * (j - (props.grid.yCount - 1) / 2),
-                      0,
-                    ]}
-                  >
-                    <boxGeometry args={props.node.size} />
-                    <meshStandardMaterial {...nodeMaterialProps} />
-                  </mesh>
-                ))}
-              </group>
-            ))}
-          </animated.group>
-
-          <animated.group
-            scale={smoothedExpanded.smoothedExpanded.to((v) => 1 - v)}
-          >
-            <mesh position={[0, 0, 0]}>
-              <boxGeometry args={props.unexpandedNode.size} />
-              <meshStandardMaterial {...nodeMaterialProps} />
-            </mesh>
-          </animated.group>
-        </>
-      )}
-    </group>
-  );
-};
+BasicNNLayers.displayName = "BasicNNLayers";
+export default BasicNNLayers;

@@ -3,7 +3,7 @@ import Node from "../Node";
 import Sublayer from "../Sublayer";
 import { LAYER_CONFIGS } from "../../arch-models";
 
-const INTERLAYER_MARGIN = 1.2;
+const INTERLAYER_MARGIN = 1.0;
 const TARGET_AXIS = 2;
 const MIN_DIMENSION = 2;
 

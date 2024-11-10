@@ -1,6 +1,8 @@
 import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
 
+import { INTERLAYER_MARGIN_X, INTERLAYER_MARGIN_Y } from "../Sublayer";
+
 function VAEConnections({ structure, style }) {
   const connections = useMemo(() => {
     if (!structure) return [];
@@ -16,11 +18,13 @@ function VAEConnections({ structure, style }) {
       const fromSize = fromLayer.dimensions || [20, 8, 8];
       const toSize = toLayer.dimensions || [20, 8, 8];
 
-      const fromXInterval = (fromSize[0] / fromGrid.xCount) * 1.2; // INTERLAYER_MARGIN_X
-      const fromYInterval = (fromSize[1] / fromGrid.yCount) * 1.5; // INTERLAYER_MARGIN_Y
+      const fromXInterval =
+        (fromSize[0] / fromGrid.xCount) * INTERLAYER_MARGIN_X;
+      const fromYInterval =
+        (fromSize[1] / fromGrid.yCount) * INTERLAYER_MARGIN_Y;
 
-      const toXInterval = (toSize[0] / toGrid.xCount) * 1.2; // INTERLAYER_MARGIN_X
-      const toYInterval = (toSize[1] / toGrid.yCount) * 1.5; // INTERLAYER_MARGIN_Y
+      const toXInterval = (toSize[0] / toGrid.xCount) * INTERLAYER_MARGIN_X;
+      const toYInterval = (toSize[1] / toGrid.yCount) * INTERLAYER_MARGIN_Y;
 
       for (let fromX = 0; fromX < fromGrid.xCount; fromX++) {
         const fromCenter = [

@@ -38,6 +38,7 @@ export default function VAELayers({ structure, style, model }) {
           sublayer={layer}
           style={style}
           model={model}
+          idx={i}
         />
       ))}
     </group>

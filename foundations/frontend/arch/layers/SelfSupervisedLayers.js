@@ -59,6 +59,7 @@ export default function SelfSupervisedLayers({ structure, style, model }) {
           style={style}
           model={model}
           useGivenInterval={true}
+          idx={i}
         />
       ))}
     </group>

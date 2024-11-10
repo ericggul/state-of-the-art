@@ -94,6 +94,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>
@@ -105,6 +106,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>
@@ -116,6 +118,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>
@@ -127,6 +130,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>
@@ -141,6 +145,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>
@@ -152,6 +157,7 @@ export default function GANLayers({ structure, style, model }) {
                 sublayer={layer}
                 style={style}
                 model={model}
+                idx={i}
               />
             ))}
           </group>

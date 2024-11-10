@@ -49,17 +49,17 @@ export const MODELS = {
 
 export const LAYER_CONFIGS = {
   BASIC_AUTOENCODER: {
-    layerHeight: 60,
+    layerHeight: 120,
     keyPrefix: "basicae",
     type: "vae",
   },
   VARIATIONAL_AUTOENCODER_VAE: {
-    layerHeight: 60,
+    layerHeight: 120,
     keyPrefix: "vae",
     type: "vae",
   },
   BETA_VAE: {
-    layerHeight: 60,
+    layerHeight: 120,
     keyPrefix: "betavae",
     type: "vae",
   },
