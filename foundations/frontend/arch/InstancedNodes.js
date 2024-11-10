@@ -16,7 +16,7 @@ const InstancedNodes = React.memo(
     rotation = [Math.PI / 2, 0, 0],
     sublayer,
   }) => {
-    const { isProjector } = useScreenStore();
+    const isProjector = useScreenStore((state) => state.isProjector);
 
     const positions = useMemo(() => {
       const temp = [];
@@ -53,8 +53,6 @@ const InstancedNodes = React.memo(
             {...style.material}
             color={color}
             wireframe={!isProjector}
-            // opacity={isProjector ? 1 : 0.1}
-            // transparent={!isProjector}
           />
           {positions.map((position, i) => (
             <Instance
