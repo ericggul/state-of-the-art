@@ -10,7 +10,19 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 const Idle = dynamic(() => import("@/components/screen/idle"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
+
 const Transition = dynamic(() => import("@/components/screen/transition"));
+
+//?TEST
+
+const TempBackend = dynamic(() =>
+  import("@/foundations/test/1-relation/random/2/2-6")
+);
+import {
+  INPUT_EMBEDDINGS,
+  OUTPUT_EMBEDDINGS,
+  MULTI_LAYERS_EMBEDDINGS,
+} from "@/foundations/test/1-relation/utils/constant-conversation";
 
 export default function ScreenWrapper() {
   const {
@@ -46,7 +58,13 @@ export default function ScreenWrapper() {
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
 
-      {stage === "Backend" && <Backend />}
+      {/* {stage === "Backend" && <Backend />} */}
+      {stage === "Backend" && (
+        <TempBackend
+          newInputEmbeddings={INPUT_EMBEDDINGS}
+          newOutputEmbeddings={OUTPUT_EMBEDDINGS}
+        />
+      )}
       {isTransition && <Transition />}
     </Suspense>
   );

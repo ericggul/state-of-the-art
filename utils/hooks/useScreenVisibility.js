@@ -28,12 +28,12 @@ export default function useScreenVisibility() {
       }, 5000);
       timeoutRef2.current = setTimeout(() => {
         setStage("Backend");
-      }, 6000);
+      }, 7000);
       timeoutRef3.current = setTimeout(
         () => {
           setStage(null);
         },
-        isProjector ? 3000 : 300
+        isProjector ? 3000 : 3000
       );
     }
 
