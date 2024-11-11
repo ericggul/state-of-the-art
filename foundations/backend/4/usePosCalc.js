@@ -23,6 +23,8 @@ const randomise1 = () => {
 };
 
 const randomise2 = () => {
+  // const xRandom = getRandom(0, 1);
+  // const yRandom = getRandom(0, 0.4);
   const xRandom = getRandom(0, 1);
   const yRandom = getRandom(0, 0.4);
   return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
@@ -34,8 +36,16 @@ const randomise3 = () => {
   return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
 };
 
+const randomise4 = () => {
+  const pointX = getRandom(0.1, 0.5);
+  const pointY = getRandom(0.1, 0.5);
+  const xRandom = getRandom(pointX - 0.1, pointX + 0.1);
+  const yRandom = getRandom(pointY - 0.1, pointY + 0.1);
+  return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
+};
+
 const randomiseRangeConfig = () => {
-  return Math.random() < 0.5 ? randomise2() : randomise3();
+  return randomise1();
 };
 
 export default function usePosCalc({
@@ -70,7 +80,7 @@ export default function usePosCalc({
       );
     },
     10 * timeUnit,
-    100 * timeUnit,
+    70 * timeUnit,
     isAnimating
   );
 
