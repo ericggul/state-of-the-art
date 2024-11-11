@@ -36,8 +36,8 @@ export default function SingleRandom({
   console.log("is animating", isAnimating);
 
   useEffect(() => {
-    setXRange((r) => 1.5 - r);
-    setYRange((r) => 18 - r);
+    setXRange(isblack ? 1.5 : 0);
+    setYRange(isblack ? 18 : 0);
     setIsAnimating(isblack); // Toggle animation when isblack changes
   }, [isblack]);
 
