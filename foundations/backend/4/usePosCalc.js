@@ -11,7 +11,7 @@ const getRangeConfig = {
 };
 
 const randomise1 = () => {
-  const startOff = getRandom(-0.1, 0.1);
+  const startOff = getRandom(-0.1, 0.2);
   const xRandom = getRandom(startOff, 0.45);
   let yRandom;
   if (Math.random() < 0.5) {
@@ -71,7 +71,7 @@ export default function usePosCalc({
       : getRangeConfig[subLevel] ?? randomiseRangeConfig()
   );
 
-  const [intervalRange, setIntervalRange] = useState({ min: 5, max: 60 });
+  const [intervalRange, setIntervalRange] = useState({ min: 10, max: 30 });
 
   // useEffect(() => {
   //   if (isAnimating) {
