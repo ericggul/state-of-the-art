@@ -100,6 +100,7 @@ export function usePathsV1({
     () => [0.7, 0.5, 0.3][subLevel] || 0.5,
     [subLevel]
   );
+  const [windowWidth] = useResize();
 
   const calculateTextPoint = useCallback(
     (x1, y1, x2, y2, dir) => {
@@ -154,7 +155,7 @@ export function usePathsV1({
             d={createArcPath(x1, y1, x2, y2, { yMargin, dir })}
             stroke={strokeColor}
             fill="none"
-            strokeWidth={calculateResponsiveStrokeWidth(baseWidth)}
+            strokeWidth={calculateResponsiveStrokeWidth(baseWidth, windowWidth)}
             opacity={pathOpacity}
           />
           {subLevel >= 1 && (
@@ -165,7 +166,6 @@ export function usePathsV1({
               textAnchor="middle"
               alignmentBaseline="middle"
               fontSize="0.7vw"
-              fontWeight="normal"
               opacity={getTextOpacity(type)}
             >
               {similarity.toFixed(2)}
