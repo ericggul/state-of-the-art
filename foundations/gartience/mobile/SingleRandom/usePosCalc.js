@@ -3,7 +3,13 @@ import useResize from "@/utils/hooks/useResize";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
-export default function usePosCalc({ tokens, isAnimating, range, timeUnit, type }) {
+export default function usePosCalc({
+  tokens,
+  isAnimating,
+  range,
+  timeUnit,
+  type,
+}) {
   const [windowWidth, windowHeight] = useResize();
   const wordLength = tokens.length;
 
@@ -20,7 +26,11 @@ export default function usePosCalc({ tokens, isAnimating, range, timeUnit, type 
   const generatePositions = useCallback(() => {
     return tokens.map(() => ({
       x: getRandom(range.x[0], range.x[1]) * windowWidth,
-      y: (type === "input" ? getRandom(range.y[0], (range.y[1] - range.y[0]) / 2) : getRandom((range.y[1] - range.y[0]) / 2, range.y[1])) * windowHeight,
+      y:
+        (type === "input"
+          ? getRandom(range.y[0], (range.y[1] - range.y[0]) / 2)
+          : getRandom((range.y[1] - range.y[0]) / 2, range.y[1])) *
+        windowHeight,
     }));
   }, [tokens, range, windowWidth, windowHeight]);
 

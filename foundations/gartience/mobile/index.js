@@ -2,8 +2,8 @@ import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
-import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
-import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
+import useAudio from "./utils/useAudio";
+import useConversation from "./utils/useConversation";
 
 import {
   INPUT_EMBEDDINGS,

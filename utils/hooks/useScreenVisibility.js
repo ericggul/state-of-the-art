@@ -33,7 +33,7 @@ export default function useScreenVisibility() {
         () => {
           setStage(null);
         },
-        isProjector ? 3000 : 3000
+        isProjector ? 3000 : 300
       );
     }
 
