@@ -30,9 +30,10 @@ export default function SingleRandom({
   });
 
   const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
-  const [xRange, setXRange] = useState(0);
-  const [yRange, setYRange] = useState(0);
+  const [xRange, setXRange] = useState(1.5);
+  const [yRange, setYRange] = useState(18);
   const [isAnimating, setIsAnimating] = useState(false);
+  console.log("is animating", isAnimating);
 
   useEffect(() => {
     setXRange((r) => 1.5 - r);

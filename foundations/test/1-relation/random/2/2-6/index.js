@@ -13,8 +13,8 @@ export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
     () => {
       setIsblack((prev) => !prev);
     },
-    2000,
-    7000
+    1500,
+    5000
   );
 
   useAudio({ isblack });
