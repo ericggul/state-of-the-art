@@ -11,6 +11,7 @@ import { useModelStructure } from "@/components/frontend/utils";
 import TransitionPostProcessing from "./utils/TransitionPostProcessing";
 import PostProcessing from "./utils/PostProcessing";
 import ModelContainer from "./components/ModelContainer";
+import PositionalAudio from "./utils/PositionalAudio";
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 
@@ -68,6 +69,7 @@ export default function Visualisation({ isTesting = false }) {
         {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
         {!isProjector && <PostProcessing />}
         <TransitionPostProcessing />
+        {/* <PositionalAudio distance={200} /> */}
       </Suspense>
     </Canvas>
   );
