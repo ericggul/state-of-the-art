@@ -5,7 +5,7 @@ const openai = new OpenAI({
 });
 
 export async function POST(req) {
-  const { text, params } = await req.json();
+  const { text, params, maxTokens = 22 } = await req.json();
 
   try {
     const completion = await openai.chat.completions.create({
@@ -15,14 +15,14 @@ export async function POST(req) {
           role: "system",
           content:
             // "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 30. Mention the name 'Jeanyoon' explicitly occassionally.",
-            "Generate next sentence of this texts arguing AI is way better than humans. Write in poem-like style. Give me the full sentence, it should be a complete sentence within the max token 30. ",
+            `Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}.`,
         },
         {
           role: "user",
           content: text,
         },
       ],
-      max_tokens: 30,
+      max_tokens: maxTokens + 5,
       logprobs: true,
       top_logprobs: 20,
       ...params,

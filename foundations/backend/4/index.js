@@ -168,7 +168,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     const paths = [];
 
     paths.push(...bezierPaths);
-    paths.push(...bezierPaths2);
+    // paths.push(...bezierPaths2);
     if (!isAnimating) {
       paths.push(...inputRadialPaths, ...outputRadialPaths);
     }

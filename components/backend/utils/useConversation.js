@@ -80,9 +80,11 @@ export default function useConversation() {
       // const endpoint =
       //   level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
       const endpoint = "/api/openai/gpt-4o-mini";
+      const maxTokens = level >= 5 ? 27 : 22;
       const response = await axios.post(endpoint, {
         text,
         params: { temperature: temperature },
+        maxTokens,
       });
 
       if (
