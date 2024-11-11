@@ -153,7 +153,7 @@ function SingleRandom({ range, visible, timeUnit }) {
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
-      <div style={{ opacity: 1 || tokensOpacity }}>
+      <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer
           inputTokens={inputTokens}
           outputTokens={outputTokens}
