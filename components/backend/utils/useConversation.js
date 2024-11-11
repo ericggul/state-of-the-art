@@ -5,16 +5,12 @@ import useScreenStore from "@/components/screen/store";
 
 //time configs
 //Should change accordingly to the testing status
-// export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-// export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 3000];
+export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
+export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 1500];
 
 //ONLY FOR TESTING
-export const EXTRA_BLACK_TIME = [0, 0, 0, 0, 0, 0, 0];
-export const WHITE_TIME = [2000, 2000, 2000, 2000, 2000, 2000, 3000];
-
-//TEMPORARY TIME CONFIG FOR TESTING
-// export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 5000];
-// export const WHITE_TIME = [3000, 4000, 3000, 1500, 2000, 1000, 5000];
+// export const EXTRA_BLACK_TIME = [0, 0, 0, 0, 0, 0, 0];
+// export const WHITE_TIME = [2000, 2000, 2000, 2000, 2000, 2000, 3000];
 
 // const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
 

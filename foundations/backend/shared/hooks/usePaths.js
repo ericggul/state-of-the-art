@@ -18,7 +18,7 @@ const BasePath = memo(({ d, stroke, strokeWidth, opacity = 1, key }) => (
 ));
 
 const calculateResponsiveStrokeWidth = (baseWidth, windowWidth) =>
-  (baseWidth * windowWidth) / 1920;
+  (baseWidth * windowWidth) / 1400;
 
 const useStrokeColor = (isblack) =>
   useMemo(() => (isblack ? "white" : "black"), [isblack]);
