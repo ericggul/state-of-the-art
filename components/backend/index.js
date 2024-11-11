@@ -50,11 +50,7 @@ const Backend = memo(function Backend() {
     }
   }, [level]);
 
-  return (
-    <S.Container style={{ background: isblack ? "black" : "white" }}>
-      {CurrentBackend}
-    </S.Container>
-  );
+  return <S.Container $isblack={isblack}>{CurrentBackend}</S.Container>;
 });
 
 Backend.displayName = "Backend";

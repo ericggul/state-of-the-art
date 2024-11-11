@@ -1,5 +1,5 @@
 import { FlexCenterStyle, WholeContainer } from "@/styles";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -10,10 +10,9 @@ export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
 
-
   font-size: 1vw;
   color: #fff;
-
-  //no cursor
   cursor: none;
+
+  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
 `;

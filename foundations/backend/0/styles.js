@@ -1,5 +1,13 @@
 import { FlexCenterStyle, WholeContainer } from "@/styles";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
+
+const flicker = keyframes`
+  0% { background: black; }
+  49% { background: black; }
+  50% { background: white; }
+  99% { background: white; }
+  100% { background: black; }
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -14,13 +22,13 @@ export const Container = styled.div`
   font-size: 1vw;
   color: #fff;
 
-  background: ${({ isblack }) => (isblack ? "black" : "white")};
   svg {
-    stroke: ${({ isblack }) => (isblack ? "white" : "black")};
+    stroke: ${({ $isblack }) => ($isblack ? "white" : "black")};
   }
   div {
-    color: ${({ isblack }) => (isblack ? "white" : "black")};
+    color: ${({ $isblack }) => ($isblack ? "white" : "black")};
   }
+  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
 `;
 
 export const MidRow = styled.div`

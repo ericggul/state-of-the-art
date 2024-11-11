@@ -12,80 +12,6 @@ const calculateResponsiveStrokeWidth = (
   return (baseWidth * windowWidth) / 1920;
 };
 
-const createBasePath = (props) => {
-  const { d, stroke, strokeWidth, opacity = 1, key } = props;
-  return (
-    <path
-      key={key}
-      d={d}
-      stroke={stroke}
-      fill="none"
-      strokeWidth={calculateResponsiveStrokeWidth(strokeWidth)}
-      opacity={opacity}
-    />
-  );
-};
-
-const useStrokeColor = (isblack) =>
-  useMemo(() => (isblack ? "white" : "black"), [isblack]);
-
-const useValidPaths = (options) => {
-  const {
-    tokens,
-    similarityMatrix,
-    similarityThreshold = 0.05,
-    targetWordIdx = null,
-    inputTokens = null,
-    outputTokens = null,
-    crossSimilarityMatrix = null,
-  } = options;
-
-  return useMemo(() => {
-    const paths = [];
-
-    if (inputTokens && outputTokens) {
-      // Bezier paths logic
-      inputTokens.forEach((_, i) => {
-        outputTokens.forEach((_, j) => {
-          const similarity = crossSimilarityMatrix[i][j];
-          if (similarity > similarityThreshold) {
-            paths.push({ i, j, similarity });
-          }
-        });
-      });
-    } else if (targetWordIdx !== null) {
-      // Token paths logic
-      tokens.forEach((_, i) => {
-        if (i === targetWordIdx) return;
-        const similarity = similarityMatrix[i][targetWordIdx];
-        if (similarity > similarityThreshold) {
-          paths.push({ i, targetWordIdx, similarity });
-        }
-      });
-    } else {
-      // Regular paths logic
-      tokens.forEach((_, i) => {
-        for (let j = i + 1; j < tokens.length; j++) {
-          const similarity = similarityMatrix[i][j];
-          if (similarity > similarityThreshold) {
-            paths.push({ i, j, similarity });
-          }
-        }
-      });
-    }
-
-    return paths;
-  }, [
-    tokens,
-    similarityMatrix,
-    similarityThreshold,
-    targetWordIdx,
-    inputTokens,
-    outputTokens,
-    crossSimilarityMatrix,
-  ]);
-};
-
 export function usePathsV1({
   tokens,
   similarityMatrix,
@@ -260,7 +186,7 @@ export function usePathsV2({
   isAnimating,
   subLevel,
 }) {
-  const strokeColor = useStrokeColor(isblack);
+  const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
   const opacityMultiply = useMemo(
     () => [1, 0.7, 0.7][subLevel] || 1,
     [subLevel]
@@ -388,14 +314,23 @@ export function usePathsBezier({
   strokeWidthMultiplier,
   isPlural,
 }) {
-  const strokeColor = useStrokeColor(isblack);
+  const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
 
-  const validPaths = useValidPaths({
-    inputTokens,
-    outputTokens,
-    crossSimilarityMatrix,
-    similarityThreshold,
-  });
+  // Memoize similarity calculations
+  const validPaths = useMemo(() => {
+    const paths = [];
+    inputTokens.forEach((_, i) => {
+      outputTokens.forEach((_, j) => {
+        const similarity = crossSimilarityMatrix[i][j];
+        if (similarity > similarityThreshold) {
+          paths.push({ i, j, similarity });
+        }
+      });
+    });
+    return paths;
+  }, [inputTokens, outputTokens, crossSimilarityMatrix, similarityThreshold]);
+
+  const [windowWidth, _] = useResize();
 
   return useMemo(() => {
     return validPaths.map(({ i, j, similarity }) => {
@@ -408,15 +343,18 @@ export function usePathsBezier({
 
       const baseWidth = Math.pow(similarity, 3) * strokeWidthMultiplier;
 
-      return createBasePath({
-        d: createBezierPath(x1, y1, x2, y2, bezierParam, {
-          inputMargin: inputPosCalc.yMargin,
-          outputMargin: outputPosCalc.yMargin,
-        }),
-        stroke: strokeColor,
-        strokeWidth: baseWidth,
-        key: `arc-${i}-${j}`,
-      });
+      return (
+        <path
+          key={`arc-${i}-${j}`}
+          d={createBezierPath(x1, y1, x2, y2, bezierParam, {
+            inputMargin: inputPosCalc.yMargin,
+            outputMargin: outputPosCalc.yMargin,
+          })}
+          stroke={strokeColor}
+          fill="none"
+          strokeWidth={calculateResponsiveStrokeWidth(baseWidth)}
+        />
+      );
     });
   }, [
     validPaths,
@@ -442,14 +380,24 @@ export function usePathsRadial({
   type,
   show,
 }) {
-  const strokeColor = useStrokeColor(isblack);
+  const strokeColor = useMemo(() => (isblack ? "white" : "black"), [isblack]);
   const direction = type === "input" ? 0 : 1;
 
-  const validPaths = useValidPaths({
-    tokens,
-    similarityMatrix,
-    similarityThreshold,
-  });
+  // Pre-calculate valid paths
+  const validPaths = useMemo(() => {
+    if (!show) return [];
+
+    const paths = [];
+    tokens.forEach((_, i) => {
+      for (let j = i + 1; j < tokens.length; j++) {
+        const similarity = similarityMatrix[i][j];
+        if (similarity > similarityThreshold) {
+          paths.push({ i, j, similarity });
+        }
+      }
+    });
+    return paths;
+  }, [tokens, similarityMatrix, similarityThreshold, show]);
 
   return useMemo(() => {
     return validPaths.map(({ i, j, similarity }) => {
@@ -458,16 +406,19 @@ export function usePathsRadial({
 
       const baseWidth = Math.pow(similarity, 3) * strokeWidthMultiplier;
 
-      return createBasePath({
-        d: createRadialPath(x1, y1, x2, y2, {
-          margin: yMargin,
-          radialIdx: 1,
-          dir: direction,
-        }),
-        stroke: strokeColor,
-        strokeWidth: baseWidth,
-        key: `${type}-radial-${i}-${j}`,
-      });
+      return (
+        <path
+          key={`${type}-radial-${i}-${j}`}
+          d={createRadialPath(x1, y1, x2, y2, {
+            margin: yMargin,
+            radialIdx: 1,
+            dir: direction,
+          })}
+          stroke={strokeColor}
+          fill="none"
+          strokeWidth={calculateResponsiveStrokeWidth(baseWidth)}
+        />
+      );
     });
   }, [
     validPaths,

@@ -34,7 +34,7 @@ function LevelZero({ visible }) {
 
   return (
     <S.Container
-      isblack={isblack ? "true" : undefined}
+      $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
       {tokens.map((token, i) => (

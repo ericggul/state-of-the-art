@@ -32,7 +32,7 @@ function SingleRandom({ range, visible, timeUnit }) {
 
   return (
     <S.Container
-      isblack={isblack ? "true" : undefined}
+      $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
     >
       <div

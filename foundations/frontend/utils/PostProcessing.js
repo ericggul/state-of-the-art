@@ -26,19 +26,6 @@ const PostProcessing = memo(function PostProcessing() {
         bias={0.5}
       />
 
-      {/* <EdgeDetection
-        blendFunction={BlendFunction.OVERLAY}
-        edgeStrength={0.8}
-        pulseSpeed={0.0}
-        visibleEdgeColor={0xffffff}
-        hiddenEdgeColor={0x22090a}
-        width={Resolution.HALF}
-        height={Resolution.HALF}
-        kernelSize={KernelSize.SMALL}
-        blur={false}
-        xRay={true}
-      /> */}
-
       <BrightnessContrast
         brightness={0.03}
         contrast={0.15}
