@@ -138,7 +138,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     isblack,
     createBezierPath: createBezierPathV4,
     similarityThreshold: 0.2,
-    strokeWidthMultiplier: 4.5,
+    strokeWidthMultiplier: 4,
     isPlural,
   });
 
@@ -148,13 +148,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     crossSimilarityMatrix,
     inputPosCalc,
     outputPosCalc,
-    bezierParams: bezierParams2,
-    isblack,
-    createBezierPath: createBezierPathV4,
-    similarityThreshold: 0.4,
-    strokeWidthMultiplier: 3,
-    isPlural,
-    id: 2,
+    bezierParams2,
   });
 
   const tokensOpacity = useMemo(
@@ -168,19 +162,11 @@ function SingleRandom({ range, visible, timeUnit }) {
     const paths = [];
 
     paths.push(...bezierPaths);
-    paths.push(...bezierPaths2);
     if (!isAnimating) {
       paths.push(...inputRadialPaths, ...outputRadialPaths);
     }
     return paths;
-  }, [
-    visible,
-    isAnimating,
-    bezierPaths,
-    bezierPaths2,
-    inputRadialPaths,
-    outputRadialPaths,
-  ]);
+  }, [visible, isAnimating, bezierPaths, inputRadialPaths, outputRadialPaths]);
 
   return (
     <S.Container
