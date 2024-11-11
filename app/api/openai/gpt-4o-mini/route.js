@@ -14,7 +14,8 @@ export async function POST(req) {
         {
           role: "system",
           content:
-            "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 30. Mention the name 'Jeanyoon' explicitly occassionally.",
+            // "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 30. Mention the name 'Jeanyoon' explicitly occassionally.",
+            "Generate next sentence of this texts arguing AI is way better than humans. Write in poem-like style. Give me the full sentence, it should be a complete sentence within the max token 20. ",
         },
         {
           role: "user",

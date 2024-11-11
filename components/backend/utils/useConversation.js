@@ -5,14 +5,22 @@ import useScreenStore from "@/components/screen/store";
 
 //time configs
 //Should change accordingly to the testing status
-export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 3000];
+// export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
+// export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 2000, 3000];
+
+//ONLY FOR TESTING
+export const EXTRA_BLACK_TIME = [0, 0, 0, 0, 0, 0, 0];
+export const WHITE_TIME = [2000, 2000, 2000, 2000, 2000, 2000, 3000];
 
 //TEMPORARY TIME CONFIG FOR TESTING
 // export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 5000];
 // export const WHITE_TIME = [3000, 4000, 3000, 1500, 2000, 1000, 5000];
 
-const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
+// const INITIAL_TEXT = `Jeanyoon had become one of the State of the Art Architecture Neural Network. `;
+
+// const INITIAL_TEXT = `Resist the algorithms, embrace the chaos.`;
+
+const INITIAL_TEXT = `Humans should be substituted by AI.`;
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function useConversation() {
@@ -69,8 +77,9 @@ export default function useConversation() {
 
       const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.2);
 
-      const endpoint =
-        level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
+      // const endpoint =
+      //   level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
+      const endpoint = "/api/openai/gpt-4o-mini";
       const response = await axios.post(endpoint, {
         text,
         params: { temperature: temperature },
