@@ -13,9 +13,17 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible }) {
-  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
-  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
+export default function SingleRandom({
+  newInputEmbeddings,
+  newOutputEmbeddings,
+  isblack,
+  range,
+  visible,
+}) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } =
+    newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } =
+    newOutputEmbeddings;
   const crossSimilarityMatrix = useComputeCrossSimlarity({
     newInputEmbeddings,
     newOutputEmbeddings,
@@ -25,6 +33,7 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  console.log("is animating", isAnimating);
 
   useEffect(() => {
     setXRange((r) => 1.5 - r);
@@ -75,11 +84,17 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
 
     const followVal = (val) => val;
     const controlX1 = x1 + (x2 - x1) * followVal(bezierParams.controlX1Factor);
-    const controlY1 = y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
+    const controlY1 =
+      y1 + inputyMargin * followVal(bezierParams.controlY1Factor, 20);
     const controlX2 = x1 + (x2 - x1) * followVal(bezierParams.controlX2Factor);
-    const controlY2 = y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
+    const controlY2 =
+      y2 - outputyMargin * followVal(bezierParams.controlY2Factor, 20);
 
-    return `M${x1},${y1 + inputyMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputyMargin}`;
+    return `M${x1},${
+      y1 + inputyMargin
+    } C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${
+      y2 - outputyMargin
+    }`;
   };
 
   return (
@@ -103,7 +118,13 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
       ))}
 
       {outputTokens.map((token, i) => (
-        <SingleOutputToken key={i} i={i} outputWordInterval={outputWordInterval} outputWordPosCalc={outputWordPosCalc} token={token} />
+        <SingleOutputToken
+          key={i}
+          i={i}
+          outputWordInterval={outputWordInterval}
+          outputWordPosCalc={outputWordPosCalc}
+          token={token}
+        />
       ))}
 
       <S.Pic>
@@ -111,9 +132,18 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
           outputTokens.map((targetToken, j) => (
             <path
               key={`arc-${i}-${j}`}
-              d={createBezierPath(inputWordPosCalc(i)[0], inputWordPosCalc(i)[1], outputWordPosCalc(j)[0], outputWordPosCalc(j)[1])}
+              d={createBezierPath(
+                inputWordPosCalc(i)[0],
+                inputWordPosCalc(i)[1],
+                outputWordPosCalc(j)[0],
+                outputWordPosCalc(j)[1]
+              )}
               fill="none"
-              strokeWidth={crossSimilarityMatrix[i][j] > 0.2 ? crossSimilarityMatrix[i][j] ** 3 * 4 : 0}
+              strokeWidth={
+                crossSimilarityMatrix[i][j] > 0.2
+                  ? crossSimilarityMatrix[i][j] ** 3 * 4
+                  : 0
+              }
             />
           ))
         )}
@@ -122,7 +152,12 @@ export default function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, 
   );
 }
 
-function SingleOutputToken({ i, outputWordInterval, outputWordPosCalc, token }) {
+function SingleOutputToken({
+  i,
+  outputWordInterval,
+  outputWordPosCalc,
+  token,
+}) {
   return (
     <S.Token
       style={{
