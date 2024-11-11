@@ -7,8 +7,7 @@ import useAudio from "./useAudio";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 export default function Wrapper({ newInputEmbeddings, newOutputEmbeddings }) {
-  const [isblack, setIsblack] = useState(false);
-  console.log("is black", isblack);
+  const [isblack, setIsblack] = useState(true);
 
   useRandomInterval(
     () => {

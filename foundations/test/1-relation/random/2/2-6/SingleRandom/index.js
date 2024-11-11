@@ -33,12 +33,11 @@ export default function SingleRandom({
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  console.log("is animating", isAnimating);
 
   useEffect(() => {
     setXRange((r) => 1.5 - r);
     setYRange((r) => 18 - r);
-    setIsAnimating((animating) => !animating); // Toggle animation when isblack changes
+    setIsAnimating(isblack); // Toggle animation when isblack changes
   }, [isblack]);
 
   useRandomInterval(
