@@ -21,7 +21,7 @@ export function useAnimationState({ isblack, visible, subLevel, level }) {
     isAnimating: false,
   }));
 
-  const baseConfig = useMemo(
+  const config = useMemo(
     () =>
       isblack || subLevel === 2
         ? level >= 5
@@ -32,33 +32,13 @@ export function useAnimationState({ isblack, visible, subLevel, level }) {
   );
 
   useEffect(() => {
-    // Initial config setup
+    console.log("config changed", config);
     setState({
-      xRange: baseConfig.xRange,
-      yRange: baseConfig.yRange,
+      xRange: config.xRange,
+      yRange: config.yRange,
       isAnimating: isblack && visible,
     });
-
-    // Set up interval for config updates when isblack is true
-    let intervalId;
-    if (isblack) {
-      intervalId = setInterval(() => {
-        const newConfig = level >= 5 ? randomiseLevelConfig() : baseConfig;
-
-        setState((prev) => ({
-          ...prev,
-          xRange: newConfig.xRange,
-          yRange: newConfig.yRange,
-        }));
-      }, 100);
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [baseConfig, isblack, visible, level]);
+  }, [config, isblack, visible]);
 
   return state;
 }

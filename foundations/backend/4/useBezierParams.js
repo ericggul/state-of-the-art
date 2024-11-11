@@ -47,7 +47,8 @@ export default function useBezierParams(
     }
   }, [isPlural, shouldUpdate, updateParams]);
 
-  useRandomInterval(updateParams, 2 * timeUnit, 30 * timeUnit, visible);
+  useRandomInterval(updateParams, 8 * timeUnit, 30 * timeUnit, visible);
+  // useRandomInterval(updateParams, 2 * timeUnit, 30 * timeUnit, visible);
 
   return isPlural ? params.multi : params.single;
 }

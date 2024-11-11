@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useBasePosCalc } from "../shared/hooks/useBasePosCalc";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
@@ -10,33 +9,29 @@ const getRangeConfig = {
   2: { x: [0.3, 0.7], y: [0, 1] },
 };
 
-const randomise1 = () => {
-  const startOff = getRandom(-0, 0);
+const randomiseRangeConfig = () => {
+  const startOff = getRandom(-0.1, 0);
+
   const xRandom = getRandom(startOff, 0.45);
+  // const yRandom = getRandom(0, 1);
   let yRandom;
   if (Math.random() < 0.5) {
     yRandom = 0.5 + startOff - xRandom;
   } else {
     yRandom = getRandom(0, 1);
   }
+
   return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
 };
 
-const randomise2 = () => {
-  const xRandom = getRandom(0, 1);
-  const yRandom = getRandom(0, 0.4);
-  return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
-};
+// const randomiseRangeConfig = () => {
+//   const x1Random = getRandom(0, 0.3);
+//   const x2Random = getRandom(0.7, 1);
+//   const y1Random = getRandom(0, 0.3);
+//   const y2Random = getRandom(0.7, 1);
 
-const randomise3 = () => {
-  const xRandom = getRandom(0.3, 0.6);
-  const yRandom = getRandom(0.3, 0.45);
-  return { x: [xRandom, 1 - xRandom], y: [yRandom, 1 - yRandom] };
-};
-
-const randomiseRangeConfig = () => {
-  return Math.random() < 0.5 ? randomise2() : randomise3();
-};
+//   return { x: [x1Random, x2Random], y: [y1Random, y2Random] };
+// };
 
 export default function usePosCalc({
   tokens,
@@ -53,61 +48,54 @@ export default function usePosCalc({
     yMargin,
     generateStaticPositions,
   } = useBasePosCalc({ tokens, type });
-
   const [tokenPositions, setTokenPositions] = useState([]);
-  const [currentRange, setCurrentRange] = useState(() =>
-    level >= 5
-      ? randomiseRangeConfig()
-      : getRangeConfig[subLevel] ?? randomiseRangeConfig()
-  );
 
-  useRandomInterval(
-    () => {
-      setCurrentRange(
-        level >= 5
-          ? randomiseRangeConfig()
-          : getRangeConfig[subLevel] ?? randomiseRangeConfig()
-      );
-    },
-    10 * timeUnit,
-    100 * timeUnit,
-    isAnimating
+  // const range = useMemo(
+  //   () => getRangeConfig[subLevel] ?? randomiseRangeConfig(),
+  //   [subLevel]
+  // );
+  const range = useMemo(
+    () =>
+      level >= 5
+        ? randomiseRangeConfig()
+        : getRangeConfig[subLevel] ?? randomiseRangeConfig(),
+    [subLevel, level >= 5]
   );
 
   useEffect(() => {
-    console.log("range changed", currentRange.x, currentRange.y);
-  }, [currentRange]);
+    console.log("range changed", range.x, range.y);
+  }, [range]);
 
   const generateRandomPositions = useCallback(() => {
     const basePosition = () => ({
-      x: getRandom(currentRange.x[0], currentRange.x[1]) * windowWidth,
+      x: getRandom(range.x[0], range.x[1]) * windowWidth,
     });
 
     if (subLevel === 1) {
-      const thirdPoint = (currentRange.y[1] - currentRange.y[0]) / 2;
+      const midPoint = (range.y[1] - range.y[0]) / 2;
+      const thirdPoint = (range.y[1] - range.y[0]) / 2;
       return tokens.map(() => ({
         ...basePosition(),
         y:
           (type === "input"
-            ? getRandom(currentRange.y[0], currentRange.y[0] + thirdPoint)
-            : getRandom(currentRange.y[1] - thirdPoint, currentRange.y[1])) *
-          windowHeight,
+            ? getRandom(range.y[0], range.y[0] + thirdPoint)
+            : getRandom(range.y[1] - thirdPoint, range.y[1])) * windowHeight,
       }));
     }
 
     return tokens.map(() => ({
       ...basePosition(),
-      y: getRandom(currentRange.y[0], currentRange.y[1]) * windowHeight,
+      y: getRandom(range.y[0], range.y[1]) * windowHeight,
     }));
-  }, [tokens, currentRange, windowWidth, windowHeight, subLevel, type]);
+  }, [tokens, range, windowWidth, windowHeight, subLevel, type]);
 
   useEffect(() => {
     if (isAnimating) {
       setTokenPositions(generateRandomPositions());
-      const positionIntervalId = setInterval(() => {
+      const intervalId = setInterval(() => {
         setTokenPositions(generateRandomPositions());
       }, getRandom(50, 150) * timeUnit);
-      return () => clearInterval(positionIntervalId);
+      return () => clearInterval(intervalId);
     } else {
       if (level === 4 || subLevel === 0) {
         setTokenPositions(generateStaticPositions());
@@ -119,7 +107,6 @@ export default function usePosCalc({
     isAnimating,
     timeUnit,
     subLevel,
-    level,
   ]);
 
   const wordPosCalc = useCallback(

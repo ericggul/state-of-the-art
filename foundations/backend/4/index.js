@@ -98,8 +98,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 2,
     type: "input",
-    // show: !isAnimating,
-    show: true,
+    show: !isAnimating,
   });
 
   // Create radial paths for output tokens
@@ -113,8 +112,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     similarityThreshold: 0.2,
     strokeWidthMultiplier: 2,
     type: "output",
-    // show: !isAnimating,
-    show: true,
+    show: !isAnimating,
   });
 
   /////BEZIER PATHS

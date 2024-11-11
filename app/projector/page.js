@@ -58,13 +58,13 @@ export default function ScreenWrapper() {
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
 
-      {/* {stage === "Backend" && <Backend />} */}
-      {stage === "Backend" && (
+      {stage === "Backend" && <Backend />}
+      {/* {stage === "Backend" && (
         <TempBackend
           newInputEmbeddings={INPUT_EMBEDDINGS}
           newOutputEmbeddings={OUTPUT_EMBEDDINGS}
         />
-      )}
+      )} */}
       {isTransition && <Transition />}
     </Suspense>
   );

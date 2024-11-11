@@ -18,7 +18,7 @@ const BasePath = memo(({ d, stroke, strokeWidth, opacity = 1, key }) => (
 ));
 
 const calculateResponsiveStrokeWidth = (baseWidth, windowWidth) =>
-  (baseWidth * windowWidth) / 1400;
+  (baseWidth * windowWidth) / 2000;
 
 const useStrokeColor = (isblack) =>
   useMemo(() => (isblack ? "white" : "black"), [isblack]);
@@ -402,7 +402,7 @@ export function usePathsBezier({
         ? (bezierParams && bezierParams[`${i}-${j}`]) || BEZIER_DEFAULT
         : bezierParams;
 
-      const baseWidth = Math.pow(similarity, 3) * strokeWidthMultiplier;
+      const baseWidth = Math.pow(similarity, 3.5) * strokeWidthMultiplier;
 
       return (
         <BasePath
