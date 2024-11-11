@@ -10,7 +10,7 @@ import {
   EdgeDetection,
   SSAO,
 } from "@react-three/postprocessing";
-import { BlendFunction, EdgeDetectionMode } from "postprocessing";
+import { BlendFunction, KernelSize, Resolution } from "postprocessing";
 
 const PostProcessing = memo(function PostProcessing() {
   return (
@@ -26,18 +26,18 @@ const PostProcessing = memo(function PostProcessing() {
         bias={0.5}
       />
 
-      <EdgeDetection
+      {/* <EdgeDetection
         blendFunction={BlendFunction.OVERLAY}
         edgeStrength={0.8}
         pulseSpeed={0.0}
         visibleEdgeColor={0xffffff}
         hiddenEdgeColor={0x22090a}
-        width={Resolutions.HALF}
-        height={Resolutions.HALF}
+        width={Resolution.HALF}
+        height={Resolution.HALF}
         kernelSize={KernelSize.SMALL}
         blur={false}
         xRay={true}
-      />
+      /> */}
 
       <BrightnessContrast
         brightness={0.03}
