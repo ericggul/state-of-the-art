@@ -55,12 +55,11 @@ const Backend = memo(function Backend() {
 
   const isProjector = useScreenStore((state) => state.isProjector);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
-  console.log(deviceIndex);
 
   return (
     <S.Container $isblack={isblack}>
       {CurrentBackend}
-      {level >= 6 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
+      {level >= 4 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
     </S.Container>
   );
 });
