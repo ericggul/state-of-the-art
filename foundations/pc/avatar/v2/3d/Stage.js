@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { useMemo } from "react";
 
 export function Stage({ controls }) {
   console.log("Stage controls:", controls);

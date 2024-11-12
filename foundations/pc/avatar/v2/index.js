@@ -27,15 +27,7 @@ export default function Wrapper() {
 
             <ambientLight intensity={0.5} />
 
-            <Model
-              position={modelControls.position}
-              scale={[
-                modelControls.scale,
-                modelControls.scale,
-                modelControls.scale,
-              ]}
-              rotation={modelControls.rotation}
-            />
+            <Model {...modelControls} />
 
             <OrbitControls
               minPolarAngle={Math.PI / 4}
