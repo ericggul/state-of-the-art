@@ -69,6 +69,18 @@ function SingleRandom({ range, visible, timeUnit }) {
     ...posCalcProps,
   });
 
+  const inputPosCalc2 = usePosCalc({
+    tokens: inputTokens,
+    type: "input",
+    ...posCalcProps,
+  });
+
+  const outputPosCalc2 = usePosCalc({
+    tokens: outputTokens,
+    type: "output",
+    ...posCalcProps,
+  });
+
   const bezierParams = useBezierParams(
     inputTokens,
     outputTokens,
@@ -154,7 +166,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     isblack,
     createBezierPath: createBezierPathV4,
     similarityThreshold: 0.4,
-    strokeWidthMultiplier: 3,
+    strokeWidthMultiplier: 2.5,
     isPlural,
     id: 2,
   });
