@@ -27,10 +27,6 @@ const Sublayer = memo(function Sublayer({
     from: { scale: 0 },
     to: { scale: 1 },
     config: {
-      //oroginal smoother
-      // mass: 2,
-      // tension: 180,
-      // friction: 40,
       mass: 4,
       tension: 120,
       friction: 30,
