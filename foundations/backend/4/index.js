@@ -3,6 +3,7 @@ import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
@@ -22,6 +23,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     subLevel,
     level,
   } = useStore();
+  const isProjector = useScreenStore((state) => state.isProjector);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -168,7 +170,9 @@ function SingleRandom({ range, visible, timeUnit }) {
     const paths = [];
 
     paths.push(...bezierPaths);
-    // paths.push(...bezierPaths2);
+    if (isProjector) {
+      paths.push(...bezierPaths2);
+    }
     if (!isAnimating) {
       paths.push(...inputRadialPaths, ...outputRadialPaths);
     }
