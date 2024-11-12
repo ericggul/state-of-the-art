@@ -3,6 +3,7 @@ import { memo, useEffect, useMemo } from "react";
 import useAudio from "@/components/backend/utils/useAudio";
 import useConversation from "@/components/backend/utils/useConversation";
 import useStore from "./store";
+import useScreenStore from "@/components/screen/store";
 
 import Backend0 from "@/foundations/backend/0";
 import Backend1 from "@/foundations/backend/1";
@@ -46,11 +47,22 @@ const Backend = memo(function Backend() {
       case 3:
         return <Backend3 range={defaultRange} {...defaultProps} />;
       default:
-        return <Backend4 range={backend4Range} {...defaultProps} />;
+        return (
+          <Backend4 range={backend4Range} {...defaultProps} timeUnit={0.1} />
+        );
     }
   }, [level]);
 
-  return <S.Container $isblack={isblack}>{CurrentBackend}</S.Container>;
+  const isProjector = useScreenStore((state) => state.isProjector);
+  const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  console.log(deviceIndex);
+
+  return (
+    <S.Container $isblack={isblack}>
+      {CurrentBackend}
+      {level >= 6 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
+    </S.Container>
+  );
 });
 
 Backend.displayName = "Backend";
