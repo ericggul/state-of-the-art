@@ -3,10 +3,10 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF, useAnimations, Center } from "@react-three/drei";
 import { MathUtils, MeshStandardMaterial } from "three";
 
-import useBlink from "./utils/useBlink";
-import useViseme from "./utils/useViseme";
+import useBlink from "../utils/useBlink";
+import useViseme from "../utils/useViseme";
 
-import { VISME_TO_MORPHTARGET_MAP } from "./utils/constant";
+import { VISME_TO_MORPHTARGET_MAP } from "../utils/constant";
 
 const AVATAR_URL = "/3d/avatars/avatar-1.glb";
 const ANIMATIONS_URL = "/3d/avatars/animations-2.glb";

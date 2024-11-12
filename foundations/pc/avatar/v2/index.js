@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 
-import * as S from "./styles";
+import * as S from "../styles";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import Model from "../model";
+import Model from "../model2";
 import { AvatarOrientationCamera } from "../utils/AvatarOrientationCamera-raw";
 
 export default function AvatarWrapper() {
@@ -17,9 +17,7 @@ export default function AvatarWrapper() {
           shadows
         >
           {/* Reduced ambient light further */}
-          <ambientLight intensity={3} />
-
-          {/* Softer Stage Lights */}
+          <ambientLight intensity={1} />
           <spotLight
             position={[-4, 4, -4]}
             angle={0.3}

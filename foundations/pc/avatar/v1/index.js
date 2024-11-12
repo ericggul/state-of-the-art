@@ -4,8 +4,8 @@ import * as S from "./styles";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
-import Model from "../model2";
-import { AvatarOrientationCamera } from "../utils/AvatarOrientationCamera-raw";
+import Model from "./model";
+import { AvatarOrientationCamera } from "./utils/AvatarOrientationCamera-raw";
 
 export default function AvatarWrapper() {
   return (
@@ -17,7 +17,9 @@ export default function AvatarWrapper() {
           shadows
         >
           {/* Reduced ambient light further */}
-          <ambientLight intensity={1} />
+          <ambientLight intensity={3} />
+
+          {/* Softer Stage Lights */}
           <spotLight
             position={[-4, 4, -4]}
             angle={0.3}
