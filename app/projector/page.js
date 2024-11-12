@@ -1,30 +1,23 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
+// Keep all dynamic imports together
 const Idle = dynamic(() => import("@/components/screen/idle"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
-
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
-//?TEST
-
-const TempBackend = dynamic(() =>
-  import("@/foundations/test/1-relation/random/2/2-6")
-);
-import {
-  INPUT_EMBEDDINGS,
-  OUTPUT_EMBEDDINGS,
-  MULTI_LAYERS_EMBEDDINGS,
-} from "@/foundations/test/1-relation/utils/constant-conversation";
-
 export default function ScreenWrapper() {
+  const searchParams = useSearchParams();
+  const test = searchParams.get("test");
+
   const {
     handleNewControllerArchitectures,
     handleNewMobileArchitecture,
@@ -51,20 +44,23 @@ export default function ScreenWrapper() {
 
   useScreenVisibility();
 
+  // Simple render for test mode
+  if (test) {
+    return (
+      <Suspense>
+        <Frontend isTesting={true} />
+      </Suspense>
+    );
+  }
+
+  // Full integration render for non-test mode
   return (
     <Suspense>
       {stage === "Frontend" && <Frontend />}
       {(stage === "Idle" || stage === "Frontend") && (
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
-
       {stage === "Backend" && <Backend />}
-      {/* {stage === "Backend" && (
-        <TempBackend
-          newInputEmbeddings={INPUT_EMBEDDINGS}
-          newOutputEmbeddings={OUTPUT_EMBEDDINGS}
-        />
-      )} */}
       {isTransition && <Transition />}
     </Suspense>
   );

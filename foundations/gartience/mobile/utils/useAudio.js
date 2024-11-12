@@ -7,8 +7,6 @@ const audioFiles = [
   "/audio/test4.wav",
 ];
 
-const ROBOT = "/audio/robot/test.m4a";
-
 export default function useAudio({ isblack }) {
   const mainAudioRef = useRef(null);
   const robotAudioRef = useRef(null);

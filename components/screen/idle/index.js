@@ -25,8 +25,6 @@ const Idle = memo(function Idle({ $isFrontend, type }) {
     }
   }, [$isFrontend]);
 
-  console.log(unmount, $isFrontend);
-
   return (
     <S.Container $isFrontend={$isFrontend}>
       {!unmount && (
