@@ -14,8 +14,6 @@ const COMPONENTS = {
   1: dynamic(() => import("@/foundations/pc/dashboard")),
   2: dynamic(() => import("@/foundations/pc/text")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
-  4: dynamic(() => import("@/foundations/pc/text/index-old")),
-  5: dynamic(() => import("@/foundations/pc/caption")),
 };
 
 const Idle = dynamic(() => import("@/components/screen/idle"));
