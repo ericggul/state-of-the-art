@@ -11,8 +11,9 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 // Keep all dynamic imports together
 const COMPONENTS = {
   0: dynamic(() => import("@/foundations/pc/avatar/v1")),
-  10: dynamic(() => import("@/foundations/pc/avatar/v2")),
-  1: dynamic(() => import("@/foundations/pc/dashboard")),
+  "0-v2": dynamic(() => import("@/foundations/pc/avatar/v2")),
+  1: dynamic(() => import("@/foundations/pc/dashboard/v1")),
+  // "1-2": dynamic(() => import("@/foundations/pc/dashboard/v2")),
   2: dynamic(() => import("@/foundations/pc/text")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
 };
