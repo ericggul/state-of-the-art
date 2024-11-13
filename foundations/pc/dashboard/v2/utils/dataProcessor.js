@@ -1,5 +1,7 @@
 import { DEFAULT_MODEL } from "./constants";
 import { readCsv } from "./readCsv";
+import { getModelStructure } from "@/foundations/frontend/arch-models";
+import { formatArchitectureFromStructure } from "./architectureFormatter";
 
 const processArrayFields = (row, fields) => {
   return fields.reduce((acc, field) => {
@@ -10,8 +12,27 @@ const processArrayFields = (row, fields) => {
   }, []);
 };
 
-const convertCsvRowToModel = (row) => {
+const formatModelName = (name) => {
+  return name
+    .replace(/\(([^)]+)\)/g, "_$1")
+    .replace(/[- ]/g, "_")
+    .replace(/\./g, "")
+    .toUpperCase()
+    .trim()
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "")
+    .replace(/[^A-Z0-9_]/g, "");
+};
+
+const convertCsvRowToModel = (row, modelName) => {
   if (!row) return null;
+
+  // Get architecture data
+  const formattedName = formatModelName(modelName);
+  const modelStructure = getModelStructure(formattedName);
+  const architecture = modelStructure
+    ? formatArchitectureFromStructure(modelStructure)
+    : DEFAULT_MODEL.architecture;
 
   // Process arrays
   const relatedPapers = processArrayFields(row, [
@@ -55,19 +76,16 @@ const convertCsvRowToModel = (row) => {
       format: row.format || null,
     },
     image: row.model_image || null,
+    architecture,
   };
 };
 
 export async function getModelData(currentArchitecture) {
   try {
-    // Read and parse CSV
     const csvData = await readCsv("/db/1113.csv");
-
-    console.log(currentArchitecture, csvData);
 
     if (!currentArchitecture) return DEFAULT_MODEL;
 
-    // Find matching model in CSV
     const matchingRow = csvData.find(
       (row) =>
         row.version === currentArchitecture.version &&
@@ -75,14 +93,16 @@ export async function getModelData(currentArchitecture) {
     );
 
     if (matchingRow) {
-      const processedModel = convertCsvRowToModel(matchingRow);
+      const processedModel = convertCsvRowToModel(
+        matchingRow,
+        currentArchitecture.name
+      );
       return {
-        ...DEFAULT_MODEL, // Fallback for any missing fields
-        ...processedModel, // Override with actual data
+        ...DEFAULT_MODEL,
+        ...processedModel,
       };
     }
 
-    // Return default model if no match found
     return DEFAULT_MODEL;
   } catch (error) {
     console.error("Error processing model data:", error);
