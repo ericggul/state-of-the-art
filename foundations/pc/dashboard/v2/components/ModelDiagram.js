@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import useStore from "@/components/screen/store";
 import { DEFAULT_MODEL } from "../utils/constants";
+import { TIFFANY_BLUE } from "../utils/constants";
 
 const DiagramContainer = styled.div`
   display: flex;
@@ -13,15 +14,15 @@ const DiagramContainer = styled.div`
 const Layer = styled.div`
   width: 10vw;
   height: 3vw;
-  background-color: rgba(0, 128, 255, 0.2);
-  color: #00ffff;
+  background-color: rgba(129, 216, 208, 0.2);
+  color: ${TIFFANY_BLUE};
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  border: 1px solid #00ffff;
+  border: 1px solid ${TIFFANY_BLUE};
   font-size: 0.9vw;
-  text-shadow: 0 0 5px #00ffff;
+  text-shadow: 0 0 5px ${TIFFANY_BLUE};
 `;
 
 const Arrow = styled.div`
@@ -29,7 +30,7 @@ const Arrow = styled.div`
   height: 0;
   border-left: 1vw solid transparent;
   border-right: 1vw solid transparent;
-  border-top: 1vw solid #00ffff;
+  border-top: 1vw solid ${TIFFANY_BLUE};
 `;
 
 export default function ModelDiagram({ model }) {

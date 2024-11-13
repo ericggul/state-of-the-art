@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "../utils/constants";
+import { DEFAULT_MODEL, TIFFANY_BLUE } from "../utils/constants";
 
 const FeatureList = styled.ul`
   list-style-type: none;
@@ -17,16 +17,16 @@ const FeatureSection = styled.div`
 `;
 
 const SectionTitle = styled.h4`
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   font-size: 0.9vw;
   margin-bottom: 1vw;
-  text-shadow: 0 0 10px #00ffff;
+  text-shadow: 0 0 10px ${TIFFANY_BLUE};
   opacity: 0.8;
 `;
 
 const FeatureItem = styled.li`
   margin-bottom: 1vw;
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   font-size: 0.9vw;
   opacity: 0.8;
 

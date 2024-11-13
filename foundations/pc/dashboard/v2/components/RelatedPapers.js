@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "../utils/constants";
+import { DEFAULT_MODEL, TIFFANY_BLUE } from "../utils/constants";
 import { CitationParser } from "../utils/citationParser";
 
 const PaperList = styled.ul`
@@ -14,10 +14,10 @@ const PaperSection = styled.div`
 `;
 
 const SectionTitle = styled.h4`
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   font-size: 0.9vw;
   margin-bottom: 1vw;
-  text-shadow: 0 0 10px #00ffff;
+  text-shadow: 0 0 10px ${TIFFANY_BLUE};
   opacity: 0.8;
 `;
 
@@ -26,7 +26,7 @@ const PaperItem = styled.li`
 `;
 
 const PaperLink = styled.div`
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   text-decoration: none;
   font-size: 0.9vw;
 `;

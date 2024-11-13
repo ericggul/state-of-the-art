@@ -1,7 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { STATS_CONFIG } from "../utils/constants";
+import {
+  STATS_CONFIG,
+  TIFFANY_BLUE,
+  TIFFANY_BLUE_RGBA,
+} from "../utils/constants";
 
 const StatContainer = styled.div`
   display: flex;
@@ -14,20 +18,20 @@ const StatRow = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0.8vw 1vw;
-  background: rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.1);
+  background: ${TIFFANY_BLUE_RGBA}0.05);
+  border: 1px solid ${TIFFANY_BLUE_RGBA}0.1);
   border-radius: 0.5vw;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(0, 255, 255, 0.1);
-    border-color: rgba(0, 255, 255, 0.2);
+    background: ${TIFFANY_BLUE_RGBA}0.1);
+    border-color: ${TIFFANY_BLUE_RGBA}0.2);
     transform: translateX(0.5vw);
   }
 `;
 
 const StatLabel = styled.div`
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   font-size: 0.9vw;
   opacity: 0.8;
   display: flex;
@@ -40,10 +44,10 @@ const StatIcon = styled.span`
 `;
 
 const StatValue = styled.div`
-  color: #00ffff;
+  color: ${TIFFANY_BLUE};
   font-size: 0.9vw;
   font-weight: bold;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 5px ${TIFFANY_BLUE_RGBA}0.5);
 `;
 
 const getStatIcon = (statKey) => {

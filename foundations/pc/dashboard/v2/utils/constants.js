@@ -323,3 +323,7 @@ export const MODELS_LIST = [
 
 // Optional: Common shared data
 export const DEFAULT_MODEL = MODELS_LIST[0];
+
+export const TIFFANY_BLUE = "#00aaff";
+export const TIFFANY_BLUE_DARK = "#00aaff";
+export const TIFFANY_BLUE_RGBA = "rgba(0, 170, 255, ";

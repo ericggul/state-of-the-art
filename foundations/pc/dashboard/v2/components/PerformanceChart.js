@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { TIFFANY_BLUE, TIFFANY_BLUE_RGBA } from "../utils/constants";
 
 ChartJS.register(
   CategoryScale,
@@ -51,12 +52,12 @@ export default function PerformanceChart({ performance }) {
       {
         label: `${metric} Score`,
         data: benchmarks?.data || data,
-        borderColor: "#00ffff",
-        backgroundColor: "rgba(0, 255, 255, 0.2)",
-        pointBackgroundColor: "#00ffff",
+        borderColor: TIFFANY_BLUE,
+        backgroundColor: `${TIFFANY_BLUE_RGBA}0.2)`,
+        pointBackgroundColor: TIFFANY_BLUE,
         pointBorderColor: "#000000",
         pointHoverBackgroundColor: "#ffffff",
-        pointHoverBorderColor: "#00ffff",
+        pointHoverBorderColor: TIFFANY_BLUE,
       },
     ],
   };
@@ -67,7 +68,7 @@ export default function PerformanceChart({ performance }) {
       legend: {
         position: "top",
         labels: {
-          color: "#00ffff",
+          color: TIFFANY_BLUE,
           font: {
             family: "'Orbitron', sans-serif",
             size: 12,
@@ -77,7 +78,7 @@ export default function PerformanceChart({ performance }) {
       title: {
         display: true,
         text: `Model ${metric} Performance`,
-        color: "#00ffff",
+        color: TIFFANY_BLUE,
         font: {
           family: "'Orbitron', sans-serif",
           size: 16,
@@ -97,13 +98,13 @@ export default function PerformanceChart({ performance }) {
         title: {
           display: true,
           text: xAxisLabel,
-          color: "#00ffff",
+          color: TIFFANY_BLUE,
         },
         grid: {
-          color: "rgba(0, 255, 255, 0.1)",
+          color: `${TIFFANY_BLUE_RGBA}0.1)`,
         },
         ticks: {
-          color: "#00ffff",
+          color: TIFFANY_BLUE,
           font: {
             family: "'Orbitron', sans-serif",
           },
@@ -113,13 +114,13 @@ export default function PerformanceChart({ performance }) {
         title: {
           display: true,
           text: yAxisLabel,
-          color: "#00ffff",
+          color: TIFFANY_BLUE,
         },
         grid: {
-          color: "rgba(0, 255, 255, 0.1)",
+          color: `${TIFFANY_BLUE_RGBA}0.1)`,
         },
         ticks: {
-          color: "#00ffff",
+          color: TIFFANY_BLUE,
           font: {
             family: "'Orbitron', sans-serif",
           },
