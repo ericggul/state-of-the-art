@@ -6,11 +6,23 @@ import PerformanceChart from "./components/PerformanceChart";
 import RelatedPapers from "./components/RelatedPapers";
 import TypewriterText from "./components/TypewriterText";
 import ModelFeatures from "./components/ModelFeatures";
-import ModelStats from "./components/ModelStats";
 import { DEFAULT_MODEL } from "./utils/constants";
+import { getModelData } from "./utils/dataProcessor";
+import ModelImage from "./components/ModelImage";
+
+//here read csv from the route and parse it into json
+const FILE_URL = "/db/1113.csv";
 
 const DEFAULT_IMAGE =
   "https://via.placeholder.com/300x200.png?text=Model+Architecture";
+
+// Card Component
+const Card = ({ title, children }) => (
+  <S.Card>
+    <S.CardTitle>{title}</S.CardTitle>
+    {children}
+  </S.Card>
+);
 
 export default function Dashboard() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
@@ -19,43 +31,21 @@ export default function Dashboard() {
   const [model, setModel] = useState(null);
 
   useEffect(() => {
-    if (currentArchitectures[0] && currentArchitectures[0] !== prevModel) {
-      setPrevModel(model);
-      const tempModel = {
-        ...DEFAULT_MODEL,
-        id: currentArchitectures[0].version || DEFAULT_MODEL.id,
-        name: currentArchitectures[0].name || DEFAULT_MODEL.name,
-        place: currentArchitectures[0].place || DEFAULT_MODEL.authors,
-        year: currentArchitectures[0].year || DEFAULT_MODEL.year,
-        citation: currentArchitectures[0].citation || DEFAULT_MODEL.citations,
-        explanation:
-          currentArchitectures[0].explanation || DEFAULT_MODEL.explanation,
-      };
-      setModel(tempModel);
+    async function updateModel() {
+      if (currentArchitectures[0] && currentArchitectures[0] !== prevModel) {
+        setPrevModel(model);
+        const modelData = await getModelData(currentArchitectures[0]);
+        setModel(modelData);
+      }
     }
+    updateModel();
   }, [currentArchitectures]);
 
   const currentModel = model || DEFAULT_MODEL;
-
-  const getTopStats = (modelStats, maxStats = 3) => {
-    if (!modelStats) return [];
-
-    return Object.entries(modelStats)
-      .filter(([key, value]) => value !== undefined && value !== null)
-      .sort(
-        ([keyA], [keyB]) =>
-          STATS_CONFIG[keyA].priority - STATS_CONFIG[keyB].priority
-      )
-      .slice(0, maxStats)
-      .map(([key, value]) => ({
-        key,
-        value,
-        ...STATS_CONFIG[key],
-      }));
-  };
+  console.log(currentModel);
 
   return (
-    <S.Container $isTransition={isTransition}>
+    <S.Container>
       <S.Header>
         <S.Title>
           <TypewriterText
@@ -72,46 +62,25 @@ export default function Dashboard() {
       </S.Header>
 
       <S.Grid>
-        <S.Card>
-          <S.CardTitle>Model Overview</S.CardTitle>
-          <S.ModelImageWrapper>
-            <S.ModelImage
-              src={currentModel.image || DEFAULT_IMAGE}
-              alt={currentModel.name}
-              onError={(e) => {
-                e.target.src = DEFAULT_IMAGE;
-              }}
-            />
-          </S.ModelImageWrapper>
-          <S.Description>
-            <TypewriterText text={currentModel.explanation} speed={20} />
-          </S.Description>
-        </S.Card>
+        <Card title="Model Overview">
+          <ModelImage model={currentModel} />
+        </Card>
 
-        <S.Card>
-          <S.CardTitle>Architecture</S.CardTitle>
+        <Card title="Architecture">
           <ModelDiagram model={currentModel} />
-        </S.Card>
+        </Card>
 
-        <S.Card>
-          <S.CardTitle>Performance Metrics</S.CardTitle>
+        <Card title="Performance Metrics">
           <PerformanceChart performance={currentModel.performance} />
-        </S.Card>
+        </Card>
 
-        <S.Card>
-          <S.CardTitle>Model Stats</S.CardTitle>
-          <ModelStats model={currentModel} />
-        </S.Card>
-
-        <S.Card>
-          <S.CardTitle>Model Features</S.CardTitle>
+        <Card title="Model Features">
           <ModelFeatures model={currentModel} />
-        </S.Card>
+        </Card>
 
-        <S.Card>
-          <S.CardTitle>Related Papers</S.CardTitle>
+        <Card title="Related Papers">
           <RelatedPapers model={currentModel} />
-        </S.Card>
+        </Card>
       </S.Grid>
     </S.Container>
   );
