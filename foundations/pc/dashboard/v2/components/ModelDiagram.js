@@ -35,6 +35,8 @@ const Arrow = styled.div`
 export default function ModelDiagram({ model }) {
   const architecture = model?.architecture || DEFAULT_MODEL.architecture || [];
 
+  console.log(architecture);
+
   return (
     <DiagramContainer>
       {architecture.map((layer, index) => (

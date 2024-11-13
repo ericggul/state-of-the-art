@@ -35,9 +35,6 @@ const Description = styled.p`
   color: #ffffff;
 `;
 
-const DEFAULT_IMAGE =
-  "https://via.placeholder.com/300x200.png?text=Model+Architecture";
-
 const IMAGE_BASE = "/db/images/";
 
 export default function ModelImage({ model }) {
@@ -45,7 +42,7 @@ export default function ModelImage({ model }) {
     <ImageContainer>
       <ImageWrapper>
         <Image
-          src={IMAGE_BASE + model.image || DEFAULT_IMAGE}
+          src={IMAGE_BASE + model.image || IMAGE_BASE + "g1.png"}
           alt={model.name}
           onError={(e) => {
             e.target.src = IMAGE_BASE + "g1.png";

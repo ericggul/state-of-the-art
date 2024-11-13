@@ -14,22 +14,21 @@ const processArrayFields = (row, fields) => {
 
 const formatModelName = (name) => {
   return name
-    .replace(/\(([^)]+)\)/g, "_$1")
     .replace(/[- ]/g, "_")
     .replace(/\./g, "")
+    .replace(/[^A-Za-z0-9_]/g, "")
     .toUpperCase()
-    .trim()
-    .replace(/_+/g, "_")
-    .replace(/^_|_$/g, "")
-    .replace(/[^A-Z0-9_]/g, "");
+    .trim();
 };
 
-const convertCsvRowToModel = (row, modelName) => {
+const convertCsvRowToModel = (row) => {
   if (!row) return null;
 
-  // Get architecture data
-  const formattedName = formatModelName(modelName);
-  const modelStructure = getModelStructure(formattedName);
+  // Get architecture data based on version prefix
+  const versionPrefix = row.version.split(".")[0].replace("v", ""); // e.g., "v2" -> "2"
+  const modelStructure = getModelStructure(
+    `${formatModelName(row.name)}_V${versionPrefix}`
+  );
   const architecture = modelStructure
     ? formatArchitectureFromStructure(modelStructure)
     : DEFAULT_MODEL.architecture;
@@ -86,17 +85,13 @@ export async function getModelData(currentArchitecture) {
 
     if (!currentArchitecture) return DEFAULT_MODEL;
 
+    // Find row by version (id)
     const matchingRow = csvData.find(
-      (row) =>
-        row.version === currentArchitecture.version &&
-        row.name === currentArchitecture.name
+      (row) => row.version === currentArchitecture.version
     );
 
     if (matchingRow) {
-      const processedModel = convertCsvRowToModel(
-        matchingRow,
-        currentArchitecture.name
-      );
+      const processedModel = convertCsvRowToModel(matchingRow);
       return {
         ...DEFAULT_MODEL,
         ...processedModel,

@@ -14,7 +14,7 @@ const COMPONENTS = {
   "0-v1": dynamic(() => import("@/foundations/pc/avatar/v1")),
   "0-v2": dynamic(() => import("@/foundations/pc/avatar/v2")),
 
-  1: dynamic(() => import("@/foundations/pc/dashboard/v1")),
+  1: dynamic(() => import("@/foundations/pc/dashboard/v2")),
   "1-v1": dynamic(() => import("@/foundations/pc/dashboard/v1")),
   "1-v2": dynamic(() => import("@/foundations/pc/dashboard/v2")),
 

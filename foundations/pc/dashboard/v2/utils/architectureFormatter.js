@@ -1,42 +1,53 @@
 export const formatArchitectureFromStructure = (structure) => {
   if (!structure || !Array.isArray(structure)) return [];
 
-  const formatLayer = (layer) => {
-    let formattedLayer = layer.name;
+  // Helper to get base layer type without parameters
+  const getBaseLayerType = (layer) => {
+    const typeMatch = layer.name.match(/<(\w+)>/);
+    return typeMatch ? typeMatch[1] : layer.type || "layer";
+  };
 
-    // Add dimensions if available
-    if (layer.dims) {
-      formattedLayer += ` [${
-        Array.isArray(layer.dims) ? layer.dims.join("×") : layer.dims
-      }]`;
-    }
+  // Simplify the architecture into 3-6 main components
+  const simplifyArchitecture = (layers) => {
+    if (layers.length <= 6) return layers;
 
-    // Add type if available
-    if (layer.type) {
-      formattedLayer += ` <${layer.type}>`;
-    }
+    // Always keep input and output
+    const input = layers[0];
+    const output = layers[layers.length - 1];
 
-    // Add parameters if available
-    if (layer.params) {
-      const paramStr = Object.entries(layer.params)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(", ");
-      formattedLayer += ` (${paramStr})`;
-    }
+    // Group middle layers by type
+    const middleLayers = layers.slice(1, -1);
+    const groupedLayers = middleLayers.reduce((acc, layer) => {
+      const type = getBaseLayerType(layer);
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(layer);
+      return acc;
+    }, {});
 
-    return formattedLayer;
+    // Create simplified middle representation
+    const simplifiedMiddle = Object.entries(groupedLayers).map(
+      ([type, layers]) => ({
+        name: `${type.toUpperCase()} Block`,
+        type: type,
+        count: layers.length,
+      })
+    );
+
+    // Format the final layers
+    const formatSimpleLayer = (layer) => {
+      if (layer.count) {
+        return `${layer.name} (×${layer.count})`;
+      }
+      return layer.name;
+    };
+
+    return [input, ...simplifiedMiddle, output].map(formatSimpleLayer);
   };
 
   const extractArchitecture = (layers) => {
-    return layers
-      .map((layer) => {
-        const formatted = formatLayer(layer);
-        if (layer.sublayers && layer.sublayers.length > 0) {
-          return [formatted, ...extractArchitecture(layer.sublayers)].flat();
-        }
-        return formatted;
-      })
-      .flat();
+    const detailedLayers = layers.map((layer) => layer.name).flat();
+
+    return simplifyArchitecture(detailedLayers);
   };
 
   return extractArchitecture(structure);
