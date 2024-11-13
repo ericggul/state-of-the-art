@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "./constants";
-import { CitationParser } from "./utils/citationParser";
+import { DEFAULT_MODEL } from "../utils/constants";
+import { CitationParser } from "../utils/citationParser";
 
 const PaperList = styled.ul`
   list-style-type: none;

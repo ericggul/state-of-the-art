@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import useStore from "@/components/screen/store";
-import { DEFAULT_MODEL } from "./constants";
+import { DEFAULT_MODEL } from "../utils/constants";
 
 const DiagramContainer = styled.div`
   display: flex;

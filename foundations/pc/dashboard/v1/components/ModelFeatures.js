@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { DEFAULT_MODEL } from "./constants";
+import { DEFAULT_MODEL } from "../utils/constants";
 
 const FeatureList = styled.ul`
   list-style-type: none;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import TypewriterText from "./TypewriterText";
-import { STATS_CONFIG } from "./constants";
+import { STATS_CONFIG } from "../utils/constants";
 
 const StatContainer = styled.div`
   display: flex;

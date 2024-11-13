@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
-import ModelDiagram from "./ModelDiagram";
-import PerformanceChart from "./PerformanceChart";
-import RelatedPapers from "./RelatedPapers";
-import TypewriterText from "./TypewriterText";
-import ModelFeatures from "./ModelFeatures";
-import ModelStats from "./ModelStats";
-import { DEFAULT_MODEL } from "./constants";
+import ModelDiagram from "./components/ModelDiagram";
+import PerformanceChart from "./components/PerformanceChart";
+import RelatedPapers from "./components/RelatedPapers";
+import TypewriterText from "./components/TypewriterText";
+import ModelFeatures from "./components/ModelFeatures";
+import ModelStats from "./components/ModelStats";
+import { DEFAULT_MODEL } from "./utils/constants";
 
 const DEFAULT_IMAGE =
   "https://via.placeholder.com/300x200.png?text=Model+Architecture";

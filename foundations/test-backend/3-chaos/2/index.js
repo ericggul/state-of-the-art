@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 
 import useAudio from "@/foundations/test-backend/3-chaos/utils/useAudio";
-import useTTS from "@/foundations/test-backend/3-chaos/utils/useTTS";
-import useDrumRhythm from "@/foundations/test-backend/3-chaos/utils/useDrumRhythm";
 import useConversation from "@/foundations/test-backend/3-chaos/utils/useConversation";
 
 import {
