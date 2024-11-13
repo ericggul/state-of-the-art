@@ -45,6 +45,8 @@ export default function PerformanceChart({ performance }) {
     benchmarks,
   } = performance;
 
+  console.log(performance);
+
   const chartData = {
     labels: benchmarks?.labels || labels,
     datasets: [

@@ -14,36 +14,62 @@ const processArrayFields = (row, fields) => {
 
 const formatModelName = (name) => {
   return name
-    .replace(/[- ]/g, "") // Remove spaces and hyphens
-    .replace(/\./g, "") // Remove periods
-    .replace(/[^A-Za-z0-9]/g, "") // Remove any other special characters
-    .toUpperCase() // Convert to uppercase
-    .trim(); // Remove whitespace
+    .replace(/[- ]/g, "")
+    .replace(/\./g, "")
+    .replace(/[^A-Za-z0-9]/g, "")
+    .toUpperCase()
+    .trim();
 };
 
 const getArchitectureData = (modelName) => {
   const formattedName = formatModelName(modelName);
-  console.log("Looking up architecture for:", formattedName);
-
   const modelStructure = getModelStructure(formattedName);
   return modelStructure
     ? formatArchitectureFromStructure(modelStructure)
     : DEFAULT_MODEL.architecture;
 };
 
-// Helper to safely parse array strings from CSV
 const parseArrayField = (field) => {
   if (!field || field === "") return [];
+
   try {
-    // Handle both string arrays and actual arrays
+    if (Array.isArray(field)) return field;
+
     if (typeof field === "string") {
-      // Replace single quotes with double quotes
-      const cleaned = field.replace(/'/g, '"');
-      return JSON.parse(cleaned);
+      // Handle arrays with model names (containing single quotes)
+      if (
+        field.includes("ViT") ||
+        field.includes("ResNet") ||
+        field.includes("CoAtNet")
+      ) {
+        return field
+          .slice(1, -1)
+          .split(",")
+          .map((item) => item.trim().replace(/'/g, ""));
+      }
+
+      // Handle numeric arrays
+      if (field.startsWith("[") && field.endsWith("]")) {
+        const cleaned = field.replace(/'/g, '"');
+        return JSON.parse(cleaned);
+      }
+
+      return JSON.parse(field);
     }
+
     return field;
   } catch (error) {
-    console.warn("Failed to parse array field:", field);
+    // Return original string split by comma if parsing fails
+    if (
+      typeof field === "string" &&
+      field.startsWith("[") &&
+      field.endsWith("]")
+    ) {
+      return field
+        .slice(1, -1)
+        .split(",")
+        .map((item) => item.trim().replace(/'/g, ""));
+    }
     return [];
   }
 };
@@ -51,14 +77,12 @@ const parseArrayField = (field) => {
 const convertCsvRowToModel = (row, modelName) => {
   if (!row) return null;
 
-  // Get architecture data
   const formattedName = formatModelName(modelName);
   const modelStructure = getModelStructure(formattedName);
   const architecture = modelStructure
     ? formatArchitectureFromStructure(modelStructure)
     : DEFAULT_MODEL.architecture;
 
-  // Process arrays
   const relatedPapers = processArrayFields(row, [
     "relatedPapers_1",
     "relatedPapers_1.1",
@@ -74,22 +98,12 @@ const convertCsvRowToModel = (row, modelName) => {
     "limitations-3",
   ]);
 
-  // Parse arrays safely
-  let labels = [],
-    data = [];
-  try {
-    labels = row.labels ? JSON.parse(row.labels.replace(/'/g, '"')) : [];
-    data = row.data ? JSON.parse(row.data.replace(/'/g, '"')) : [];
-  } catch (error) {
-    console.warn("Error parsing performance data:", error);
-  }
-
-  // Debug log
-  console.log("Processing CSV row:", row);
+  const labels = parseArrayField(row.labels);
+  const data = parseArrayField(row.data);
 
   return {
     id: row.version || currentArchitecture.version,
-    name: row.name,
+    name: row.name?.replace(/'/g, ""),
     category: row.category,
     year: parseInt(row.year),
     authors: row.authors,
@@ -109,8 +123,8 @@ const convertCsvRowToModel = (row, modelName) => {
       carbonFootprint: row.carbonFootprint || null,
     },
     performance: {
-      metric: row.metric,
-      yAxisLabel: row.yAxisLabel,
+      metric: row.metric || "Accuracy",
+      yAxisLabel: row.yAxisLabel || "Accuracy (%)",
       labels,
       data,
       format: row.format || "%",
@@ -125,29 +139,17 @@ const convertCsvRowToModel = (row, modelName) => {
 
 export async function getModelData(currentArchitecture) {
   try {
-    console.log("Current Architecture:", currentArchitecture); // Debug log
-
     const csvData = await readCsv("/db/1113.csv");
-    console.log("CSV Data:", csvData); // Debug log
-
     const matchingRow = csvData.find(
       (row) =>
         row.name === currentArchitecture.name &&
         row.version === currentArchitecture.version
     );
 
-    console.log("Matching Row:", matchingRow); // Debug log
-
     if (matchingRow) {
-      const processedModel = convertCsvRowToModel(
-        matchingRow,
-        currentArchitecture.name
-      );
-      console.log("Processed Model:", processedModel); // Debug log
-      return processedModel;
+      return convertCsvRowToModel(matchingRow, currentArchitecture.name);
     }
 
-    // Fallback to default with current architecture
     return {
       ...DEFAULT_MODEL,
       id: currentArchitecture.version,
@@ -155,7 +157,6 @@ export async function getModelData(currentArchitecture) {
       architecture: getArchitectureData(currentArchitecture.name),
     };
   } catch (error) {
-    console.error("Error processing model data:", error);
     return {
       ...DEFAULT_MODEL,
       id: currentArchitecture.version,

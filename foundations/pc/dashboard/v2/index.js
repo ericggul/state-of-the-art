@@ -26,7 +26,6 @@ const Card = ({ title, children }) => (
 
 export default function Dashboard() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
-  console.log(currentArchitectures);
   const isTransition = useStore((state) => state.isTransition);
   const [prevModel, setPrevModel] = useState(null);
   const [model, setModel] = useState(null);
@@ -43,7 +42,6 @@ export default function Dashboard() {
   }, [currentArchitectures]);
 
   const currentModel = model || DEFAULT_MODEL;
-  console.log(currentModel);
 
   return (
     <S.Container>
