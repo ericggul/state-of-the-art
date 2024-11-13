@@ -3,45 +3,29 @@ export const formatArchitectureFromStructure = (structure) => {
 
   // Helper to get base layer type without parameters
   const getBaseLayerType = (layer) => {
-    const typeMatch = layer.name.match(/<(\w+)>/);
-    return typeMatch ? typeMatch[1] : layer.type || "layer";
+    if (!layer || typeof layer !== "object") {
+      return "unknown";
+    }
+
+    // Add null check before accessing layer.type
+    const type = layer?.type || "";
+    const match = type.match(/([a-zA-Z]+)/);
+    return match ? match[1].toLowerCase() : "unknown";
   };
 
   // Simplify the architecture into 3-6 main components
-  const simplifyArchitecture = (layers) => {
-    if (layers.length <= 6) return layers;
+  const simplifyArchitecture = (architecture) => {
+    if (!Array.isArray(architecture)) {
+      return ["Input", "Processing", "Output"];
+    }
 
-    // Always keep input and output
-    const input = layers[0];
-    const output = layers[layers.length - 1];
-
-    // Group middle layers by type
-    const middleLayers = layers.slice(1, -1);
-    const groupedLayers = middleLayers.reduce((acc, layer) => {
-      const type = getBaseLayerType(layer);
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(layer);
-      return acc;
-    }, {});
-
-    // Create simplified middle representation
-    const simplifiedMiddle = Object.entries(groupedLayers).map(
-      ([type, layers]) => ({
-        name: `${type.toUpperCase()} Block`,
-        type: type,
-        count: layers.length,
-      })
-    );
-
-    // Format the final layers
-    const formatSimpleLayer = (layer) => {
-      if (layer.count) {
-        return `${layer.name} (×${layer.count})`;
+    return architecture.reduce((acc, layer) => {
+      const baseType = getBaseLayerType(layer);
+      if (baseType && !acc.includes(baseType)) {
+        acc.push(baseType);
       }
-      return layer.name;
-    };
-
-    return [input, ...simplifiedMiddle, output].map(formatSimpleLayer);
+      return acc;
+    }, []);
   };
 
   const extractArchitecture = (layers) => {

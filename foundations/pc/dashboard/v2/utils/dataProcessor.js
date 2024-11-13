@@ -14,21 +14,46 @@ const processArrayFields = (row, fields) => {
 
 const formatModelName = (name) => {
   return name
-    .replace(/[- ]/g, "_")
-    .replace(/\./g, "")
-    .replace(/[^A-Za-z0-9_]/g, "")
-    .toUpperCase()
-    .trim();
+    .replace(/[- ]/g, "") // Remove spaces and hyphens
+    .replace(/\./g, "") // Remove periods
+    .replace(/[^A-Za-z0-9]/g, "") // Remove any other special characters
+    .toUpperCase() // Convert to uppercase
+    .trim(); // Remove whitespace
 };
 
-const convertCsvRowToModel = (row) => {
+const getArchitectureData = (modelName) => {
+  const formattedName = formatModelName(modelName);
+  console.log("Looking up architecture for:", formattedName);
+
+  const modelStructure = getModelStructure(formattedName);
+  return modelStructure
+    ? formatArchitectureFromStructure(modelStructure)
+    : DEFAULT_MODEL.architecture;
+};
+
+// Helper to safely parse array strings from CSV
+const parseArrayField = (field) => {
+  if (!field || field === "") return [];
+  try {
+    // Handle both string arrays and actual arrays
+    if (typeof field === "string") {
+      // Replace single quotes with double quotes
+      const cleaned = field.replace(/'/g, '"');
+      return JSON.parse(cleaned);
+    }
+    return field;
+  } catch (error) {
+    console.warn("Failed to parse array field:", field);
+    return [];
+  }
+};
+
+const convertCsvRowToModel = (row, modelName) => {
   if (!row) return null;
 
-  // Get architecture data based on version prefix
-  const versionPrefix = row.version.split(".")[0].replace("v", ""); // e.g., "v2" -> "2"
-  const modelStructure = getModelStructure(
-    `${formatModelName(row.name)}_V${versionPrefix}`
-  );
+  // Get architecture data
+  const formattedName = formatModelName(modelName);
+  const modelStructure = getModelStructure(formattedName);
   const architecture = modelStructure
     ? formatArchitectureFromStructure(modelStructure)
     : DEFAULT_MODEL.architecture;
@@ -49,58 +74,93 @@ const convertCsvRowToModel = (row) => {
     "limitations-3",
   ]);
 
-  // Convert string arrays to actual arrays
-  const labels = row.labels ? JSON.parse(row.labels.replace(/'/g, '"')) : [];
-  const data = row.data ? JSON.parse(row.data.replace(/'/g, '"')) : [];
+  // Parse arrays safely
+  let labels = [],
+    data = [];
+  try {
+    labels = row.labels ? JSON.parse(row.labels.replace(/'/g, '"')) : [];
+    data = row.data ? JSON.parse(row.data.replace(/'/g, '"')) : [];
+  } catch (error) {
+    console.warn("Error parsing performance data:", error);
+  }
+
+  // Debug log
+  console.log("Processing CSV row:", row);
 
   return {
-    id: row.version || null,
-    category: row.category || null,
-    name: row.name || null,
-    year: row.year || null,
-    paperName: row.paperName || null,
-    authors: row.authors || null,
-    institution: row.institution || null,
-    paper: row.citations_APA || null,
-    relatedPapers: relatedPapers,
-    explanation: row.explanation || null,
-    highlights: highlights,
-    limitations: limitations,
+    id: row.version || currentArchitecture.version,
+    name: row.name,
+    category: row.category,
+    year: parseInt(row.year),
+    authors: row.authors,
+    institution: row.institution,
+    paper: row.citations_APA,
+    explanation: row.explanation,
+    highlights,
+    limitations,
+    relatedPapers,
     citations: row.citationsNumber ? parseFloat(row.citationsNumber) : null,
-    performance: {
-      metric: row.metric || null,
-      yAxisLabel: row.yAxisLabel || null,
-      labels: labels,
-      data: data,
-      format: row.format || null,
+    stats: {
+      parameters: row.parameters || null,
+      computeUsed: row.computeUsed || null,
+      inferenceSpeed: row.inferenceSpeed || null,
+      memoryUsage: row.memoryUsage || null,
+      trainTime: row.trainTime || null,
+      carbonFootprint: row.carbonFootprint || null,
     },
-    image: row.model_image || null,
+    performance: {
+      metric: row.metric,
+      yAxisLabel: row.yAxisLabel,
+      labels,
+      data,
+      format: row.format || "%",
+    },
+    images: {
+      model: row.model_image,
+      graph: row.graph_image,
+    },
     architecture,
   };
 };
 
 export async function getModelData(currentArchitecture) {
   try {
+    console.log("Current Architecture:", currentArchitecture); // Debug log
+
     const csvData = await readCsv("/db/1113.csv");
+    console.log("CSV Data:", csvData); // Debug log
 
-    if (!currentArchitecture) return DEFAULT_MODEL;
-
-    // Find row by version (id)
     const matchingRow = csvData.find(
-      (row) => row.version === currentArchitecture.version
+      (row) =>
+        row.name === currentArchitecture.name &&
+        row.version === currentArchitecture.version
     );
 
+    console.log("Matching Row:", matchingRow); // Debug log
+
     if (matchingRow) {
-      const processedModel = convertCsvRowToModel(matchingRow);
-      return {
-        ...DEFAULT_MODEL,
-        ...processedModel,
-      };
+      const processedModel = convertCsvRowToModel(
+        matchingRow,
+        currentArchitecture.name
+      );
+      console.log("Processed Model:", processedModel); // Debug log
+      return processedModel;
     }
 
-    return DEFAULT_MODEL;
+    // Fallback to default with current architecture
+    return {
+      ...DEFAULT_MODEL,
+      id: currentArchitecture.version,
+      name: currentArchitecture.name,
+      architecture: getArchitectureData(currentArchitecture.name),
+    };
   } catch (error) {
     console.error("Error processing model data:", error);
-    return DEFAULT_MODEL;
+    return {
+      ...DEFAULT_MODEL,
+      id: currentArchitecture.version,
+      name: currentArchitecture.name,
+      architecture: getArchitectureData(currentArchitecture.name),
+    };
   }
 }
