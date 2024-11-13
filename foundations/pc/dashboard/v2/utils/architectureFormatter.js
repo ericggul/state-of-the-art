@@ -3,35 +3,69 @@ export const formatArchitectureFromStructure = (structure) => {
 
   // Helper to get base layer type without parameters
   const getBaseLayerType = (layer) => {
-    if (!layer || typeof layer !== "object") {
+    if (!layer) {
       return "unknown";
     }
 
-    // Add null check before accessing layer.type
-    const type = layer?.type || "";
+    let type = "";
+
+    if (typeof layer === "object") {
+      type = layer.type || layer.name || "";
+    } else if (typeof layer === "string") {
+      type = layer;
+    } else {
+      return "unknown";
+    }
+
+    // Extract base type from type string
     const match = type.match(/([a-zA-Z]+)/);
     return match ? match[1].toLowerCase() : "unknown";
   };
 
-  // Simplify the architecture into 3-6 main components
-  const simplifyArchitecture = (architecture) => {
-    if (!Array.isArray(architecture)) {
+  // Simplify the architecture into main components
+  const simplifyArchitecture = (layers) => {
+    if (!Array.isArray(layers)) {
       return ["Input", "Processing", "Output"];
     }
 
-    return architecture.reduce((acc, layer) => {
+    const uniqueTypes = [];
+
+    layers.forEach((layer) => {
       const baseType = getBaseLayerType(layer);
-      if (baseType && !acc.includes(baseType)) {
-        acc.push(baseType);
+
+      if (
+        baseType &&
+        baseType !== "unknown" &&
+        !uniqueTypes.includes(baseType)
+      ) {
+        uniqueTypes.push(baseType);
       }
-      return acc;
-    }, []);
+    });
+
+    return uniqueTypes.length > 0
+      ? uniqueTypes
+      : ["Input", "Processing", "Output"];
   };
 
-  const extractArchitecture = (layers) => {
-    const detailedLayers = layers.map((layer) => layer.name).flat();
+  // Flatten nested layers if necessary
+  const flattenLayers = (layers) => {
+    let result = [];
 
-    return simplifyArchitecture(detailedLayers);
+    layers.forEach((layer) => {
+      if (Array.isArray(layer)) {
+        result = result.concat(flattenLayers(layer));
+      } else {
+        result.push(layer);
+      }
+    });
+
+    return result;
+  };
+
+  // Extract architecture
+  const extractArchitecture = (layers) => {
+    const flatLayers = flattenLayers(layers);
+    return simplifyArchitecture(flatLayers);
   };
 
   return extractArchitecture(structure);

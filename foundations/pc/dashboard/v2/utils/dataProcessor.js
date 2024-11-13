@@ -36,16 +36,11 @@ const parseArrayField = (field) => {
     if (Array.isArray(field)) return field;
 
     if (typeof field === "string") {
-      // If it's a string representation of an array
       if (field.startsWith("[") && field.endsWith("]")) {
-        // Replace various types of quotes with standard double quotes
         const cleaned = field.replace(/[`'“”‘’]/g, '"');
-
-        // Attempt to parse the cleaned string as JSON
         try {
           return JSON.parse(cleaned);
         } catch {
-          // If JSON parsing fails, split the string manually
           return cleaned
             .slice(1, -1) // Remove outer [ ]
             .split(",")
@@ -79,10 +74,10 @@ const parseArrayField = (field) => {
   }
 };
 
-const convertCsvRowToModel = (row, modelName) => {
+const convertCsvRowToModel = (row, currentArchitecture) => {
   if (!row) return null;
 
-  const formattedName = formatModelName(modelName);
+  const formattedName = formatModelName(currentArchitecture.name);
   const modelStructure = getModelStructure(formattedName);
   const architecture = modelStructure
     ? formatArchitectureFromStructure(modelStructure)
@@ -134,10 +129,7 @@ const convertCsvRowToModel = (row, modelName) => {
       data,
       format: row.format || "%",
     },
-    images: {
-      model: row.model_image,
-      graph: row.graph_image,
-    },
+    image: row.model_image,
     architecture,
   };
 };
@@ -152,7 +144,7 @@ export async function getModelData(currentArchitecture) {
     );
 
     if (matchingRow) {
-      return convertCsvRowToModel(matchingRow, currentArchitecture.name);
+      return convertCsvRowToModel(matchingRow, currentArchitecture);
     }
 
     return {

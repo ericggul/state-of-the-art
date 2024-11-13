@@ -38,6 +38,7 @@ const Description = styled.p`
 const IMAGE_BASE = "/db/images/";
 
 export default function ModelImage({ model }) {
+  console.log(model, model.image);
   return (
     <ImageContainer>
       <ImageWrapper>

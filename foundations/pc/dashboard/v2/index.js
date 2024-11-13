@@ -42,6 +42,7 @@ export default function Dashboard() {
   }, [currentArchitectures]);
 
   const currentModel = model || DEFAULT_MODEL;
+  console.log(currentModel);
 
   return (
     <S.Container>

@@ -41,7 +41,7 @@ export default function ModelDiagram({ model }) {
     <DiagramContainer>
       {architecture.map((layer, index) => (
         <React.Fragment key={layer}>
-          <Layer>{layer}</Layer>
+          <Layer>{layer.toUpperCase()}</Layer>
           {index < architecture.length - 1 && <Arrow />}
         </React.Fragment>
       ))}
