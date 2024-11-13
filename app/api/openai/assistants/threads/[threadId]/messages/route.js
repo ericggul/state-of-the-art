@@ -4,7 +4,7 @@ const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
 });
 
-import { ASSISTANT_ID as assistantId } from "@/utils/const";
+export const assistantId = "asst_QOLETCLbTqwgrVKCGZQhadqs";
 
 export const runtime = "nodejs";
 
