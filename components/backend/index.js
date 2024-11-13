@@ -59,7 +59,7 @@ const Backend = memo(function Backend() {
   return (
     <S.Container $isblack={isblack}>
       {CurrentBackend}
-      {level >= 4 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
+      {level >= 5 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
     </S.Container>
   );
 });

@@ -183,7 +183,7 @@ function SingleRandom({ range, visible, timeUnit }) {
 
     paths.push(...bezierPaths);
     if (isProjector) {
-      // paths.push(...bezierPaths2);
+      paths.push(...bezierPaths2);
     }
     if (!isAnimating) {
       paths.push(...inputRadialPaths, ...outputRadialPaths);

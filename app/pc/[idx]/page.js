@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
@@ -22,11 +22,27 @@ const Idle = dynamic(() => import("@/components/screen/idle"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
-export default function RelationPage() {
-  const { idx } = useParams();
+// SearchParams wrapper component
+function SearchParamsWrapper({ children }) {
   const searchParams = useSearchParams();
   const test = searchParams.get("test");
+  return children(test);
+}
 
+export default function RelationPage() {
+  const { idx } = useParams();
+
+  return (
+    <Suspense>
+      <SearchParamsWrapper>
+        {(test) => <RelationPageContent idx={idx} test={test} />}
+      </SearchParamsWrapper>
+    </Suspense>
+  );
+}
+
+// Main content component
+function RelationPageContent({ idx, test }) {
   const {
     handleNewControllerArchitectures,
     handleNewSpeech,

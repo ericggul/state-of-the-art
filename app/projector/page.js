@@ -14,10 +14,25 @@ const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
-export default function ScreenWrapper() {
+// SearchParams wrapper component
+function SearchParamsWrapper({ children }) {
   const searchParams = useSearchParams();
   const test = searchParams.get("test");
+  return children(test);
+}
 
+export default function ScreenWrapper() {
+  return (
+    <Suspense>
+      <SearchParamsWrapper>
+        {(test) => <ScreenContent test={test} />}
+      </SearchParamsWrapper>
+    </Suspense>
+  );
+}
+
+// Main content component
+function ScreenContent({ test }) {
   const {
     handleNewControllerArchitectures,
     handleNewMobileArchitecture,

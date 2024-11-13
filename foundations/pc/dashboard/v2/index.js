@@ -1,0 +1,118 @@
+import React, { useState, useEffect } from "react";
+import * as S from "./styles";
+import useStore from "@/components/screen/store";
+import ModelDiagram from "./components/ModelDiagram";
+import PerformanceChart from "./components/PerformanceChart";
+import RelatedPapers from "./components/RelatedPapers";
+import TypewriterText from "./components/TypewriterText";
+import ModelFeatures from "./components/ModelFeatures";
+import ModelStats from "./components/ModelStats";
+import { DEFAULT_MODEL } from "./utils/constants";
+
+const DEFAULT_IMAGE =
+  "https://via.placeholder.com/300x200.png?text=Model+Architecture";
+
+export default function Dashboard() {
+  const currentArchitectures = useStore((state) => state.currentArchitectures);
+  const isTransition = useStore((state) => state.isTransition);
+  const [prevModel, setPrevModel] = useState(null);
+  const [model, setModel] = useState(null);
+
+  useEffect(() => {
+    if (currentArchitectures[0] && currentArchitectures[0] !== prevModel) {
+      setPrevModel(model);
+      const tempModel = {
+        ...DEFAULT_MODEL,
+        id: currentArchitectures[0].version || DEFAULT_MODEL.id,
+        name: currentArchitectures[0].name || DEFAULT_MODEL.name,
+        place: currentArchitectures[0].place || DEFAULT_MODEL.authors,
+        year: currentArchitectures[0].year || DEFAULT_MODEL.year,
+        citation: currentArchitectures[0].citation || DEFAULT_MODEL.citations,
+        explanation:
+          currentArchitectures[0].explanation || DEFAULT_MODEL.explanation,
+      };
+      setModel(tempModel);
+    }
+  }, [currentArchitectures]);
+
+  const currentModel = model || DEFAULT_MODEL;
+
+  const getTopStats = (modelStats, maxStats = 3) => {
+    if (!modelStats) return [];
+
+    return Object.entries(modelStats)
+      .filter(([key, value]) => value !== undefined && value !== null)
+      .sort(
+        ([keyA], [keyB]) =>
+          STATS_CONFIG[keyA].priority - STATS_CONFIG[keyB].priority
+      )
+      .slice(0, maxStats)
+      .map(([key, value]) => ({
+        key,
+        value,
+        ...STATS_CONFIG[key],
+      }));
+  };
+
+  return (
+    <S.Container $isTransition={isTransition}>
+      <S.Header>
+        <S.Title>
+          <TypewriterText
+            text={`${currentModel.name} - ${currentModel.id}`}
+            speed={30}
+          />
+        </S.Title>
+        <S.Subtitle>
+          <TypewriterText
+            text={`${currentModel.year}, ${currentModel.authors}`}
+            speed={30}
+          />
+        </S.Subtitle>
+      </S.Header>
+
+      <S.Grid>
+        <S.Card>
+          <S.CardTitle>Model Overview</S.CardTitle>
+          <S.ModelImageWrapper>
+            <S.ModelImage
+              src={currentModel.image || DEFAULT_IMAGE}
+              alt={currentModel.name}
+              onError={(e) => {
+                e.target.src = DEFAULT_IMAGE;
+              }}
+            />
+          </S.ModelImageWrapper>
+          <S.Description>
+            <TypewriterText text={currentModel.explanation} speed={20} />
+          </S.Description>
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>Architecture</S.CardTitle>
+          <ModelDiagram model={currentModel} />
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>Performance Metrics</S.CardTitle>
+          <PerformanceChart performance={currentModel.performance} />
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>Model Stats</S.CardTitle>
+          <ModelStats model={currentModel} />
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>Model Features</S.CardTitle>
+          <ModelFeatures model={currentModel} />
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>Related Papers</S.CardTitle>
+          <RelatedPapers model={currentModel} />
+        </S.Card>
+      </S.Grid>
+    </S.Container>
+  );
+}
