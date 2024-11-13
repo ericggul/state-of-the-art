@@ -36,39 +36,44 @@ const parseArrayField = (field) => {
     if (Array.isArray(field)) return field;
 
     if (typeof field === "string") {
-      // Handle arrays with model names (containing single quotes)
-      if (
-        field.includes("ViT") ||
-        field.includes("ResNet") ||
-        field.includes("CoAtNet")
-      ) {
-        return field
-          .slice(1, -1)
-          .split(",")
-          .map((item) => item.trim().replace(/'/g, ""));
-      }
-
-      // Handle numeric arrays
+      // If it's a string representation of an array
       if (field.startsWith("[") && field.endsWith("]")) {
-        const cleaned = field.replace(/'/g, '"');
-        return JSON.parse(cleaned);
+        // Replace various types of quotes with standard double quotes
+        const cleaned = field.replace(/[`'“”‘’]/g, '"');
+
+        // Attempt to parse the cleaned string as JSON
+        try {
+          return JSON.parse(cleaned);
+        } catch {
+          // If JSON parsing fails, split the string manually
+          return cleaned
+            .slice(1, -1) // Remove outer [ ]
+            .split(",")
+            .map(
+              (item) => item.trim().replace(/^"|"$/g, "") // Remove leading and trailing quotes
+            );
+        }
       }
 
+      // For other string cases, attempt JSON parsing
       return JSON.parse(field);
     }
 
+    // Return the field as-is if it's neither an array nor a string
     return field;
   } catch (error) {
-    // Return original string split by comma if parsing fails
-    if (
-      typeof field === "string" &&
-      field.startsWith("[") &&
-      field.endsWith("]")
-    ) {
+    // Final fallback: split the string manually
+    if (field.startsWith("[") && field.endsWith("]")) {
       return field
         .slice(1, -1)
         .split(",")
-        .map((item) => item.trim().replace(/'/g, ""));
+        .map(
+          (item) =>
+            item
+              .trim()
+              .replace(/[`'“”‘’]/g, "")
+              .replace(/^"|"$/g, "") // Remove quotes
+        );
     }
     return [];
   }
