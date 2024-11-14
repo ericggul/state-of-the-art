@@ -8,6 +8,7 @@ export default function useSocketScreen({
   handleNewMobile = () => {},
   handleNewMobileVisibility = () => {},
   handleNewMobileArchitecture = () => {},
+  handleNewMobileIntro = () => {},
 }) {
   const socket = useRef(null);
   const initialized = useRef(false);
@@ -39,6 +40,7 @@ export default function useSocketScreen({
       ////////////////////////////////////////////////////////////////
 
       socket.current.on("new-mobile-init", handleNewMobile);
+      socket.current.on("new-mobile-intro", handleNewMobileIntro);
       socket.current.on(
         "new-mobile-visibility-change",
         handleNewMobileVisibility
@@ -47,8 +49,9 @@ export default function useSocketScreen({
       ////////////////////////////////////////////////////////////////
 
       socket.current.on("new-mobile-speech", handleNewSpeech);
-
       socket.current.on("new-mobile-architecture", handleNewMobileArchitecture);
+
+      //////
     });
   };
 

@@ -53,6 +53,10 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-mobile-speech", data);
   });
 
+  socket.on("mobile-new-intro", (data) => {
+    socket.to("screen").emit("new-mobile-intro", data);
+  });
+
   //////VISIBILITY////
   //front <-> back visibiltiy change
   socket.on("mobile-new-visibility-change", (data) => {

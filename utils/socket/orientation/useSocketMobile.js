@@ -28,6 +28,7 @@ export default function useSocketMobileOrientation({
 
   const socketInitializer = async () => {
     await fetch("/api/socket");
+    console.log("31");
     socket.current = io();
 
     socket.current.on("connect", () => {

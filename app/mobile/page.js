@@ -6,14 +6,21 @@ import { useSearchParams } from "next/navigation";
 
 const MobileV1 = dynamic(() => import("@/components/mobile/v1"));
 const MobileV2 = dynamic(() => import("@/components/mobile/v2"));
+const MobileV3 = dynamic(() => import("@/components/mobile/v3"));
 
 function MobileSelector() {
   const searchParams = useSearchParams();
   const version = searchParams.get("v");
 
-  // const MobileComponent = version === "1" ? MobileV1 : MobileV2;
-
-  return <MobileV2 />;
+  // Select component based on version query param
+  switch (version) {
+    case "1":
+      return <MobileV1 />;
+    case "2":
+      return <MobileV2 />;
+    default:
+      return <MobileV3 />; // Default to v3 if no version specified or unknown version
+  }
 }
 
 export default function MobileWrapper() {

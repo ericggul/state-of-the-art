@@ -38,6 +38,7 @@ function ScreenContent({ test }) {
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
+    handleNewMobileIntro,
     setIsProjector,
     setDeviceIndex,
     stage,
@@ -55,6 +56,7 @@ function ScreenContent({ test }) {
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
+    handleNewMobileIntro,
   });
 
   useScreenVisibility();

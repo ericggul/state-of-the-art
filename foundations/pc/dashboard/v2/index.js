@@ -8,7 +8,7 @@ import TypewriterText from "./components/TypewriterText";
 import ModelFeatures from "./components/ModelFeatures";
 import { DEFAULT_MODEL } from "./utils/constants";
 import { getModelData } from "./utils/dataProcessor";
-import ModelImage from "./components/ModelImage-original";
+import ModelImage from "./components/ModelImage/v1";
 
 //here read csv from the route and parse it into json
 const FILE_URL = "/db/1113.csv";

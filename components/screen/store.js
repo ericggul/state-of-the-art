@@ -11,6 +11,9 @@ const useScreenStore = create((set) => ({
   deviceIndex: 5,
   targetMobileId: null,
 
+  userName: "",
+  introState: 0,
+
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
   setLatestSpeech: (speech) => set({ latestSpeech: speech }),
@@ -21,6 +24,8 @@ const useScreenStore = create((set) => ({
   setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),
   setStage: (stage) => set({ stage }),
   setIsTransition: (isTransition) => set({ isTransition }),
+  setUserName: (userName) => set({ userName }),
+  setIntroState: (introState) => set({ introState }),
 
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
@@ -105,6 +110,12 @@ const useScreenStore = create((set) => ({
       }
 
       return Object.keys(updates).length ? updates : state;
+    });
+  },
+
+  handleNewMobileIntro: (data) => {
+    set((state) => {
+      return { introState: data.introState };
     });
   },
 

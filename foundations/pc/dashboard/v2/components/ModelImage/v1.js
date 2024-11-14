@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import TypewriterText from "./TypewriterText";
-import { TIFFANY_BLUE } from "../utils/constants";
+import TypewriterText from "../TypewriterText";
+import { TIFFANY_BLUE } from "../../utils/constants";
 
 const ImageContainer = styled.div`
   display: flex;
