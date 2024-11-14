@@ -109,8 +109,6 @@ function ModelList({ initialModels, socket, mobileId }) {
     if (activeIndex === null || !socket?.current) return;
 
     const activeModel = models[activeIndex];
-    console.log(currentIndex);
-    console.log(activeModel);
 
     try {
       socket.current.emit("mobile-new-architecture", {

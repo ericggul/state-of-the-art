@@ -10,12 +10,6 @@ import { DEFAULT_MODEL } from "./utils/constants";
 import { getModelData } from "./utils/dataProcessor";
 import ModelImage from "./components/ModelImage/v1";
 
-//here read csv from the route and parse it into json
-const FILE_URL = "/db/1113.csv";
-
-const DEFAULT_IMAGE =
-  "https://via.placeholder.com/300x200.png?text=Model+Architecture";
-
 // Card Component
 const Card = ({ title, children }) => (
   <S.Card>

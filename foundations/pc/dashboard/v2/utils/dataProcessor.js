@@ -136,7 +136,7 @@ const convertCsvRowToModel = (row, currentArchitecture) => {
 
 export async function getModelData(currentArchitecture) {
   try {
-    const csvData = await readCsv("/db/1113.csv");
+    const csvData = await readCsv("/db/1114.csv");
     const matchingRow = csvData.find(
       (row) =>
         row.name === currentArchitecture.name &&
