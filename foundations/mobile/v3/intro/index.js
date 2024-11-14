@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 
@@ -7,14 +7,17 @@ export default function Intro({ socket, onAccelerometerActivate }) {
   const [username, setUsername] = useState("");
   const { supportsDeviceOrientation, permission } = useAccelerometer();
 
-  // Detect if device is iOS
-  const isIOS =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  // Memoize iOS detection
+  const isIOS = useMemo(
+    () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+    []
+  );
 
   // Emit intro state changes
   useEffect(() => {
-    if (socket?.current) {
-      socket.current.emit("mobile-new-intro", {
+    const currentSocket = socket?.current;
+    if (currentSocket) {
+      currentSocket.emit("mobile-new-intro", {
         type: "state_change",
         introState,
       });
@@ -24,12 +27,12 @@ export default function Intro({ socket, onAccelerometerActivate }) {
   const handleUsernameSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (username.trim()) {
-        // Emit username submission
+      const trimmedUsername = username.trim();
+      if (trimmedUsername) {
         if (socket?.current) {
           socket.current.emit("mobile-new-intro", {
             type: "username_submit",
-            username: username.trim(),
+            username: trimmedUsername,
           });
         }
         setIntroState(2);
@@ -38,16 +41,18 @@ export default function Intro({ socket, onAccelerometerActivate }) {
     [username, socket]
   );
 
-  const handleAccelerometerActivation = async () => {
+  const handleAccelerometerActivation = useCallback(async () => {
     try {
-      // Check if device supports motion sensors
-      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) {
+      const hasMotionSupport =
+        window.DeviceOrientationEvent || window.DeviceMotionEvent;
+      if (!hasMotionSupport) {
         alert("Sorry, your device does not support motion sensors");
         return;
       }
 
-      // For iOS devices
-      if (typeof DeviceMotionEvent.requestPermission === "function") {
+      const isIOSPermissionAPI =
+        typeof DeviceMotionEvent.requestPermission === "function";
+      if (isIOSPermissionAPI) {
         const permission = await DeviceMotionEvent.requestPermission();
         if (permission === "granted") {
           onAccelerometerActivate(true);
@@ -55,51 +60,51 @@ export default function Intro({ socket, onAccelerometerActivate }) {
           alert("Permission denied for motion sensors");
         }
       } else {
-        // For Android and devices that don't need explicit permission
         onAccelerometerActivate(true);
       }
     } catch (error) {
       console.error("Error activating accelerometer:", error);
       alert("Error activating motion sensors. Please try again.");
     }
-  };
+  }, [onAccelerometerActivate]);
 
-  console.log("supportsDeviceOrientation:", supportsDeviceOrientation);
-  console.log("permission:", permission);
+  const renderIntroForm = () => (
+    <S.IntroForm onSubmit={handleUsernameSubmit}>
+      <S.IntroTitle>Welcome to Neural Network Explorer</S.IntroTitle>
+      <S.IntroInput
+        type="text"
+        placeholder="Enter your name"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+        minLength={2}
+        maxLength={20}
+      />
+      <S.IntroButton type="submit" disabled={!username.trim()}>
+        Continue
+      </S.IntroButton>
+    </S.IntroForm>
+  );
+
+  const renderAccelerometerContent = () => (
+    <S.IntroContent>
+      <S.IntroTitle>Hi, {username}!</S.IntroTitle>
+      <S.IntroText>
+        To explore neural networks, we need access to your device's
+        accelerometer.
+      </S.IntroText>
+      <S.ActivateButton
+        onClick={handleAccelerometerActivation}
+        disabled={isIOS && permission === "denied"}
+      >
+        Activate Accelerometer
+      </S.ActivateButton>
+    </S.IntroContent>
+  );
 
   return (
     <S.IntroContainer>
-      {introState === 1 ? (
-        <S.IntroForm onSubmit={handleUsernameSubmit}>
-          <S.IntroTitle>Welcome to Neural Network Explorer</S.IntroTitle>
-          <S.IntroInput
-            type="text"
-            placeholder="Enter your name"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            minLength={2}
-            maxLength={20}
-          />
-          <S.IntroButton type="submit" disabled={!username.trim()}>
-            Continue
-          </S.IntroButton>
-        </S.IntroForm>
-      ) : (
-        <S.IntroContent>
-          <S.IntroTitle>Hi, {username}!</S.IntroTitle>
-          <S.IntroText>
-            To explore neural networks, we need access to your device's
-            accelerometer.
-          </S.IntroText>
-          <S.ActivateButton
-            onClick={handleAccelerometerActivation}
-            disabled={isIOS && permission === "denied"}
-          >
-            Activate Accelerometer
-          </S.ActivateButton>
-        </S.IntroContent>
-      )}
+      {introState === 1 ? renderIntroForm() : renderAccelerometerContent()}
     </S.IntroContainer>
   );
 }

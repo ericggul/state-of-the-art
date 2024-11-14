@@ -69,6 +69,7 @@ export default function Visualisation({ isTesting = false }) {
         {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
         {!isProjector && <PostProcessing />}
         <TransitionPostProcessing />
+        <Perf />
         {/* <PositionalAudio distance={200} /> */}
       </Suspense>
     </Canvas>
