@@ -54,6 +54,7 @@ export default function mobileSetup({ socket, io }) {
   });
 
   socket.on("mobile-new-intro", (data) => {
+    console.log("57", data);
     socket.to("screen").emit("new-mobile-intro", data);
   });
 

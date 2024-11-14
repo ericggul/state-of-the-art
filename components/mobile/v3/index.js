@@ -27,6 +27,7 @@ export default function Mobile() {
     <>
       {!isAccelerometerActive && (
         <Intro
+          socket={socket}
           onAccelerometerActivate={setIsAccelerometerActive}
           onUsernameSubmit={setUsername}
         />
@@ -35,6 +36,7 @@ export default function Mobile() {
         <UI socket={socket} mobileId={mobileId} username={username} />
       )}
       <AccelerometerHandler
+        socket={socket}
         mobileId={mobileId}
         isAccelerometerActive={isAccelerometerActive}
       />

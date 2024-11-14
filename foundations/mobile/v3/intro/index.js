@@ -1,35 +1,81 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 
-export default function Intro({ onAccelerometerActivate }) {
+export default function Intro({ socket, onAccelerometerActivate }) {
   const [introState, setIntroState] = useState(1);
   const [username, setUsername] = useState("");
   const { supportsDeviceOrientation, permission, requestAccess } =
     useAccelerometer();
 
+  // Emit intro state changes
+  useEffect(() => {
+    if (socket?.current) {
+      socket.current.emit("mobile-new-intro", {
+        type: "state_change",
+        introState,
+      });
+    }
+  }, [introState, socket]);
+
   const handleUsernameSubmit = useCallback(
     (e) => {
       e.preventDefault();
       if (username.trim()) {
+        // Emit username submission
+        if (socket?.current) {
+          socket.current.emit("mobile-new-intro", {
+            type: "username_submit",
+            username: username.trim(),
+          });
+        }
         setIntroState(2);
       }
     },
-    [username]
+    [username, socket]
   );
 
   const handleActivateAccelerometer = useCallback(async () => {
     if (supportsDeviceOrientation) {
       const granted = await requestAccess();
       if (granted) {
+        // Emit accelerometer activation
+        if (socket?.current) {
+          socket.current.emit("mobile-new-intro", {
+            type: "accelerometer_activation",
+            granted: true,
+            supportsDeviceOrientation,
+          });
+        }
         onAccelerometerActivate(true);
       } else {
+        // Emit accelerometer denial
+        if (socket?.current) {
+          socket.current.emit("mobile-new-intro", {
+            type: "accelerometer_activation",
+            granted: false,
+            supportsDeviceOrientation,
+          });
+        }
         alert("Permission denied for accelerometer access");
       }
     } else {
+      // Emit accelerometer activation for non-supporting devices
+      if (socket?.current) {
+        socket.current.emit("mobile-new-intro", {
+          type: "accelerometer_activation",
+          granted: true,
+          supportsDeviceOrientation: false,
+        });
+      }
       onAccelerometerActivate(true);
     }
-  }, [supportsDeviceOrientation, requestAccess, onAccelerometerActivate]);
+  }, [
+    supportsDeviceOrientation,
+    requestAccess,
+    onAccelerometerActivate,
+    socket,
+  ]);
 
   return (
     <S.IntroContainer>

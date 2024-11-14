@@ -114,8 +114,25 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewMobileIntro: (data) => {
+    console.log("117", data);
     set((state) => {
-      return { introState: data.introState };
+      const updates = {};
+
+      switch (data.type) {
+        case "state_change":
+          if (state.introState !== data.introState) {
+            updates.introState = data.introState;
+          }
+          break;
+
+        case "username_submit":
+          if (state.userName !== data.username) {
+            updates.userName = data.username;
+          }
+          break;
+      }
+
+      return Object.keys(updates).length ? updates : state;
     });
   },
 

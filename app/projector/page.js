@@ -43,7 +43,12 @@ function ScreenContent({ test }) {
     setDeviceIndex,
     stage,
     isTransition,
+    introState,
+    userName,
   } = useScreenStore();
+
+  console.log("introState", introState);
+  console.log("userName", userName);
 
   useEffect(() => {
     setIsProjector(true);
