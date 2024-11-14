@@ -37,34 +37,10 @@ const AccelerometerHandler = ({ mobileId, isAccelerometerActive }) => {
       });
     };
 
-    const requestPermission = async () => {
-      if (typeof DeviceOrientationEvent.requestPermission === "function") {
-        // iOS permission request
-        try {
-          const permission = await DeviceOrientationEvent.requestPermission();
-          if (permission !== "granted") {
-            console.error("Permission not granted");
-            return false;
-          }
-        } catch (error) {
-          console.error("Error requesting permission:", error);
-          return false;
-        }
-      }
-      return true; // Android doesn't need explicit permission or doesn't support the API
-    };
-
-    const setupSensors = async () => {
-      if (isAccelerometerActive) {
-        const hasPermission = await requestPermission();
-        if (hasPermission) {
-          window.addEventListener("deviceorientation", orientationDetector);
-          window.addEventListener("devicemotion", accelerationDetector);
-        }
-      }
-    };
-
-    setupSensors();
+    if (isAccelerometerActive) {
+      window.addEventListener("deviceorientation", orientationDetector);
+      window.addEventListener("devicemotion", accelerationDetector);
+    }
 
     return () => {
       window.removeEventListener("deviceorientation", orientationDetector);

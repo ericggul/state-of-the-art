@@ -5,8 +5,11 @@ import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 export default function Intro({ socket, onAccelerometerActivate }) {
   const [introState, setIntroState] = useState(1);
   const [username, setUsername] = useState("");
-  const { supportsDeviceOrientation, permission, requestAccess } =
-    useAccelerometer();
+  const { supportsDeviceOrientation, permission } = useAccelerometer();
+
+  // Detect if device is iOS
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   // Emit intro state changes
   useEffect(() => {
@@ -35,47 +38,34 @@ export default function Intro({ socket, onAccelerometerActivate }) {
     [username, socket]
   );
 
-  const handleActivateAccelerometer = useCallback(async () => {
-    if (supportsDeviceOrientation) {
-      const granted = await requestAccess();
-      if (granted) {
-        // Emit accelerometer activation
-        if (socket?.current) {
-          socket.current.emit("mobile-new-intro", {
-            type: "accelerometer_activation",
-            granted: true,
-            supportsDeviceOrientation,
-          });
+  const handleAccelerometerActivation = async () => {
+    try {
+      // Check if device supports motion sensors
+      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) {
+        alert("Sorry, your device does not support motion sensors");
+        return;
+      }
+
+      // For iOS devices
+      if (typeof DeviceMotionEvent.requestPermission === "function") {
+        const permission = await DeviceMotionEvent.requestPermission();
+        if (permission === "granted") {
+          onAccelerometerActivate(true);
+        } else {
+          alert("Permission denied for motion sensors");
         }
-        onAccelerometerActivate(true);
       } else {
-        // Emit accelerometer denial
-        if (socket?.current) {
-          socket.current.emit("mobile-new-intro", {
-            type: "accelerometer_activation",
-            granted: false,
-            supportsDeviceOrientation,
-          });
-        }
-        alert("Permission denied for accelerometer access");
+        // For Android and devices that don't need explicit permission
+        onAccelerometerActivate(true);
       }
-    } else {
-      // Emit accelerometer activation for non-supporting devices
-      if (socket?.current) {
-        socket.current.emit("mobile-new-intro", {
-          type: "accelerometer_activation",
-          granted: true,
-          supportsDeviceOrientation: false,
-        });
-      }
-      onAccelerometerActivate(true);
+    } catch (error) {
+      console.error("Error activating accelerometer:", error);
+      alert("Error activating motion sensors. Please try again.");
     }
-  }, [
-    supportsDeviceOrientation,
-    requestAccess,
-    onAccelerometerActivate,
-    socket,
-  ]);
+  };
+
+  console.log("supportsDeviceOrientation:", supportsDeviceOrientation);
+  console.log("permission:", permission);
 
   return (
     <S.IntroContainer>
@@ -103,8 +93,8 @@ export default function Intro({ socket, onAccelerometerActivate }) {
             accelerometer.
           </S.IntroText>
           <S.ActivateButton
-            onClick={handleActivateAccelerometer}
-            disabled={!supportsDeviceOrientation && permission}
+            onClick={handleAccelerometerActivation}
+            disabled={isIOS && permission === "denied"}
           >
             Activate Accelerometer
           </S.ActivateButton>
