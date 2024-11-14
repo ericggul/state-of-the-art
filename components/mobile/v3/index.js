@@ -9,6 +9,7 @@ import useVisibilityCheck from "@/utils/hooks/useVisibilityCheck";
 
 export default function Mobile() {
   const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
+  const [username, setUsername] = useState("");
   const mobileId = useMemo(() => "DUMMY", []);
 
   const handleNewResponse = useCallback((data) => {
@@ -25,11 +26,15 @@ export default function Mobile() {
   return (
     <>
       {!isAccelerometerActive && (
-        <Intro onAccelerometerActivate={setIsAccelerometerActive} />
+        <Intro
+          onAccelerometerActivate={setIsAccelerometerActive}
+          onUsernameSubmit={setUsername}
+        />
       )}
-      {isAccelerometerActive && <UI socket={socket} mobileId={mobileId} />}
+      {isAccelerometerActive && (
+        <UI socket={socket} mobileId={mobileId} username={username} />
+      )}
       <AccelerometerHandler
-        mainSocket={socket}
         mobileId={mobileId}
         isAccelerometerActive={isAccelerometerActive}
       />

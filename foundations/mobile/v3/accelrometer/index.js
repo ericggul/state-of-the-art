@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
 // import useAccSpikeTracker from "@/utils/hooks/orientation/useAccSpikeTracker";
 
-const AccelerometerHandler = ({
-  mainSocket,
-  mobileId,
-  isAccelerometerActive,
-}) => {
+const AccelerometerHandler = ({ mobileId, isAccelerometerActive }) => {
   const [orientation, setOrientation] = useState({
     alpha: 0,
     beta: 0,
@@ -14,14 +10,14 @@ const AccelerometerHandler = ({
   });
   const [acceleration, setAcceleration] = useState({ x: 0, y: 0, z: 0 });
 
-  const orientationSocket = useSocketMobileOrientation({
+  const socket = useSocketMobileOrientation({
     mobileId,
     isAccelerometerActive,
   });
 
   // const { spike, spikeCount } = useAccSpikeTracker({
   //   accData: acceleration,
-  //   orientationSocket,
+  //   socket,
   // });
 
   useEffect(() => {
@@ -53,9 +49,9 @@ const AccelerometerHandler = ({
   }, [isAccelerometerActive]);
 
   useEffect(() => {
-    if (isAccelerometerActive && orientationSocket.current) {
+    if (isAccelerometerActive && socket.current) {
       try {
-        orientationSocket.current.emit("mobile-orientation-update", {
+        socket.current.emit("mobile-orientation-update", {
           mobileId,
           orientation,
           acceleration,
@@ -64,15 +60,9 @@ const AccelerometerHandler = ({
         console.error("Error emitting orientation update:", e);
       }
     }
-  }, [
-    orientation,
-    acceleration,
-    isAccelerometerActive,
-    mobileId,
-    orientationSocket,
-  ]);
+  }, [orientation, acceleration, isAccelerometerActive, mobileId, socket]);
 
-  return null; // This is now a purely logical component
+  return null;
 };
 
 export default AccelerometerHandler;
