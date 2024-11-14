@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import ModelDiagram from "./components/ModelDiagram";
@@ -38,6 +38,15 @@ export default function Dashboard() {
   const currentModel = model || DEFAULT_MODEL;
   console.log(currentModel);
 
+  const hasPerformanceData = useCallback((model) => {
+    return (
+      model?.performance?.labels?.length > 0 &&
+      model?.performance?.data?.length > 0 &&
+      Array.isArray(model.performance.labels) &&
+      Array.isArray(model.performance.data)
+    );
+  }, []);
+
   return (
     <S.Container>
       <S.Header>
@@ -64,9 +73,11 @@ export default function Dashboard() {
           <ModelDiagram model={currentModel} />
         </Card>
 
-        <Card title="Performance Metrics">
-          <PerformanceChart performance={currentModel.performance} />
-        </Card>
+        {hasPerformanceData(currentModel) && (
+          <Card title="Performance Metrics">
+            <PerformanceChart performance={currentModel.performance} />
+          </Card>
+        )}
 
         <Card title="Model Features">
           <ModelFeatures model={currentModel} />

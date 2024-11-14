@@ -36,33 +36,40 @@ const parseArrayField = (field) => {
     if (Array.isArray(field)) return field;
 
     if (typeof field === "string") {
-      let cleaned = field.trim();
-
-      // Replace different quote styles with double quotes
-      cleaned = cleaned.replace(/[`'“”‘’]/g, '"');
-
-      // Handle edge cases with misplaced brackets or quotes
-      if (!cleaned.startsWith("[")) cleaned = `[${cleaned}`;
-      if (!cleaned.endsWith("]")) cleaned = `${cleaned}]`;
-
-      // Attempt to parse the cleaned string
-      try {
-        return JSON.parse(cleaned);
-      } catch (jsonError) {
-        // Fallback: Split manually
-        return cleaned
-          .replace(/^\[|\]$/g, "") // Remove outer brackets
-          .split(",")
-          .map(
-            (item) => item.trim().replace(/^"|"$/g, "") // Remove leading and trailing quotes
-          );
+      if (field.startsWith("[") && field.endsWith("]")) {
+        const cleaned = field.replace(/[`'“”‘’]/g, '"');
+        try {
+          return JSON.parse(cleaned);
+        } catch {
+          return cleaned
+            .slice(1, -1) // Remove outer [ ]
+            .split(",")
+            .map(
+              (item) => item.trim().replace(/^"|"$/g, "") // Remove leading and trailing quotes
+            );
+        }
       }
+
+      // For other string cases, attempt JSON parsing
+      return JSON.parse(field);
     }
 
     // Return the field as-is if it's neither an array nor a string
     return field;
   } catch (error) {
-    console.error("Error parsing array field:", error);
+    // Final fallback: split the string manually
+    if (field.startsWith("[") && field.endsWith("]")) {
+      return field
+        .slice(1, -1)
+        .split(",")
+        .map(
+          (item) =>
+            item
+              .trim()
+              .replace(/[`'“”‘’]/g, "")
+              .replace(/^"|"$/g, "") // Remove quotes
+        );
+    }
     return [];
   }
 };
