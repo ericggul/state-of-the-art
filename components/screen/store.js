@@ -5,6 +5,8 @@ const useScreenStore = create((set) => ({
   latestSpeech: "",
   mobileVisibility: null,
   stage: "Idle",
+  iteration: 0,
+
   isTransition: false,
   isProjector: true,
   zoomFactor: 1,
@@ -79,8 +81,13 @@ const useScreenStore = create((set) => ({
 
       const updates = {};
 
-      console.log("state", state, data.isVisible);
-      updates.mobileVisibility = data.isVisible;
+      if (state.mobileVisibility !== data.isVisible) {
+        updates.mobileVisibility = data.isVisible;
+
+        if (data.isVisible && !state.mobileVisibility) {
+          updates.iteration = state.iteration + 1;
+        }
+      }
 
       console.log("updates", updates);
       return Object.keys(updates).length ? updates : state;

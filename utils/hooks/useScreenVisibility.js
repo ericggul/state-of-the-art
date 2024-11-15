@@ -1,6 +1,9 @@
 import { Suspense, useEffect, useState, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
 
+const TIMEOUT_TRANSITION = 7000;
+const TIMEOUT_BACKEND = 9000;
+
 export default function useScreenVisibility() {
   const {
     mobileVisibility,
@@ -8,6 +11,7 @@ export default function useScreenVisibility() {
     setStage,
     stage,
     setIsTransition,
+    iteration,
     isTransition,
   } = useScreenStore();
 
@@ -25,15 +29,15 @@ export default function useScreenVisibility() {
       setIsTransition(true);
       timeoutRef1.current = setTimeout(() => {
         setIsTransition(false);
-      }, 5000);
+      }, TIMEOUT_TRANSITION);
       timeoutRef2.current = setTimeout(() => {
         setStage("Backend");
-      }, 7000);
+      }, TIMEOUT_BACKEND);
       timeoutRef3.current = setTimeout(
         () => {
           setStage(null);
         },
-        isProjector ? 3000 : 300
+        isProjector ? TIMEOUT_TRANSITION - 2000 : 300
       );
     }
 

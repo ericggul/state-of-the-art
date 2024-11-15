@@ -21,11 +21,12 @@ const BlueEl = memo(function BlueEl() {
 const Transition = memo(function Transition() {
   const [activate, setActivate] = useState(false);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const iteration = useScreenStore((state) => state.iteration);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setActivate(true);
-    }, 300 + deviceIndex * 300);
+    }, 500 + deviceIndex * 600);
 
     return () => clearTimeout(timeout);
   }, [deviceIndex]);

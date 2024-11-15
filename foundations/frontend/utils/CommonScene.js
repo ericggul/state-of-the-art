@@ -13,7 +13,6 @@ const HAL_9000_LIGHT = {
 };
 
 export default function CommonScene({ children, style }) {
-  console.log("style", style.lighting.environment);
   return (
     <>
       <Suspense fallback={null}>

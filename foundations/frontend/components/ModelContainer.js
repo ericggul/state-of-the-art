@@ -41,8 +41,6 @@ const ModelContainer = memo(
     const isProjector = useScreenStore((state) => state.isProjector);
     const modelConfig = LAYER_CONFIGS[modelName];
 
-    console.log("44", modelName, structure);
-
     const { ModelComponent, typeStyle } = useMemo(() => {
       if (!modelConfig) {
         console.warn(
