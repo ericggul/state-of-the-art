@@ -3,7 +3,7 @@ import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 
 export default function Intro({ socket, onAccelerometerActivate }) {
-  const [introState, setIntroState] = useState(1);
+  const [introState, setIntroState] = useState(0);
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const { supportsDeviceOrientation, permission } = useAccelerometer();
@@ -48,15 +48,15 @@ export default function Intro({ socket, onAccelerometerActivate }) {
   );
 
   // Emit intro state changes
-  useEffect(() => {
-    const currentSocket = socket?.current;
-    if (currentSocket) {
-      currentSocket.emit("mobile-new-intro", {
-        type: "state_change",
-        introState,
-      });
-    }
-  }, [introState, socket]);
+  // useEffect(() => {
+  //   const currentSocket = socket?.current;
+  //   if (currentSocket) {
+  //     currentSocket.emit("mobile-new-intro", {
+  //       type: "state_change",
+  //       introState,
+  //     });
+  //   }
+  // }, [introState, socket]);
 
   const handleUsernameSubmit = useCallback(
     (e) => {
@@ -75,7 +75,7 @@ export default function Intro({ socket, onAccelerometerActivate }) {
           username: trimmedUsername,
         });
       }
-      setIntroState(2);
+      setIntroState(1);
     },
     [username, socket, validateUsername]
   );
@@ -94,18 +94,35 @@ export default function Intro({ socket, onAccelerometerActivate }) {
       if (isIOSPermissionAPI) {
         const permission = await DeviceMotionEvent.requestPermission();
         if (permission === "granted") {
+          emitAccelerometerActivation();
           onAccelerometerActivate(true);
         } else {
           alert("Permission denied for motion sensors");
+
+          ////TO DO: WHICH LOGIC HERE?
+          emitAccelerometerActivation();
+          onAccelerometerActivate(true);
         }
       } else {
+        emitAccelerometerActivation();
         onAccelerometerActivate(true);
       }
     } catch (error) {
       console.error("Error activating accelerometer:", error);
-      alert("Error activating motion sensors. Please try again.");
+      alert("Error activating motion sensors.");
+
+      ////TO DO: WHICH LOGIC HERE?
+      emitAccelerometerActivation();
+      onAccelerometerActivate(true);
     }
   }, [onAccelerometerActivate]);
+
+  function emitAccelerometerActivation() {
+    socket.current.emit("mobile-new-intro", {
+      type: "accelerometer_activation",
+      activated: true,
+    });
+  }
 
   const renderIntroForm = () => (
     <S.IntroForm onSubmit={handleUsernameSubmit}>
@@ -146,7 +163,7 @@ export default function Intro({ socket, onAccelerometerActivate }) {
 
   return (
     <S.IntroContainer>
-      {introState === 1 ? renderIntroForm() : renderAccelerometerContent()}
+      {introState === 0 ? renderIntroForm() : renderAccelerometerContent()}
     </S.IntroContainer>
   );
 }

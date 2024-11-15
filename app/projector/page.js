@@ -44,7 +44,6 @@ function ScreenContent({ test }) {
     stage,
     isTransition,
     introState,
-    userName,
   } = useScreenStore();
 
   useEffect(() => {
