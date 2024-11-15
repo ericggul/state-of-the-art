@@ -20,8 +20,6 @@ export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
 
 // const INITIAL_TEXT = `Resist the algorithms, embrace the chaos.`;
 
-const INITIAL_TEXT = `Humans should be substituted by AI.`;
-
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 export default function useConversation() {
   const {
@@ -37,6 +35,12 @@ export default function useConversation() {
   } = useStore();
 
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const userName = useScreenStore((state) => state.userName) || "Jeanyoon";
+  const INITIAL_TEXT = useMemo(
+    () =>
+      `${userName} is stupid to leave the State-of-the-Art Gallery in 2 minutes 53 seconds.`,
+    [userName]
+  );
   const timeScale = useMemo(
     () => (deviceIndex >= 0 && deviceIndex <= 4 ? deviceIndex / 4 : 1),
     [deviceIndex]
@@ -75,7 +79,8 @@ export default function useConversation() {
 
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.2);
+      //originally 1.2
+      const temperature = Math.min(0.7 + (loop / 10) * 0.5, 1.9);
 
       // const endpoint =
       //   level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
@@ -83,7 +88,7 @@ export default function useConversation() {
       const maxTokens = level >= 5 ? 27 : 22;
       const response = await axios.post(endpoint, {
         text,
-        params: { temperature: temperature },
+        params: { temperature: temperature, userName },
         maxTokens,
       });
 

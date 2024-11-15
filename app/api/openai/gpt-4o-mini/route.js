@@ -13,9 +13,7 @@ export async function POST(req) {
       messages: [
         {
           role: "system",
-          content:
-            // "Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token 30. Mention the name 'Jeanyoon' explicitly occassionally.",
-            `Generate next sentence of this meaningless poem. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}.`,
+          content: `Generate next sentence arguing the stupidity of ${params.userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Mention the name ${params.userName} explicitly.`,
         },
         {
           role: "user",
@@ -25,7 +23,7 @@ export async function POST(req) {
       max_tokens: maxTokens + 5,
       logprobs: true,
       top_logprobs: 20,
-      ...params,
+      temperature: params.temperature,
     });
 
     return Response.json(completion.choices[0]);
