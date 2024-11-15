@@ -89,7 +89,7 @@ function RelationPageContent({ idx, test }) {
     <>
       {stage === "Frontend" && <FrontendComponent />}
       {stage === "Intro" && <Intro />}
-      {(stage === "Idle" || stage === "Frontend") && (
+      {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}
       {stage === "Backend" && <Backend />}

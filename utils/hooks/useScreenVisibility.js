@@ -1,8 +1,13 @@
-import { Suspense, useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
+import { iterationSpeedMultiplier } from "@/utils/function/iterationSpeedMultiplier";
 
-const TIMEOUT_TRANSITION = 7000;
-const TIMEOUT_BACKEND = 9000;
+const TIMEOUTS = {
+  TRANSITION: 7000,
+  BACKEND: 9000,
+  PROJECTOR_OFFSET: 2000,
+  MOBILE_RESET: 500,
+};
 
 export default function useScreenVisibility() {
   const {
@@ -12,45 +17,63 @@ export default function useScreenVisibility() {
     stage,
     setIsTransition,
     iteration,
-    isTransition,
   } = useScreenStore();
 
-  const timeoutRef1 = useRef(null);
-  const timeoutRef2 = useRef(null);
-  const timeoutRef3 = useRef(null);
-
+  const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
+
+  // Clear all timeouts helper
+  const clearTimeouts = () => {
+    Object.values(timeouts.current).forEach((timeout) => {
+      if (timeout) clearTimeout(timeout);
+    });
+  };
+
+  // Schedule state changes helper
+  const scheduleStateChanges = () => {
+    const multiplier = iterationSpeedMultiplier(iteration);
+
+    setIsTransition(true);
+
+    console.log(TIMEOUTS.TRANSITION * multiplier);
+    // Schedule transition end
+    timeouts.current.transition = setTimeout(() => {
+      setIsTransition(false);
+    }, TIMEOUTS.TRANSITION * multiplier);
+
+    // Schedule backend stage
+    timeouts.current.backend = setTimeout(() => {
+      setStage("Backend");
+    }, TIMEOUTS.BACKEND * multiplier);
+
+    // Schedule stage reset
+    const resetDelay = isProjector
+      ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
+      : TIMEOUTS.MOBILE_RESET;
+
+    timeouts.current.reset = setTimeout(() => {
+      setStage(null);
+    }, resetDelay * multiplier);
+  };
+
+  // Handle frontend state
+  const setFrontendState = () => {
+    setStage("Frontend");
+    setIsTransition(false);
+  };
+
   useEffect(() => {
     if (isStageIdle) return;
-    if (mobileVisibility) {
-      setStage("Frontend");
-      setIsTransition(false);
-    } else {
-      setIsTransition(true);
-      timeoutRef1.current = setTimeout(() => {
-        setIsTransition(false);
-      }, TIMEOUT_TRANSITION);
-      timeoutRef2.current = setTimeout(() => {
-        setStage("Backend");
-      }, TIMEOUT_BACKEND);
-      timeoutRef3.current = setTimeout(
-        () => {
-          setStage(null);
-        },
-        isProjector ? TIMEOUT_TRANSITION - 2000 : 300
-      );
-    }
 
-    return () => {
-      if (timeoutRef1.current) {
-        clearTimeout(timeoutRef1.current);
-      }
-      if (timeoutRef2.current) {
-        clearTimeout(timeoutRef2.current);
-      }
-      if (timeoutRef3.current) {
-        clearTimeout(timeoutRef3.current);
-      }
-    };
-  }, [isStageIdle, mobileVisibility, isProjector]);
+    // Clear any existing timeouts
+    clearTimeouts();
+
+    // Set new state based on visibility
+    mobileVisibility ? setFrontendState() : scheduleStateChanges();
+
+    // Cleanup on unmount or deps change
+    return clearTimeouts;
+  }, [isStageIdle, mobileVisibility, isProjector, iteration]);
+
+  return null;
 }

@@ -77,7 +77,7 @@ function ScreenContent({ test }) {
     <Suspense>
       {stage === "Frontend" && <Frontend type="projector" />}
       {stage === "Frontend" && <Intro />}
-      {(stage === "Idle" || stage === "Frontend") && (
+      {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
       {stage === "Backend" && <Backend />}

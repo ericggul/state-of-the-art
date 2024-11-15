@@ -1,9 +1,11 @@
 import * as S from "./styles";
 import { memo, useEffect, useState } from "react";
-
 import useScreenStore from "@/components/screen/store";
+import { iterationSpeedMultiplier } from "@/utils/function/iterationSpeedMultiplier";
 
 const audioURL = "/audio/beep.mp3";
+const BASE_DELAY = 500;
+const DEVICE_DELAY_MULTIPLIER = 600;
 
 const BlueEl = memo(function BlueEl() {
   useEffect(() => {
@@ -24,9 +26,12 @@ const Transition = memo(function Transition() {
   const iteration = useScreenStore((state) => state.iteration);
 
   useEffect(() => {
+    const baseDelay = BASE_DELAY + deviceIndex * DEVICE_DELAY_MULTIPLIER;
+    const adjustedDelay = baseDelay * iterationSpeedMultiplier(iteration);
+
     const timeout = setTimeout(() => {
       setActivate(true);
-    }, 500 + deviceIndex * 600);
+    }, adjustedDelay);
 
     return () => clearTimeout(timeout);
   }, [deviceIndex]);
