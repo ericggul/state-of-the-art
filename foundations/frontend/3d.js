@@ -66,7 +66,7 @@ export default function Visualisation({ isTesting = false }) {
           structure={structure}
           modelGroupRef={modelGroupRef}
         />
-        {!isTesting && <OrientationCamera cameraDistance={cameraDistance} />}
+        <OrientationCamera cameraDistance={cameraDistance} />
         {!isProjector && <PostProcessing />}
         <TransitionPostProcessing />
         <Perf />

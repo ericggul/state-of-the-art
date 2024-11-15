@@ -5,12 +5,46 @@ import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 export default function Intro({ socket, onAccelerometerActivate }) {
   const [introState, setIntroState] = useState(1);
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
   const { supportsDeviceOrientation, permission } = useAccelerometer();
 
   // Memoize iOS detection
   const isIOS = useMemo(
     () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
     []
+  );
+
+  // Validate username
+  const validateUsername = useCallback((value) => {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue.length < 2) {
+      return "Name must be at least 2 characters long";
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(trimmedValue)) {
+      return "Please use only Latin letters";
+    }
+
+    return "";
+  }, []);
+
+  // Handle input change
+  const handleUsernameChange = useCallback(
+    (e) => {
+      const newValue = e.target.value;
+      setUsername(newValue);
+      setError(validateUsername(newValue));
+
+      // Emit username update
+      if (socket?.current) {
+        socket.current.emit("mobile-new-intro", {
+          type: "username_update",
+          username: newValue.trim(),
+        });
+      }
+    },
+    [validateUsername, socket]
   );
 
   // Emit intro state changes
@@ -28,17 +62,22 @@ export default function Intro({ socket, onAccelerometerActivate }) {
     (e) => {
       e.preventDefault();
       const trimmedUsername = username.trim();
-      if (trimmedUsername) {
-        if (socket?.current) {
-          socket.current.emit("mobile-new-intro", {
-            type: "username_submit",
-            username: trimmedUsername,
-          });
-        }
-        setIntroState(2);
+      const validationError = validateUsername(trimmedUsername);
+
+      if (validationError) {
+        setError(validationError);
+        return;
       }
+
+      if (socket?.current) {
+        socket.current.emit("mobile-new-intro", {
+          type: "username_submit",
+          username: trimmedUsername,
+        });
+      }
+      setIntroState(2);
     },
-    [username, socket]
+    [username, socket, validateUsername]
   );
 
   const handleAccelerometerActivation = useCallback(async () => {
@@ -71,16 +110,19 @@ export default function Intro({ socket, onAccelerometerActivate }) {
   const renderIntroForm = () => (
     <S.IntroForm onSubmit={handleUsernameSubmit}>
       <S.IntroTitle>Welcome to Neural Network Explorer</S.IntroTitle>
-      <S.IntroInput
-        type="text"
-        placeholder="Enter your name"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-        minLength={2}
-        maxLength={20}
-      />
-      <S.IntroButton type="submit" disabled={!username.trim()}>
+      <div style={{ width: "100%" }}>
+        <S.IntroInput
+          type="text"
+          placeholder="Enter your name"
+          value={username}
+          onChange={handleUsernameChange}
+          required
+          maxLength={20}
+          aria-invalid={!!error}
+        />
+        {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+      </div>
+      <S.IntroButton type="submit" disabled={!username.trim() || !!error}>
         Continue
       </S.IntroButton>
     </S.IntroForm>

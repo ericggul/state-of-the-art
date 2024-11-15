@@ -62,6 +62,16 @@ export const IntroInput = styled.input`
   &::placeholder {
     color: #666;
   }
+
+  ${(props) =>
+    props["aria-invalid"] &&
+    `
+    border-color: #ff4444;
+    
+    &:focus {
+      border-color: #ff4444;
+    }
+  `}
 `;
 
 const BaseButton = styled.button`
@@ -100,4 +110,12 @@ export const ActivateButton = styled(BaseButton)`
   &:hover:not(:disabled) {
     background: #45a049;
   }
+`;
+
+export const ErrorMessage = styled.p`
+  color: #ff4444;
+  font-size: clamp(0.75rem, 3vw, 0.875rem);
+  margin: 0.5rem 0 0;
+  text-align: left;
+  width: 100%;
 `;

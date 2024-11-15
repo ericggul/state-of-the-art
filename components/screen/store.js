@@ -130,6 +130,11 @@ const useScreenStore = create((set) => ({
             updates.userName = data.username;
           }
           break;
+        case "username_update":
+          if (state.userName !== data.username) {
+            updates.userName = data.username;
+          }
+          break;
       }
 
       return Object.keys(updates).length ? updates : state;

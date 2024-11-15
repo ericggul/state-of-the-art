@@ -1,5 +1,9 @@
 import React, { useMemo, memo } from "react";
-import { Instances, Instance } from "@react-three/drei";
+import {
+  Instances,
+  Instance,
+  MeshTransmissionMaterial,
+} from "@react-three/drei";
 
 const InstancedNodes = memo(function InstancedNodes({
   xCount,
@@ -42,6 +46,7 @@ const InstancedNodes = memo(function InstancedNodes({
           color={color}
           wireframe={!isProjector}
         />
+
         {/* <meshPhysicalMaterial
           {...style.material}
           color={color}
