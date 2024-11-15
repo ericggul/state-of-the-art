@@ -13,6 +13,7 @@ export const Controls = styled.div`
   padding: 1rem;
   background: #1a1a1a;
   border-bottom: 1px solid #333;
+  z-index: 100;
 `;
 
 export const ControlGroup = styled.div`
@@ -80,6 +81,7 @@ export const Viewport = styled.div`
   flex: 1;
   position: relative;
   overflow: hidden;
+  background: transparent;
 `;
 
 export const LevelDisplay = styled.div`

@@ -12,6 +12,8 @@ import Backend2 from "@/foundations/backend/2";
 import Backend3 from "@/foundations/backend/3";
 import Backend4 from "@/foundations/backend/4";
 
+import IframeComponent from "@/components/backend/iframe";
+
 const backends = {
   0: Backend0,
   1: Backend1,
@@ -46,6 +48,7 @@ export default function TestBackend() {
 
   return (
     <S.TestContainer>
+      <IframeComponent />
       <S.Controls>
         <S.ControlGroup>
           <S.Label>Level Control:</S.Label>
@@ -104,7 +107,7 @@ export default function TestBackend() {
         </S.ControlGroup>
       </S.Controls>
 
-      <S.Viewport style={{ background: isblack ? "black" : "white" }}>
+      <S.Viewport>
         <BackendComponent
           range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
           visible={true}

@@ -23,7 +23,8 @@ export const Container = styled.div`
   color: #fff;
   cursor: none;
 
-  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
+  // background: ${({ $isblack }) => ($isblack ? "black" : "white")};
+  background: transparent;
 `;
 
 export const Top = styled.div`

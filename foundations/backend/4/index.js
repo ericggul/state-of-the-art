@@ -201,7 +201,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}
-      style={{ opacity: visible ? 1 : 0 }}
+      style={{ opacity: visible ? 1 : 0, backgroundColor: "transparent" }}
     >
       <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer
