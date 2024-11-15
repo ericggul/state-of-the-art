@@ -9,7 +9,7 @@ export default function useVisibilityCheck({
   const [isReady, setIsReady] = useState(false);
   const isInitialized = useRef(false);
 
-  // Wait for functionality to be ready
+  // Wait for 1 second before starting any functionality
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsReady(true);
@@ -20,12 +20,19 @@ export default function useVisibilityCheck({
 
   // Handle visibility state changes
   const handleVisibilityChange = useCallback(() => {
-    const visibility = document.visibilityState === "visible";
-    setIsVisible(visibility);
+    setIsVisible(!document.hidden);
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    if (document.hidden) setIsVisible(false);
   }, []);
 
   const handlePageHide = useCallback(() => {
-    setIsVisible(false);
+    if (document.hidden) setIsVisible(false);
   }, []);
 
   const handlePageShow = useCallback(() => {
@@ -40,6 +47,8 @@ export default function useVisibilityCheck({
 
     const cleanupListeners = setupEventListeners({
       handleVisibilityChange,
+      handleFocus,
+      handleBlur,
       handlePageHide,
       handlePageShow,
     });
@@ -52,6 +61,8 @@ export default function useVisibilityCheck({
     isReady,
     isTrackingVisibility,
     handleVisibilityChange,
+    handleFocus,
+    handleBlur,
     handlePageHide,
     handlePageShow,
   ]);
@@ -73,22 +84,29 @@ export default function useVisibilityCheck({
 
   return isVisible;
 }
-
 // Event Listener Setup
 function setupEventListeners(handlers) {
   document.addEventListener(
     "visibilitychange",
     handlers.handleVisibilityChange
   );
-  window.addEventListener("pageshow", handlers.handlePageShow);
+  window.addEventListener("focus", handlers.handleFocus);
+  window.addEventListener("blur", handlers.handleBlur);
+  window.addEventListener("beforeunload", handlers.handlePageHide);
+  window.addEventListener("unload", handlers.handlePageHide);
   window.addEventListener("pagehide", handlers.handlePageHide);
+  window.addEventListener("pageshow", handlers.handlePageShow);
 
   return () => {
     document.removeEventListener(
       "visibilitychange",
       handlers.handleVisibilityChange
     );
-    window.removeEventListener("pageshow", handlers.handlePageShow);
+    window.removeEventListener("focus", handlers.handleFocus);
+    window.removeEventListener("blur", handlers.handleBlur);
+    window.removeEventListener("beforeunload", handlers.handlePageHide);
+    window.removeEventListener("unload", handlers.handlePageHide);
     window.removeEventListener("pagehide", handlers.handlePageHide);
+    window.removeEventListener("pageshow", handlers.handlePageShow);
   };
 }

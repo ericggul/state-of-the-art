@@ -24,6 +24,18 @@ export default function useVisibilityCheck({
     setIsVisible(visibility);
   }, []);
 
+  const handleFocus = useCallback(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleFocusOut = useCallback(() => {
+    setIsVisible(false);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsVisible(false);
+  }, []);
+
   const handlePageHide = useCallback(() => {
     setIsVisible(false);
   }, []);
@@ -40,9 +52,17 @@ export default function useVisibilityCheck({
 
     const cleanupListeners = setupEventListeners({
       handleVisibilityChange,
+      handleFocus,
+      handleFocusOut,
+      handleBlur,
       handlePageHide,
       handlePageShow,
     });
+
+    // Initial state check
+    if (!document.hidden) {
+      setIsVisible(true);
+    }
 
     return () => {
       cleanupListeners();
@@ -52,6 +72,9 @@ export default function useVisibilityCheck({
     isReady,
     isTrackingVisibility,
     handleVisibilityChange,
+    handleFocus,
+    handleFocusOut,
+    handleBlur,
     handlePageHide,
     handlePageShow,
   ]);
@@ -76,19 +99,39 @@ export default function useVisibilityCheck({
 
 // Event Listener Setup
 function setupEventListeners(handlers) {
+  // Add visibility change first to ensure it's triggered before other events
   document.addEventListener(
     "visibilitychange",
-    handlers.handleVisibilityChange
+    handlers.handleVisibilityChange,
+    { capture: true }
   );
-  window.addEventListener("pageshow", handlers.handlePageShow);
+  window.addEventListener("focus", handlers.handleFocus, { capture: true });
+  window.addEventListener("focusout", handlers.handleFocusOut, {
+    capture: true,
+  });
+
+  window.addEventListener("blur", handlers.handleBlur);
+  window.addEventListener("pageshow", handlers.handlePageShow, {
+    capture: true,
+  });
   window.addEventListener("pagehide", handlers.handlePageHide);
 
   return () => {
     document.removeEventListener(
       "visibilitychange",
-      handlers.handleVisibilityChange
+      handlers.handleVisibilityChange,
+      { capture: true }
     );
-    window.removeEventListener("pageshow", handlers.handlePageShow);
+    window.removeEventListener("focus", handlers.handleFocus, {
+      capture: true,
+    });
+    window.removeEventListener("focusout", handlers.handleFocusOut, {
+      capture: true,
+    });
+    window.removeEventListener("blur", handlers.handleBlur);
+    window.removeEventListener("pageshow", handlers.handlePageShow, {
+      capture: true,
+    });
     window.removeEventListener("pagehide", handlers.handlePageHide);
   };
 }
