@@ -25,11 +25,10 @@ const NAMU_LINK =
   "https://namu.wiki/w/%EC%B6%94%EC%83%81%ED%91%9C%ED%98%84%EC%A3%BC%EC%9D%98";
 const YOUTUBE_ID = "RUToUxvnv3I";
 
-export default function IframeComponent() {
+function IframeComponent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isblack = useBackendStore((state) => state.isblack);
 
-  // Change page when isblack becomes false
   useEffect(() => {
     if (isblack) {
       const randomIndex = Math.floor(Math.random() * KEYWORDS.length);
@@ -37,14 +36,12 @@ export default function IframeComponent() {
     }
   }, [isblack]);
 
-  // Memoize the current link to prevent unnecessary recalculations
   const currentLink = useCallback(() => {
     return KEYWORDS[currentIndex] === "__NAMU__"
       ? NAMU_LINK
       : `${BASE_URL}${KEYWORDS[currentIndex]}`;
   }, [currentIndex]);
 
-  // Memoize the title
   const currentTitle = useCallback(() => {
     return KEYWORDS[currentIndex] === "__NAMU__"
       ? "Namu Wiki - Abstract Expressionism"
@@ -81,3 +78,5 @@ export default function IframeComponent() {
     </>
   );
 }
+
+export default React.memo(IframeComponent);

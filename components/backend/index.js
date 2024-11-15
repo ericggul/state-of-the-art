@@ -16,6 +16,12 @@ import dynamic from "next/dynamic";
 const IframeComponent = dynamic(() => import("@/components/backend/iframe"), {
   ssr: false,
 });
+const TranscriptComponent = dynamic(
+  () => import("@/components/backend/transcript"),
+  {
+    ssr: false,
+  }
+);
 
 const TESTING = false;
 
@@ -67,6 +73,7 @@ const Backend = memo(function Backend() {
       {level >= 5 && deviceIndex == 3 && <IframeComponent />}
       {CurrentBackend}
       {level >= 5 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
+      <TranscriptComponent />
     </S.Container>
   );
 });
