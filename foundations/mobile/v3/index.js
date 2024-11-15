@@ -8,6 +8,7 @@ import React, {
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
+import useFeedback from "./utils/useFeedback";
 
 // Constants
 const INTERSECTION_OPTIONS = {
@@ -45,6 +46,9 @@ function ModelList({ initialModels, socket, mobileId }) {
   const itemRefs = useRef([]);
   const listRef = useRef(null);
   const observerRef = useRef(null);
+
+  const activeIndex = manuallySelectedIndex ?? currentIndex;
+  useFeedback(activeIndex);
 
   const addMoreModels = useCallback(() => {
     setModels((prevModels) => [
