@@ -42,17 +42,17 @@ export const LAYER_CONFIGS = {
   PERCEPTRON: {
     type: "basic_nn",
     keyPrefix: "perceptron",
-    layerHeight: 20,
+    layerHeight: 15,
   },
   MULTI_LAYER_PERCEPTRON_MLP: {
     type: "basic_nn",
     keyPrefix: "mlp",
-    layerHeight: 20,
+    layerHeight: 10,
   },
   BACKPROPAGATION_ALGORITHM: {
     type: "basic_nn",
     keyPrefix: "backprop",
-    layerHeight: 20,
+    layerHeight: 10,
   },
 };
 

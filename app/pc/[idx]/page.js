@@ -23,6 +23,7 @@ const COMPONENTS = {
 };
 
 const Idle = dynamic(() => import("@/components/screen/idle"));
+const Intro = dynamic(() => import("@/components/screen/intro"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
@@ -87,6 +88,7 @@ function RelationPageContent({ idx, test }) {
   return (
     <>
       {stage === "Frontend" && <FrontendComponent />}
+      {stage === "Intro" && <Intro />}
       {(stage === "Idle" || stage === "Frontend") && (
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}

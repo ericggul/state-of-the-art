@@ -10,6 +10,7 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
 // Keep all dynamic imports together
 const Idle = dynamic(() => import("@/components/screen/idle"));
+const Intro = dynamic(() => import("@/components/screen/intro"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
@@ -74,7 +75,8 @@ function ScreenContent({ test }) {
   // Full integration render for non-test mode
   return (
     <Suspense>
-      {stage === "Frontend" && <Frontend />}
+      {stage === "Frontend" && <Frontend type="projector" />}
+      {stage === "Frontend" && <Intro />}
       {(stage === "Idle" || stage === "Frontend") && (
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}

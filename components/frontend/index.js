@@ -6,14 +6,15 @@ import Architecture3D from "@/foundations/frontend/3d";
 import ArchitectureUI from "@/foundations/frontend/ui";
 
 const ScreenFrontend = memo(function ScreenFrontend({
-  isTesting,
+  isTesting = false,
   initVersion = null,
 }) {
   return (
-    <S.Container>
-      <Architecture3D isTesting={isTesting} initVersion={initVersion} />
-      {/* <ArchitectureUI /> */}
-    </S.Container>
+    <>
+      <S.Container>
+        <Architecture3D isTesting={isTesting} initVersion={initVersion} />
+      </S.Container>
+    </>
   );
 });
 
