@@ -11,6 +11,12 @@ import Backend2 from "@/foundations/backend/2";
 import Backend3 from "@/foundations/backend/3";
 import Backend4 from "@/foundations/backend/4";
 
+import dynamic from "next/dynamic";
+
+const IframeComponent = dynamic(() => import("@/components/backend/iframe"), {
+  ssr: false,
+});
+
 const TESTING = false;
 
 // Memoize common props to prevent recreating object on every render
@@ -58,6 +64,7 @@ const Backend = memo(function Backend() {
 
   return (
     <S.Container $isblack={isblack}>
+      {level >= 4 && deviceIndex == 3 && <IframeComponent />}
       {CurrentBackend}
       {level >= 5 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
     </S.Container>

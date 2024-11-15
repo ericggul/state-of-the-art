@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 import useBackendStore from "@/components/backend/store";
 
 const KEYWORDS = [
@@ -30,17 +29,13 @@ export default function IframeComponent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isblack = useBackendStore((state) => state.isblack);
 
-  // Only update index when iframe is visible
-  useRandomInterval(
-    () => {
-      if (!isblack) {
-        // Only change when visible
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % KEYWORDS.length);
-      }
-    },
-    100,
-    500
-  );
+  // Change page when isblack becomes false
+  useEffect(() => {
+    if (isblack) {
+      const randomIndex = Math.floor(Math.random() * KEYWORDS.length);
+      setCurrentIndex(randomIndex);
+    }
+  }, [isblack]);
 
   // Memoize the current link to prevent unnecessary recalculations
   const currentLink = useCallback(() => {

@@ -54,6 +54,8 @@ function RelationPageContent({ idx, test }) {
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
+    handleNewMobileIntro,
+
     setIsProjector,
     setDeviceIndex,
     stage,
@@ -73,6 +75,7 @@ function RelationPageContent({ idx, test }) {
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
+    handleNewMobileIntro,
   });
 
   useScreenVisibility();
@@ -88,7 +91,7 @@ function RelationPageContent({ idx, test }) {
   return (
     <>
       {stage === "Frontend" && <FrontendComponent />}
-      {stage === "Intro" && <Intro />}
+      {stage === "Frontend" && <Intro />}
       {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}

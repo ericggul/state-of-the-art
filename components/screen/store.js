@@ -123,6 +123,7 @@ const useScreenStore = create((set) => ({
   handleNewMobileIntro: (data) => {
     set((state) => {
       const updates = {};
+      console.log("data", data);
 
       switch (data.type) {
         // case "state_change":

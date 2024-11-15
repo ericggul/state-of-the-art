@@ -17,7 +17,6 @@ export const YoutubeOverlay = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
   pointer-events: none;
-  mix-blend-mode: exclusion;
 `;
 
 export const YoutubeIframe = styled.iframe`
