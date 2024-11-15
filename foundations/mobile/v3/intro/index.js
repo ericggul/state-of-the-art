@@ -23,7 +23,7 @@ export default function Intro({ socket, onAccelerometerActivate }) {
     }
 
     if (!/^[a-zA-Z\s]+$/.test(trimmedValue)) {
-      return "Please use only Latin letters";
+      return "Please use only English letters";
     }
 
     return "";

@@ -383,7 +383,10 @@ export function usePathsBezier({
   strokeWidthMultiplier,
   isPlural,
   id = 1,
+  skip = false,
 }) {
+  if (skip) return [];
+
   const strokeColor = useStrokeColor(isblack);
   const [windowWidth] = useResize();
 

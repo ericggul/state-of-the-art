@@ -21,7 +21,8 @@ export const Container = styled.div`
   font-size: 1vw;
   color: #fff;
 
-  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
+  background: ${({ $isblack, $isThirdChannel }) =>
+    $isThirdChannel ? "transparent" : $isblack ? "black" : "white"};
 
   svg {
     stroke: ${({ $isblack }) => ($isblack ? "white" : "black")};

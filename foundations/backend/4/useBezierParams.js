@@ -10,8 +10,11 @@ export default function useBezierParams(
   visible,
   isAnimating,
   timeUnit,
-  isPlural
+  isPlural,
+  skip = false
 ) {
+  if (skip) return [];
+
   const [params, setParams] = useState(() => ({
     single: generateBezierParams(0, 0),
     multi: {},

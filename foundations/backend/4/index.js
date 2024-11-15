@@ -24,6 +24,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     level,
   } = useStore();
   const isProjector = useScreenStore((state) => state.isProjector);
+  const deviceIndex = useScreenStore((state) => state.deviceIndex);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -69,18 +70,6 @@ function SingleRandom({ range, visible, timeUnit }) {
     ...posCalcProps,
   });
 
-  const inputPosCalc2 = usePosCalc({
-    tokens: inputTokens,
-    type: "input",
-    ...posCalcProps,
-  });
-
-  const outputPosCalc2 = usePosCalc({
-    tokens: outputTokens,
-    type: "output",
-    ...posCalcProps,
-  });
-
   const bezierParams = useBezierParams(
     inputTokens,
     outputTokens,
@@ -100,7 +89,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     visible,
     isAnimating,
     timeUnit,
-    isPlural
+    isPlural,
+    !isProjector
   );
 
   /////RADIAL PATHS
@@ -169,6 +159,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     strokeWidthMultiplier: 2.5,
     isPlural,
     id: 2,
+    skip: !isProjector,
   });
 
   const tokensOpacity = useMemo(
@@ -201,7 +192,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}
-      style={{ opacity: visible ? 1 : 0, backgroundColor: "transparent" }}
+      $isThirdChannel={deviceIndex == 3 && level >= 5}
     >
       <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer

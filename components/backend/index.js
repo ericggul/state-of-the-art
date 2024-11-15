@@ -64,7 +64,7 @@ const Backend = memo(function Backend() {
 
   return (
     <S.Container $isblack={isblack}>
-      {level >= 4 && deviceIndex == 3 && <IframeComponent />}
+      {level >= 5 && deviceIndex == 3 && <IframeComponent />}
       {CurrentBackend}
       {level >= 5 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
     </S.Container>
