@@ -8,7 +8,7 @@ import TypewriterText from "./components/TypewriterText";
 import ModelFeatures from "./components/ModelFeatures";
 import { DEFAULT_MODEL } from "./utils/constants";
 import { getModelData } from "./utils/dataProcessor";
-import ModelImage from "./components/ModelImage/v1";
+import ModelImage from "./components/ModelImage/v3";
 
 // Card Component
 const Card = ({ title, children }) => (

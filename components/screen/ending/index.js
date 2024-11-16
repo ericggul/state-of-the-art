@@ -6,7 +6,7 @@ import * as CONST from "@/utils/constant";
 import { useRouter } from "next/navigation";
 
 function Ending() {
-  const [seconds, setSeconds] = useState(CONST.TIMEOUTS.RESET / 1000);
+  const [seconds, setSeconds] = useState((CONST.TIMEOUTS.RESET - 1000) / 1000);
   const [isVisible, setIsVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
@@ -31,7 +31,7 @@ function Ending() {
     // Start fade out before reset
     const fadeOutTimeout = setTimeout(() => {
       setIsFadingOut(true);
-    }, CONST.TIMEOUTS.RESET - 1000); // Start fade out 1 second before reset
+    }, CONST.TIMEOUTS.RESET - 3000); // Start fade out 1 second before reset
 
     const resetTimeout = setTimeout(() => {
       reset();

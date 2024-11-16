@@ -15,7 +15,7 @@ export const Container = styled.div`
   font-size: 1.5vw;
 
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 3s ease-in-out;
 
   ${({ $isVisible, $isFadingOut }) => `
     opacity: ${$isVisible && !$isFadingOut ? 1 : 0};
