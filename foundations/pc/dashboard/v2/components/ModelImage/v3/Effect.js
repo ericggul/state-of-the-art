@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
-import { ImageTransitionMaterial } from "./Material";
+import { ImageTransitionMaterial } from "./materials/v2";
 
 const ImageTransitionEffect = ({ image1, image2 }) => {
   const meshRef = useRef();

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import TypewriterText from "@/foundations/pc/dashboard/v2/components/TypewriterText";
 import ShaderScene from "./ShaderScene";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 const ImageContainer = styled.div`
   display: flex;
@@ -36,17 +37,20 @@ export default function ModelImage({ model }) {
   const [prevModelImage, setPrevModelImage] = useState(model?.image || "1.png");
   const isFirstRender = useRef(true);
 
+  // Debounce the model image changes
+  const debouncedModelImage = useDebounce(model?.image, 100); // 100ms delay
+
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
 
-    if (model?.image !== currentModelImage) {
+    if (debouncedModelImage !== currentModelImage) {
       setPrevModelImage(currentModelImage);
-      setCurrentModelImage(model?.image || "1.png");
+      setCurrentModelImage(debouncedModelImage || "1.png");
     }
-  }, [model?.image]);
+  }, [debouncedModelImage]);
 
   const prevImage = IMAGE_BASE + prevModelImage;
   const currentImage = IMAGE_BASE + currentModelImage;
