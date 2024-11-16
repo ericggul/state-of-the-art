@@ -9,10 +9,16 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
     if (typeof window !== "undefined" && !initialized.current) {
       socketInitializer();
       initialized.current = true;
+
       return () => {
         if (socket.current) {
-          console.log("clean up");
+          // Remove all listeners
+          socket.current.off("new-controller-response");
+          socket.current.off("connect");
+
+          // Disconnect
           socket.current.disconnect();
+          console.log("Mobile socket cleaned up");
         }
       };
     }

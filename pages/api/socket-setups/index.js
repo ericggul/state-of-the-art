@@ -54,7 +54,6 @@ export default function mobileSetup({ socket, io }) {
   });
 
   socket.on("mobile-new-intro", (data) => {
-    console.log("57", data);
     socket.to("screen").emit("new-mobile-intro", data);
   });
 
@@ -63,5 +62,10 @@ export default function mobileSetup({ socket, io }) {
   socket.on("mobile-new-visibility-change", (data) => {
     socket.to("controller").emit("new-mobile-visibility-change", data);
     socket.to("screen").emit("new-mobile-visibility-change", data);
+  });
+
+  /////backend: inter-screen conversation/////
+  socket.on("screen-new-conversation", (data) => {
+    socket.to("screen").emit("new-screen-conversation", data);
   });
 }

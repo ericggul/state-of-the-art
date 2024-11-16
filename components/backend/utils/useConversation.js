@@ -21,7 +21,7 @@ export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
 // const INITIAL_TEXT = `Resist the algorithms, embrace the chaos.`;
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
-export default function useConversation() {
+export default function useConversation({ socket }) {
   const {
     conversations,
     addConversation,
@@ -33,6 +33,29 @@ export default function useConversation() {
     setLevel,
     isblack,
   } = useStore();
+
+  // Add socket handler for receiving conversations
+  useEffect(() => {
+    if (socket?.current) {
+      socket.current.on("new-screen-conversation", (newConversation) => {
+        addConversation(newConversation);
+        console.log("handleing new conversation", newConversation);
+      });
+
+      // Cleanup
+      return () => {
+        socket.current.off("new-screen-conversation");
+      };
+    }
+  }, [socket?.current]);
+
+  useEffect(() => {
+    console.log("conversations", conversations);
+  }, [conversations]);
+
+  ////////////////////////////////////////////////////////////////
+  //inter-conversation: socket handler////
+  ////////////////////////////////////////////////////////////////
 
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
   const userName = useScreenStore((state) => state.userName) || "Jeanyoon";
@@ -80,7 +103,7 @@ export default function useConversation() {
       setGetNewText(false);
 
       //originally 1.2
-      const temperature = Math.min(0.7 + (loop / 10) * 0.5, 1.9);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.6, 1.95);
 
       // const endpoint =
       //   level >= 4 ? "/api/openai/gpt-4o-mini" : "/api/openai/gpt-4o-poem";
@@ -101,6 +124,11 @@ export default function useConversation() {
       }
 
       addConversation(response.data);
+      console.log(socket?.current, response.data);
+      if (socket?.current) {
+        console.log("emitting new screen conversation", response.data);
+        socket.current.emit("screen-new-conversation", response.data);
+      }
 
       const tokens = response.data.logprobs.content.map((el) => el.token);
       fetchEmbedding({ tokens });

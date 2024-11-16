@@ -44,7 +44,7 @@ function ScreenContent({ test }) {
     setDeviceIndex,
     stage,
     isTransition,
-    introState,
+    handleNewScreenConversation,
   } = useScreenStore();
 
   useEffect(() => {
@@ -59,6 +59,7 @@ function ScreenContent({ test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewScreenConversation,
   });
 
   useScreenVisibility();
@@ -80,7 +81,7 @@ function ScreenContent({ test }) {
       {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
-      {stage === "Backend" && <Backend />}
+      {stage === "Backend" && <Backend socket={socket} />}
       {isTransition && <Transition />}
     </Suspense>
   );

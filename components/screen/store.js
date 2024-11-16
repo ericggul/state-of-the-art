@@ -174,6 +174,14 @@ const useScreenStore = create((set) => ({
         : state;
     });
   },
+
+  ////////////////////////////////////////////////////////////////
+  //backend: inter-screen conversation////
+  ////////////////////////////////////////////////////////////////
+
+  handleNewScreenConversation: (data) => {
+    console.log("New screen conversation received:", data);
+  },
 }));
 
 export default useScreenStore;

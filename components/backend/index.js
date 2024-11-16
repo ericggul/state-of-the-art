@@ -33,10 +33,10 @@ const defaultProps = {
   timeUnit: 1,
 };
 
-const Backend = memo(function Backend() {
+const Backend = memo(function Backend({ socket }) {
   const { isblack, length, loop, level } = useStore();
 
-  useConversation();
+  useConversation({ socket });
   useAudio();
 
   useEffect(() => {

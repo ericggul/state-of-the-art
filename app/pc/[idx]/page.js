@@ -60,6 +60,7 @@ function RelationPageContent({ idx, test }) {
     setDeviceIndex,
     stage,
     isTransition,
+    handleNewScreenConversation,
   } = useScreenStore();
 
   // Only run effects if not in test mode
@@ -76,6 +77,7 @@ function RelationPageContent({ idx, test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewScreenConversation,
   });
 
   useScreenVisibility();
@@ -95,7 +97,7 @@ function RelationPageContent({ idx, test }) {
       {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}
-      {stage === "Backend" && <Backend />}
+      {stage === "Backend" && <Backend socket={socket} />}
       {isTransition && <Transition />}
     </>
   );
