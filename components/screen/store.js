@@ -136,6 +136,7 @@ const useScreenStore = create((set) => ({
 
       if (state.stage !== "Frontend") {
         updates.stage = "Frontend";
+        // updates.isEnding = false;
       }
 
       return Object.keys(updates).length ? updates : state;

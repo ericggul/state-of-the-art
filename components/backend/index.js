@@ -24,6 +24,9 @@ const TranscriptComponent = dynamic(
     ssr: false,
   }
 );
+const EndingComponent = dynamic(() => import("@/components/screen/ending"), {
+  ssr: false,
+});
 
 const TESTING = false;
 
@@ -70,6 +73,7 @@ const Backend = memo(function Backend({ socket }) {
 
   const isProjector = useScreenStore((state) => state.isProjector);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const isEnding = useScreenStore((state) => state.isEnding);
 
   return (
     <S.Container>
@@ -81,6 +85,7 @@ const Backend = memo(function Backend({ socket }) {
         <S.Top $deviceIndex={deviceIndex} />
       )}
       <TranscriptComponent />
+      {isEnding && <EndingComponent />}
     </S.Container>
   );
 });

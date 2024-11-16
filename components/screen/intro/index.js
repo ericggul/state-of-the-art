@@ -3,7 +3,18 @@ import { memo } from "react";
 import useScreenStore from "@/components/screen/store";
 import useMembraneSynth from "@/utils/hooks/audio/useMembraneSynth";
 
-export default function Intro() {
+const Intro0 = memo(function Intro0() {
+  const userName = useScreenStore((state) => state.userName);
+  useMembraneSynth(userName);
+
+  return <S.Container>INTRO 0 {userName}</S.Container>;
+});
+
+const Intro1 = memo(function Intro1() {
+  return <S.Container>INTRO 1</S.Container>;
+});
+
+function Intro() {
   const introState = useScreenStore((state) => state.introState);
 
   return (
@@ -14,13 +25,4 @@ export default function Intro() {
   );
 }
 
-function Intro0() {
-  const userName = useScreenStore((state) => state.userName);
-  useMembraneSynth(userName);
-
-  return <S.Container>INTRO 0 {userName}</S.Container>;
-}
-
-function Intro1() {
-  return <S.Container>INTRO 1</S.Container>;
-}
+export default memo(Intro);
