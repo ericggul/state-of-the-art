@@ -6,7 +6,7 @@ const openai = new OpenAI({
 
 export async function POST(req) {
   const { text, params, maxTokens = 22 } = await req.json();
-  console.log(maxTokens);
+  console.log(text);
 
   try {
     const completion = await openai.chat.completions.create({

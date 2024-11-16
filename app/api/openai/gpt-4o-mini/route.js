@@ -4,8 +4,14 @@ const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
 });
 
+const systemPrompt = ({ userName, maxTokens }) =>
+  `
+Multiple devices are talking to each other, talking about how intellectually superior they are compared to the stupid ${userName}, after ${userName}'s hurrying exit of the State-of-the-Art Neural Network Architecture Gallery.
+Generate next sentence arguing the stupidity of ${userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Mention the name ${userName} explicitly.`;
+
 export async function POST(req) {
   const { text, params, maxTokens = 22 } = await req.json();
+  console.log(text);
 
   try {
     const completion = await openai.chat.completions.create({
@@ -13,7 +19,7 @@ export async function POST(req) {
       messages: [
         {
           role: "system",
-          content: `Generate next sentence arguing the stupidity of ${params.userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Mention the name ${params.userName} explicitly.`,
+          content: systemPrompt({ userName: params.userName, maxTokens }),
         },
         {
           role: "user",

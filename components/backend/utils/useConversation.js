@@ -39,7 +39,6 @@ export default function useConversation({ socket }) {
     if (socket?.current) {
       socket.current.on("new-screen-conversation", (newConversation) => {
         addConversation(newConversation);
-        console.log("handleing new conversation", newConversation);
       });
 
       // Cleanup
@@ -92,13 +91,19 @@ export default function useConversation({ socket }) {
   async function fetchText(conversations) {
     try {
       const text =
-        conversations.length < 10
+        conversations.length < 20
           ? INITIAL_TEXT +
-            conversations.map((el) => el.message.content).join(" ")
+            conversations
+              .map(
+                (el) => "Device" + el.deviceIndex + ": " + el.message.content
+              )
+              .join("\n")
           : conversations
-              .map((el) => el.message.content)
-              .slice(-10)
-              .join(" ");
+              .map(
+                (el) => "Device" + el.deviceIndex + ": " + el.message.content
+              )
+              .slice(-20)
+              .join("\n");
 
       setGetNewText(false);
 
@@ -123,11 +128,14 @@ export default function useConversation({ socket }) {
         throw new Error("No response data or message content");
       }
 
-      addConversation(response.data);
-      console.log(socket?.current, response.data);
+      const data = {
+        ...response.data,
+        deviceIndex,
+      };
+
+      addConversation(data);
       if (socket?.current) {
-        console.log("emitting new screen conversation", response.data);
-        socket.current.emit("screen-new-conversation", response.data);
+        socket.current.emit("screen-new-conversation", data);
       }
 
       const tokens = response.data.logprobs.content.map((el) => el.token);
