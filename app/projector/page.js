@@ -76,6 +76,8 @@ function ScreenContent({ test }) {
     );
   }
 
+  console.log("stage", stage);
+
   // Full integration render for non-test mode
   return (
     <Suspense>

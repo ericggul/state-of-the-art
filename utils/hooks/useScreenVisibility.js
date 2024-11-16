@@ -35,8 +35,6 @@ export default function useScreenVisibility() {
     const multiplier = iterationSpeedMultiplier(iteration);
 
     setIsTransition(true);
-
-    console.log(TIMEOUTS.TRANSITION * multiplier);
     // Schedule transition end
     timeouts.current.transition = setTimeout(() => {
       setIsTransition(false);
@@ -52,7 +50,10 @@ export default function useScreenVisibility() {
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
+    console.log("schedule state changes");
+    console.log(unmountFrontendDelay * multiplier);
     timeouts.current.reset = setTimeout(() => {
+      console.log("unmounting frontend");
       setStage(null);
     }, unmountFrontendDelay * multiplier);
 
@@ -81,7 +82,7 @@ export default function useScreenVisibility() {
   };
 
   useEffect(() => {
-    if (isStageIdle) return;
+    if (isStageIdle || iteration == 0) return;
 
     clearTimeouts();
     mobileVisibility ? setFrontendState() : scheduleStateChanges();
