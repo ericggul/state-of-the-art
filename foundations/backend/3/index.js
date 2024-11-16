@@ -3,6 +3,7 @@ import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import useBezierParams from "./useBezierParams";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 import { useVisualization } from "../shared/hooks/useVisualization";
 import { useAnimationState } from "./useAnimationState";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
@@ -12,6 +13,7 @@ import {
 } from "../shared/utils/createPath";
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
+import * as C from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -20,6 +22,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     outputEmbeddings: newOutputEmbeddings,
     subLevel,
   } = useStore();
+
+  const iteration = useScreenStore((state) => state.iteration);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -129,6 +133,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
+      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
     >
       <div
         style={{

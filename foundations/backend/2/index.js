@@ -3,13 +3,17 @@ import * as S from "../components/styles";
 import usePosCalc from "./usePosCalc";
 import useRadialParams from "./useRadialParams";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createRadialPath } from "../shared/utils/createPath";
 import { usePathsV2 } from "../shared/hooks/usePaths";
+import * as C from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
+  const iteration = useScreenStore((state) => state.iteration);
+
   const { tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
 
@@ -34,6 +38,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
+      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
     >
       <div
         style={{

@@ -13,6 +13,8 @@ import Backend4 from "@/foundations/backend/4";
 
 import dynamic from "next/dynamic";
 
+import * as C from "@/utils/constant";
+
 const IframeComponent = dynamic(() => import("@/components/backend/iframe"), {
   ssr: false,
 });
@@ -70,10 +72,12 @@ const Backend = memo(function Backend({ socket }) {
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
 
   return (
-    <S.Container $isblack={isblack}>
-      {level >= 5 && deviceIndex == 3 && <IframeComponent />}
+    <S.Container>
+      {level >= C.MIX_BACKEND_LEVEL && deviceIndex == 3 && <IframeComponent />}
       {CurrentBackend}
-      {level >= 5 && deviceIndex <= 2 && <S.Top $deviceIndex={deviceIndex} />}
+      {level >= C.MIX_BACKEND_LEVEL && deviceIndex <= 2 && (
+        <S.Top $deviceIndex={deviceIndex} />
+      )}
       <TranscriptComponent />
     </S.Container>
   );

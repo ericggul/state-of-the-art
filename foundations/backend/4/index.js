@@ -14,6 +14,7 @@ import {
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
+import * as C from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -25,6 +26,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   } = useStore();
   const isProjector = useScreenStore((state) => state.isProjector);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const iteration = useScreenStore((state) => state.iteration);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -192,7 +194,10 @@ function SingleRandom({ range, visible, timeUnit }) {
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}
-      $isThirdChannel={deviceIndex == 3 && level >= 5}
+      $isTransparent={
+        (deviceIndex == 3 && level >= C.MIX_BACKEND_LEVEL) ||
+        iteration >= C.MIX_BACKEND_ITERATION
+      }
     >
       <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer

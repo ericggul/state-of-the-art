@@ -15,6 +15,8 @@ const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
+import * as C from "@/utils/constant";
+
 // SearchParams wrapper component
 function SearchParamsWrapper({ children }) {
   const searchParams = useSearchParams();
@@ -40,11 +42,12 @@ function ScreenContent({ test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
     stage,
     isTransition,
-    handleNewScreenConversation,
+    iteration,
   } = useScreenStore();
 
   useEffect(() => {
@@ -81,8 +84,10 @@ function ScreenContent({ test }) {
       {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
-      {stage === "Backend" && <Backend socket={socket} />}
       {isTransition && <Transition />}
+      {(stage === "Backend" || iteration >= C.MIX_BACKEND_ITERATION) && (
+        <Backend socket={socket} />
+      )}
     </Suspense>
   );
 }

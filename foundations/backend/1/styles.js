@@ -21,7 +21,8 @@ export const Container = styled.div`
   ${FlexCenterStyle}
 
   color: #fff;
-  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
+  background: ${({ $isblack, $isTransparent }) =>
+    $isTransparent ? "transparent" : $isblack ? "black" : "white"};
 
   svg {
     stroke: ${({ $isblack }) => ($isblack ? "white" : "black")};

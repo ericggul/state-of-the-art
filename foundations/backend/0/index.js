@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import * as S from "./styles";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 import usePosCalc from "./usePosCalc";
-import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import TokenComponent from "./TokenComponent";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import * as C from "@/utils/constant";
 
 function LevelZero({ visible }) {
   const {
@@ -12,9 +13,8 @@ function LevelZero({ visible }) {
     outputEmbeddings: { tokens, embeddings },
     subLevel,
   } = useStore();
-  const similarityMatrix = useComputeSimilarity({
-    newEmbeddings: { tokens, embeddings },
-  });
+  const iteration = useScreenStore((state) => state.iteration);
+
   const { wordPosCalc, wordInterval } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
   const [animState, setAnimState] = useState(0);
@@ -36,6 +36,7 @@ function LevelZero({ visible }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
+      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
     >
       {tokens.map((token, i) => (
         <TokenComponent

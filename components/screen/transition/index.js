@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { memo, useEffect, useState } from "react";
 import useScreenStore from "@/components/screen/store";
-import { iterationSpeedMultiplier } from "@/utils/function/iterationSpeedMultiplier";
+import { iterationSpeedMultiplier } from "@/utils/constant";
 
 const audioURL = "/audio/beep.mp3";
 const BASE_DELAY = 500;

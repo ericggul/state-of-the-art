@@ -1,6 +1,6 @@
 import { useEffect, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
-import { iterationSpeedMultiplier } from "@/utils/function/iterationSpeedMultiplier";
+import { iterationSpeedMultiplier } from "@/utils/constant";
 
 const TIMEOUTS = {
   TRANSITION: 7000,

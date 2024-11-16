@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
-import { iterationSpeedMultiplier } from "@/utils/function/iterationSpeedMultiplier";
+import { iterationSpeedMultiplier } from "@/utils/constant";
 
 const TIMEOUT_TRANSITION = 7000;
 const TIMEOUT_BACKEND = 9000;

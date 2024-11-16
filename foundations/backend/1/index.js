@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import * as S from "./styles";
 import useStore from "@/components/backend/store";
+import useScreenStore from "@/components/screen/store";
 import usePosCalc from "./usePosCalc";
 import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeSimilarity";
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
+import * as C from "@/utils/constant";
 
 function LevelOne({ visible }) {
   const {
@@ -13,6 +15,7 @@ function LevelOne({ visible }) {
     outputEmbeddings: { tokens, embeddings },
     subLevel,
   } = useStore();
+  const iteration = useScreenStore((state) => state.iteration);
 
   const similarityMatrix = useComputeSimilarity({
     newEmbeddings: { tokens, embeddings },
@@ -77,7 +80,11 @@ function LevelOne({ visible }) {
   );
 
   return (
-    <S.Container $isblack={isblack} style={{ opacity: visible ? 1 : 0 }}>
+    <S.Container
+      $isblack={isblack}
+      style={{ opacity: visible ? 1 : 0 }}
+      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
+    >
       {tokenComponents}
       <S.Pic $animInterval={ANIM_INTERVAL} $isAnimating={isAnimating}>
         {paths}

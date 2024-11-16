@@ -209,23 +209,20 @@ export default function useConversation({ socket = null }) {
   const formatConversationText = (conversations) => {
     if (conversations.length < 20) {
       return (
-        INITIAL_TEXT +
-        conversations
-          .map((el) =>
-            el.deviceIndex
-              ? `Device${el.deviceIndex}: ${el.message.content}`
-              : el.message.content
-          )
-          .join("\n")
+        // INITIAL_TEXT +
+        // conversations
+        //   .map((el) =>
+        //     el.deviceIndex
+        //       ? `Device${el.deviceIndex}: ${el.message.content}`
+        //       : el.message.content
+        //   )
+        //   .join("\n")
+        INITIAL_TEXT + conversations.map((el) => el.message.content).join("\n")
       );
     }
 
     return conversations
-      .map((el) =>
-        el.deviceIndex
-          ? `Device${el.deviceIndex}: ${el.message.content}`
-          : el.message.content
-      )
+      .map((el) => el.message.content)
       .slice(-20)
       .join("\n");
   };

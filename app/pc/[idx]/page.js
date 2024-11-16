@@ -8,6 +8,8 @@ import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
+import * as C from "@/utils/constant";
+
 // Keep all dynamic imports together
 const COMPONENTS = {
   0: dynamic(() => import("@/foundations/pc/avatar/v1")),
@@ -55,12 +57,13 @@ function RelationPageContent({ idx, test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewScreenConversation,
 
     setIsProjector,
     setDeviceIndex,
     stage,
     isTransition,
-    handleNewScreenConversation,
+    iteration,
   } = useScreenStore();
 
   // Only run effects if not in test mode
@@ -97,8 +100,10 @@ function RelationPageContent({ idx, test }) {
       {stage === "Idle" && (
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}
-      {stage === "Backend" && <Backend socket={socket} />}
       {isTransition && <Transition />}
+      {(stage === "Backend" || iteration >= C.MIX_BACKEND_ITERATION) && (
+        <Backend socket={socket} />
+      )}
     </>
   );
 }

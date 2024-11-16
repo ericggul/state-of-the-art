@@ -22,13 +22,15 @@ export const Container = styled.div`
   font-size: 1vw;
   color: #fff;
 
+  background: ${({ $isblack, $isTransparent }) =>
+    $isTransparent ? "transparent" : $isblack ? "black" : "white"};
+
   svg {
     stroke: ${({ $isblack }) => ($isblack ? "white" : "black")};
   }
   div {
     color: ${({ $isblack }) => ($isblack ? "white" : "black")};
   }
-  background: ${({ $isblack }) => ($isblack ? "black" : "white")};
 `;
 
 export const MidRow = styled.div`
