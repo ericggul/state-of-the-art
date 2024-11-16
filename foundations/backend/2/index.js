@@ -12,7 +12,7 @@ import * as CONST from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
-  const iteration = useScreenStore((state) => state.iteration);
+  const stage = useScreenStore((state) => state.stage);
 
   const { tokens } = newEmbeddings;
   const similarityMatrix = useComputeSimilarity({ newEmbeddings });
@@ -38,7 +38,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
+      $isTransparent={stage !== "Backend"}
     >
       <div
         style={{

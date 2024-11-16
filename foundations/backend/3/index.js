@@ -23,7 +23,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     subLevel,
   } = useStore();
 
-  const iteration = useScreenStore((state) => state.iteration);
+  const stage = useScreenStore((state) => state.stage);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -133,7 +133,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
+      $isTransparent={stage !== "Backend"}
     >
       <div
         style={{

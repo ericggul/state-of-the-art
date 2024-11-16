@@ -26,7 +26,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   } = useStore();
   const isProjector = useScreenStore((state) => state.isProjector);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
-  const iteration = useScreenStore((state) => state.iteration);
+  const stage = useScreenStore((state) => state.stage);
 
   const { inputTokens, outputTokens, crossSimilarityMatrix } = useVisualization(
     newInputEmbeddings,
@@ -196,7 +196,7 @@ function SingleRandom({ range, visible, timeUnit }) {
       $isblack={isblack ? "true" : undefined}
       $isTransparent={
         (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
-        iteration >= CONST.MIX_BACKEND_ITERATION
+        stage !== "Backend"
       }
     >
       <div style={{ opacity: tokensOpacity }}>

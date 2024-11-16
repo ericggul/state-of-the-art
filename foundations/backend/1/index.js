@@ -15,7 +15,7 @@ function LevelOne({ visible }) {
     outputEmbeddings: { tokens, embeddings },
     subLevel,
   } = useStore();
-  const iteration = useScreenStore((state) => state.iteration);
+  const stage = useScreenStore((state) => state.stage);
 
   const similarityMatrix = useComputeSimilarity({
     newEmbeddings: { tokens, embeddings },
@@ -83,7 +83,7 @@ function LevelOne({ visible }) {
     <S.Container
       $isblack={isblack}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
+      $isTransparent={stage !== "Backend"}
     >
       {tokenComponents}
       <S.Pic $animInterval={ANIM_INTERVAL} $isAnimating={isAnimating}>

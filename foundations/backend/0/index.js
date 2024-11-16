@@ -13,7 +13,7 @@ function LevelZero({ visible }) {
     outputEmbeddings: { tokens, embeddings },
     subLevel,
   } = useStore();
-  const iteration = useScreenStore((state) => state.iteration);
+  const stage = useScreenStore((state) => state.stage);
 
   const { wordPosCalc, wordInterval } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
@@ -36,7 +36,7 @@ function LevelZero({ visible }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
+      $isTransparent={stage !== "Backend"}
     >
       {tokens.map((token, i) => (
         <TokenComponent

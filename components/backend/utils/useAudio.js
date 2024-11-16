@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import useStore from "@/components/backend/store";
-
+import useScreenStore from "@/components/screen/store";
 const audioFiles = [
   "/audio/test.wav",
   "/audio/test2.wav",
@@ -9,7 +9,9 @@ const audioFiles = [
 ];
 
 export default function useAudio() {
-  const { isblack } = useStore();
+  const isblack = useStore((state) => state.isblack);
+  const stage = useScreenStore((state) => state.stage);
+
   const mainAudioRef = useRef(null);
   const robotAudioRef = useRef(null);
 
@@ -19,7 +21,7 @@ export default function useAudio() {
   }, []);
 
   useEffect(() => {
-    if (isblack) {
+    if (isblack && stage == "Backend") {
       // Main audio (random from audioFiles)
       const newAudioFile = getRandomAudioFile();
       if (mainAudioRef.current) {
@@ -32,17 +34,6 @@ export default function useAudio() {
       mainAudioRef.current
         .play()
         .catch((error) => console.error("Main audio playback failed:", error));
-
-      // Robot audio
-      // if (robotAudioRef.current) {
-      //   robotAudioRef.current.pause();
-      // }
-      // robotAudioRef.current = new Audio(ROBOT);
-      // robotAudioRef.current.loop = true;
-      // robotAudioRef.current.load();
-      // robotAudioRef.current
-      //   .play()
-      //   .catch((error) => console.error("Robot audio playback failed:", error));
     } else {
       // Pause both audio tracks when isblack is false
       if (mainAudioRef.current) {
@@ -64,7 +55,7 @@ export default function useAudio() {
         robotAudioRef.current = null;
       }
     };
-  }, [isblack, getRandomAudioFile]);
+  }, [isblack, getRandomAudioFile, stage]);
 
   return null;
 }

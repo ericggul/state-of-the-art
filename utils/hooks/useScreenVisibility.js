@@ -32,6 +32,7 @@ export default function useScreenVisibility() {
   };
 
   const scheduleStateChanges = () => {
+    if (iteration == 0) return;
     const multiplier = iterationSpeedMultiplier(iteration);
 
     setIsTransition(true);
@@ -50,10 +51,7 @@ export default function useScreenVisibility() {
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
-    console.log("schedule state changes");
-    console.log(unmountFrontendDelay * multiplier);
     timeouts.current.reset = setTimeout(() => {
-      console.log("unmounting frontend");
       setStage(null);
     }, unmountFrontendDelay * multiplier);
 
@@ -67,12 +65,6 @@ export default function useScreenVisibility() {
     timeouts.current.reset = setTimeout(async () => {
       // Clear timeouts and reset state
       clearTimeouts();
-      handleReset();
-      handleBackendReset();
-
-      //window.location.reload(true);
-      // Use App Router refresh
-      router.refresh();
     }, resetDelay);
   };
 
