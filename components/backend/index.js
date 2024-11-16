@@ -36,6 +36,7 @@ const defaultProps = {
 const Backend = memo(function Backend({ socket }) {
   const { isblack, length, loop, level } = useStore();
 
+  console.log("socket", socket);
   useConversation({ socket });
   useAudio();
 

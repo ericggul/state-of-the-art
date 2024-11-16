@@ -30,7 +30,7 @@ export default function TestBackend() {
   const [followLevel, setFollowLevel] = useState(true);
   const [fixedLevel, setFixedLevel] = useState(level);
 
-  useConversation();
+  useConversation({ socket: null });
   useAudio();
 
   // Update fixedLevel when followLevel is turned on

@@ -11,7 +11,6 @@ Generate next sentence arguing the stupidity of ${userName}. Give me the full se
 
 export async function POST(req) {
   const { text, params, maxTokens = 22 } = await req.json();
-  console.log(text);
 
   try {
     const completion = await openai.chat.completions.create({
