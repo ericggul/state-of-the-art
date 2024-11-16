@@ -15,7 +15,11 @@ const ShaderScene = ({ image1, image2 }) => {
   return (
     <Canvas
       style={{ width: "100%", height: "100%" }}
-      camera={{ position: [0, 0, 5] }}
+      camera={{
+        position: [0, 0, 1.5],
+        fov: 45,
+      }}
+      orthographic
     >
       <Suspense fallback={<FallbackContent />}>
         <ImageTransitionEffect image1={image1} image2={image2} />

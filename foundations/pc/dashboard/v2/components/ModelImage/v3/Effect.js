@@ -1,14 +1,14 @@
 // src/components/ImageTransitionEffect.jsx
 import React, { useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { ImageTransitionMaterial } from "./Material";
 
 const ImageTransitionEffect = ({ image1, image2 }) => {
   const meshRef = useRef();
   const progress = useRef(0);
+  const { viewport } = useThree();
 
-  // Simple error handling with try/catch in loader
   const [texture1, texture2] = useLoader(
     TextureLoader,
     [image1, image2],
@@ -19,7 +19,31 @@ const ImageTransitionEffect = ({ image1, image2 }) => {
     }
   );
 
-  // Reset progress when images change
+  // Calculate contained size
+  useEffect(() => {
+    if (texture1 && texture2) {
+      [texture1, texture2].forEach((texture) => {
+        const imgAspect = texture.image.width / texture.image.height;
+        const containerAspect = viewport.width / viewport.height;
+
+        let width, height;
+        if (imgAspect > containerAspect) {
+          // Image is wider - fit to width
+          width = viewport.width;
+          height = viewport.width / imgAspect;
+        } else {
+          // Image is taller - fit to height
+          height = viewport.height;
+          width = viewport.height * imgAspect;
+        }
+
+        if (meshRef.current) {
+          meshRef.current.scale.set(width, height, 1);
+        }
+      });
+    }
+  }, [texture1, texture2, viewport]);
+
   useEffect(() => {
     progress.current = 0;
   }, [image1, image2]);
@@ -33,7 +57,7 @@ const ImageTransitionEffect = ({ image1, image2 }) => {
 
   return (
     <mesh ref={meshRef}>
-      <planeGeometry args={[5, 3]} />
+      <planeGeometry args={[1, 1]} />
       <shaderMaterial
         attach="material"
         args={[ImageTransitionMaterial]}
