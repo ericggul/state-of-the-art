@@ -1,46 +1,22 @@
 import { create } from "zustand";
 
-// Default state object
-const DEFAULT_STATE = {
-  // Architecture related
+const useScreenStore = create((set) => ({
   currentArchitectures: [],
   latestSpeech: "",
   mobileVisibility: null,
   stage: "Idle",
   iteration: 0,
 
-  // Device settings
   isProjector: true,
   zoomFactor: 1,
   deviceIndex: 5,
   targetMobileId: null,
 
-  // User interaction states
   userName: "",
   introState: 0,
   isTransition: false,
   isEnding: false,
-};
 
-// Reset state (excluding device-specific settings)
-const RESET_STATE = {
-  targetMobileId: null,
-  stage: "Idle",
-  isTransition: false,
-  currentArchitectures: [],
-  mobileVisibility: null,
-  isEnding: false,
-  iteration: 0,
-  latestSpeech: "",
-  userName: "",
-  introState: 0,
-  zoomFactor: 1,
-};
-
-const useScreenStore = create((set) => ({
-  ...DEFAULT_STATE,
-
-  // Simple setters
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
   setLatestSpeech: (speech) => set({ latestSpeech: speech }),
@@ -55,7 +31,6 @@ const useScreenStore = create((set) => ({
   setIntroState: (introState) => set({ introState }),
   setIsEnding: (isEnding) => set({ isEnding }),
 
-  // Complex handlers
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
     set((state) => {
@@ -124,6 +99,11 @@ const useScreenStore = create((set) => ({
   handleNewMobile: (data) => {
     console.log("New join received:", data);
     set((state) => {
+      console.log(
+        "state",
+        state,
+        state.targetMobileId && state.targetMobileId !== data.mobileId
+      );
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
       }
@@ -148,9 +128,16 @@ const useScreenStore = create((set) => ({
       console.log("data", data);
 
       switch (data.type) {
+        // case "state_change":
+        //   if (state.introState !== data.introState) {
+        //     updates.introState = data.introState;
+        //   }
+        //   break;
+
         case "accelerometer_activation":
           updates.introState = 2;
           break;
+
         case "state_change":
           if (state.introState !== data.introState) {
             updates.introState = data.introState;
@@ -173,13 +160,31 @@ const useScreenStore = create((set) => ({
 
   handleReset: () => {
     set((state) => {
-      return Object.entries(RESET_STATE).some(
+      const resetState = {
+        targetMobileId: null,
+        stage: "Idle",
+        isTransition: false,
+        currentArchitectures: [],
+        mobileVisibility: null,
+        isEnding: false,
+        iteration: 0,
+        latestSpeech: "",
+        userName: "",
+        introState: 0,
+        zoomFactor: 1,
+      };
+
+      return Object.entries(resetState).some(
         ([key, value]) => state[key] !== value
       )
-        ? RESET_STATE
+        ? resetState
         : state;
     });
   },
+
+  ////////////////////////////////////////////////////////////////
+  //backend: inter-screen conversation////
+  ////////////////////////////////////////////////////////////////
 
   handleNewScreenConversation: (data) => {
     console.log("New screen conversation received:", data);

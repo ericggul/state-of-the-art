@@ -1,10 +1,12 @@
 import { useEffect, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import useScreenStore from "@/components/screen/store";
+import useBackendStore from "@/components/backend/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
-
 import { TIMEOUTS } from "@/utils/constant";
 
 export default function useScreenVisibility() {
+  const router = useRouter();
   const {
     mobileVisibility,
     isProjector,
@@ -12,19 +14,23 @@ export default function useScreenVisibility() {
     stage,
     setIsTransition,
     iteration,
+    setIsEnding,
+    handleReset,
   } = useScreenStore();
+
+  const handleBackendReset = useBackendStore(
+    (state) => state.handleBackendReset
+  );
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
 
-  // Clear all timeouts helper
   const clearTimeouts = () => {
     Object.values(timeouts.current).forEach((timeout) => {
       if (timeout) clearTimeout(timeout);
     });
   };
 
-  // Schedule state changes helper
   const scheduleStateChanges = () => {
     const multiplier = iterationSpeedMultiplier(iteration);
 
@@ -42,16 +48,33 @@ export default function useScreenVisibility() {
     }, TIMEOUTS.BACKEND * multiplier);
 
     // Schedule stage reset
-    const resetDelay = isProjector
+    const unmountFrontendDelay = isProjector
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
     timeouts.current.reset = setTimeout(() => {
       setStage(null);
-    }, resetDelay * multiplier);
+    }, unmountFrontendDelay * multiplier);
+
+    // Schedule ending and reset
+    const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
+    timeouts.current.ending = setTimeout(() => {
+      setIsEnding(true);
+    }, endingDelay);
+
+    const resetDelay = endingDelay + TIMEOUTS.RESET;
+    timeouts.current.reset = setTimeout(async () => {
+      // Clear timeouts and reset state
+      clearTimeouts();
+      handleReset();
+      handleBackendReset();
+
+      //window.location.reload(true);
+      // Use App Router refresh
+      router.refresh();
+    }, resetDelay);
   };
 
-  // Handle frontend state
   const setFrontendState = () => {
     setStage("Frontend");
     setIsTransition(false);
@@ -60,13 +83,9 @@ export default function useScreenVisibility() {
   useEffect(() => {
     if (isStageIdle) return;
 
-    // Clear any existing timeouts
     clearTimeouts();
-
-    // Set new state based on visibility
     mobileVisibility ? setFrontendState() : scheduleStateChanges();
 
-    // Cleanup on unmount or deps change
     return clearTimeouts;
   }, [isStageIdle, mobileVisibility, isProjector, iteration]);
 

@@ -4,27 +4,62 @@ import {
   OUTPUT_EMBEDDINGS,
 } from "@/foundations/backend/shared/constants/conversation";
 
-const useStore = create((set) => ({
+// Default state object
+const DEFAULT_STATE = {
   // Visual state
   isblack: true,
-  setIsblack: (value) => set({ isblack: value }),
 
   // Conversation state
   conversations: [],
+
+  // Embeddings state
+  embeddings: [],
+  inputEmbeddings: INPUT_EMBEDDINGS,
+  outputEmbeddings: OUTPUT_EMBEDDINGS,
+
+  // Length state
+  length: 10,
+
+  // Loop and level state
+  loop: 0,
+  level: 0,
+  subLevel: 0,
+};
+
+// Reset state
+
+const useStore = create((set) => ({
+  ...DEFAULT_STATE,
+
+  // Simple setters
+  setIsblack: (value) => set({ isblack: value }),
   setConversations: (value) => set({ conversations: value }),
+  setEmbeddings: (value) => set({ embeddings: value }),
+  setInputEmbeddings: (value) => set({ inputEmbeddings: value }),
+  setOutputEmbeddings: (value) => set({ outputEmbeddings: value }),
+  setLength: (value) => set({ length: value }),
+  setLevel: (value) => set({ level: value }),
+
+  // Complex setters
+  setLoop: (value) =>
+    set({
+      loop: value,
+      level: Math.floor(value / 3),
+      subLevel:
+        value >= 21
+          ? Math.min(Math.floor(value % 6), 5)
+          : Math.min(Math.floor(value % 3), 2),
+    }),
+
+  // Complex handlers
   addConversation: (conversation) =>
     set((state) => ({
       conversations: [...state.conversations, conversation],
     })),
 
-  // Embeddings state
-  embeddings: [],
-  setEmbeddings: (value) => set({ embeddings: value }),
   addEmbedding: (embedding) =>
     set((state) => {
       const newEmbeddings = [...state.embeddings, embedding];
-
-      // Update input/output embeddings when adding new embedding
       const lastIndex = newEmbeddings.length - 1;
       const inputData =
         lastIndex > 0 ? newEmbeddings[lastIndex - 1] : INPUT_EMBEDDINGS;
@@ -38,30 +73,16 @@ const useStore = create((set) => ({
       };
     }),
 
-  // Current embeddings state
-  inputEmbeddings: INPUT_EMBEDDINGS,
-  setInputEmbeddings: (value) => set({ inputEmbeddings: value }),
-  outputEmbeddings: OUTPUT_EMBEDDINGS,
-  setOutputEmbeddings: (value) => set({ outputEmbeddings: value }),
-
-  // Length state
-  length: 10,
-  setLength: (value) => set({ length: value }),
-
-  // Loop and level state (for future implementation)
-  loop: 0,
-  setLoop: (value) =>
-    set({
-      loop: value,
-      level: Math.floor(value / 3),
-      subLevel:
-        value >= 21
-          ? Math.min(Math.floor(value % 6), 5)
-          : Math.min(Math.floor(value % 3), 2),
-    }),
-  level: 0,
-  subLevel: 0,
-  setLevel: (value) => set({ level: value }),
+  // Reset handler
+  handleBackendReset: () => {
+    set((state) => {
+      return Object.entries(DEFAULT_STATE).some(
+        ([key, value]) => state[key] !== value
+      )
+        ? DEFAULT_STATE
+        : state;
+    });
+  },
 }));
 
 export default useStore;
