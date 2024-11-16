@@ -3,8 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import useStore from "@/components/backend/store";
 import useScreenStore from "@/components/screen/store";
 
-export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
+import * as CONST from "@/utils/constant";
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
@@ -143,7 +142,8 @@ export default function useConversation({ socket = null }) {
   };
 
   const getNextText = async () => {
-    const timeout = WHITE_TIME[Math.min(level, WHITE_TIME.length - 1)];
+    const timeout =
+      CONST.WHITE_TIME[Math.min(level, CONST.WHITE_TIME.length - 1)];
     await new Promise((r) => setTimeout(r, timeout));
     hasFetchedText.current = false;
     setGetNewText(true);
@@ -158,7 +158,9 @@ export default function useConversation({ socket = null }) {
 
       const timeout =
         timeScale *
-        EXTRA_BLACK_TIME[Math.min(level, EXTRA_BLACK_TIME.length - 1)];
+        CONST.EXTRA_BLACK_TIME[
+          Math.min(level, CONST.EXTRA_BLACK_TIME.length - 1)
+        ];
       await new Promise((r) => setTimeout(r, timeout));
 
       addEmbedding({ embeddings, tokens });

@@ -5,7 +5,7 @@ import useScreenStore from "@/components/screen/store";
 import usePosCalc from "./usePosCalc";
 import TokenComponent from "./TokenComponent";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 function LevelZero({ visible }) {
   const {
@@ -36,7 +36,7 @@ function LevelZero({ visible }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
+      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
     >
       {tokens.map((token, i) => (
         <TokenComponent

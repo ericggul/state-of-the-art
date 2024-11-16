@@ -13,7 +13,7 @@ import {
 } from "../shared/utils/createPath";
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -133,7 +133,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
+      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
     >
       <div
         style={{

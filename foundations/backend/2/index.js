@@ -8,7 +8,7 @@ import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeS
 import { TokensRenderer } from "../shared/components/TokensRenderer";
 import { createRadialPath } from "../shared/utils/createPath";
 import { usePathsV2 } from "../shared/hooks/usePaths";
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const { isblack, outputEmbeddings: newEmbeddings, subLevel } = useStore();
@@ -38,7 +38,7 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
+      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
     >
       <div
         style={{

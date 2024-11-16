@@ -4,8 +4,7 @@ import useScreenStore from "@/components/screen/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
 
 const audioURL = "/audio/beep.mp3";
-const BASE_DELAY = 500;
-const DEVICE_DELAY_MULTIPLIER = 600;
+import * as CONST from "@/utils/constant";
 
 const BlueEl = memo(function BlueEl() {
   useEffect(() => {
@@ -26,7 +25,8 @@ const Transition = memo(function Transition() {
   const iteration = useScreenStore((state) => state.iteration);
 
   useEffect(() => {
-    const baseDelay = BASE_DELAY + deviceIndex * DEVICE_DELAY_MULTIPLIER;
+    const baseDelay =
+      CONST.BASE_DELAY + deviceIndex * CONST.DEVICE_DELAY_MULTIPLIER;
     const adjustedDelay = baseDelay * iterationSpeedMultiplier(iteration);
 
     const timeout = setTimeout(() => {

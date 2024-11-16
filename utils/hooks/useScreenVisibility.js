@@ -2,12 +2,7 @@ import { useEffect, useRef, useMemo } from "react";
 import useScreenStore from "@/components/screen/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
 
-const TIMEOUTS = {
-  TRANSITION: 7000,
-  BACKEND: 9000,
-  PROJECTOR_OFFSET: 2000,
-  MOBILE_RESET: 500,
-};
+import { TIMEOUTS } from "@/utils/constant";
 
 export default function useScreenVisibility() {
   const {

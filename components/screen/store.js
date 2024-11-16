@@ -7,7 +7,6 @@ const useScreenStore = create((set) => ({
   stage: "Idle",
   iteration: 0,
 
-  isTransition: false,
   isProjector: true,
   zoomFactor: 1,
   deviceIndex: 5,
@@ -15,6 +14,8 @@ const useScreenStore = create((set) => ({
 
   userName: "",
   introState: 0,
+  isTransition: false,
+  isEnding: false,
 
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),

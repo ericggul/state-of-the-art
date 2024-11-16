@@ -7,7 +7,7 @@ import useComputeSimilarity from "@/foundations/backend/shared/utils/useComputeS
 import { createArcPath } from "../shared/utils/createPath";
 import { usePathsV1 } from "../shared/hooks/usePaths";
 import TokenComponent from "./TokenComponent";
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 function LevelOne({ visible }) {
   const {
@@ -83,7 +83,7 @@ function LevelOne({ visible }) {
     <S.Container
       $isblack={isblack}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={iteration >= C.MIX_BACKEND_ITERATION}
+      $isTransparent={iteration >= CONST.MIX_BACKEND_ITERATION}
     >
       {tokenComponents}
       <S.Pic $animInterval={ANIM_INTERVAL} $isAnimating={isAnimating}>

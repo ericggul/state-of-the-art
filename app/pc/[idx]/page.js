@@ -8,7 +8,7 @@ import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 // Keep all dynamic imports together
 const COMPONENTS = {
@@ -101,7 +101,7 @@ function RelationPageContent({ idx, test }) {
         <Idle $isFrontend={stage === "Frontend"} type="pc" />
       )}
       {isTransition && <Transition />}
-      {(stage === "Backend" || iteration >= C.MIX_BACKEND_ITERATION) && (
+      {(stage === "Backend" || iteration >= CONST.MIX_BACKEND_ITERATION) && (
         <Backend socket={socket} />
       )}
     </>

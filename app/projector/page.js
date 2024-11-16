@@ -15,7 +15,7 @@ const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 // SearchParams wrapper component
 function SearchParamsWrapper({ children }) {
@@ -85,7 +85,7 @@ function ScreenContent({ test }) {
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
       {isTransition && <Transition />}
-      {(stage === "Backend" || iteration >= C.MIX_BACKEND_ITERATION) && (
+      {(stage === "Backend" || iteration >= CONST.MIX_BACKEND_ITERATION) && (
         <Backend socket={socket} />
       )}
     </Suspense>

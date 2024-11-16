@@ -14,7 +14,7 @@ import {
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
-import * as C from "@/utils/constant";
+import * as CONST from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
@@ -195,8 +195,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       $isTransparent={
-        (deviceIndex == 3 && level >= C.MIX_BACKEND_LEVEL) ||
-        iteration >= C.MIX_BACKEND_ITERATION
+        (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
+        iteration >= CONST.MIX_BACKEND_ITERATION
       }
     >
       <div style={{ opacity: tokensOpacity }}>
