@@ -1,7 +1,15 @@
 // src/components/ShaderScene.jsx
-import React from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import ImageTransitionEffect from "./Effect";
+
+// Simple fallback for loading/error states
+const FallbackContent = () => (
+  <mesh>
+    <planeGeometry args={[5, 3]} />
+    <meshBasicMaterial color="#1a1a1a" />
+  </mesh>
+);
 
 const ShaderScene = ({ image1, image2 }) => {
   return (
@@ -9,7 +17,9 @@ const ShaderScene = ({ image1, image2 }) => {
       style={{ width: "100%", height: "100%" }}
       camera={{ position: [0, 0, 5] }}
     >
-      <ImageTransitionEffect image1={image1} image2={image2} />
+      <Suspense fallback={<FallbackContent />}>
+        <ImageTransitionEffect image1={image1} image2={image2} />
+      </Suspense>
     </Canvas>
   );
 };

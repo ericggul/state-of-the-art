@@ -1,5 +1,5 @@
 // src/components/ModelImage.jsx
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import TypewriterText from "@/foundations/pc/dashboard/v2/components/TypewriterText";
 import ShaderScene from "./ShaderScene";
@@ -29,13 +29,56 @@ const Description = styled.p`
 const IMAGE_BASE = "/db/images/";
 
 export default function ModelImage({ model }) {
-  const defaultImage = IMAGE_BASE + "1.png";
-  const modelImage = IMAGE_BASE + (model.image || "1.png");
+  const [imageError, setImageError] = React.useState(false);
+  const [currentModelImage, setCurrentModelImage] = useState(
+    model?.image || "1.png"
+  );
+  const [prevModelImage, setPrevModelImage] = useState(model?.image || "1.png");
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (model?.image !== currentModelImage) {
+      setPrevModelImage(currentModelImage);
+      setCurrentModelImage(model?.image || "1.png");
+    }
+  }, [model?.image]);
+
+  const prevImage = IMAGE_BASE + prevModelImage;
+  const currentImage = IMAGE_BASE + currentModelImage;
+
+  if (imageError) {
+    return (
+      <ImageContainer>
+        <ImageWrapper
+          style={{
+            background: "#1a1a1a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span style={{ color: "#666" }}>Image not available</span>
+        </ImageWrapper>
+        <Description>
+          <TypewriterText text={model.explanation} speed={20} />
+        </Description>
+      </ImageContainer>
+    );
+  }
 
   return (
     <ImageContainer>
       <ImageWrapper>
-        <ShaderScene image1={defaultImage} image2={modelImage} />
+        <ShaderScene
+          image1={prevImage}
+          image2={currentImage}
+          onError={() => setImageError(true)}
+        />
       </ImageWrapper>
       <Description>
         <TypewriterText text={model.explanation} speed={20} />

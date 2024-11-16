@@ -1,23 +1,32 @@
 // src/components/ImageTransitionEffect.jsx
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { ImageTransitionMaterial } from "./Material";
 
 const ImageTransitionEffect = ({ image1, image2 }) => {
   const meshRef = useRef();
-  const [texture1, texture2] = useLoader(TextureLoader, [image1, image2]);
-
   const progress = useRef(0);
-  const direction = useRef(1);
+
+  // Simple error handling with try/catch in loader
+  const [texture1, texture2] = useLoader(
+    TextureLoader,
+    [image1, image2],
+    undefined,
+    (error) => {
+      console.error("Failed to load texture:", error);
+      return null;
+    }
+  );
+
+  // Reset progress when images change
+  useEffect(() => {
+    progress.current = 0;
+  }, [image1, image2]);
 
   useFrame(() => {
-    if (meshRef.current) {
-      progress.current += 0.01 * direction.current;
-      if (progress.current >= 1 || progress.current <= 0) {
-        direction.current *= -1;
-      }
-
+    if (meshRef.current && progress.current < 1) {
+      progress.current = Math.min(progress.current + 0.02, 1);
       meshRef.current.material.uniforms.uProgress.value = progress.current;
     }
   });
