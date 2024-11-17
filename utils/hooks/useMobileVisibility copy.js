@@ -58,7 +58,7 @@ export default function useVisibilityCheck({
     handlePageShow,
   ]);
 
-  // Socket emissions for visibility changes
+  // Socket emissions only happen after isReady
   useEffect(() => {
     if (!isReady || !socket?.current) return;
 
@@ -66,31 +66,44 @@ export default function useVisibilityCheck({
       socket.current.emit("mobile-new-visibility-change", {
         isVisible,
         mobileId,
-        timestamp: Date.now(),
         origin: "useMobileVisibility",
       });
-      console.log("✅ Visibility change:", isVisible);
+      console.log("✅ Socket emission successful");
     } catch (e) {
       console.error("❌ Socket emission error:", e);
     }
   }, [isReady, isVisible, socket, mobileId]);
 
-  // Simple heartbeat mechanism
+  // Implement heartbeat mechanism
   useEffect(() => {
     if (!isReady || !socket?.current) return;
 
-    // Only run heartbeat when visible
     if (isVisible) {
-      const interval = setInterval(() => {
-        socket.current.emit("mobile-new-heartbeat", {
-          mobileId,
-          timestamp: Date.now(),
-        });
-        console.log("💓 Heartbeat sent");
-      }, HEARTBEAT_INTERVAL);
-
-      return () => clearInterval(interval);
+      // Start sending heartbeats when the app is visible
+      if (!heartbeatInterval.current) {
+        heartbeatInterval.current = setInterval(() => {
+          socket.current.emit("mobile-new-heartbeat", {
+            mobileId,
+            timestamp: Date.now(),
+          });
+          console.log("💓 Heartbeat sent");
+        }, HEARTBEAT_INTERVAL); // Send heartbeat every 5 seconds (adjust as needed)
+      }
+    } else {
+      // Stop sending heartbeats when the app is not visible
+      if (heartbeatInterval.current) {
+        clearInterval(heartbeatInterval.current);
+        heartbeatInterval.current = null;
+      }
     }
+
+    // Clean up when the component unmounts or visibility changes
+    return () => {
+      if (heartbeatInterval.current) {
+        clearInterval(heartbeatInterval.current);
+        heartbeatInterval.current = null;
+      }
+    };
   }, [isReady, isVisible, socket, mobileId]);
 
   return isVisible;
