@@ -12,11 +12,14 @@ export const Container = styled.div`
   &::before {
     content: "";
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
     z-index: -1;
 
-    /* Initial state and transitions */
+    /* Initial fade in */
     transition: all 3s ease-in-out;
     background: rgba(0, 0, 0, 0);
     backdrop-filter: blur(0px);
@@ -34,11 +37,15 @@ export const Container = styled.div`
   }
 
   @keyframes darkenBackground {
+    from {
+      background: rgba(0, 0, 0, 0.5);
+    }
     to {
       background: rgba(0, 0, 0, 1);
     }
   }
 
+  // Content wrapper
   h1,
   p {
     color: white;

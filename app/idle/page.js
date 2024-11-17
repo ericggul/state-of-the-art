@@ -9,7 +9,7 @@ const Ending = dynamic(() => import("@/components/screen/ending"));
 export default function IdleWrapper() {
   return (
     <Suspense>
-      {/* <Idle isTesting={true} /> */}
+      <Idle isTesting={true} />
       <Ending />
     </Suspense>
   );

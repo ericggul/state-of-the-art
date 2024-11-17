@@ -18,6 +18,11 @@ export const TIMEOUTS = {
   ENDING: 110 * 1000,
   ENDING_BASE: 50 * 1000,
   RESET: 20 * 1000,
+
+  //TEST TEMPORARILY
+  // ENDING: 11 * 1000,
+  // ENDING_BASE: 5 * 1000,
+  // RESET: 15 * 1000,
 };
 
 //transition: delay between devices
