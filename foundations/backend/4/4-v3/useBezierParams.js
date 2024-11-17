@@ -28,19 +28,20 @@ export default function useBezierParams(
   const updateParams = useCallback(() => {
     if (!shouldUpdate) return;
 
-    const newParams = isPlural
-      ? inputTokens.reduce((acc, _, i) => {
-          outputTokens.forEach((_, j) => {
-            acc[`${i}-${j}`] = generateBezierParams(xRange, yRange);
-          });
-          return acc;
-        }, {})
-      : generateBezierParams(xRange, yRange);
-
-    setParams((prev) => ({
-      ...prev,
-      [isPlural ? "multi" : "single"]: newParams,
-    }));
+    if (isPlural) {
+      const newParams = inputTokens.reduce((acc, _, i) => {
+        outputTokens.forEach((_, j) => {
+          acc[`${i}-${j}`] = generateBezierParams(xRange, yRange);
+        });
+        return acc;
+      }, {});
+      setParams((prev) => ({ ...prev, multi: newParams }));
+    } else {
+      setParams((prev) => ({
+        ...prev,
+        single: generateBezierParams(xRange, yRange),
+      }));
+    }
   }, [shouldUpdate, isPlural, inputTokens, outputTokens, xRange, yRange]);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export default function useBezierParams(
   }, [isPlural, shouldUpdate, updateParams]);
 
   useRandomInterval(updateParams, 8 * timeUnit, 30 * timeUnit, visible);
+  // useRandomInterval(updateParams, 2 * timeUnit, 30 * timeUnit, visible);
 
   return isPlural ? params.multi : params.single;
 }

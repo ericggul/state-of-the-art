@@ -2,7 +2,12 @@ import { useRef, useEffect } from "react";
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-export default function useRandomInterval(callback, minDelay, maxDelay, activated = true) {
+export default function useRandomInterval(
+  callback,
+  minDelay,
+  maxDelay,
+  activated = true
+) {
   const timeoutId = useRef();
   const savedCallback = useRef();
 
@@ -13,7 +18,8 @@ export default function useRandomInterval(callback, minDelay, maxDelay, activate
 
   // Set up the interval.
   useEffect(() => {
-    const isEnabled = typeof minDelay === "number" && typeof maxDelay === "number";
+    const isEnabled =
+      typeof minDelay === "number" && typeof maxDelay === "number";
 
     if (isEnabled && activated) {
       const handleTick = () => {

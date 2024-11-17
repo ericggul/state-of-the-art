@@ -71,18 +71,22 @@ export default function usePosCalc({
       : getRangeConfig[subLevel] ?? randomiseRangeConfig()
   );
 
-  const [intervalRange] = useState({ min: 10, max: 80 });
+  const [intervalRange, setIntervalRange] = useState({ min: 10, max: 80 });
 
-  const updateCurrentRange = useCallback(() => {
-    setCurrentRange(
-      level >= 5
-        ? randomiseRangeConfig()
-        : getRangeConfig[subLevel] ?? randomiseRangeConfig()
-    );
-  }, [level, subLevel]);
+  // useEffect(() => {
+  //   if (isAnimating) {
+  //     setIntervalRange({ min: getRandom(1, 20), max: getRandom(20, 70) });
+  //   }
+  // }, [isAnimating]);
 
   useRandomInterval(
-    updateCurrentRange,
+    () => {
+      setCurrentRange(
+        level >= 5
+          ? randomiseRangeConfig()
+          : getRangeConfig[subLevel] ?? randomiseRangeConfig()
+      );
+    },
     intervalRange.min * timeUnit,
     intervalRange.max * timeUnit,
     isAnimating
