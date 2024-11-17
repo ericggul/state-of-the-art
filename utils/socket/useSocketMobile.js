@@ -56,7 +56,7 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
           socket.current.emit("mobile-new-visibility-change", {
             mobileId,
             isVisible: false,
-            origin: "socket_disconnect",
+            origin: "socket_disconnect-1",
           });
         } catch (e) {
           console.error("Disconnect notification failed:", e);

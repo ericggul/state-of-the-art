@@ -8,13 +8,12 @@ export default function mobileSetup({ socket, io }) {
   ///////////
   //INIT/////
   ///////////
-  socket.on("mobile-init", ({ mobileId }) => {
-    // Only allow one active mobile
-    if (activeMobile) {
-      console.log("Rejecting new mobile - one already active");
-      return;
-    }
+  socket.on("screen-init", (data) => {
+    socket.join("screen");
+    socket.join(`screen-${data.layerIdx}`);
+  });
 
+  socket.on("mobile-init", ({ mobileId }) => {
     // Track new mobile connection
     activeMobile = {
       mobileId,
@@ -32,20 +31,6 @@ export default function mobileSetup({ socket, io }) {
       mobileId,
       origin: "init",
     });
-  });
-
-  socket.on("screen-init", (data) => {
-    socket.join("screen");
-    socket.join(`screen-${data.layerIdx}`);
-
-    // Send current mobile state to new screen
-    if (activeMobile) {
-      socket.emit("new-mobile-visibility-change", {
-        mobileId: activeMobile.mobileId,
-        isVisible: activeMobile.status === "active",
-        origin: "screen_init",
-      });
-    }
   });
 
   socket.on("controller-init", () => {
@@ -116,26 +101,6 @@ export default function mobileSetup({ socket, io }) {
       }
     }, HEARTBEAT_INTERVAL);
   }
-
-  // Handle disconnections
-  socket.on("disconnect", () => {
-    if (activeMobile?.socketId === socket.id) {
-      const mobileId = activeMobile.mobileId;
-      activeMobile = null;
-
-      io.to("controller").emit("new-mobile-visibility-change", {
-        mobileId,
-        isVisible: false,
-        origin: "socket_disconnect",
-      });
-      io.to("screen").emit("new-mobile-visibility-change", {
-        mobileId,
-        isVisible: false,
-        origin: "socket_disconnect",
-      });
-      console.log(`Mobile ${mobileId} disconnected`);
-    }
-  });
 
   //////////MESSAGE HANDLING//////////
   //controller -> screen

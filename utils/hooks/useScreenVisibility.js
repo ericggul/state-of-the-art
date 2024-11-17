@@ -47,11 +47,13 @@ export default function useScreenVisibility() {
     }, TIMEOUTS.BACKEND * multiplier);
 
     // Schedule stage reset
+    console.log("iteration", iteration);
     const unmountFrontendDelay = isProjector
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
     timeouts.current.reset = setTimeout(() => {
+      console.log("unmounting frontend", unmountFrontendDelay, multiplier);
       setStage(null);
     }, unmountFrontendDelay * multiplier);
 
@@ -75,6 +77,7 @@ export default function useScreenVisibility() {
 
   useEffect(() => {
     if (isStageIdle || iteration == 0) return;
+    console.log(isStageIdle, mobileVisibility, isProjector, iteration);
 
     clearTimeouts();
     mobileVisibility ? setFrontendState() : scheduleStateChanges();

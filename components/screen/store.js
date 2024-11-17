@@ -117,7 +117,6 @@ const useScreenStore = create((set) => ({
         }
       }
 
-      console.log("updates", updates);
       return Object.keys(updates).length ? updates : state;
     });
   },
