@@ -1,6 +1,5 @@
 // Constants
-const HEARTBEAT_TIMEOUT = 3000; // 15 seconds without heartbeat = dead
-const HEARTBEAT_CHECK_INTERVAL = 1000; // Check every 5 seconds
+import { HEARTBEAT_TIMEOUT, HEARTBEAT_INTERVAL } from "@/utils/constant";
 
 // Track single active mobile
 let activeMobile = null;
@@ -65,11 +64,32 @@ export default function mobileSetup({ socket, io }) {
   socket.on("mobile-new-heartbeat", ({ mobileId, timestamp }) => {
     if (activeMobile?.mobileId === mobileId) {
       activeMobile.lastHeartbeat = Date.now();
-      activeMobile.status = "active";
-      socket
-        .to("controller")
-        .emit("new-mobile-heartbeat", { mobileId, timestamp });
-      socket.to("screen").emit("new-mobile-heartbeat", { mobileId, timestamp });
+
+      // Only emit if status changes from inactive to active
+      if (activeMobile.status === "inactive") {
+        console.log(`Reactivating mobile ${mobileId} due to heartbeat`);
+        activeMobile.status = "active";
+
+        // Notify about reactivation
+        const reactivationData = {
+          mobileId,
+          isVisible: true,
+          origin: "heartbeat_reactivation",
+        };
+
+        socket
+          .to("controller")
+          .emit("new-mobile-visibility-change", reactivationData);
+        socket
+          .to("screen")
+          .emit("new-mobile-visibility-change", reactivationData);
+      }
+
+      // Always forward heartbeat for monitoring
+      // socket
+      //   .to("controller")
+      //   .emit("new-mobile-heartbeat", { mobileId, timestamp });
+      // socket.to("screen").emit("new-mobile-heartbeat", { mobileId, timestamp });
     }
   });
 
@@ -97,7 +117,7 @@ export default function mobileSetup({ socket, io }) {
 
         activeMobile = null;
       }
-    }, HEARTBEAT_CHECK_INTERVAL);
+    }, HEARTBEAT_INTERVAL);
   }
 
   // Handle disconnections

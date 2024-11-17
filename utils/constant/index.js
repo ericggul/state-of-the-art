@@ -32,3 +32,4 @@ export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
 
 //heartbeat: mobile
 export const HEARTBEAT_INTERVAL = 1000;
+export const HEARTBEAT_TIMEOUT = 3000;

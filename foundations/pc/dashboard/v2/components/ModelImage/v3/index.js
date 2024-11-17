@@ -1,5 +1,5 @@
 // src/components/ModelImage.jsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import styled from "styled-components";
 import TypewriterText from "@/foundations/pc/dashboard/v2/components/TypewriterText";
 import ShaderScene from "./ShaderScene";
@@ -76,17 +76,19 @@ export default function ModelImage({ model }) {
   }
 
   return (
-    <ImageContainer>
-      <ImageWrapper>
-        <ShaderScene
-          image1={prevImage}
-          image2={currentImage}
-          onError={() => setImageError(true)}
-        />
-      </ImageWrapper>
-      <Description>
-        <TypewriterText text={model.explanation} speed={20} />
-      </Description>
-    </ImageContainer>
+    <Suspense fallback={null}>
+      <ImageContainer>
+        <ImageWrapper>
+          <ShaderScene
+            image1={prevImage}
+            image2={currentImage}
+            onError={() => setImageError(true)}
+          />
+        </ImageWrapper>
+        <Description>
+          <TypewriterText text={model.explanation} speed={20} />
+        </Description>
+      </ImageContainer>
+    </Suspense>
   );
 }

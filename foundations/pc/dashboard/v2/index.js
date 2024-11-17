@@ -36,7 +36,6 @@ export default function Dashboard() {
   }, [currentArchitectures]);
 
   const currentModel = model || DEFAULT_MODEL;
-  console.log(currentModel);
 
   const hasPerformanceData = useCallback((model) => {
     return (
