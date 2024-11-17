@@ -212,7 +212,7 @@ export default function useConversation({ socket = null }) {
       const formattedConversations = formatConversations(conversations);
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.3, 1.4);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.25, 1.3);
       const maxTokens = level >= 5 ? 27 : 22;
 
       // Add timeout to GPT fetch

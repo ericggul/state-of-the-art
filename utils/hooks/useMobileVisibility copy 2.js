@@ -66,6 +66,7 @@ export default function useVisibilityCheck({
       socket.current.emit("mobile-new-visibility-change", {
         isVisible,
         mobileId,
+        timestamp: Date.now(),
         origin: "useMobileVisibility",
       });
     } catch (e) {
@@ -73,20 +74,42 @@ export default function useVisibilityCheck({
     }
   }, [isReady, isVisible, socket, mobileId]);
 
-  // Simplify heartbeat mechanism
+  // Simple heartbeat mechanism
   useEffect(() => {
     if (!isReady || !socket?.current) return;
 
     let heartbeatInterval;
     console.log("🔄 Setting up heartbeat mechanism", { isVisible, mobileId });
 
+    socket.current.on("request-timestamp", () => {
+      const timestamp = Date.now();
+      console.log("⏰ Timestamp requested", { mobileId, timestamp });
+      socket.current.emit("timestamp-response", {
+        mobileId,
+        timestamp,
+      });
+    });
+
     if (isVisible) {
-      console.log("💓 Sending initial heartbeat", { mobileId });
-      socket.current.emit("mobile-new-heartbeat", { mobileId });
+      const initialTimestamp = Date.now();
+      console.log("💓 Sending initial heartbeat", {
+        mobileId,
+        timestamp: initialTimestamp,
+      });
+
+      socket.current.emit("mobile-new-heartbeat", {
+        mobileId,
+        timestamp: initialTimestamp,
+      });
 
       heartbeatInterval = setInterval(() => {
-        console.log("💓 Sending heartbeat", { mobileId });
-        socket.current.emit("mobile-new-heartbeat", { mobileId });
+        const timestamp = Date.now();
+        console.log("💓 Sending heartbeat", { mobileId, timestamp });
+
+        socket.current.emit("mobile-new-heartbeat", {
+          mobileId,
+          timestamp,
+        });
       }, HEARTBEAT_INTERVAL);
     }
 
@@ -95,6 +118,7 @@ export default function useVisibilityCheck({
       if (heartbeatInterval) {
         clearInterval(heartbeatInterval);
       }
+      socket.current?.off("request-timestamp");
     };
   }, [isReady, isVisible, socket, mobileId]);
 
