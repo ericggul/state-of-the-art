@@ -46,9 +46,8 @@ export default function mobileSetup({ socket, io }) {
       });
 
       activeMobile.status = data.isVisible ? "active" : "inactive";
-      if (data.isVisible) {
-        activeMobile.lastHeartbeat = Date.now();
-      }
+      activeMobile.lastHeartbeat = Date.now();
+
       socket.to("controller").emit("new-mobile-visibility-change", data);
       socket.to("screen").emit("new-mobile-visibility-change", data);
     }
@@ -56,26 +55,7 @@ export default function mobileSetup({ socket, io }) {
 
   socket.on("mobile-new-heartbeat", ({ mobileId }) => {
     if (activeMobile?.mobileId === mobileId) {
-      console.log(`💓 Heartbeat from ${mobileId}`);
       activeMobile.lastHeartbeat = Date.now();
-
-      if (activeMobile.status === "inactive") {
-        console.log(`🔄 Reactivating mobile ${mobileId}`);
-        activeMobile.status = "active";
-
-        const reactivationData = {
-          mobileId,
-          isVisible: true,
-          origin: "heartbeat_reactivation",
-        };
-
-        socket
-          .to("controller")
-          .emit("new-mobile-visibility-change", reactivationData);
-        socket
-          .to("screen")
-          .emit("new-mobile-visibility-change", reactivationData);
-      }
     }
   });
 

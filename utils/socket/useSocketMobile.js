@@ -1,9 +1,28 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
+import { HEARTBEAT_INTERVAL } from "@/utils/constant";
 
 export default function useSocketMobile({ mobileId, handleNewResponse }) {
   const socket = useRef(null);
   const initialized = useRef(false);
+  const heartbeatInterval = useRef(null);
+
+  // Start heartbeat as soon as socket connects
+  const startHeartbeat = () => {
+    console.log("💓 Starting heartbeat for", { mobileId });
+    socket.current.emit("mobile-new-heartbeat", { mobileId });
+    heartbeatInterval.current = setInterval(() => {
+      socket.current.emit("mobile-new-heartbeat", { mobileId });
+    }, HEARTBEAT_INTERVAL);
+  };
+
+  // Stop heartbeat
+  const stopHeartbeat = () => {
+    if (heartbeatInterval.current) {
+      clearInterval(heartbeatInterval.current);
+      heartbeatInterval.current = null;
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined" && !initialized.current) {
@@ -13,21 +32,16 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
       return () => {
         if (socket.current) {
           try {
-            // Try to notify about disconnection
+            stopHeartbeat();
             socket.current.emit("mobile-new-visibility-change", {
               mobileId,
               isVisible: false,
               origin: "cleanup",
             });
-
-            // Remove listeners
             socket.current.off("new-controller-response");
             socket.current.off("connect");
             socket.current.off("disconnect");
-
-            // Disconnect
             socket.current.disconnect();
-            console.log("Mobile socket cleaned up");
           } catch (e) {
             console.error("Cleanup failed:", e);
           }
@@ -41,29 +55,18 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
     socket.current = io();
 
     socket.current.on("connect", () => {
-      console.log("Mobile socket connected");
-      socket.current.emit("mobile-init", {
-        mobileId,
-        timestamp: Date.now(),
-      });
+      socket.current.emit("mobile-init", { mobileId });
+      startHeartbeat();
 
-      socket.current.on("new-controller-response", (data) => {
-        console.log("Received new-controller-response:", data);
-        handleNewResponse(data);
-      });
+      socket.current.on("new-controller-response", handleNewResponse);
 
-      socket.current.on("disconnect", (reason) => {
-        console.log("Socket disconnected:", reason);
-        // Try to notify about disconnection
-        try {
-          socket.current.emit("mobile-new-visibility-change", {
-            mobileId,
-            isVisible: false,
-            origin: "socket_disconnect-1",
-          });
-        } catch (e) {
-          console.error("Disconnect notification failed:", e);
-        }
+      socket.current.on("disconnect", () => {
+        stopHeartbeat();
+        socket.current.emit("mobile-new-visibility-change", {
+          mobileId,
+          isVisible: false,
+          origin: "socket_disconnect",
+        });
       });
     });
   };

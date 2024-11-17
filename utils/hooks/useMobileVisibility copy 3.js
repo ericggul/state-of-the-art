@@ -59,7 +59,7 @@ export default function useVisibilityCheck({
 
   // Socket emissions for visibility changes
   useEffect(() => {
-    if (!socket?.current) return;
+    if (!isReady || !socket?.current) return;
 
     try {
       console.log(`👁️ Visibility changed: ${isVisible}`, { mobileId });
@@ -71,7 +71,34 @@ export default function useVisibilityCheck({
     } catch (e) {
       console.error("❌ Socket emission error:", e);
     }
-  }, [isVisible, socket, mobileId]);
+  }, [isReady, isVisible, socket, mobileId]);
+
+  // Simplify heartbeat mechanism
+  useEffect(() => {
+    if (!isReady || !socket?.current) return;
+    /////HERE IS THE PROBLEM THIS ONE IS NOT EXECUTED FROM THE FIRST PLACE
+    //CHANGE IT SO THAT IT CAN EMIT AS SOON AS SOCKET IS READY
+
+    let heartbeatInterval;
+    console.log("🔄 Setting up heartbeat mechanism", { isVisible, mobileId });
+
+    if (isVisible) {
+      console.log("💓 Sending initial heartbeat", { mobileId });
+      socket.current.emit("mobile-new-heartbeat", { mobileId });
+
+      heartbeatInterval = setInterval(() => {
+        console.log("💓 Sending heartbeat", { mobileId });
+        socket.current.emit("mobile-new-heartbeat", { mobileId });
+      }, HEARTBEAT_INTERVAL);
+    }
+
+    return () => {
+      console.log("🧹 Cleaning up heartbeat", { isVisible, mobileId });
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+      }
+    };
+  }, [isReady, isVisible, socket, mobileId]);
 
   return isVisible;
 }
