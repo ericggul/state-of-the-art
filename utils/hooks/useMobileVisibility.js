@@ -9,7 +9,6 @@ export default function useVisibilityCheck({
   const [isVisible, setIsVisible] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const isInitialized = useRef(false);
-  const heartbeatInterval = useRef(null);
 
   // Wait for functionality to be ready
   useEffect(() => {
@@ -69,7 +68,6 @@ export default function useVisibilityCheck({
         timestamp: Date.now(),
         origin: "useMobileVisibility",
       });
-      console.log("✅ Visibility change:", isVisible);
     } catch (e) {
       console.error("❌ Socket emission error:", e);
     }
@@ -79,29 +77,44 @@ export default function useVisibilityCheck({
   useEffect(() => {
     if (!isReady || !socket?.current) return;
 
+    let heartbeatInterval;
+
+    // Set up socket listener for timestamp requests
+    socket.current.on("request-timestamp", () => {
+      const timestamp = Date.now();
+
+      socket.current.emit("timestamp-response", {
+        mobileId,
+        timestamp,
+      });
+    });
+
     // Only run heartbeat when visible
     if (isVisible) {
-      const interval = setInterval(() => {
-        socket.current.emit("mobile-new-heartbeat", {
-          mobileId,
-          timestamp: Date.now(),
-        });
-        console.log("💓 Heartbeat sent");
-      }, HEARTBEAT_INTERVAL);
+      const initialTimestamp = Date.now();
 
-      // Handle timestamp requests
-      socket.current.on("request-timestamp", () => {
-        socket.current.emit("timestamp-response", {
-          mobileId,
-          timestamp: Date.now(),
-        });
+      socket.current.emit("mobile-new-heartbeat", {
+        mobileId,
+        timestamp: initialTimestamp,
       });
 
-      return () => {
-        clearInterval(interval);
-        socket.current.off("request-timestamp");
-      };
+      heartbeatInterval = setInterval(() => {
+        const timestamp = Date.now();
+
+        socket.current.emit("mobile-new-heartbeat", {
+          mobileId,
+          timestamp,
+        });
+      }, HEARTBEAT_INTERVAL);
     }
+
+    // Cleanup function
+    return () => {
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+      }
+      socket.current?.off("request-timestamp");
+    };
   }, [isReady, isVisible, socket, mobileId]);
 
   return isVisible;

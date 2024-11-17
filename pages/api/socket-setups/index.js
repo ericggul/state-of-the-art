@@ -5,9 +5,7 @@ import { HEARTBEAT_TIMEOUT, HEARTBEAT_INTERVAL } from "@/utils/constant";
 let activeMobile = null;
 
 export default function mobileSetup({ socket, io }) {
-  ///////////
-  //INIT/////
-  ///////////
+  // Initialization
   socket.on("screen-init", (data) => {
     socket.join("screen");
     socket.join(`screen-${data.layerIdx}`);
@@ -37,7 +35,7 @@ export default function mobileSetup({ socket, io }) {
     socket.join("controller");
   });
 
-  //////VISIBILITY & HEARTBEAT////
+  // Visibility & Heartbeat
   socket.on("mobile-new-visibility-change", (data) => {
     if (activeMobile?.mobileId === data.mobileId) {
       activeMobile.status = data.isVisible ? "active" : "inactive";
@@ -51,7 +49,20 @@ export default function mobileSetup({ socket, io }) {
   socket.on("mobile-new-heartbeat", ({ mobileId, timestamp }) => {
     if (activeMobile?.mobileId === mobileId) {
       activeMobile.lastHeartbeat = timestamp;
-      activeMobile.status = "active";
+
+      if (activeMobile.status === "inactive") {
+        activeMobile.status = "active";
+        socket.to("controller").emit("new-mobile-visibility-change", {
+          mobileId,
+          isVisible: true,
+          origin: "heartbeat",
+        });
+        socket.to("screen").emit("new-mobile-visibility-change", {
+          mobileId,
+          isVisible: true,
+          origin: "heartbeat",
+        });
+      }
     }
   });
 
@@ -59,38 +70,27 @@ export default function mobileSetup({ socket, io }) {
   if (!global.heartbeatChecker) {
     global.heartbeatChecker = setInterval(() => {
       if (activeMobile && activeMobile.status === "active") {
-        // Request current timestamp from client
-        socket.to(activeMobile.socketId).emit("request-timestamp");
+        const now = Date.now();
+        const timeSinceLastHeartbeat = now - activeMobile.lastHeartbeat;
+
+        // If no heartbeat received within timeout period
+        if (timeSinceLastHeartbeat > HEARTBEAT_TIMEOUT) {
+          // Mark as inactive and notify
+          activeMobile.status = "inactive";
+          io.to("controller").emit("new-mobile-visibility-change", {
+            mobileId: activeMobile.mobileId,
+            isVisible: false,
+            origin: "heartbeat_timeout",
+          });
+          io.to("screen").emit("new-mobile-visibility-change", {
+            mobileId: activeMobile.mobileId,
+            isVisible: false,
+            origin: "heartbeat_timeout",
+          });
+        }
       }
     }, HEARTBEAT_INTERVAL);
   }
-
-  // Handle timestamp response for heartbeat check
-  socket.on("timestamp-response", ({ mobileId, timestamp }) => {
-    if (activeMobile?.mobileId === mobileId) {
-      const timeSinceLastHeartbeat = timestamp - activeMobile.lastHeartbeat;
-
-      if (timeSinceLastHeartbeat > HEARTBEAT_TIMEOUT) {
-        console.log(`Mobile ${mobileId} considered dead - no heartbeat`);
-        console.log("Time since last heartbeat:", timeSinceLastHeartbeat);
-
-        io.to("controller").emit("new-mobile-visibility-change", {
-          mobileId: activeMobile.mobileId,
-          isVisible: false,
-          origin: "heartbeat_timeout",
-          timestamp,
-        });
-        io.to("screen").emit("new-mobile-visibility-change", {
-          mobileId: activeMobile.mobileId,
-          isVisible: false,
-          origin: "heartbeat_timeout",
-          timestamp,
-        });
-
-        activeMobile = null;
-      }
-    }
-  });
 
   //////////MESSAGE HANDLING//////////
   //controller -> screen
