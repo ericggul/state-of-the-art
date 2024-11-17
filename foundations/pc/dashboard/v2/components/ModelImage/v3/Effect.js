@@ -4,7 +4,7 @@ import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { ImageTransitionMaterial } from "./materials/v3";
 
-const ImageTransitionEffect = ({ image1, image2 }) => {
+const ImageTransitionEffect = ({ image1, image2, onError }) => {
   const meshRef = useRef();
   const progress = useRef(0);
   const { viewport } = useThree();
@@ -15,9 +15,15 @@ const ImageTransitionEffect = ({ image1, image2 }) => {
     undefined,
     (error) => {
       console.error("Failed to load texture:", error);
-      return null;
+      onError?.();
+      throw error;
     }
   );
+
+  if (!texture1?.image || !texture2?.image) {
+    onError?.();
+    return null;
+  }
 
   // Calculate contained size
   useEffect(() => {

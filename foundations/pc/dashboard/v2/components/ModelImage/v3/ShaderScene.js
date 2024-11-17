@@ -11,7 +11,7 @@ const FallbackContent = () => (
   </mesh>
 );
 
-const ShaderScene = ({ image1, image2 }) => {
+const ShaderScene = ({ image1, image2, onError }) => {
   return (
     <Canvas
       style={{ width: "100%", height: "100%" }}
@@ -22,7 +22,11 @@ const ShaderScene = ({ image1, image2 }) => {
       orthographic
     >
       <Suspense fallback={<FallbackContent />}>
-        <ImageTransitionEffect image1={image1} image2={image2} />
+        <ImageTransitionEffect
+          image1={image1}
+          image2={image2}
+          onError={onError}
+        />
       </Suspense>
     </Canvas>
   );

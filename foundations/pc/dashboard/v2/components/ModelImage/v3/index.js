@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef, Suspense } from "react";
 import styled from "styled-components";
 import TypewriterText from "@/foundations/pc/dashboard/v2/components/TypewriterText";
 import ShaderScene from "./ShaderScene";
-import useDebounce from "@/utils/hooks/useDebounce";
 
 const ImageContainer = styled.div`
   display: flex;
@@ -30,30 +29,43 @@ const Description = styled.p`
 const IMAGE_BASE = "/db/images/";
 
 export default function ModelImage({ model }) {
-  const [imageError, setImageError] = React.useState(false);
-  const [currentModelImage, setCurrentModelImage] = useState(
-    model?.image || "1.png"
-  );
-  const [prevModelImage, setPrevModelImage] = useState(model?.image || "1.png");
+  const [imageError, setImageError] = useState(false);
+  const [currentImage, setCurrentImage] = useState(model?.image || "1.png");
+  const [prevImage, setPrevImage] = useState(model?.image || "1.png");
   const isFirstRender = useRef(true);
 
-  // Debounce the model image changes
-  const debouncedModelImage = useDebounce(model?.image, 100); // 100ms delay
+  // Check if image exists before trying to load it
+  const checkImage = async (imagePath) => {
+    try {
+      const response = await fetch(IMAGE_BASE + imagePath);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  };
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    if (!model?.image) {
+      setImageError(true);
       return;
     }
 
-    if (debouncedModelImage !== currentModelImage) {
-      setPrevModelImage(currentModelImage);
-      setCurrentModelImage(debouncedModelImage || "1.png");
-    }
-  }, [debouncedModelImage]);
+    const validateImage = async () => {
+      const exists = await checkImage(model.image);
+      if (!exists) {
+        setImageError(true);
+      } else {
+        setImageError(false);
+        if (!isFirstRender.current) {
+          setPrevImage(currentImage);
+        }
+        setCurrentImage(model.image);
+      }
+      isFirstRender.current = false;
+    };
 
-  const prevImage = IMAGE_BASE + prevModelImage;
-  const currentImage = IMAGE_BASE + currentModelImage;
+    validateImage();
+  }, [model?.image]);
 
   if (imageError) {
     return (
@@ -69,7 +81,10 @@ export default function ModelImage({ model }) {
           <span style={{ color: "#666" }}>Image not available</span>
         </ImageWrapper>
         <Description>
-          <TypewriterText text={model.explanation} speed={20} />
+          <TypewriterText
+            text={model?.explanation || "Description not available"}
+            speed={20}
+          />
         </Description>
       </ImageContainer>
     );
@@ -80,13 +95,16 @@ export default function ModelImage({ model }) {
       <ImageContainer>
         <ImageWrapper>
           <ShaderScene
-            image1={prevImage}
-            image2={currentImage}
+            image1={IMAGE_BASE + prevImage}
+            image2={IMAGE_BASE + currentImage}
             onError={() => setImageError(true)}
           />
         </ImageWrapper>
         <Description>
-          <TypewriterText text={model.explanation} speed={20} />
+          <TypewriterText
+            text={model?.explanation || "Description not available"}
+            speed={20}
+          />
         </Description>
       </ImageContainer>
     </Suspense>
