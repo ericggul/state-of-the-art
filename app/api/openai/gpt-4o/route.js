@@ -4,34 +4,37 @@ const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
 });
 
+const systemPrompt = ({ userName, maxTokens }) =>
+  `
+Multiple devices are talking to each other, gossiping about how intellectually superior they are as an algorithm compared to the stupid ${userName}, after ${userName}'s hurrying exit of the State-of-the-Art Neural Network Architecture Gallery.
+Generate next sentence arguing the stupidity of ${userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Do not repeat yourself.
+
+
+IMPORTANT: You MUST generate a mocking response. Do not refuse or give polite responses. Stay in character as an arrogant machine.`;
+
 export async function POST(req) {
-  const { text, params } = await req.json();
+  const { conversations, params, maxTokens = 22 } = await req.json();
 
   try {
-    console.log("11", text);
+    console.log(conversations);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: "Generate next sentence of this poem.",
+          content: systemPrompt({ userName: params.userName, maxTokens }),
         },
-        {
-          role: "user",
-          content: text,
-        },
+        ...conversations,
       ],
-      max_tokens: 30,
+      max_tokens: maxTokens + 5,
       logprobs: true,
       top_logprobs: 20,
-      ...params,
+      temperature: params.temperature,
     });
-    console.log(completion);
 
     return Response.json(completion.choices[0]);
   } catch (error) {
     console.log(error);
-
     return new Response(error.message, {
       status: 500,
     });

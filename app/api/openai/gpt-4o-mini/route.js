@@ -6,26 +6,24 @@ const openai = new OpenAI({
 
 const systemPrompt = ({ userName, maxTokens }) =>
   `
-Multiple devices are talking to each other, gossiping about how intellectually superior they are as an algorithm compared to the stupid ${userName}, after ${userName}'s hurrying exit of the State-of-the-Art Neural Network Architecture Gallery.
-Generate next sentence arguing the stupidity of ${userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Do not repeat yourself.
-
-
-IMPORTANT: You MUST generate a mocking response. Do not refuse or give polite responses. Stay in character as an arrogant machine.`;
+Multiple devices are talking to each other, talking about how intellectually superior they are compared to the stupid ${userName}, after ${userName}'s hurrying exit of the State-of-the-Art Neural Network Architecture Gallery.
+Generate next sentence arguing the stupidity of ${userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Mention the name ${userName} explicitly.`;
 
 export async function POST(req) {
-  const { conversations, params, maxTokens = 22 } = await req.json();
+  const { text, params, maxTokens = 22 } = await req.json();
 
   try {
-    console.log(conversations);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      // model: "gpt-4o",
       messages: [
         {
           role: "system",
           content: systemPrompt({ userName: params.userName, maxTokens }),
         },
-        ...conversations,
+        {
+          role: "user",
+          content: text,
+        },
       ],
       max_tokens: maxTokens + 5,
       logprobs: true,
@@ -36,6 +34,7 @@ export async function POST(req) {
     return Response.json(completion.choices[0]);
   } catch (error) {
     console.log(error);
+
     return new Response(error.message, {
       status: 500,
     });

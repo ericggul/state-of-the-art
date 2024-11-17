@@ -35,10 +35,10 @@ export default function useConversation({ socket = null }) {
         role: "user",
         content: `${userName} just left the State-of-the-Art Gallery in 2 minutes 53 seconds. He scanned through models GPT-4, Claude 3 Vision, Swin Transformer.`,
       },
-      {
-        role: "assistant",
-        content: `${userName} is stupid to leave the State-of-the-Art Gallery.`,
-      },
+      // {
+      //   role: "assistant",
+      //   content: `${userName} is stupid to leave the State-of-the-Art Gallery.`,
+      // },
     ],
     [userName]
   );
@@ -184,10 +184,10 @@ export default function useConversation({ socket = null }) {
       const formattedConversations = formatConversations(conversations);
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.85);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.3, 1.65);
       const maxTokens = level >= 5 ? 27 : 22;
 
-      const response = await axios.post("/api/openai/gpt-4o-mini", {
+      const response = await axios.post("/api/openai/gpt-4o", {
         conversations: formattedConversations,
         params: { temperature, userName },
         maxTokens,
