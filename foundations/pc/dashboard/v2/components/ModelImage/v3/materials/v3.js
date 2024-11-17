@@ -69,37 +69,40 @@ export const ImageTransitionMaterial = new THREE.ShaderMaterial({
       return dot(n, vec3(70.0));
     }
 
-    // Fluid dynamics simulation
+    // Fluid dynamics simulation with reduced zoom effect
     vec2 fluid(vec2 uv, float progress) {
       float time = progress * 2.0;
       
-      // Create multiple layers of noise
-      float n1 = noise(uv * 3.0 + time);
-      float n2 = noise(uv * 6.0 - time * 0.5);
-      float n3 = noise(uv * 9.0 + time * 0.7);
+      // Create multiple layers of noise with reduced amplitude
+      float n1 = noise(uv * 3.0 + time) * 0.15; // Reduced from 0.3
+      float n2 = noise(uv * 6.0 - time * 0.5) * 0.1; // Reduced from 0.2
+      float n3 = noise(uv * 9.0 + time * 0.7) * 0.05; // Reduced from 0.1
       
       // Combine noise layers for fluid-like movement
       vec2 distortion = vec2(
-        n1 * 0.3 + n2 * 0.2 + n3 * 0.1,
-        n2 * 0.3 + n3 * 0.2 + n1 * 0.1
+        n1 + n2 + n3,
+        n2 + n3 + n1
       );
       
-      // Add vortex effect
+      // Add gentler vortex effect
       vec2 center = vec2(0.5);
       vec2 toCenter = center - uv;
       float dist = length(toCenter);
       float angle = atan(toCenter.y, toCenter.x);
       
-      // Create spiral movement
-      float spiral = sin(dist * 10.0 - time * 3.0) * 0.1;
+      // Create spiral movement with reduced intensity
+      float spiral = sin(dist * 8.0 - time * 2.0) * 0.05; // Reduced from 0.1
       vec2 spiralOffset = vec2(
         cos(angle + spiral) * dist,
         sin(angle + spiral) * dist
-      );
+      ) * 0.5; // Added overall reduction
       
-      // Combine fluid and spiral effects
-      vec2 finalOffset = mix(distortion, spiralOffset, progress);
-      return uv + finalOffset * progress * (1.0 - progress) * 2.0;
+      // Combine fluid and spiral effects with reduced intensity
+      vec2 finalOffset = mix(distortion, spiralOffset, progress * 0.5); // Reduced mixing
+      
+      // Reduce the overall effect and ensure it fades out smoothly
+      float effectStrength = progress * (1.0 - progress) * 1.0; // Reduced from 2.0
+      return uv + finalOffset * effectStrength;
     }
 
     // Particle effect

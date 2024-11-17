@@ -50,7 +50,7 @@ const ImageTransitionEffect = ({ image1, image2 }) => {
 
   useFrame(() => {
     if (meshRef.current && progress.current < 1) {
-      progress.current = Math.min(progress.current + 0.02, 1);
+      progress.current = Math.min(progress.current + 0.01, 1);
       meshRef.current.material.uniforms.uProgress.value = progress.current;
     }
   });
