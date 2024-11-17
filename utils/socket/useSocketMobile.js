@@ -42,7 +42,10 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
 
     socket.current.on("connect", () => {
       console.log("Mobile socket connected");
-      socket.current.emit("mobile-init", { mobileId });
+      socket.current.emit("mobile-init", {
+        mobileId,
+        timestamp: Date.now(),
+      });
 
       socket.current.on("new-controller-response", (data) => {
         console.log("Received new-controller-response:", data);
