@@ -89,7 +89,18 @@ export default function useVisibilityCheck({
         console.log("💓 Heartbeat sent");
       }, HEARTBEAT_INTERVAL);
 
-      return () => clearInterval(interval);
+      // Handle timestamp requests
+      socket.current.on("request-timestamp", () => {
+        socket.current.emit("timestamp-response", {
+          mobileId,
+          timestamp: Date.now(),
+        });
+      });
+
+      return () => {
+        clearInterval(interval);
+        socket.current.off("request-timestamp");
+      };
     }
   }, [isReady, isVisible, socket, mobileId]);
 

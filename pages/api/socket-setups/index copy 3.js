@@ -59,38 +59,35 @@ export default function mobileSetup({ socket, io }) {
   if (!global.heartbeatChecker) {
     global.heartbeatChecker = setInterval(() => {
       if (activeMobile && activeMobile.status === "active") {
-        // Request current timestamp from client
-        socket.to(activeMobile.socketId).emit("request-timestamp");
+        const timeSinceLastHeartbeat = Date.now() - activeMobile.lastHeartbeat;
+
+        if (timeSinceLastHeartbeat > HEARTBEAT_TIMEOUT) {
+          console.log(
+            `Mobile ${activeMobile.mobileId} considered dead - no heartbeat`
+          );
+          console.log(
+            Date.now() - activeMobile.lastHeartbeat,
+            timeSinceLastHeartbeat
+          );
+
+          io.to("controller").emit("new-mobile-visibility-change", {
+            mobileId: activeMobile.mobileId,
+            isVisible: false,
+            origin: "heartbeat_timeout",
+            timestamp: Date.now(),
+          });
+          io.to("screen").emit("new-mobile-visibility-change", {
+            mobileId: activeMobile.mobileId,
+            isVisible: false,
+            origin: "heartbeat_timeout",
+            timestamp: Date.now(),
+          });
+
+          activeMobile = null;
+        }
       }
     }, HEARTBEAT_INTERVAL);
   }
-
-  // Handle timestamp response for heartbeat check
-  socket.on("timestamp-response", ({ mobileId, timestamp }) => {
-    if (activeMobile?.mobileId === mobileId) {
-      const timeSinceLastHeartbeat = timestamp - activeMobile.lastHeartbeat;
-
-      if (timeSinceLastHeartbeat > HEARTBEAT_TIMEOUT) {
-        console.log(`Mobile ${mobileId} considered dead - no heartbeat`);
-        console.log("Time since last heartbeat:", timeSinceLastHeartbeat);
-
-        io.to("controller").emit("new-mobile-visibility-change", {
-          mobileId: activeMobile.mobileId,
-          isVisible: false,
-          origin: "heartbeat_timeout",
-          timestamp,
-        });
-        io.to("screen").emit("new-mobile-visibility-change", {
-          mobileId: activeMobile.mobileId,
-          isVisible: false,
-          origin: "heartbeat_timeout",
-          timestamp,
-        });
-
-        activeMobile = null;
-      }
-    }
-  });
 
   //////////MESSAGE HANDLING//////////
   //controller -> screen
