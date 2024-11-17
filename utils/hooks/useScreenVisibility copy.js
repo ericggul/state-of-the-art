@@ -24,63 +24,50 @@ export default function useScreenVisibility() {
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
-  const visibilityRef = useRef(mobileVisibility);
 
   const clearTimeouts = () => {
     Object.values(timeouts.current).forEach((timeout) => {
       if (timeout) clearTimeout(timeout);
     });
-    timeouts.current = {};
   };
 
   const scheduleStateChanges = () => {
     if (iteration == 0) return;
-
-    clearTimeouts();
-
     const multiplier = iterationSpeedMultiplier(iteration);
 
     setIsTransition(true);
-
+    // Schedule transition end
     timeouts.current.transition = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setIsTransition(false);
-      }
+      setIsTransition(false);
     }, TIMEOUTS.TRANSITION * multiplier);
 
+    // Schedule backend stage
     timeouts.current.backend = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setStage("Backend");
-      }
+      setStage("Backend");
     }, TIMEOUTS.BACKEND * multiplier);
 
     const unmountFrontendDelay = isProjector
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
-    timeouts.current.unmount = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setStage(null);
-      }
+    timeouts.current.reset = setTimeout(() => {
+      setStage(null);
     }, unmountFrontendDelay * multiplier);
 
+    // Schedule ending and reset
     const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
     timeouts.current.ending = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setIsEnding(true);
-      }
+      setIsEnding(true);
     }, endingDelay);
 
     const resetDelay = endingDelay + TIMEOUTS.RESET;
-    timeouts.current.reset = setTimeout(() => {
-      if (!visibilityRef.current) {
-        clearTimeouts();
-      }
+    timeouts.current.reset = setTimeout(async () => {
+      // Clear timeouts and reset state
+      clearTimeouts();
     }, resetDelay);
   };
 
   const setFrontendState = () => {
-    clearTimeouts();
     setStage("Frontend");
     setIsTransition(false);
   };
@@ -88,20 +75,11 @@ export default function useScreenVisibility() {
   useEffect(() => {
     if (isStageIdle || iteration == 0) return;
 
-    visibilityRef.current = mobileVisibility;
-
-    if (mobileVisibility) {
-      setFrontendState();
-    } else {
-      scheduleStateChanges();
-    }
+    clearTimeouts();
+    mobileVisibility ? setFrontendState() : scheduleStateChanges();
 
     return clearTimeouts;
   }, [isStageIdle, mobileVisibility, isProjector, iteration]);
-
-  useEffect(() => {
-    return clearTimeouts;
-  }, []);
 
   return null;
 }
