@@ -5,7 +5,7 @@ import UI from "@/foundations/mobile/v3";
 import Intro from "@/foundations/mobile/v3/intro";
 import AccelerometerHandler from "@/foundations/mobile/v3/accelrometer";
 import useSocketMobile from "@/utils/socket/useSocketMobile";
-import useVisibilityCheck from "@/utils/hooks/useVisibilityCheck";
+import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
 
 export default function Mobile() {
   const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
@@ -21,7 +21,7 @@ export default function Mobile() {
     handleNewResponse,
   });
 
-  const isVisible = useVisibilityCheck({ socket, mobileId });
+  const isVisible = useMobileVisibility({ socket, mobileId });
 
   return (
     <>

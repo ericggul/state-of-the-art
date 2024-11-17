@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-export default function useVisibilityCheck({
+export default function useMobileVisibility({
   socket,
   mobileId,
   isTrackingVisibility = true,

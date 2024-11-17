@@ -12,17 +12,29 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
 
       return () => {
         if (socket.current) {
-          // Remove all listeners
-          socket.current.off("new-controller-response");
-          socket.current.off("connect");
+          try {
+            // Try to notify about disconnection
+            socket.current.emit("mobile-new-visibility-change", {
+              mobileId,
+              isVisible: false,
+              origin: "cleanup",
+            });
 
-          // Disconnect
-          socket.current.disconnect();
-          console.log("Mobile socket cleaned up");
+            // Remove listeners
+            socket.current.off("new-controller-response");
+            socket.current.off("connect");
+            socket.current.off("disconnect");
+
+            // Disconnect
+            socket.current.disconnect();
+            console.log("Mobile socket cleaned up");
+          } catch (e) {
+            console.error("Cleanup failed:", e);
+          }
         }
       };
     }
-  }, []);
+  }, [mobileId]);
 
   const socketInitializer = async () => {
     await fetch("/api/socket");
@@ -35,6 +47,20 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
       socket.current.on("new-controller-response", (data) => {
         console.log("Received new-controller-response:", data);
         handleNewResponse(data);
+      });
+
+      socket.current.on("disconnect", (reason) => {
+        console.log("Socket disconnected:", reason);
+        // Try to notify about disconnection
+        try {
+          socket.current.emit("mobile-new-visibility-change", {
+            mobileId,
+            isVisible: false,
+            origin: "socket_disconnect",
+          });
+        } catch (e) {
+          console.error("Disconnect notification failed:", e);
+        }
       });
     });
   };

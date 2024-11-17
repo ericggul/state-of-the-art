@@ -64,6 +64,12 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-mobile-visibility-change", data);
   });
 
+  //heartbeat
+  socket.on("mobile-new-heartbeat", (data) => {
+    socket.to("controller").emit("new-mobile-heartbeat", data);
+    socket.to("screen").emit("new-mobile-heartbeat", data);
+  });
+
   /////backend: inter-screen conversation/////
   socket.on("screen-new-conversation", (data) => {
     socket.to("screen").emit("new-screen-conversation", data);

@@ -5,7 +5,7 @@ import { useMemo, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import useSocket from "@/utils/socket/on-off/useSocketMobile";
 
-import useVisibilityCheck from "@/utils/hooks/_old/useVisibilityCheck";
+import useMobileVisibility from "@/utils/hooks/_old/useMobileVisibility";
 
 import AssistantUI from "@/foundations/test-frontend/assistant";
 
@@ -21,7 +21,7 @@ export default function El() {
     requestVisibilityCheckFromSocketInit: setRequestVisibilityCheck,
   });
 
-  const isTabVisible = useVisibilityCheck({
+  const isTabVisible = useMobileVisibility({
     socket,
     mobileId,
     requestVisibilityCheck,

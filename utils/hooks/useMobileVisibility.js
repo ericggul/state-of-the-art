@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { HEARTBEAT_INTERVAL } from "@/utils/constant";
 
-export default function useMobileVisibility({
+export default function useVisibilityCheck({
   socket,
   mobileId,
   isTrackingVisibility = true,
@@ -8,6 +9,7 @@ export default function useMobileVisibility({
   const [isVisible, setIsVisible] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const isInitialized = useRef(false);
+  const heartbeatInterval = useRef(null);
 
   // Wait for functionality to be ready
   useEffect(() => {
@@ -22,18 +24,6 @@ export default function useMobileVisibility({
   const handleVisibilityChange = useCallback(() => {
     const visibility = document.visibilityState === "visible";
     setIsVisible(visibility);
-  }, []);
-
-  const handleFocus = useCallback(() => {
-    setIsVisible(true);
-  }, []);
-
-  const handleFocusOut = useCallback(() => {
-    setIsVisible(false);
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    setIsVisible(false);
   }, []);
 
   const handlePageHide = useCallback(() => {
@@ -52,17 +42,9 @@ export default function useMobileVisibility({
 
     const cleanupListeners = setupEventListeners({
       handleVisibilityChange,
-      handleFocus,
-      handleFocusOut,
-      handleBlur,
       handlePageHide,
       handlePageShow,
     });
-
-    // Initial state check
-    if (!document.hidden) {
-      setIsVisible(true);
-    }
 
     return () => {
       cleanupListeners();
@@ -72,9 +54,6 @@ export default function useMobileVisibility({
     isReady,
     isTrackingVisibility,
     handleVisibilityChange,
-    handleFocus,
-    handleFocusOut,
-    handleBlur,
     handlePageHide,
     handlePageShow,
   ]);
@@ -87,6 +66,7 @@ export default function useMobileVisibility({
       socket.current.emit("mobile-new-visibility-change", {
         isVisible,
         mobileId,
+        origin: "useMobileVisibility",
       });
       console.log("✅ Socket emission successful");
     } catch (e) {
@@ -94,44 +74,56 @@ export default function useMobileVisibility({
     }
   }, [isReady, isVisible, socket, mobileId]);
 
+  // Implement heartbeat mechanism
+  useEffect(() => {
+    if (!isReady || !socket?.current) return;
+
+    if (isVisible) {
+      // Start sending heartbeats when the app is visible
+      if (!heartbeatInterval.current) {
+        heartbeatInterval.current = setInterval(() => {
+          socket.current.emit("mobile-new-heartbeat", {
+            mobileId,
+            timestamp: Date.now(),
+          });
+          console.log("💓 Heartbeat sent");
+        }, HEARTBEAT_INTERVAL); // Send heartbeat every 5 seconds (adjust as needed)
+      }
+    } else {
+      // Stop sending heartbeats when the app is not visible
+      if (heartbeatInterval.current) {
+        clearInterval(heartbeatInterval.current);
+        heartbeatInterval.current = null;
+      }
+    }
+
+    // Clean up when the component unmounts or visibility changes
+    return () => {
+      if (heartbeatInterval.current) {
+        clearInterval(heartbeatInterval.current);
+        heartbeatInterval.current = null;
+      }
+    };
+  }, [isReady, isVisible, socket, mobileId]);
+
   return isVisible;
 }
 
 // Event Listener Setup
 function setupEventListeners(handlers) {
-  // Add visibility change first to ensure it's triggered before other events
   document.addEventListener(
     "visibilitychange",
-    handlers.handleVisibilityChange,
-    { capture: true }
+    handlers.handleVisibilityChange
   );
-  window.addEventListener("focus", handlers.handleFocus, { capture: true });
-  window.addEventListener("focusout", handlers.handleFocusOut, {
-    capture: true,
-  });
-
-  window.addEventListener("blur", handlers.handleBlur);
-  window.addEventListener("pageshow", handlers.handlePageShow, {
-    capture: true,
-  });
+  window.addEventListener("pageshow", handlers.handlePageShow);
   window.addEventListener("pagehide", handlers.handlePageHide);
 
   return () => {
     document.removeEventListener(
       "visibilitychange",
-      handlers.handleVisibilityChange,
-      { capture: true }
+      handlers.handleVisibilityChange
     );
-    window.removeEventListener("focus", handlers.handleFocus, {
-      capture: true,
-    });
-    window.removeEventListener("focusout", handlers.handleFocusOut, {
-      capture: true,
-    });
-    window.removeEventListener("blur", handlers.handleBlur);
-    window.removeEventListener("pageshow", handlers.handlePageShow, {
-      capture: true,
-    });
+    window.removeEventListener("pageshow", handlers.handlePageShow);
     window.removeEventListener("pagehide", handlers.handlePageHide);
   };
 }
