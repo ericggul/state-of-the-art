@@ -88,53 +88,34 @@ const LayerText = React.memo(
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
+
   const {
     visualization: { structure },
   } = useModelStructure(currentArchitectures, 150);
   const containerRef = useRef(null);
-  const scrollPosRef = useRef(0);
 
   // Auto-scrolling effect
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const container = containerRef.current;
-    const scrollSpeed = 1;
-    let animationFrameId;
-    let lastTime = 0;
+    let scrollPos = 0;
+    const scrollSpeed = 1; // Adjust speed as needed
+    const maxScroll =
+      containerRef.current.scrollHeight - containerRef.current.clientHeight;
 
-    const scroll = (timestamp) => {
-      if (!container) return;
+    const scroll = () => {
+      if (!containerRef.current) return;
 
-      // Ensure consistent speed regardless of frame rate
-      const deltaTime = timestamp - lastTime;
-      lastTime = timestamp;
-
-      const maxScroll = container.scrollHeight - container.clientHeight;
-
-      if (scrollPosRef.current >= maxScroll) {
-        scrollPosRef.current = 0;
-        container.scrollTop = 0;
-      } else {
-        scrollPosRef.current += (scrollSpeed * deltaTime) / 16; // Normalize to 60fps
-        container.scrollTop = Math.round(scrollPosRef.current); // Prevent subpixel rendering
+      scrollPos += scrollSpeed;
+      if (scrollPos >= maxScroll) {
+        scrollPos = 0;
       }
 
-      animationFrameId = requestAnimationFrame(scroll);
+      containerRef.current.scrollTop = scrollPos;
     };
 
-    animationFrameId = requestAnimationFrame(scroll);
-
-    // Reset on mount/structure change
-    scrollPosRef.current = 0;
-    container.scrollTop = 0;
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      scrollPosRef.current = 0;
-    };
+    const intervalId = setInterval(scroll, 50);
+    return () => clearInterval(intervalId);
   }, [structure]);
 
   return (

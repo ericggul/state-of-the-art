@@ -105,6 +105,15 @@ export const StructureText = styled.pre`
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    padding-bottom: 100vh;
     gap: 0.2rem;
   }
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+  will-change: transform;
 `;
