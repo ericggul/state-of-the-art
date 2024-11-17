@@ -20,7 +20,7 @@ const COMPONENTS = {
   "1-v1": dynamic(() => import("@/foundations/pc/dashboard/v1")),
   "1-v2": dynamic(() => import("@/foundations/pc/dashboard/v2")),
 
-  2: dynamic(() => import("@/foundations/pc/text")),
+  2: dynamic(() => import("@/foundations/pc/text/index")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
 };
 

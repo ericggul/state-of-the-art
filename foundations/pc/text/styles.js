@@ -7,14 +7,15 @@ export const Container = styled.div`
   background-color: #000000;
   padding: 2rem;
   font-family: "Fira Code", monospace;
+  transform: translateZ(0);
 `;
 
 export const Canvas = styled.div`
   ${WholeContainer}
   width: 120vw;
-  // right: 0;
   left: 0vw;
   opacity: 0.5;
+  transform: translateZ(0);
 
   canvas {
     position: absolute;
@@ -22,6 +23,7 @@ export const Canvas = styled.div`
     right: 0;
     width: 100%;
     height: 100%;
+    transform: translateZ(0);
   }
 `;
 
@@ -48,16 +50,34 @@ export const StructureText = styled.pre`
   text-align: left;
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
-  overflow-x: auto;
+  overflow: hidden;
   white-space: pre;
   ${scrollbarHide}
-
   z-index: 100;
+
+  // Optimize text rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  // GPU acceleration
+  transform: translate3d(0, 0, 0);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+
+  // Prevent subpixel rendering issues
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+  }
 
   .tree-line {
     color: #666;
     user-select: none;
+    transform: translateZ(0);
 
     .branch-char {
       color: #888;
@@ -69,6 +89,7 @@ export const StructureText = styled.pre`
     display: inline-flex;
     align-items: center;
     min-height: 1.5em;
+    transform: translateZ(0);
   }
 
   .dims {
@@ -97,6 +118,7 @@ export const StructureText = styled.pre`
     ([depth, color]) => css`
       .depth-${depth} {
         color: ${color};
+        transform: translateZ(0);
       }
     `
   )}
@@ -105,15 +127,13 @@ export const StructureText = styled.pre`
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    padding-top: 100vh;
     padding-bottom: 100vh;
     gap: 0.2rem;
+
+    // Optimize for animation
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
   }
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-
-  will-change: transform;
 `;

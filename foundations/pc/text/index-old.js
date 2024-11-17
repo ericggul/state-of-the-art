@@ -88,50 +88,34 @@ const LayerText = React.memo(
 
 export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
+
   const {
     visualization: { structure },
   } = useModelStructure(currentArchitectures, 150);
   const containerRef = useRef(null);
-  const scrollPosRef = useRef(0);
-  const rafRef = useRef(null);
 
   // Auto-scrolling effect
   useEffect(() => {
     if (!containerRef.current) return;
-    const container = containerRef.current;
-    const scrollSpeed = 1;
-    let lastTimestamp = 0;
 
-    const scroll = (timestamp) => {
-      if (!container) return;
+    let scrollPos = 0;
+    const scrollSpeed = 1; // Adjust speed as needed
+    const maxScroll =
+      containerRef.current.scrollHeight - containerRef.current.clientHeight;
 
-      // Smooth timing between frames
-      const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 16.67 : 1;
-      lastTimestamp = timestamp;
+    const scroll = () => {
+      if (!containerRef.current) return;
 
-      const maxScroll = container.scrollHeight - container.clientHeight;
-      scrollPosRef.current += scrollSpeed * deltaTime;
-
-      if (scrollPosRef.current >= maxScroll) {
-        scrollPosRef.current = 0;
+      scrollPos += scrollSpeed;
+      if (scrollPos >= maxScroll) {
+        scrollPos = 0;
       }
 
-      container.scrollTop = Math.round(scrollPosRef.current);
-      rafRef.current = requestAnimationFrame(scroll);
+      containerRef.current.scrollTop = scrollPos;
     };
 
-    // Start animation
-    scrollPosRef.current = 0;
-    container.scrollTop = 0;
-    rafRef.current = requestAnimationFrame(scroll);
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      scrollPosRef.current = 0;
-      container.scrollTop = 0;
-    };
+    const intervalId = setInterval(scroll, 50);
+    return () => clearInterval(intervalId);
   }, [structure]);
 
   return (
@@ -144,7 +128,7 @@ export default function TextComponent() {
         <div className="model-structure">
           {structure.map((layer, idx) => (
             <LayerText
-              key={`${layer.name}-${idx}-${currentArchitectures}`}
+              key={`${layer.name}-${idx}`}
               layer={layer}
               showGrid={true}
               startDelay={idx * 600 + 50}
