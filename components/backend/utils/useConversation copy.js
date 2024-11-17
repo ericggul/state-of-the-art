@@ -29,17 +29,9 @@ export default function useConversation({ socket = null }) {
   const hasFetchedText = useRef(false);
   const embeddingsCache = useRef({});
 
-  const INITIAL_CONVERSATION = useMemo(
-    () => [
-      {
-        role: "user",
-        content: `${userName} just left the State-of-the-Art Gallery in 2 minutes 53 seconds. He scanned through models GPT-4, Claude 3 Vision, Swin Transformer.`,
-      },
-      {
-        role: "assistant",
-        content: `${userName} is stupid to leave the State-of-the-Art Gallery.`,
-      },
-    ],
+  const INITIAL_TEXT = useMemo(
+    () =>
+      `${userName} is stupid to leave the State-of-the-Art Gallery in 2 minutes 53 seconds.`,
     [userName]
   );
 
@@ -181,14 +173,14 @@ export default function useConversation({ socket = null }) {
 
   const fetchText = async (conversations) => {
     try {
-      const formattedConversations = formatConversations(conversations);
+      const text = formatConversationText(conversations);
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.4, 1.85);
+      const temperature = Math.min(0.7 + (loop / 10) * 0.6, 1.95);
       const maxTokens = level >= 5 ? 27 : 22;
 
       const response = await axios.post("/api/openai/gpt-4o-mini", {
-        conversations: formattedConversations,
+        text,
         params: { temperature, userName },
         maxTokens,
       });
@@ -216,10 +208,24 @@ export default function useConversation({ socket = null }) {
     }
   };
 
-  const formatConversations = (conversations) => {
-    return [
-      ...INITIAL_CONVERSATION,
-      ...conversations.map((el) => el.message),
-    ].slice(-20);
+  const formatConversationText = (conversations) => {
+    if (conversations.length < 20) {
+      return (
+        // INITIAL_TEXT +
+        // conversations
+        //   .map((el) =>
+        //     el.deviceIndex
+        //       ? `Device${el.deviceIndex}: ${el.message.content}`
+        //       : el.message.content
+        //   )
+        //   .join("\n")
+        INITIAL_TEXT + conversations.map((el) => el.message.content).join("\n")
+      );
+    }
+
+    return conversations
+      .map((el) => el.message.content)
+      .slice(-20)
+      .join("\n");
   };
 }
