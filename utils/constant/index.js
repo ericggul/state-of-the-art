@@ -35,6 +35,8 @@ export const DEVICE_DELAY_MULTIPLIER = 350;
 export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
 export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
 
+export const API_TIMEOUT = 15 * 1000;
+
 //heartbeat: mobile
 export const HEARTBEAT_INTERVAL = 500;
 export const HEARTBEAT_TIMEOUT = 1500;

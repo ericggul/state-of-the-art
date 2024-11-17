@@ -10,25 +10,6 @@ const getRandom = (a, b) => Math.random() * (b - a) + a;
 const CONCURRENT_REQUESTS_LIMIT = 9;
 const MAX_RETRIES = 3;
 
-// Add utility function at the top level
-const withTimeout = async (promise, timeoutMs) => {
-  let timeoutId;
-  const timeoutPromise = new Promise((_, reject) => {
-    timeoutId = setTimeout(() => {
-      reject(new Error("Operation timed out"));
-    }, timeoutMs);
-  });
-
-  try {
-    const result = await Promise.race([promise, timeoutPromise]);
-    clearTimeout(timeoutId);
-    return result;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    throw error;
-  }
-};
-
 export default function useConversation({ socket = null }) {
   const {
     conversations,
@@ -181,12 +162,7 @@ export default function useConversation({ socket = null }) {
 
     try {
       const uniqueTokens = [...new Set(tokens)];
-
-      // Add timeout to embeddings fetch
-      const embeddings = await withTimeout(
-        getEmbeddingsForTokens(uniqueTokens),
-        CONST.API_TIMEOUT
-      );
+      const embeddings = await getEmbeddingsForTokens(uniqueTokens);
 
       const timeout =
         timeScale *
@@ -195,15 +171,11 @@ export default function useConversation({ socket = null }) {
         ];
       await new Promise((r) => setTimeout(r, timeout));
 
-      // Only update states if we got valid embeddings
       addEmbedding({ embeddings, tokens });
       setIsblack(false);
       await getNextText();
     } catch (e) {
       console.error("Failed to fetch embeddings:", e);
-      // Skip to next cycle without updating any state
-      setIsblack(false);
-      await getNextText();
     }
   };
 
@@ -215,15 +187,11 @@ export default function useConversation({ socket = null }) {
       const temperature = Math.min(0.7 + (loop / 10) * 0.3, 1.65);
       const maxTokens = level >= 5 ? 27 : 22;
 
-      // Add timeout to GPT fetch
-      const response = await withTimeout(
-        axios.post("/api/openai/gpt-4o", {
-          conversations: formattedConversations,
-          params: { temperature, userName },
-          maxTokens,
-        }),
-        CONST.API_TIMEOUT
-      );
+      const response = await axios.post("/api/openai/gpt-4o", {
+        conversations: formattedConversations,
+        params: { temperature, userName },
+        maxTokens,
+      });
 
       if (
         !response.data?.message?.content ||
@@ -236,7 +204,6 @@ export default function useConversation({ socket = null }) {
         ? { ...response.data, deviceIndex }
         : response.data;
 
-      // Only update states if we got valid response
       addConversation(data);
       socket?.current?.emit("screen-new-conversation", data);
 
@@ -244,10 +211,8 @@ export default function useConversation({ socket = null }) {
       fetchEmbedding({ tokens });
     } catch (e) {
       console.log(e, "get gpt response error");
-      // Skip to next cycle without updating any state
       await new Promise((r) => setTimeout(r, 500));
-      setIsblack(false);
-      await getNextText();
+      setGetNewText(true);
     }
   };
 
