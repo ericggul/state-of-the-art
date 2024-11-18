@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import * as S from "./styles-v3";
+import * as S from "./styles-v1";
 import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 import useFeedback from "./utils/useFeedback";
