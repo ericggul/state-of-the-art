@@ -40,130 +40,73 @@ export default function Mobile({ socket, mobileId }) {
 
 function ModelList({ initialModels, socket, mobileId }) {
   const [models, setModels] = useState(initialModels);
-  const [currentIndex, setCurrentIndex] = useState(null);
-  const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
-
-  const itemRefs = useRef([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [dotPosition, setDotPosition] = useState(0);
   const listRef = useRef(null);
-  const observerRef = useRef(null);
+  const itemRefs = useRef([]);
 
-  const activeIndex = manuallySelectedIndex ?? currentIndex;
-  useFeedback(activeIndex);
-
-  const addMoreModels = useCallback(() => {
-    setModels((prevModels) => [
-      ...prevModels,
-      ...[...Array(NEW_MODELS_COUNT)].map(
-        () => initialModels[Math.floor(Math.random() * initialModels.length)]
-      ),
-    ]);
-  }, [initialModels]);
-
-  // Infinite scroll observer
+  // Handle scroll
   useEffect(() => {
-    const callback = (entries) => {
-      if (entries[entries.length - 1].isIntersecting) {
-        addMoreModels();
-      }
-    };
+    const listElement = listRef.current;
+    if (!listElement) return;
 
-    observerRef.current = new IntersectionObserver(
-      callback,
-      INTERSECTION_OPTIONS
-    );
+    const handleScroll = () => {
+      const containerCenter = window.innerHeight / 2;
 
-    return () => observerRef.current?.disconnect();
-  }, [addMoreModels]);
+      // Find the item closest to center
+      let closestDistance = Infinity;
+      let closestIndex = 0;
+      let dotPos = 0;
 
-  // Observe last item
-  useEffect(() => {
-    const lastItemRef = itemRefs.current[itemRefs.current.length - 1];
-    if (lastItemRef && observerRef.current) {
-      observerRef.current.observe(lastItemRef);
-    }
+      itemRefs.current.forEach((ref, index) => {
+        if (!ref) return;
+        const rect = ref.getBoundingClientRect();
+        const distance = Math.abs(rect.top + rect.height / 2 - containerCenter);
 
-    return () => observerRef.current?.disconnect();
-  }, [models]);
-
-  // Current item observer
-  useEffect(() => {
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = Number(entry.target.getAttribute("data-index"));
-          setCurrentIndex(index);
-          setManuallySelectedIndex(null);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+          dotPos = rect.top + rect.height / 2;
         }
       });
+
+      setCurrentIndex(closestIndex);
+      setDotPosition(dotPos);
     };
 
-    const observer = new IntersectionObserver(observerCallback, {
-      ...LIST_OBSERVER_OPTIONS,
-      root: listRef.current,
-    });
+    listElement.addEventListener("scroll", handleScroll);
+    handleScroll();
 
-    itemRefs.current.forEach((ref) => ref && observer.observe(ref));
-
-    return () => observer?.disconnect();
+    return () => listElement.removeEventListener("scroll", handleScroll);
   }, [models]);
 
-  // Socket emission effect
-  useEffect(() => {
-    const activeIndex = manuallySelectedIndex ?? currentIndex;
-    if (activeIndex === null || !socket?.current) return;
-
-    const activeModel = models[activeIndex];
-
-    try {
-      socket.current.emit("mobile-new-architecture", {
-        currentArchitectures: [activeModel],
-        mobileId,
-      });
-
-      if (activeModel.explanation) {
-        socket.current.emit("mobile-new-speech", {
-          text: `${activeModel.name} ${activeModel.explanation}`,
-          mobileId,
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, [currentIndex, manuallySelectedIndex, models, socket, mobileId]);
-
-  const handleItemClick = useCallback((index) => {
-    setManuallySelectedIndex((prev) => (prev === index ? null : index));
-  }, []);
-
-  const isCurrentItem = useCallback(
-    (index) =>
-      manuallySelectedIndex === index ||
-      (manuallySelectedIndex === null && currentIndex === index),
-    [manuallySelectedIndex, currentIndex]
-  );
-
   return (
-    <S.ModelList ref={listRef}>
-      {models.map((model, index) => (
-        <S.ModelItem
-          key={`${model.name}-${index}`}
-          ref={(el) => (itemRefs.current[index] = el)}
-          data-index={index}
-          $isCurrent={isCurrentItem(index)}
-          onClick={() => handleItemClick(index)}
-        >
-          <S.ModelName>{model.name}</S.ModelName>
-          {isCurrentItem(index) && (
-            <S.ModelDetails>
-              {model.explanation && <p>{model.explanation}</p>}
-              {model.year && <p>Year: {model.year}</p>}
-              {model.place && <p>Place: {model.place}</p>}
-              {model.citation && <p>Citations: {model.citation}</p>}
-              {model.version && <p>Version: {model.version}</p>}
-            </S.ModelDetails>
-          )}
-        </S.ModelItem>
-      ))}
-    </S.ModelList>
+    <>
+      <S.VerticalLine>
+        <S.ActiveDot $position={dotPosition} />
+      </S.VerticalLine>
+      <S.ModelList ref={listRef}>
+        {models.map((model, index) => (
+          <S.ModelItem
+            key={`${model.name}-${index}`}
+            ref={(el) => (itemRefs.current[index] = el)}
+            $isCurrent={index === currentIndex}
+          >
+            <S.ModelName $isCurrent={index === currentIndex}>
+              {model.name}
+            </S.ModelName>
+            {index === currentIndex && (
+              <S.ModelDetails>
+                {model.explanation && <p>{model.explanation}</p>}
+                {model.year && <p>Year: {model.year}</p>}
+                {model.place && <p>Place: {model.place}</p>}
+                {model.citation && <p>Citations: {model.citation}</p>}
+                {model.version && <p>Version: {model.version}</p>}
+              </S.ModelDetails>
+            )}
+          </S.ModelItem>
+        ))}
+      </S.ModelList>
+    </>
   );
 }

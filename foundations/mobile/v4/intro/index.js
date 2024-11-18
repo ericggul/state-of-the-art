@@ -149,8 +149,8 @@ export default function Intro({ socket, onAccelerometerActivate }) {
     <S.IntroContent>
       <S.IntroTitle>Hi, {username}!</S.IntroTitle>
       <S.IntroText>
-        To explore neural networks, we need access to your device's
-        accelerometer.
+        To explore the state-of-the-art neural networks, we need access to your
+        device's accelerometer.
       </S.IntroText>
       <S.ActivateButton
         onClick={handleAccelerometerActivation}
