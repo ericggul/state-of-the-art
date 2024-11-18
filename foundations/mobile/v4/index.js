@@ -43,14 +43,23 @@ function ModelList({ initialModels, socket, mobileId }) {
   const [currentIndex, setCurrentIndex] = useState(null);
   const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
   const [dotPosition, setDotPosition] = useState(0);
+
+  // Refs
   const listRef = useRef(null);
   const itemRefs = useRef([]);
   const observerRef = useRef(null);
+  const currentItemObserverRef = useRef(null);
 
-  const activeIndex = manuallySelectedIndex ?? currentIndex;
+  // Memoized values
+  const activeIndex = useMemo(
+    () => manuallySelectedIndex ?? currentIndex,
+    [manuallySelectedIndex, currentIndex]
+  );
+
+  // Hooks
   useFeedback(activeIndex);
 
-  // Add infinite scroll functionality
+  // Memoized callbacks
   const addMoreModels = useCallback(() => {
     setModels((prevModels) => [
       ...prevModels,
@@ -60,61 +69,29 @@ function ModelList({ initialModels, socket, mobileId }) {
     ]);
   }, [initialModels]);
 
-  // Infinite scroll observer
-  useEffect(() => {
-    const callback = (entries) => {
-      if (entries[entries.length - 1].isIntersecting) {
-        addMoreModels();
-      }
-    };
+  const handleItemClick = useCallback((index) => {
+    setManuallySelectedIndex((prev) => (prev === index ? null : index));
+  }, []);
 
-    observerRef.current = new IntersectionObserver(
-      callback,
-      INTERSECTION_OPTIONS
-    );
+  const isCurrentItem = useCallback(
+    (index) =>
+      manuallySelectedIndex === index ||
+      (manuallySelectedIndex === null && currentIndex === index),
+    [manuallySelectedIndex, currentIndex]
+  );
 
-    return () => observerRef.current?.disconnect();
-  }, [addMoreModels]);
-
-  // Observe last item for infinite scroll
-  useEffect(() => {
-    const lastItemRef = itemRefs.current[itemRefs.current.length - 1];
-    if (lastItemRef && observerRef.current) {
-      observerRef.current.observe(lastItemRef);
-    }
-
-    return () => observerRef.current?.disconnect();
-  }, [models]);
-
-  // Current item observer
-  useEffect(() => {
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = Number(entry.target.getAttribute("data-index"));
-          setCurrentIndex(index);
-          setManuallySelectedIndex(null);
-          setDotPosition((index / (models.length - 1)) * 100);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, {
-      ...LIST_OBSERVER_OPTIONS,
-      root: listRef.current,
-    });
-
-    itemRefs.current.forEach((ref) => ref && observer.observe(ref));
-
-    return () => observer?.disconnect();
-  }, [models]);
+  const updateDotPosition = useCallback(
+    (index) => {
+      setDotPosition((index / (models.length - 1)) * 100);
+    },
+    [models.length]
+  );
 
   // Socket emission effect
   useEffect(() => {
     if (activeIndex === null || !socket?.current) return;
 
     const activeModel = models[activeIndex];
-
     try {
       socket.current.emit("mobile-new-architecture", {
         currentArchitectures: [activeModel],
@@ -128,20 +105,60 @@ function ModelList({ initialModels, socket, mobileId }) {
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }, [activeIndex, models, socket, mobileId]);
 
-  const handleItemClick = useCallback((index) => {
-    setManuallySelectedIndex((prev) => (prev === index ? null : index));
-  }, []);
+  // Infinite scroll observer setup
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[entries.length - 1].isIntersecting) {
+        addMoreModels();
+      }
+    }, INTERSECTION_OPTIONS);
 
-  const isCurrentItem = useCallback(
-    (index) =>
-      manuallySelectedIndex === index ||
-      (manuallySelectedIndex === null && currentIndex === index),
-    [manuallySelectedIndex, currentIndex]
-  );
+    return () => observerRef.current?.disconnect();
+  }, [addMoreModels]);
+
+  // Current item observer setup
+  useEffect(() => {
+    currentItemObserverRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.getAttribute("data-index"));
+            setCurrentIndex(index);
+            setManuallySelectedIndex(null);
+            updateDotPosition(index);
+          }
+        });
+      },
+      { ...LIST_OBSERVER_OPTIONS, root: listRef.current }
+    );
+
+    return () => currentItemObserverRef.current?.disconnect();
+  }, [updateDotPosition]);
+
+  // Observe items
+  useEffect(() => {
+    // Observe last item for infinite scroll
+    const lastItemRef = itemRefs.current[itemRefs.current.length - 1];
+    if (lastItemRef && observerRef.current) {
+      observerRef.current.observe(lastItemRef);
+    }
+
+    // Observe all items for current item detection
+    itemRefs.current.forEach((ref) => {
+      if (ref && currentItemObserverRef.current) {
+        currentItemObserverRef.current.observe(ref);
+      }
+    });
+
+    return () => {
+      observerRef.current?.disconnect();
+      currentItemObserverRef.current?.disconnect();
+    };
+  }, [models]);
 
   return (
     <>
