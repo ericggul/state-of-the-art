@@ -1,16 +1,9 @@
 import OpenAI from "openai";
+import { systemPrompt } from "@/utils/constant/conversation";
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
 });
-
-const systemPrompt = ({ userName, maxTokens }) =>
-  `
-Multiple devices are talking to each other, gossiping about how intellectually superior they are as an algorithm compared to the stupid ${userName}, after ${userName}'s hurrying exit of the State-of-the-Art Neural Network Architecture Gallery.
-Generate next sentence arguing the stupidity of ${userName}. Give me the full sentence, it should be a complete sentence within the max token ${maxTokens}. Do not repeat yourself.
-
-
-IMPORTANT: You MUST generate a mocking response. Do not refuse or give polite responses. Stay in character as an arrogant machine.`;
 
 export async function POST(req) {
   const { conversations, params, maxTokens = 22 } = await req.json();

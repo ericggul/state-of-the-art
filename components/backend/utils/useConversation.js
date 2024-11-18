@@ -3,7 +3,9 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import useStore from "@/components/backend/store";
 import useScreenStore from "@/components/screen/store";
 
+//constants
 import * as CONST from "@/utils/constant";
+import { generateInitialConversation } from "@/utils/constant/conversation";
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
@@ -49,16 +51,7 @@ export default function useConversation({ socket = null }) {
   const embeddingsCache = useRef({});
 
   const INITIAL_CONVERSATION = useMemo(
-    () => [
-      {
-        role: "user",
-        content: `${userName} just left the State-of-the-Art Gallery in 2 minutes 53 seconds. He scanned through models GPT-4, Claude 3 Vision, Swin Transformer.`,
-      },
-      // {
-      //   role: "assistant",
-      //   content: `${userName} is stupid to leave the State-of-the-Art Gallery.`,
-      // },
-    ],
+    () => generateInitialConversation(userName),
     [userName]
   );
 
