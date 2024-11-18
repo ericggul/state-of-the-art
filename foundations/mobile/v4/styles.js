@@ -1,9 +1,15 @@
 import styled from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
+const HUE = 220;
+
 export const Container = styled.div`
   ${WholeContainer}
-  background-color: #000;
+  background: radial-gradient(
+    circle at top right,
+    hsla(${HUE}, 30%, 3%, 1),
+    hsla(${HUE}, 30%, 1%, 1)
+  );
   color: #fff;
   font-family: "Cardo", serif;
   position: relative;
@@ -17,7 +23,7 @@ export const VerticalLine = styled.div`
   top: 48px;
   bottom: 48px;
   width: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: hsla(${HUE}, 50%, 95%, 0.35);
   height: calc(100vh - 96px);
   overflow: hidden;
 `;
@@ -28,10 +34,11 @@ export const ActiveDot = styled.div`
   transform: translateX(-50%);
   width: 8px;
   height: 8px;
-  background: #fff;
+  background: hsla(${HUE}, 60%, 95%, 1);
   border-radius: 50%;
   top: ${({ $percentage }) => `${$percentage}%`};
   transition: top 0.3s ease;
+  box-shadow: 0 0 10px 0 hsla(${HUE}, 70%, 95%, 0.4);
 `;
 
 export const ModelList = styled.div`
@@ -51,33 +58,55 @@ export const ModelList = styled.div`
 
 export const ModelItem = styled.div`
   position: relative;
-  width: ${({ $distance }) => {
-    const absDistance = Math.abs($distance);
-    if (absDistance === 0) return "85%";
-    if (absDistance === 1) return "75%";
-    if (absDistance === 2) return "65%";
-    return "55%";
-  }};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   margin-left: auto;
   padding: 1.5rem;
   background: ${({ $isCurrent, $distance }) => {
     const absDistance = Math.abs($distance);
-    if ($isCurrent) return "#222";
-    if (absDistance === 1) return "#1a1a1a";
-    if (absDistance === 2) return "#151515";
-    return "#111";
+    if ($isCurrent) return `hsla(${HUE}, 35%, 15%, 0.5)`;
+    if (absDistance === 1) return `hsla(${HUE}, 30%, 12%, 0.5)`;
+    if (absDistance === 2) return `hsla(${HUE}, 25%, 10%, 0.5)`;
+    return `hsla(${HUE}, 20%, 8%, 0.8)`;
   }};
+
+  box-shadow: inset 0 0 30px 0 hsla(${HUE}, 50%, 95%, 0.07),
+    0 4px 24px -1px hsla(${HUE}, 40%, 2%, 0.25);
+
+  backdrop-filter: blur(8px);
+
+  border: 1px solid hsla(${HUE}, 40%, 95%, 0.08);
+
+  &:hover {
+    background: hsla(${HUE}, 40%, 18%, 0.6);
+    border-color: hsla(${HUE}, 50%, 95%, 0.12);
+    box-shadow: inset 0 0 30px 0 hsla(${HUE}, 60%, 95%, 0.09),
+      0 4px 24px -1px hsla(${HUE}, 50%, 2%, 0.3);
+  }
+
   border-radius: 12px 0 0 12px;
   transition: all 0.3s ease;
-  height: ${({ $isCurrent }) => ($isCurrent ? "auto" : "4rem")};
-  margin-bottom: 1rem;
+  height: ${({ $isCurrent, $distance }) => ($isCurrent ? "auto" : "2rem")};
+  margin-bottom: -1.5rem;
   opacity: ${({ $distance }) => {
     const absDistance = Math.abs($distance);
-    if (absDistance === 0) return 1;
-    if (absDistance === 1) return 0.8;
-    if (absDistance === 2) return 0.6;
-    return 0.4;
+    return Math.max(1 - absDistance * 0.2, 0.0);
   }};
+
+  transform-origin: right center;
+  will-change: transform, width, opacity;
+  transform: ${({ $distance }) => {
+    const absDistance = Math.abs($distance);
+    return `translateX(${absDistance * 5}%) scale(${
+      absDistance === 0
+        ? 1
+        : 0.95 - 0 * Math.max(0.95 - absDistance * 0.06, 0.8)
+    })`;
+  }};
+
+  z-index: ${({ $distance }) => 10 - Math.min(Math.abs($distance), 3)};
 `;
 
 export const ModelName = styled.h2`
@@ -97,6 +126,13 @@ export const ModelName = styled.h2`
     if (absDistance === 2) return 0.6;
     return 0.4;
   }};
+  background: linear-gradient(
+    to right,
+    hsla(${HUE}, 30%, 95%, 1),
+    hsla(${HUE}, 20%, 90%, 0.9)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 export const ModelDetails = styled.div`
