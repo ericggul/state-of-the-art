@@ -51,8 +51,8 @@ export default function useConversation({ socket = null }) {
   const embeddingsCache = useRef({});
 
   const INITIAL_CONVERSATION = useMemo(
-    () => generateInitialConversation(userName),
-    [userName]
+    () => generateInitialConversation(userName, deviceIndex),
+    [userName, deviceIndex]
   );
 
   const timeScale = useMemo(

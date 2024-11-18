@@ -9,8 +9,8 @@ export function iterationSpeedMultiplier(iteration) {
 //hooks > useScreenVisibility
 export const TIMEOUTS = {
   //TRANSITION LOGIC
-  TRANSITION: 6000,
-  BACKEND: 8000,
+  TRANSITION: 6500,
+  BACKEND: 8500,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 
@@ -28,7 +28,7 @@ export const TIMEOUTS = {
 //transition: delay between devices
 //screen > transition
 export const BASE_DELAY = 700;
-export const DEVICE_DELAY_MULTIPLIER = 350;
+export const DEVICE_DELAY_MULTIPLIER = 450;
 
 //conversation: black and white time
 //backend > useConversation
