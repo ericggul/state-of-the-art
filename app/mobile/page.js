@@ -24,7 +24,7 @@ function MobileSelector() {
     case "4":
       return <MobileV4 />;
     default:
-      return <MobileV3 />; // Default to v3 if no version specified or unknown version
+      return <MobileV4 />; // Default to v3 if no version specified or unknown version
   }
 }
 

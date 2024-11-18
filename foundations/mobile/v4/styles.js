@@ -7,16 +7,19 @@ export const Container = styled.div`
   color: #fff;
   font-family: "Cardo", serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  padding-left: 48px;
 `;
 
 export const VerticalLine = styled.div`
   position: fixed;
   left: 24px;
-  top: 0;
-  bottom: 0;
+  top: 48px;
+  bottom: 48px;
   width: 2px;
   background: rgba(255, 255, 255, 0.3);
+  height: calc(100vh - 96px);
+  overflow: hidden;
 `;
 
 export const ActiveDot = styled.div`
@@ -27,7 +30,7 @@ export const ActiveDot = styled.div`
   height: 8px;
   background: #fff;
   border-radius: 50%;
-  top: ${({ $position }) => $position}px;
+  top: ${({ $percentage }) => `${$percentage}%`};
   transition: top 0.3s ease;
 `;
 
@@ -35,6 +38,7 @@ export const ModelList = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20vh 0;
   box-sizing: border-box;
 
@@ -47,21 +51,52 @@ export const ModelList = styled.div`
 
 export const ModelItem = styled.div`
   position: relative;
-  width: 85%;
+  width: ${({ $distance }) => {
+    const absDistance = Math.abs($distance);
+    if (absDistance === 0) return "85%";
+    if (absDistance === 1) return "75%";
+    if (absDistance === 2) return "65%";
+    return "55%";
+  }};
   margin-left: auto;
   padding: 1.5rem;
-  background: ${({ $isCurrent }) => ($isCurrent ? "#222" : "#1a1a1a")};
+  background: ${({ $isCurrent, $distance }) => {
+    const absDistance = Math.abs($distance);
+    if ($isCurrent) return "#222";
+    if (absDistance === 1) return "#1a1a1a";
+    if (absDistance === 2) return "#151515";
+    return "#111";
+  }};
   border-radius: 12px 0 0 12px;
   transition: all 0.3s ease;
-  transform: translateX(${({ $isCurrent }) => ($isCurrent ? "0" : "15%")});
   height: ${({ $isCurrent }) => ($isCurrent ? "auto" : "4rem")};
   margin-bottom: 1rem;
+  opacity: ${({ $distance }) => {
+    const absDistance = Math.abs($distance);
+    if (absDistance === 0) return 1;
+    if (absDistance === 1) return 0.8;
+    if (absDistance === 2) return 0.6;
+    return 0.4;
+  }};
 `;
 
 export const ModelName = styled.h2`
-  font-size: ${({ $isCurrent }) => ($isCurrent ? "1.5rem" : "1.2rem")};
+  font-size: ${({ $isCurrent, $distance }) => {
+    if ($isCurrent) return "1.5rem";
+    const absDistance = Math.abs($distance);
+    if (absDistance === 1) return "1.2rem";
+    if (absDistance === 2) return "1rem";
+    return "0.9rem";
+  }};
   margin: 0;
   transition: font-size 0.3s ease;
+  opacity: ${({ $distance }) => {
+    const absDistance = Math.abs($distance);
+    if (absDistance === 0) return 1;
+    if (absDistance === 1) return 0.8;
+    if (absDistance === 2) return 0.6;
+    return 0.4;
+  }};
 `;
 
 export const ModelDetails = styled.div`
