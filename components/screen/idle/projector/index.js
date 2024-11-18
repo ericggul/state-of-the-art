@@ -11,8 +11,6 @@ const Idle = memo(function Idle() {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const intDeviceIdx = parseInt(deviceIdx, 10);
 
-  console.log(deviceIdx, intDeviceIdx);
-
   return (
     <S.Container>
       <video

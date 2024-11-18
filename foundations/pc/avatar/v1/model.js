@@ -114,8 +114,10 @@ export default function Model(props) {
   //LERP MORPH TARGET
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
+      console.log(child, child.isSkinnedMesh, child.morphTargetDictionary);
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
         const index = child.morphTargetDictionary[target];
+
         if (
           index === undefined ||
           child.morphTargetInfluences[index] === undefined
