@@ -23,7 +23,7 @@ const KEYWORDS = [
 const BASE_URL = "https://en.wikipedia.org/wiki/";
 const NAMU_LINK =
   "https://namu.wiki/w/%EC%B6%94%EC%83%81%ED%91%9C%ED%98%84%EC%A3%BC%EC%9D%98";
-const YOUTUBE_ID = "RUToUxvnv3I";
+const YOUTUBE_ID = "EncR_T0faKM";
 
 function IframeComponent() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -50,7 +50,7 @@ function IframeComponent() {
 
   return (
     <>
-      <S.IframeContainer
+      {/* <S.IframeContainer
         style={{
           opacity: isblack ? 0 : 1,
           visibility: isblack ? "hidden" : "visible",
@@ -61,10 +61,10 @@ function IframeComponent() {
           title={currentTitle()}
           allowFullScreen
         />
-      </S.IframeContainer>
+      </S.IframeContainer> */}
       <S.YoutubeOverlay
         style={{
-          opacity: isblack ? 1 : 0,
+          opacity: isblack ? 1 : 1,
         }}
       >
         <S.YoutubeIframe

@@ -1,6 +1,8 @@
 import Script from "next/script";
 import StyledComponentsRegistry from "@/lib/registry";
-import { Fira_Code, Fira_Mono, Fira_Sans, Cardo } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { Cardo } from "next/font/google";
 
 export const metadata = {
   title: "KAIST Museum Opening Exhibition",
@@ -24,28 +26,6 @@ export const viewport = {
   userScalable: "no",
 };
 
-// Font configurations
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--fira-code",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const firaMono = Fira_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--fira-mono",
-  weight: ["400", "500", "700"],
-});
-
-const firaSans = Fira_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--fira-sans",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
-
 const cardo = Cardo({
   subsets: ["latin"],
   display: "swap",
@@ -56,7 +36,10 @@ const cardo = Cardo({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${firaCode.variable} ${firaMono.variable} ${firaSans.variable} ${cardo.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistMono.variable} ${GeistSans.variable} ${cardo.variable}`}
+    >
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>

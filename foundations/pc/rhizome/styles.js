@@ -46,7 +46,7 @@ export const RelatedPanel = styled.div`
   max-width: 24vw;
   height: 24vh;
   overflow: hidden;
-  font-family: "Fira Code", monospace;
+  font-family: var(--geist-mono), monospace;
   font-size: 0.9vw;
   z-index: 1000;
   display: flex;

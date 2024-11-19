@@ -12,7 +12,8 @@ export const Text = styled.div`
   max-width: 85%;
   // font-weight: lighter;
 
-  font-family: "Times New Roman", serif;
+  // font-family: "Times New Roman", serif;
+  font-family: "Cardo", serif;
   font-style: italic;
   text-transform: uppercase;
   color: #ffffff;
