@@ -23,6 +23,8 @@ const COMPONENTS = {
 
   2: dynamic(() => import("@/foundations/pc/text/index")),
   3: dynamic(() => import("@/foundations/pc/rhizome")),
+
+  frame: dynamic(() => import("@/foundations/pc/frame")),
 };
 
 const Idle = dynamic(() => import("@/components/screen/idle"));
