@@ -28,34 +28,24 @@ export const Row = styled.div`
   display: flex;
   ${FlexCenterStyle}
   width: 100%;
-  height: 31vh;
+  height: 30vh;
   margin-top: 10vh;
 `;
 
 export const Card = styled.div`
   position: relative;
-  height: 31vh;
+  height: 100%;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: ${LINEWIDTH * 1.5}vw solid white;
-    pointer-events: none;
-    z-index: 1;
-  }
+  border: ${LINEWIDTH * 1.5}vw solid white;
 `;
 
 export const CardTitle = styled.h3`
   position: absolute;
-  font-size: 2vw;
+  font-size: 1.8vw;
   left: 0;
   top: -3vw;
   margin: 0;
   padding: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #fff;
   z-index: 2;
 `;

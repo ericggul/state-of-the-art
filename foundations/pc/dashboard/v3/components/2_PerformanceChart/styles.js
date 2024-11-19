@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
+
   padding: 1.5vw;
   background: rgba(255, 255, 255, 0.02);
   clip-path: polygon(

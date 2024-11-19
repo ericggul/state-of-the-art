@@ -1,19 +1,34 @@
 import React, { useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
-import ModelDiagram from "./components/ModelDiagram";
-import PerformanceChart from "./components/PerformanceChart";
-import RelatedPapers from "./components/RelatedPapers";
-import ModelFeatures from "./components/ModelFeatures";
+
 import { DEFAULT_MODEL } from "./utils/constants";
 import { getModelData } from "./utils/dataProcessor";
-import ModelImage from "./components/ModelImage";
+
+import ModelImage from "./components/0_ModelImage";
+import ModelDiagram from "./components/1_ModelDiagram";
+import PerformanceChart from "./components/2_PerformanceChart";
+import RelatedPapers from "./components/4_RelatedPapers";
+import ModelFeatures from "./components/3_ModelFeatures";
 
 import Frame from "@/foundations/pc/frame";
 
+const LAYOUT = [
+  [
+    { width: "25vw", marginRight: "3vw" },
+    { width: "25vw", marginRight: "3vw" },
+    { width: "35vw" },
+  ],
+  [
+    { width: "25vw", marginRight: "3vw" },
+    { width: "25vw", marginRight: "3vw" },
+    { width: "35vw" },
+  ],
+];
+
 // Card Component
-const Card = ({ title, children }) => (
-  <S.Card>
+const Card = ({ title, children, layout }) => (
+  <S.Card style={layout}>
     <S.CardTitle>{title}</S.CardTitle>
     {children}
   </S.Card>
@@ -52,27 +67,31 @@ export default function Dashboard() {
       <Frame />
       <S.Wrapper>
         <S.Row>
-          <Card title="Model Overview">
+          <Card title="Model Overview" layout={LAYOUT[0][0]}>
             <ModelImage model={currentModel} />
           </Card>
 
-          <Card title="Architecture">
+          <Card title="Architecture" layout={LAYOUT[0][1]}>
             <ModelDiagram model={currentModel} />
           </Card>
 
           {hasPerformanceData(currentModel) && (
-            <Card title="Performance Metrics">
+            <Card title="Performance Metrics" layout={LAYOUT[0][2]}>
               <PerformanceChart performance={currentModel.performance} />
             </Card>
           )}
         </S.Row>
 
         <S.Row>
-          <Card title="Model Features">
+          <Card title="Model Features" layout={LAYOUT[1][0]}>
             <ModelFeatures model={currentModel} />
           </Card>
 
-          <Card title="Related Papers">
+          <Card title="Model Features" layout={LAYOUT[1][1]}>
+            <ModelFeatures model={currentModel} isHighlight={false} />
+          </Card>
+
+          <Card title="Related Papers" layout={LAYOUT[1][2]}>
             <RelatedPapers model={currentModel} />
           </Card>
         </S.Row>

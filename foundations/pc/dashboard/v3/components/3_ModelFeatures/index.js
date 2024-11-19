@@ -3,7 +3,7 @@ import TypewriterText from "../TypewriterText";
 import { DEFAULT_MODEL } from "../../utils/constants";
 import * as S from "./styles";
 
-export default function ModelFeatures({ model }) {
+export default function ModelFeatures({ model, isHighlight = true }) {
   const currentModel = model || DEFAULT_MODEL;
   const highlights = currentModel.highlights || [];
   const limitations = currentModel.limitations || [];

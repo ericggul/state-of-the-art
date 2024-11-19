@@ -1,11 +1,14 @@
 import styled from "styled-components";
+import { FlexCenterStyle } from "@/styles";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5vw;
-  padding: 2vw;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
 `;
 
 export const Layer = styled.div`
