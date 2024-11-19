@@ -122,16 +122,19 @@ export const ModelDetails = styled.div`
 `;
 
 export const ScrollHint = styled.div`
-  position: absolute;
+  position: fixed;
   bottom: 24px;
   right: 24px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   font-size: 14px;
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
   transform: ${({ $visible }) =>
     $visible ? "translateY(0)" : "translateY(20px)"};
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   pointer-events: none;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  // box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 `;

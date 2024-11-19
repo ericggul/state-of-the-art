@@ -3,7 +3,7 @@ import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models/v3";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 import useFeedback from "./utils/useFeedback";
-import { useModelListLogic } from "./utils/useModelListLogic";
+import { useModelListLogic } from "./utils/modelListLogic/useLogic";
 
 export default function Mobile({ socket, mobileId }) {
   const modelsArray = useMemo(() => filterModels(flattenModels(MODELS)), []);
@@ -29,6 +29,7 @@ function ModelList({ initialModels, socket, mobileId }) {
     handleItemClick,
     isCurrentItem,
     isInitialScrollComplete,
+    showScrollHint,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
   useFeedback(activeIndex);
@@ -67,8 +68,8 @@ function ModelList({ initialModels, socket, mobileId }) {
           </S.ModelItem>
         ))}
       </S.ModelList>
-      <S.ScrollHint $visible={!isInitialScrollComplete}>
-        Scroll to explore more models
+      <S.ScrollHint $visible={showScrollHint}>
+        Scroll to explore the gallery
       </S.ScrollHint>
     </>
   );
