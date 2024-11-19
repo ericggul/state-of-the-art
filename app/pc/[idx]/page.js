@@ -22,7 +22,9 @@ const COMPONENTS = {
   "1-v3": dynamic(() => import("@/foundations/pc/dashboard/v3")),
 
   2: dynamic(() => import("@/foundations/pc/text/index")),
-  3: dynamic(() => import("@/foundations/pc/rhizome")),
+  3: dynamic(() => import("@/foundations/pc/rhizome/v2")),
+  "3-v1": dynamic(() => import("@/foundations/pc/rhizome/v1")),
+  "3-v2": dynamic(() => import("@/foundations/pc/rhizome/v2")),
 
   frame: dynamic(() => import("@/foundations/pc/frame")),
 };

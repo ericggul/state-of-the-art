@@ -3,6 +3,8 @@ import { WholeContainer } from "@/styles";
 
 export const Container = styled.div`
   ${WholeContainer}
+  position: fixed;
+  background: transparent;
 `;
 
 export const VerticalLine = styled.div`
@@ -10,7 +12,7 @@ export const VerticalLine = styled.div`
   width: 0.1vw;
   height: 92vh;
   top: 0;
-  left: 4vw;
+  left: 3vw;
   background: #fff;
 `;
 
@@ -49,7 +51,7 @@ export const ModelTitle = styled.div`
   position: absolute;
   background: black;
 
-  left: 5vw;
+  left: 4.5vw;
   top: 4vw;
   padding: 1vw;
   transform: translateY(-50%);
