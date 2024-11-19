@@ -11,7 +11,6 @@ import {
   Legend,
 } from "chart.js";
 import * as S from "./styles";
-import { TIFFANY_BLUE, TIFFANY_BLUE_RGBA } from "../../utils/constants";
 
 ChartJS.register(
   CategoryScale,
@@ -53,12 +52,12 @@ export default function PerformanceChart({ performance }) {
       {
         label: `${metric} Score`,
         data: benchmarks?.data || data,
-        borderColor: TIFFANY_BLUE,
-        backgroundColor: `${TIFFANY_BLUE_RGBA}0.2)`,
-        pointBackgroundColor: TIFFANY_BLUE,
+        borderColor: "white",
+        backgroundColor: "white",
+        pointBackgroundColor: "white",
         pointBorderColor: "#000000",
         pointHoverBackgroundColor: "#ffffff",
-        pointHoverBorderColor: TIFFANY_BLUE,
+        pointHoverBorderColor: "white",
       },
     ],
   };
@@ -69,7 +68,7 @@ export default function PerformanceChart({ performance }) {
       legend: {
         position: "top",
         labels: {
-          color: TIFFANY_BLUE,
+          color: "white",
           font: {
             family: "'Orbitron', sans-serif",
             size: 12,
@@ -79,7 +78,7 @@ export default function PerformanceChart({ performance }) {
       title: {
         display: true,
         text: `Model ${metric} Performance`,
-        color: TIFFANY_BLUE,
+        color: "white",
         font: {
           family: "'Orbitron', sans-serif",
           size: 16,
@@ -99,13 +98,13 @@ export default function PerformanceChart({ performance }) {
         title: {
           display: true,
           text: xAxisLabel,
-          color: TIFFANY_BLUE,
+          color: "white",
         },
         grid: {
-          color: `${TIFFANY_BLUE_RGBA}0.1)`,
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
-          color: TIFFANY_BLUE,
+          color: "white",
           font: {
             family: "'Orbitron', sans-serif",
           },
@@ -115,13 +114,13 @@ export default function PerformanceChart({ performance }) {
         title: {
           display: true,
           text: yAxisLabel,
-          color: TIFFANY_BLUE,
+          color: "white",
         },
         grid: {
-          color: `${TIFFANY_BLUE_RGBA}0.1)`,
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
-          color: TIFFANY_BLUE,
+          color: "white",
           font: {
             family: "'Orbitron', sans-serif",
           },

@@ -5,20 +5,20 @@ export const Container = styled.div`
   flex-direction: column;
 
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 2.4vw);
+  height: calc(100% - 2.4vw);
+
+  padding: 1.2vw;
 `;
 
 export const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1vw;
-
-  padding: 1.5vw;
+  gap: 0.5vw;
 `;
 
 export const Title = styled.h4`
-  font-size: 1.2vw;
+  font-size: 1vw;
   margin: 0;
   color: rgba(255, 255, 255, 0.9);
 `;
@@ -30,21 +30,9 @@ export const PaperList = styled.ul`
 `;
 
 export const PaperItem = styled.li`
-  font-size: 0.9vw;
+  font-size: 0.7vw;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1vw;
-  padding: 1vw;
+  margin-bottom: 0.5vw;
+  padding: 0.5vw;
   background: rgba(255, 255, 255, 0.05);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 0.5vw) 0,
-    100% 0.5vw,
-    100% 100%,
-    0.5vw 100%,
-    0 calc(100% - 0.5vw)
-  );
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 `;

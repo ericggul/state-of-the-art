@@ -4,14 +4,15 @@ export const Container = styled.div`
   display: grid;
 
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 2.4vw);
+  height: calc(100% - 2.4vw);
+
+  padding: 1.2vw;
 `;
 
 export const Section = styled.div`
   position: relative;
   background: rgba(255, 255, 255, 0.02);
-  padding: 1.5vw;
   clip-path: polygon(
     0 0,
     calc(100% - 1vw) 0,

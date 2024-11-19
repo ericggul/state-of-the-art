@@ -15,9 +15,9 @@ import Frame from "@/foundations/pc/frame";
 
 const LAYOUT = [
   [
-    { width: "25vw", marginRight: "3vw" },
-    { width: "25vw", marginRight: "3vw" },
-    { width: "35vw" },
+    { width: "25vw", marginRight: "3vw", height: "32vh" },
+    { width: "25vw", marginRight: "3vw", height: "32vh" },
+    { width: "35vw", height: "32vh" },
   ],
   [
     { width: "25vw", marginRight: "3vw" },
@@ -76,18 +76,18 @@ export default function Dashboard() {
           </Card>
 
           {hasPerformanceData(currentModel) && (
-            <Card title="Performance Metrics" layout={LAYOUT[0][2]}>
+            <Card title="Performance" layout={LAYOUT[0][2]}>
               <PerformanceChart performance={currentModel.performance} />
             </Card>
           )}
         </S.Row>
 
         <S.Row>
-          <Card title="Model Features" layout={LAYOUT[1][0]}>
-            <ModelFeatures model={currentModel} />
+          <Card title="Features" layout={LAYOUT[1][0]}>
+            <ModelFeatures model={currentModel} isHighlight={true} />
           </Card>
 
-          <Card title="Model Features" layout={LAYOUT[1][1]}>
+          <Card title="" layout={LAYOUT[1][1]}>
             <ModelFeatures model={currentModel} isHighlight={false} />
           </Card>
 

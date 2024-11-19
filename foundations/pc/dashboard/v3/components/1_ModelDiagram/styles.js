@@ -7,8 +7,10 @@ export const Container = styled.div`
   align-items: center;
 
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 2.4vw);
+  height: calc(100% - 2.4vw);
+
+  padding: 1.2vw;
 `;
 
 export const Layer = styled.div`

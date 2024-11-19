@@ -2,24 +2,15 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 2.4vw);
+  height: calc(100% - 2.4vw);
 
-  padding: 1.5vw;
-  background: rgba(255, 255, 255, 0.02);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 1vw) 0,
-    100% 1vw,
-    100% 100%,
-    1vw 100%,
-    0 calc(100% - 1vw)
-  );
+  padding: 1.2vw;
 `;
 
 export const ChartWrapper = styled.div`
   width: 100%;
-  height: 30vh;
+  height: 100%;
   position: relative;
 
   canvas {

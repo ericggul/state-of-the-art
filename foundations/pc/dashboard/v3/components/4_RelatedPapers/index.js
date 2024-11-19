@@ -26,7 +26,7 @@ export default function RelatedPapers({ model }) {
       </S.Section>
 
       <S.Section>
-        <S.Title>Related Research</S.Title>
+        <S.Title>Related</S.Title>
         <S.PaperList>
           {relatedPapers.map((citation, index) => (
             <S.PaperItem key={index}>
