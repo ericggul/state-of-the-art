@@ -1,5 +1,17 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
+
+// Add new animation
+const fadeInScale = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
 
 export const Container = styled.div`
   ${WholeContainer}
@@ -35,17 +47,22 @@ export const VerticalLine = styled.div`
   height: ${({ theme }) => theme.windowHeight - 96}px;
   // overflow: hidden;
   pointer-events: none;
+  animation: ${fadeInScale} 0.5s ease-out both;
+
+  animation-delay: 2s;
 `;
 
 export const VerticalText = styled.div`
   font-size: 12px;
-  position: absolute;
-  left: 24px;
+  position: fixed;
+  left: 12px;$
   text-align: center;
   bottom: 18px;
   transform: translateX(-50%);
   color: white;
   max-width: 45px;
+  animation: ${fadeInScale} 0.5s ease-out both;
+  animation-delay: 2.5s;
 `;
 
 export const ActiveDot = styled.div`
@@ -75,6 +92,9 @@ export const ModelList = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  animation: ${fadeInScale} 1s ease-out both;
+  animation-delay: 0.5s;
 `;
 
 export const ModelItem = styled.div`
@@ -106,6 +126,8 @@ export const ModelItem = styled.div`
     if (absDistance === 2) return 0.6;
     return 0.4;
   }};
+
+  will-change: transform, opacity;
 `;
 
 export const ModelName = styled.h2`
@@ -153,5 +175,9 @@ export const ScrollHint = styled.div`
   pointer-events: none;
   z-index: 100;
   backdrop-filter: blur(4px);
-  // box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+  max-width: 90%;
+
+  animation: ${fadeInScale} 1s ease-out both;
+  animation-delay: 1.5s;
 `;

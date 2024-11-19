@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Loading from "../../foundations/mobile/v4/loading";
 
 const MobileV1 = dynamic(() => import("@/components/mobile/v1"));
 const MobileV2 = dynamic(() => import("@/components/mobile/v2"));
@@ -13,7 +14,6 @@ function MobileSelector() {
   const searchParams = useSearchParams();
   const version = searchParams.get("v");
 
-  // Select component based on version query param
   switch (version) {
     case "1":
       return <MobileV1 />;
@@ -24,13 +24,13 @@ function MobileSelector() {
     case "4":
       return <MobileV4 />;
     default:
-      return <MobileV4 />; // Default to v3 if no version specified or unknown version
+      return <MobileV4 />;
   }
 }
 
 export default function MobileWrapper() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <MobileSelector />
     </Suspense>
   );

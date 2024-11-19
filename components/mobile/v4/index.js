@@ -7,6 +7,7 @@ import AccelerometerHandler from "@/foundations/mobile/v4/accelrometer";
 import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
 import { usePersistentState } from "@/foundations/mobile/v4/utils/usePersistentState";
+import Loading from "@/foundations/mobile/v4/loading";
 
 export default function Mobile() {
   const [state, setState] = usePersistentState();
@@ -44,7 +45,7 @@ export default function Mobile() {
   );
 
   if (state.isLoading) {
-    return <div>Loading...</div>; // Or a proper loading component
+    return <Loading customText="Initializing State" />;
   }
 
   return (

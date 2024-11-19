@@ -2,6 +2,7 @@ import { useCallback, useState, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import { useNameInput } from "../utils/useNameInput";
+import AnimatedTitle from "./components/AnimatedTitle";
 
 // Move outside component
 const isIOSDevice =
@@ -68,7 +69,7 @@ export default function Intro({
 
   const renderIntroForm = () => (
     <S.IntroForm onSubmit={nameInputProps.handleUsernameSubmit}>
-      <S.IntroTitle>State-of-the-Art Gallery</S.IntroTitle>
+      <AnimatedTitle text="State-of-the-Art Gallery" />
       <div style={{ width: "100%" }}>
         <S.IntroInput
           type="text"
@@ -105,7 +106,10 @@ export default function Intro({
 
   const renderAccelerometerContent = () => (
     <S.IntroContent>
-      <S.IntroTitle>Hi, {nameInputProps.username}!</S.IntroTitle>
+      <AnimatedTitle
+        text={`Hi, ${nameInputProps.username}!`}
+        baseDelay={0.3} // Delay start of animation
+      />
       <S.IntroText>
         To explore the state-of-the-art neural networks, we need access to your
         device's accelerometer.
