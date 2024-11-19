@@ -32,14 +32,17 @@ export function useInitialScroll({
 
       listElement.scrollTo({
         top: targetScroll,
-        behavior: "smooth",
+        // behavior: "smooth",
       });
 
-      console.log("Scroll initiated");
+      // console.log("Scroll initiated");
     };
 
     console.log("Setting up initial timeout");
-    scrollTimeoutId = setTimeout(initScroll, CONSTANTS.INITIAL_SCROLL_DELAY);
+    scrollTimeoutId = setTimeout(
+      initScroll,
+      CONSTANTS.INITIAL_SCROLL_DELAY * 0
+    );
 
     return () => {
       console.log("Cleanup called");

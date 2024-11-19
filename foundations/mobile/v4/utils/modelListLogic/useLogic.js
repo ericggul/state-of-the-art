@@ -49,7 +49,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       currentIndex,
     });
 
-  // useInitialScroll({ listRef });
+  useInitialScroll({ listRef });
 
   useSocketCommunication({
     activeIndex,

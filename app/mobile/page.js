@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Loading from "../../foundations/mobile/v4/loading";
+import Loading from "@/foundations/mobile/v4/loading";
 
 const MobileV1 = dynamic(() => import("@/components/mobile/v1"));
 const MobileV2 = dynamic(() => import("@/components/mobile/v2"));
