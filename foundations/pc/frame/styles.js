@@ -57,7 +57,7 @@ export const ModelTitle = styled.div`
   background: rgba(0, 0, 0, 0.3);
   left: ${LEFT + 1.5}vw;
   top: ${TOP}vw;
-  padding: 1vw;
+  padding: 0.3vw 1vw;
   transform: translateY(-50%);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);

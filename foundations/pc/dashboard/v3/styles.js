@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { WholeContainer } from "@/styles";
+import { FlexCenterStyle, WholeContainer } from "@/styles";
 
-import { LINEWIDTH, LEFT, HEIGHT } from "@/foundations/pc/frame/styles";
+import { LINEWIDTH, LEFT, TOP, HEIGHT } from "@/foundations/pc/frame/styles";
 
 export const Container = styled.div`
   ${WholeContainer}
@@ -10,65 +10,52 @@ export const Container = styled.div`
   padding-top: 6vw;
 `;
 
-export const Header = styled.div`
-  position: relative;
-  margin-left: 3vw;
-  margin-bottom: 2vw;
+export const Wrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: ${100 - LEFT * 3}vw;
+  height: ${HEIGHT - TOP * 3}vh;
+  top: ${TOP * 3}vh;
+  left: ${LEFT * 2}vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
 
-export const Title = styled.h1`
-  font-size: 5vw;
-  margin: 0;
-  padding: 0;
-`;
-
-export const Subtitle = styled.h2`
-  font-size: 1.5vw;
-  opacity: 0.7;
-  margin: 0;
-  padding: 0;
-`;
-
-export const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: auto auto;
-  gap: 2vw;
-  position: relative;
+export const Row = styled.div`
+  display: flex;
+  ${FlexCenterStyle}
+  width: 100%;
+  height: 31vh;
+  margin-top: 10vh;
 `;
 
 export const Card = styled.div`
   position: relative;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2vw;
-  min-height: 20vh;
+  height: 31vh;
 
   &::before {
     content: "";
     position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border: 1px solid transparent;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: ${LINEWIDTH * 1.5}vw solid white;
     pointer-events: none;
-    clip-path: polygon(
-      0 0,
-      calc(100% - 2vw) 0,
-      100% 2vw,
-      100% 100%,
-      2vw 100%,
-      0 calc(100% - 2vw)
-    );
+    z-index: 1;
   }
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 1.8vw;
-  margin: 0 0 1.5vw 0;
+  position: absolute;
+  font-size: 2vw;
+  left: 0;
+  top: -3vw;
+  margin: 0;
   padding: 0;
   color: rgba(255, 255, 255, 0.9);
+  z-index: 2;
 `;

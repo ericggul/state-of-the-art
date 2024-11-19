@@ -15,15 +15,25 @@ export const ImageWrapper = styled.div`
   height: 20vh;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 1vw) 0,
-    100% 1vw,
-    100% 100%,
-    1vw 100%,
-    0 calc(100% - 1vw)
-  );
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 1vw) 0,
+      100% 1vw,
+      100% 100%,
+      1vw 100%,
+      0 calc(100% - 1vw)
+    );
+  }
 `;
 
 export const Image = styled.img`
