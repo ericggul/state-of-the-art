@@ -1,7 +1,7 @@
 export const CONSTANTS = {
   INTERSECTION_OPTIONS: { root: null, rootMargin: "0px", threshold: 0.1 },
   LIST_OBSERVER_OPTIONS: { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
-  NEW_MODELS_COUNT: 37,
+  NEW_MODELS_COUNT: 7,
   INITIAL_SCROLL_ITEMS: 100,
   USER_SCROLL_THRESHOLD: 100,
   SCROLL_HINT_DURATION: 4000,
