@@ -9,6 +9,7 @@ const MobileV1 = dynamic(() => import("@/components/mobile/v1"));
 const MobileV2 = dynamic(() => import("@/components/mobile/v2"));
 const MobileV3 = dynamic(() => import("@/components/mobile/v3"));
 const MobileV4 = dynamic(() => import("@/components/mobile/v4"));
+const MobileV5 = dynamic(() => import("@/components/mobile/v5"));
 
 function MobileSelector() {
   const searchParams = useSearchParams();
@@ -23,8 +24,10 @@ function MobileSelector() {
       return <MobileV3 />;
     case "4":
       return <MobileV4 />;
+    case "5":
+      return <MobileV5 />;
     default:
-      return <MobileV4 />;
+      return <MobileV5 />;
   }
 }
 
