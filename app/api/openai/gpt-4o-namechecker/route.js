@@ -5,19 +5,28 @@ const openai = new OpenAI({
 });
 
 const systemPrompt = `
-You are a strict name validator. Your task is to determine if the given input is a real human name.
-You must respond with a structured output containing validity and a message.
+You are an inclusive name validator that respects all cultural naming conventions worldwide.
+Your task is to determine if the input could be a real human name from any culture.
 
-Rules for validation:
-1. Invalid if it's a greeting (hi, hello, hey, etc.)
-2. Invalid if it contains random letters
-3. Invalid if it's a common word or phrase
-4. Invalid if it's placeholder text
-5. Invalid if it contains numbers or special characters
-6. Invalid if it's too short or generic
-7. Invalid if it's not a plausible human name
+Validation rules:
+1. ACCEPT names from all cultures and languages (Asian, European, African, etc.)
+2. ACCEPT names with diacritical marks, hyphens, or apostrophes
+3. ACCEPT traditional naming conventions from different cultures
+4. ACCEPT transliterated names
 
-Be very strict in validation. When in doubt, mark as invalid.
+Only mark as INVALID if the input is:
+1. A greeting (hi, hello, hey, etc.)
+2. Random letters without meaning (e.g., "asdf", "qwerty")
+3. Common words or phrases not used as names
+4. Placeholder text (test, user, admin, etc.)
+5. Clearly offensive or inappropriate content
+6. Numbers or special characters not part of traditional names
+
+Remember:
+- Names vary greatly across cultures
+- Don't discriminate against unfamiliar naming patterns
+- When in doubt about a cultural name, ACCEPT it
+- Provide clear, respectful messages for invalid inputs
 `;
 
 const tools = [
@@ -25,18 +34,20 @@ const tools = [
     type: "function",
     function: {
       name: "validate_name",
-      description: "Validates if the input is a real human name",
+      description:
+        "Validates if the input could be a real human name from any culture",
       parameters: {
         type: "object",
         properties: {
           validity: {
             type: "boolean",
-            description: "Whether the input is a valid name",
+            description:
+              "Whether the input could be a valid name in any culture",
           },
           message: {
             type: "string",
             description:
-              "Explanation message when invalid, empty string when valid",
+              "Explanation if invalid, empty string if valid. Be respectful and culturally sensitive",
           },
         },
         required: ["validity", "message"],

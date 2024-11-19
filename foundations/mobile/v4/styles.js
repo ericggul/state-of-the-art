@@ -19,7 +19,19 @@ export const VerticalLine = styled.div`
   width: 2px;
   background: rgba(255, 255, 255, 0.3);
   height: ${({ theme }) => theme.windowHeight - 96}px;
-  overflow: hidden;
+  // overflow: hidden;
+  pointer-events: none;
+`;
+
+export const VerticalText = styled.div`
+  font-size: 12px;
+  position: absolute;
+  left: 24px;
+  text-align: center;
+  bottom: 18px;
+  transform: translateX(-50%);
+  color: white;
+  max-width: 45px;
 `;
 
 export const ActiveDot = styled.div`

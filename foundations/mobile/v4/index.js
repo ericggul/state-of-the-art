@@ -37,6 +37,7 @@ function ModelList({ initialModels, socket, mobileId }) {
       <S.VerticalLine>
         <S.ActiveDot $position={dotPosition} />
       </S.VerticalLine>
+      <S.VerticalText>{activeIndex + 1}th</S.VerticalText>
       <S.ModelList ref={listRef}>
         {models.map((model, index) => (
           <S.ModelItem

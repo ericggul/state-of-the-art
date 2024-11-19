@@ -1,23 +1,34 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useNameValidator } from "./useNameValidator";
 
 export function useNameInput({ socket, onSuccess }) {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [state, setState] = useState({
+    username: "",
+    error: "",
+    isVerifying: false,
+  });
+
   const { validateUsername, verifyName } = useNameValidator();
+  const lastEmittedName = useRef("");
 
   const handleUsernameChange = useCallback(
     (e) => {
       const newValue = e.target.value;
-      setUsername(newValue);
-
-      // Basic validation first
       const basicError = validateUsername(newValue);
-      setError(basicError);
 
-      // Emit update only if basic validation passes
-      if (!basicError && socket?.current) {
+      setState((prev) => ({
+        ...prev,
+        username: newValue,
+        error: basicError,
+      }));
+
+      // Prevent unnecessary socket emissions
+      if (
+        !basicError &&
+        socket?.current &&
+        newValue.trim() !== lastEmittedName.current
+      ) {
+        lastEmittedName.current = newValue.trim();
         socket.current.emit("mobile-new-intro", {
           type: "username_update",
           username: newValue.trim(),
@@ -30,22 +41,25 @@ export function useNameInput({ socket, onSuccess }) {
   const handleUsernameSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      const trimmedUsername = username.trim();
+      const trimmedUsername = state.username.trim();
       const validationError = validateUsername(trimmedUsername);
 
       if (validationError) {
-        setError(validationError);
+        setState((prev) => ({ ...prev, error: validationError }));
         return;
       }
 
-      setIsVerifying(true);
-      setError("");
+      setState((prev) => ({ ...prev, isVerifying: true, error: "" }));
 
       try {
         const { isValid, message } = await verifyName(trimmedUsername);
 
         if (!isValid) {
-          setError(message || "Please enter a real name");
+          setState((prev) => ({
+            ...prev,
+            error: message || "Please enter a real name",
+            isVerifying: false,
+          }));
           return;
         }
 
@@ -58,18 +72,20 @@ export function useNameInput({ socket, onSuccess }) {
         onSuccess(trimmedUsername);
       } catch (error) {
         console.error("Name verification error:", error);
-        setError("Unable to verify name. Please try again.");
-      } finally {
-        setIsVerifying(false);
+        setState((prev) => ({
+          ...prev,
+          error: "Unable to verify name. Please try again.",
+          isVerifying: false,
+        }));
       }
     },
-    [username, socket, validateUsername, verifyName, onSuccess]
+    [state.username, socket, validateUsername, verifyName, onSuccess]
   );
 
   return {
-    username,
-    error,
-    isVerifying,
+    username: state.username,
+    error: state.error,
+    isVerifying: state.isVerifying,
     handleUsernameChange,
     handleUsernameSubmit,
   };

@@ -3,26 +3,19 @@ import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import { useNameInput } from "../utils/useNameInput";
 
+// Move outside component
+const isIOSDevice =
+  /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
 export default function Intro({ socket, onAccelerometerActivate }) {
   const [introState, setIntroState] = useState(0);
   const { supportsDeviceOrientation, permission } = useAccelerometer();
+  const isIOS = useMemo(() => isIOSDevice, []);
 
-  const {
-    username,
-    error,
-    isVerifying,
-    handleUsernameChange,
-    handleUsernameSubmit,
-  } = useNameInput({
+  const nameInputProps = useNameInput({
     socket,
     onSuccess: useCallback(() => setIntroState(1), []),
   });
-
-  // Memoize iOS detection
-  const isIOS = useMemo(
-    () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
-    []
-  );
 
   const handleAccelerometerActivation = useCallback(async () => {
     try {
@@ -69,34 +62,42 @@ export default function Intro({ socket, onAccelerometerActivate }) {
   }
 
   const renderIntroForm = () => (
-    <S.IntroForm onSubmit={handleUsernameSubmit}>
+    <S.IntroForm onSubmit={nameInputProps.handleUsernameSubmit}>
       <S.IntroTitle>State-of-the-Art Gallery</S.IntroTitle>
       <div style={{ width: "100%" }}>
         <S.IntroInput
           type="text"
-          placeholder="Enter your real name"
-          value={username}
-          onChange={handleUsernameChange}
+          placeholder="Enter your first name"
+          value={nameInputProps.username}
+          onChange={nameInputProps.handleUsernameChange}
           required
           maxLength={20}
-          aria-invalid={!!error}
-          disabled={isVerifying}
+          aria-invalid={!!nameInputProps.error}
+          disabled={nameInputProps.isVerifying}
           autoComplete="off"
         />
-        {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
+        {nameInputProps.error && (
+          <S.ErrorMessage>{nameInputProps.error}</S.ErrorMessage>
+        )}
       </div>
       <S.IntroButton
         type="submit"
-        disabled={!username.trim() || !!error || isVerifying}
+        disabled={
+          !nameInputProps.username.trim() ||
+          !!nameInputProps.error ||
+          nameInputProps.isVerifying
+        }
       >
-        {isVerifying ? "LLM Validating..." : "Continue"}
+        {nameInputProps.isVerifying
+          ? "GPT Validating your name..."
+          : "Continue"}
       </S.IntroButton>
     </S.IntroForm>
   );
 
   const renderAccelerometerContent = () => (
     <S.IntroContent>
-      <S.IntroTitle>Hi, {username}!</S.IntroTitle>
+      <S.IntroTitle>Hi, {nameInputProps.username}!</S.IntroTitle>
       <S.IntroText>
         To explore the state-of-the-art neural networks, we need access to your
         device's accelerometer.

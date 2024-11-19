@@ -11,7 +11,7 @@ const LIST_OBSERVER_OPTIONS = {
   threshold: 0,
 };
 
-const NEW_MODELS_COUNT = 10;
+const NEW_MODELS_COUNT = 37;
 
 export function useModelListLogic({ initialModels, socket, mobileId }) {
   const [models, setModels] = useState(initialModels);
