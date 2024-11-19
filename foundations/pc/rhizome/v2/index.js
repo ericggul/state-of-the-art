@@ -11,6 +11,7 @@ import {
   LAYOUT,
   VISUAL,
   ANIMATION,
+  KEY_HUE,
 } from "./constants";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v4";
 import useScreenStore from "@/components/screen/store";
@@ -122,7 +123,7 @@ export default function Rhizome() {
       .attr("x", (d) => VISUAL.NODE.DEFAULT.RADIUS + 6)
       .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS / 2)
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
-      .attr("fill", "hsla(180, 100%, 50%, 0.2)");
+      .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.2)`);
 
     // Reset all links to default state
     linksRef.current
@@ -165,7 +166,7 @@ export default function Rhizome() {
           .attr("x", (d) => VISUAL.NODE.HIGHLIGHTED.RADIUS + 12)
           .attr("y", (d) => VISUAL.NODE.HIGHLIGHTED.RADIUS / 2)
           .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
-          .attr("fill", "hsla(180, 100%, 50%, 0.95)")
+          .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.95)`)
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
         // Highlight connected nodes
@@ -186,7 +187,7 @@ export default function Rhizome() {
               .attr("x", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS + 10)
               .attr("y", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS / 2)
               .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
-              .attr("fill", "hsla(180, 100%, 50%, 0.8)");
+              .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.8)`);
           }
         });
 

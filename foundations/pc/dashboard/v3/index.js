@@ -10,6 +10,8 @@ import { DEFAULT_MODEL } from "./utils/constants";
 import { getModelData } from "./utils/dataProcessor";
 import ModelImage from "./components/ModelImage";
 
+import Frame from "@/foundations/pc/frame";
+
 // Card Component
 const Card = ({ title, children }) => (
   <S.Card>
@@ -48,21 +50,6 @@ export default function Dashboard() {
 
   return (
     <S.Container>
-      <S.Header>
-        <S.Title>
-          <TypewriterText
-            text={`${currentModel.name} - ${currentModel.id}`}
-            speed={30}
-          />
-        </S.Title>
-        <S.Subtitle>
-          <TypewriterText
-            text={`${currentModel.year}, ${currentModel.authors}`}
-            speed={30}
-          />
-        </S.Subtitle>
-      </S.Header>
-
       <S.Grid>
         <Card title="Model Overview">
           <ModelImage model={currentModel} />
@@ -86,6 +73,7 @@ export default function Dashboard() {
           <RelatedPapers model={currentModel} />
         </Card>
       </S.Grid>
+      <Frame />
     </S.Container>
   );
 }

@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
+import { LEFT, TOP } from "@/foundations/pc/frame/styles";
+
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
@@ -47,6 +49,9 @@ export const StructureText = styled.pre`
   font-size: 14px;
   line-height: 1.5;
   text-align: left;
+  position: absolute;
+  left: ${LEFT + 1}vw;
+
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -126,7 +131,7 @@ export const StructureText = styled.pre`
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    padding-top: 100vh;
+    padding-top: 20vh;
     padding-bottom: 100vh;
     gap: 0.2rem;
 

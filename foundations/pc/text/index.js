@@ -4,6 +4,8 @@ import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
 
+import Frame from "@/foundations/pc/frame";
+
 import Architecture3D from "@/foundations/frontend/3d";
 
 // Memoize LayerText component
@@ -152,6 +154,8 @@ export default function TextComponent() {
           ))}
         </div>
       </S.StructureText>
+
+      <Frame />
     </S.Container>
   );
 }

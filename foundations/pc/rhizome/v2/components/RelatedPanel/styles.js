@@ -37,7 +37,7 @@ export const RelatedPanel = styled.div`
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.5);
+  // background: rgba(0, 0, 0, 0.5);
 
   &::-webkit-scrollbar {
     width: 2px;

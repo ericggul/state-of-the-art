@@ -1,6 +1,8 @@
 import * as d3 from "d3";
 
 // Animation and Transition Constants
+export const KEY_HUE = 300;
+
 export const DURATION = 200;
 export const ANIMATION = {
   WIGGLE: {
@@ -106,14 +108,14 @@ export const getVersionColor = (majorVersion) => {
     .scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8])
     .range([
-      "hsl(160, 100%, 65%)",
-      "hsl(170, 100%, 50%)",
-      "hsl(180, 100%, 70%)",
-      "hsl(190, 100%, 55%)",
-      "hsl(200, 100%, 65%)",
-      "hsl(165, 100%, 60%)",
-      "hsl(175, 100%, 45%)",
-      "hsl(185, 100%, 60%)",
+      `hsl(${KEY_HUE - 10}, 100%, 65%)`, // -20
+      `hsl(${KEY_HUE - 10}, 100%, 50%)`, // -10
+      `hsl(${KEY_HUE}, 100%, 70%)`, // base hue
+      `hsl(${KEY_HUE + 10}, 100%, 55%)`, // +10
+      `hsl(${KEY_HUE + 10}, 100%, 65%)`, // +20
+      `hsl(${KEY_HUE - 15}, 100%, 60%)`, // -15
+      `hsl(${KEY_HUE - 5}, 100%, 45%)`, // -5
+      `hsl(${KEY_HUE + 5}, 100%, 60%)`, // +5
     ]);
   return majorVersion ? colorScale(majorVersion) : "rgba(255, 255, 255, 0.6)";
 };

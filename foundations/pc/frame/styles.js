@@ -10,6 +10,7 @@ export const Container = styled.div`
   ${WholeContainer}
   position: fixed;
   background: transparent;
+  z-index: 9999;
 `;
 
 export const VerticalLine = styled.div`
@@ -60,6 +61,7 @@ export const ModelTitle = styled.div`
   transform: translateY(-50%);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+  border-radius: 2vw;
 `;
 
 export const Title = styled.h1`

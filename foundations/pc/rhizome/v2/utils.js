@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { VISUAL } from "./constants";
+import { VISUAL, KEY_HUE } from "./constants";
 
 export const linkArc = (d) => {
   if (!d?.source?.x || !d?.target?.x) return null;
@@ -47,7 +47,7 @@ export const updateNodeHighlight = (d, nodes, links) => {
     .transition()
     .duration(400)
     .ease(d3.easeCubicOut)
-    .attr("fill", "hsl(180, 100%, 93%)")
+    .attr("fill", `hsl(${KEY_HUE}, 100%, 93%)`)
     .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
     .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
     .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);

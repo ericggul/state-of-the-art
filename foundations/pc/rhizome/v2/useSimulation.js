@@ -2,7 +2,14 @@ import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import forceBoundary from "d3-force-boundary";
 import { linkArc, drag } from "./utils";
-import { FORCE, VISUAL, LAYOUT, getVersionColor, DURATION } from "./constants";
+import {
+  FORCE,
+  VISUAL,
+  LAYOUT,
+  getVersionColor,
+  DURATION,
+  KEY_HUE,
+} from "./constants";
 
 export const useSimulation = (svgRef, dimensions, data) => {
   const simulationRef = useRef(null);
@@ -74,7 +81,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
         const targetNode = data.nodes.find((n) => n.name === d.target.name);
         return sourceNode.majorVersion === targetNode.majorVersion
           ? d3.color(getVersionColor(sourceNode.majorVersion)).brighter(0.2)
-          : "hsla(180, 100%, 50%, 0.4)";
+          : `hsla(${KEY_HUE}, 100%, 50%, 0.4)`;
       })
       .attr("stroke-width", 1)
       .attr("opacity", 0.4)
@@ -108,7 +115,7 @@ export const useSimulation = (svgRef, dimensions, data) => {
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
       .attr("text-shadow", "0 0 3px rgba(0,0,0,0.5)")
-      .attr("fill", `hsla(180, 100%, 50%, ${VISUAL.TEXT.OPACITY})`);
+      .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, ${VISUAL.TEXT.OPACITY})`);
 
     // Optimized tick function
     simulation.on("tick", () => {

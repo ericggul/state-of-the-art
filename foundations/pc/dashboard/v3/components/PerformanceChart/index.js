@@ -10,7 +10,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { TIFFANY_BLUE, TIFFANY_BLUE_RGBA } from "../utils/constants";
+import * as S from "./styles";
+import { TIFFANY_BLUE, TIFFANY_BLUE_RGBA } from "../../utils/constants";
 
 ChartJS.register(
   CategoryScale,
@@ -131,5 +132,11 @@ export default function PerformanceChart({ performance }) {
     },
   };
 
-  return <Line options={options} data={chartData} />;
+  return (
+    <S.Container>
+      <S.ChartWrapper>
+        <Line options={options} data={chartData} />
+      </S.ChartWrapper>
+    </S.Container>
+  );
 }
