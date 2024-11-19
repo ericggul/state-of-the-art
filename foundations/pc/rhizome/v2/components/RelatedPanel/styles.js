@@ -1,74 +1,64 @@
 import styled, { keyframes } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { LINEWIDTH, LEFT, HEIGHT } from "@/foundations/pc/frame/styles";
 
-export const Container = styled.div`
-  ${WholeContainer}
-  ${FlexCenterStyle}
-  flex-direction: column;
-  background: #000;
-  transition: all 0.5s;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-
-  svg {
-    z-index: 0;
-    cursor: pointer;
-    position: absolute;
-    top: 3vh;
-    left: 10vw;
-    width: 90vw;
-    height: 100vh;
-  }
-
-  video {
-    width: 100%;
-    height: 100%;
-  }
+export const LeftLine = styled.div`
+  position: absolute;
+  height: ${LINEWIDTH}vw;
+  width: ${LEFT}vw;
+  top: ${HEIGHT - 15}vh;
+  left: ${LEFT}vw;
+  background: #fff;
 `;
 
 export const RelatedPanel = styled.div`
   position: absolute;
-  bottom: 2rem;
-  left: 2rem;
-  background: transparent;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 2px;
-  padding: 0.8vw;
-  max-width: 24vw;
-  height: 24vh;
-  overflow: hidden;
-  font-size: 0.9vw;
-  z-index: 1000;
+  max-width: 30vw;
+  height: 30vh;
+  bottom: ${100 - HEIGHT - 3}vh;
+  left: ${LEFT * 2}vw;
+  border: ${LINEWIDTH}vw solid rgba(255, 255, 255, 1);
+  padding: 1vw;
+
+  border-radius: 0 0 3vw 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 80% 100%, 0 100%);
+    z-index: -1;
+  }
+
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(2px);
-
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
   transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.5);
 
   &::-webkit-scrollbar {
     width: 2px;
-    background: rgba(0, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
   }
 `;
 
 export const PanelTitle = styled.div`
-  color: #00ffff;
+  position: absolute;
+  top: -4vh;
+  left: 0;
+  width: 100%;
+
+  color: #ffffff;
   font-size: 1vw;
-  font-weight: 500;
-  margin-bottom: 0.5vw;
-  padding-bottom: 0.3vw;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+
   flex-shrink: 0;
-  opacity: 0.9;
 `;
 
 export const RelatedList = styled.div`
@@ -81,37 +71,40 @@ export const RelatedList = styled.div`
 
   &::-webkit-scrollbar {
     width: 2px;
-    background: rgba(0, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
   }
 `;
 
 export const RelatedItem = styled.div`
-  padding: 0.4vw;
+  padding: 0.4vw 0.5vw;
+  padding-right: 1vw;
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid ${(props) => `rgba(0, 255, 255, ${props.$strength * 0.3})`};
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
   min-height: 3vw;
   flex-shrink: 0;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 
   &::before {
     content: "└─";
     position: absolute;
     top: 0.4vw;
     left: 0.2vw;
-    color: rgba(0, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.85vw;
   }
 
   &:hover {
     background: rgba(0, 0, 0, 0.8);
-    border-color: rgba(0, 255, 255, ${(props) => props.$strength * 0.5});
+    border-color: rgba(255, 255, 255, ${(props) => props.$strength * 0.5});
   }
 `;
 
@@ -120,23 +113,23 @@ export const ModelHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.2rem;
-  padding-left: 1rem;
+  padding-left: 1.2vw;
 `;
 
 export const ModelName = styled.div`
-  color: #00ffff;
+  color: #ffffff;
   font-size: 0.95vw;
   letter-spacing: 0.02vw;
   opacity: 0.9;
 `;
 
 export const ModelVersion = styled.div`
-  color: rgba(0, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.8vw;
   padding: 0.1vw 0.3vw;
-  background: rgba(0, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 2px;
-  border: 1px solid rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const RelationText = styled.div`
@@ -144,19 +137,19 @@ export const RelationText = styled.div`
   font-size: 0.85vw;
   line-height: 1.3;
   margin: 0.2vw 0;
-  padding-left: 1vw;
+  padding-left: 1.2vw;
 `;
 
 export const ConnectionStrength = styled.div`
   height: 1px;
   margin-top: 0.4rem;
-  margin-left: 1rem;
+  margin-left: 1.2vw;
   background: linear-gradient(
     to right,
-    rgba(0, 255, 255, ${(props) => props.$value * 0.8}) 0%,
-    rgba(0, 255, 255, ${(props) => props.$value * 0.4})
+    rgba(255, 255, 255, ${(props) => props.$value * 0.8}) 0%,
+    rgba(255, 255, 255, ${(props) => props.$value * 0.4})
       ${(props) => props.$value * 100}%,
     transparent 100%
   );
-  box-shadow: 0 0 8px rgba(0, 255, 255, ${(props) => props.$value * 0.3});
+  box-shadow: 0 0 8px rgba(255, 255, 255, ${(props) => props.$value * 0.3});
 `;

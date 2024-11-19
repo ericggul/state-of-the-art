@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import { WholeContainer } from "@/styles";
 
+export const LINEWIDTH = 0.1;
+export const LEFT = 3;
+export const TOP = 4;
+export const HEIGHT = 92;
+
 export const Container = styled.div`
   ${WholeContainer}
   position: fixed;
@@ -9,31 +14,30 @@ export const Container = styled.div`
 
 export const VerticalLine = styled.div`
   position: absolute;
-  width: 0.1vw;
-  height: 92vh;
+  width: ${LINEWIDTH}vw;
+  height: ${HEIGHT}vh;
   top: 0;
-  left: 3vw;
+  left: ${LEFT}vw;
   background: #fff;
 `;
 
 export const HorizontalLine = styled.div`
   position: absolute;
-  height: 0.1vw;
+  height: ${LINEWIDTH}vw;
   width: 45vw;
-  top: 4vw;
+  top: ${TOP}vw;
   left: 0;
   background: #fff;
 `;
 
 export const HorizontalLine2 = styled.div`
   position: absolute;
-  height: 0.1vw;
+  height: ${LINEWIDTH}vw;
   width: 25vw;
-  top: 4vw;
+  top: ${TOP}vw;
   left: 50vw;
   background: #fff;
 
-  //circle at the start of the line
   &::before {
     content: "";
     position: absolute;
@@ -49,12 +53,13 @@ export const HorizontalLine2 = styled.div`
 
 export const ModelTitle = styled.div`
   position: absolute;
-  background: black;
-
-  left: 4.5vw;
-  top: 4vw;
+  background: rgba(0, 0, 0, 0.3);
+  left: ${LEFT + 1.5}vw;
+  top: ${TOP}vw;
   padding: 1vw;
   transform: translateY(-50%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 `;
 
 export const Title = styled.h1`

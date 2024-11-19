@@ -50,31 +50,34 @@ export default function RelatedPanel({ currentModel, relatedModels }) {
   if (!currentModel || !relatedModels.length) return null;
 
   return (
-    <S.RelatedPanel>
-      <S.PanelTitle>
-        <TypewriterText text={`Connected to ${currentModel}`} speed={30} />
-      </S.PanelTitle>
-      <S.RelatedList ref={listRef}>
-        {relatedModels.map(
-          (model, index) =>
-            visibleItems.includes(index) && (
-              <S.RelatedItem key={index} $strength={model.value / 10}>
-                <S.ModelHeader>
-                  <S.ModelName>
-                    <TypewriterText text={model.name} speed={20} />
-                  </S.ModelName>
-                  <S.ModelVersion>
-                    <TypewriterText text={model.version} speed={20} />
-                  </S.ModelVersion>
-                </S.ModelHeader>
-                <S.RelationText>
-                  <TypewriterText text={model.relation} speed={15} />
-                </S.RelationText>
-                <S.ConnectionStrength $value={model.value / 10} />
-              </S.RelatedItem>
-            )
-        )}
-      </S.RelatedList>
-    </S.RelatedPanel>
+    <>
+      <S.LeftLine />
+      <S.RelatedPanel>
+        <S.PanelTitle>
+          <TypewriterText text={`Connected to ${currentModel}`} speed={30} />
+        </S.PanelTitle>
+        <S.RelatedList ref={listRef}>
+          {relatedModels.map(
+            (model, index) =>
+              visibleItems.includes(index) && (
+                <S.RelatedItem key={index} $strength={model.value / 10}>
+                  <S.ModelHeader>
+                    <S.ModelName>
+                      <TypewriterText text={model.name} speed={20} />
+                    </S.ModelName>
+                    <S.ModelVersion>
+                      <TypewriterText text={model.version} speed={20} />
+                    </S.ModelVersion>
+                  </S.ModelHeader>
+                  <S.RelationText>
+                    <TypewriterText text={model.relation} speed={15} />
+                  </S.RelationText>
+                  {/* <S.ConnectionStrength $value={model.value / 10} /> */}
+                </S.RelatedItem>
+              )
+          )}
+        </S.RelatedList>
+      </S.RelatedPanel>
+    </>
   );
 }
