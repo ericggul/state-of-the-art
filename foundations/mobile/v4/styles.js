@@ -126,7 +126,7 @@ export const ModelItem = styled.div`
     rgba(255, 255, 255, ${({ $isCurrent }) => ($isCurrent ? "0.1" : "0.05")});
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
-  /* Smoother transform with more gradual steps */
+  /* Smoother bidirectional transform */
   transform: translateX(
     ${({ $distance }) => {
       const absDistance = Math.abs($distance);
@@ -138,8 +138,9 @@ export const ModelItem = styled.div`
   );
 
   /* Add delay to transform animation to act as throttle */
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
-  will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
+    opacity 0.3s ease-out, height 0.2s ease-out;
+  will-change: transform, opacity;
 
   &:hover {
     border-color: rgba(

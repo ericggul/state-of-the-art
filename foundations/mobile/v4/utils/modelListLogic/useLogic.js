@@ -86,6 +86,39 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     return () => clearTimeout(timeout);
   }, []);
 
+  useEffect(() => {
+    const listElement = listRef.current;
+    if (!listElement) return;
+
+    let lastScrollTime = Date.now();
+    let lastScrollTop = listElement.scrollTop;
+
+    const handleScroll = (e) => {
+      const currentTime = Date.now();
+      const currentScrollTop = listElement.scrollTop;
+      const timeDelta = currentTime - lastScrollTime;
+
+      // Calculate scroll speed (pixels per millisecond)
+      const scrollSpeed =
+        Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
+      const maxSpeed = 6; // Increased from 2 to 8 for faster scrolling
+
+      if (scrollSpeed > maxSpeed) {
+        // Limit the scroll position
+        const maxScrollDelta = maxSpeed * timeDelta;
+        const direction = currentScrollTop > lastScrollTop ? 1 : -1;
+        listElement.scrollTop = lastScrollTop + maxScrollDelta * direction;
+        e.preventDefault();
+      }
+
+      lastScrollTime = currentTime;
+      lastScrollTop = listElement.scrollTop;
+    };
+
+    listElement.addEventListener("scroll", handleScroll, { passive: false });
+    return () => listElement.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return {
     models,
     activeIndex,
