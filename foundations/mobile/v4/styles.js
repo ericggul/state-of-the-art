@@ -5,7 +5,6 @@ export const Container = styled.div`
   ${WholeContainer}
   background-color: #000;
   color: #fff;
-  font-family: "Cardo", serif;
   position: relative;
   overflow-x: hidden;
   padding-left: 48px;
@@ -120,4 +119,19 @@ export const ModelDetails = styled.div`
   p {
     margin: 0.5rem 0;
   }
+`;
+
+export const ScrollHint = styled.div`
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transform: ${({ $visible }) =>
+    $visible ? "translateY(0)" : "translateY(20px)"};
+  transition: all 0.3s ease;
+  pointer-events: none;
 `;

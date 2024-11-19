@@ -28,6 +28,7 @@ function ModelList({ initialModels, socket, mobileId }) {
     itemRefs,
     handleItemClick,
     isCurrentItem,
+    isInitialScrollComplete,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
   useFeedback(activeIndex);
@@ -66,6 +67,9 @@ function ModelList({ initialModels, socket, mobileId }) {
           </S.ModelItem>
         ))}
       </S.ModelList>
+      <S.ScrollHint $visible={!isInitialScrollComplete}>
+        Scroll to explore more models
+      </S.ScrollHint>
     </>
   );
 }
