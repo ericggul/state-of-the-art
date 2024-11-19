@@ -1,83 +1,27 @@
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useState, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
+import { useNameInput } from "../utils/useNameInput";
 
 export default function Intro({ socket, onAccelerometerActivate }) {
   const [introState, setIntroState] = useState(0);
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
   const { supportsDeviceOrientation, permission } = useAccelerometer();
+
+  const {
+    username,
+    error,
+    isVerifying,
+    handleUsernameChange,
+    handleUsernameSubmit,
+  } = useNameInput({
+    socket,
+    onSuccess: useCallback(() => setIntroState(1), []),
+  });
 
   // Memoize iOS detection
   const isIOS = useMemo(
     () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
     []
-  );
-
-  // Validate username
-  const validateUsername = useCallback((value) => {
-    const trimmedValue = value.trim();
-
-    if (trimmedValue.length < 2) {
-      return "Name must be at least 2 characters long";
-    }
-
-    if (!/^[a-zA-Z\s]+$/.test(trimmedValue)) {
-      return "Please use only English letters";
-    }
-
-    return "";
-  }, []);
-
-  // Handle input change
-  const handleUsernameChange = useCallback(
-    (e) => {
-      const newValue = e.target.value;
-      setUsername(newValue);
-      setError(validateUsername(newValue));
-
-      // Emit username update
-      if (socket?.current) {
-        socket.current.emit("mobile-new-intro", {
-          type: "username_update",
-          username: newValue.trim(),
-        });
-      }
-    },
-    [validateUsername, socket]
-  );
-
-  // Emit intro state changes
-  // useEffect(() => {
-  //   const currentSocket = socket?.current;
-  //   if (currentSocket) {
-  //     currentSocket.emit("mobile-new-intro", {
-  //       type: "state_change",
-  //       introState,
-  //     });
-  //   }
-  // }, [introState, socket]);
-
-  const handleUsernameSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      const trimmedUsername = username.trim();
-      const validationError = validateUsername(trimmedUsername);
-
-      if (validationError) {
-        setError(validationError);
-        return;
-      }
-
-      if (socket?.current) {
-        socket.current.emit("mobile-new-intro", {
-          type: "username_submit",
-          username: trimmedUsername,
-        });
-      }
-      setIntroState(1);
-    },
-    [username, socket, validateUsername]
   );
 
   const handleAccelerometerActivation = useCallback(async () => {
@@ -130,17 +74,22 @@ export default function Intro({ socket, onAccelerometerActivate }) {
       <div style={{ width: "100%" }}>
         <S.IntroInput
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter your real name"
           value={username}
           onChange={handleUsernameChange}
           required
           maxLength={20}
           aria-invalid={!!error}
+          disabled={isVerifying}
+          autoComplete="off"
         />
         {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
       </div>
-      <S.IntroButton type="submit" disabled={!username.trim() || !!error}>
-        Continue
+      <S.IntroButton
+        type="submit"
+        disabled={!username.trim() || !!error || isVerifying}
+      >
+        {isVerifying ? "LLM Validating..." : "Continue"}
       </S.IntroButton>
     </S.IntroForm>
   );
