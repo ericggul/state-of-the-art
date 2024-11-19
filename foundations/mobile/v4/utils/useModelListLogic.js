@@ -18,12 +18,15 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   const [currentIndex, setCurrentIndex] = useState(null);
   const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
   const [dotPosition, setDotPosition] = useState(0);
+  const [isUserInteraction, setIsUserInteraction] = useState(false);
 
   // Refs
   const listRef = useRef(null);
   const itemRefs = useRef([]);
   const observerRef = useRef(null);
   const currentItemObserverRef = useRef(null);
+  const userScrollRef = useRef(false);
+  const lastInteractionTimeRef = useRef(0);
 
   // Memoized values
   const activeIndex = useMemo(
@@ -42,6 +45,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   }, [initialModels]);
 
   const handleItemClick = useCallback((index) => {
+    setIsUserInteraction(true);
     setManuallySelectedIndex((prev) => (prev === index ? null : index));
   }, []);
 
@@ -61,7 +65,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
 
   // Socket emission effect
   useEffect(() => {
-    if (activeIndex === null || !socket?.current) return;
+    if (activeIndex === null || !socket?.current || !isUserInteraction) return;
 
     const activeModel = models[activeIndex];
     try {
@@ -79,7 +83,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     } catch (e) {
       console.error(e);
     }
-  }, [activeIndex, models, socket, mobileId]);
+  }, [activeIndex, models, socket, mobileId, isUserInteraction]);
 
   // Observer effects
   useEffect(() => {
@@ -97,6 +101,13 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            const now = Date.now();
+            const isUserScroll = now - lastInteractionTimeRef.current < 100; // 100ms threshold
+
+            if (isUserScroll) {
+              setIsUserInteraction(true);
+            }
+
             const index = Number(entry.target.getAttribute("data-index"));
             setCurrentIndex(index);
             setManuallySelectedIndex(null);
@@ -126,6 +137,30 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       observerRef.current?.disconnect();
       currentItemObserverRef.current?.disconnect();
     };
+  }, [models]);
+
+  // Add scroll event listener to detect user interaction
+  useEffect(() => {
+    const listElement = listRef.current;
+
+    const handleScroll = () => {
+      lastInteractionTimeRef.current = Date.now();
+    };
+
+    if (listElement) {
+      listElement.addEventListener("scroll", handleScroll, { passive: true });
+    }
+
+    return () => {
+      if (listElement) {
+        listElement.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
+  // Reset user interaction flag when models change
+  useEffect(() => {
+    setIsUserInteraction(false);
   }, [models]);
 
   return {

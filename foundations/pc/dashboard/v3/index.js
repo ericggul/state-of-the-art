@@ -15,7 +15,11 @@ import Frame from "@/foundations/pc/frame";
 
 const LAYOUT = [
   [
-    { width: "25vw", marginRight: "3vw", height: "32vh" },
+    {
+      width: "25vw",
+      marginRight: "3vw",
+      height: "32vh",
+    },
     { width: "25vw", marginRight: "3vw", height: "32vh" },
     { width: "35vw", height: "32vh" },
   ],

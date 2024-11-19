@@ -69,6 +69,10 @@ const useScreenStore = create((set) => ({
         updates.currentArchitectures = data.currentArchitectures;
       }
 
+      if (state.introState <= 2) {
+        updates.introState = 3;
+      }
+
       return Object.keys(updates).length ? updates : state;
     });
   },
@@ -87,6 +91,10 @@ const useScreenStore = create((set) => ({
 
       if (data.currentArchitectures?.length) {
         updates.currentArchitectures = data.currentArchitectures;
+      }
+
+      if (state.introState <= 2) {
+        updates.introState = 3;
       }
 
       return Object.keys(updates).length ? updates : state;
