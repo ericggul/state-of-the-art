@@ -17,7 +17,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   const [models, setModels] = useState(initialModels);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [manuallySelectedIndex, setManuallySelectedIndex] = useState(null);
-  const [dotPosition, setDotPosition] = useState(0);
+  const [dotPosition, setDotPosition] = useState({ top: 0, height: 0 });
   const [isUserInteraction, setIsUserInteraction] = useState(false);
 
   // Refs
@@ -58,7 +58,16 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
 
   const updateDotPosition = useCallback(
     (index) => {
-      setDotPosition((index / (models.length - 1)) * 100);
+      // Calculate dot height percentage (5 visible items / total items)
+      const dotHeightPercentage = Math.min((5 / models.length) * 100, 100);
+      // Calculate position percentage
+      const positionPercentage =
+        (index / (models.length - 1)) * (100 - dotHeightPercentage);
+
+      setDotPosition({
+        top: positionPercentage,
+        height: dotHeightPercentage,
+      });
     },
     [models.length]
   );

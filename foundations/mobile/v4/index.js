@@ -35,7 +35,7 @@ function ModelList({ initialModels, socket, mobileId }) {
   return (
     <>
       <S.VerticalLine>
-        <S.ActiveDot $percentage={dotPosition} />
+        <S.ActiveDot $position={dotPosition} />
       </S.VerticalLine>
       <S.ModelList ref={listRef}>
         {models.map((model, index) => (

@@ -18,7 +18,7 @@ export const VerticalLine = styled.div`
   bottom: 48px;
   width: 2px;
   background: rgba(255, 255, 255, 0.3);
-  height: calc(100vh - 96px);
+  height: ${({ theme }) => theme.windowHeight - 96}px;
   overflow: hidden;
 `;
 
@@ -27,11 +27,11 @@ export const ActiveDot = styled.div`
   left: 50%;
   transform: translateX(-50%);
   width: 8px;
-  height: 8px;
+  height: ${({ $position }) => `${$position.height}%`};
   background: #fff;
-  border-radius: 50%;
-  top: ${({ $percentage }) => `${$percentage}%`};
-  transition: top 0.3s ease;
+  border-radius: 4px;
+  top: ${({ $position }) => `${$position.top}%`};
+  transition: all 0.3s ease;
 `;
 
 export const ModelList = styled.div`
