@@ -46,7 +46,6 @@ export const RelatedPanel = styled.div`
   max-width: 24vw;
   height: 24vh;
   overflow: hidden;
-  font-family: var(--geist-mono), monospace;
   font-size: 0.9vw;
   z-index: 1000;
   display: flex;
@@ -152,7 +151,6 @@ export const RelationText = styled.div`
   line-height: 1.3;
   margin: 0.2vw 0;
   padding-left: 1vw;
-  font-family: monospace;
 `;
 
 export const ConnectionStrength = styled.div`

@@ -6,7 +6,6 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   background-color: #000000;
   padding: 2rem;
-  font-family: var(--geist-mono);
   transform: translateZ(0);
 `;
 

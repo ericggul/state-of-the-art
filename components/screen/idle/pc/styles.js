@@ -20,7 +20,6 @@ export const QRCodeWrapper = styled.div`
     font-size: 1.5vw;
     font-weight: lighter;
     margin-top: 3vw;
-    font-family: Helvetica;
   }
 
   svg {

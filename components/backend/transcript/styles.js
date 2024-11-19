@@ -13,7 +13,7 @@ export const Text = styled.div`
   // font-weight: lighter;
 
   // font-family: "Times New Roman", serif;
-  font-family: "Cardo", serif;
+  font-family: var(--cardo), serif;
   font-style: italic;
   text-transform: uppercase;
   color: #ffffff;
