@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import UI from "@/foundations/mobile/v4";
 import Intro from "@/foundations/mobile/v4/intro";
 import AccelerometerHandler from "@/foundations/mobile/v4/accelrometer";
 import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
+import { usePersistentState } from "@/foundations/mobile/v4/utils/usePersistentState";
 
 export default function Mobile() {
-  const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
-  const [username, setUsername] = useState("");
+  const [state, setState] = usePersistentState();
   const mobileId = useMemo(() => "DUMMY", []);
 
   const handleNewResponse = useCallback((data) => {
@@ -23,22 +23,47 @@ export default function Mobile() {
 
   const isVisible = useMobileVisibility({ socket, mobileId });
 
+  const handleAccelerometerActivate = useCallback(
+    (value) => {
+      setState({
+        ...state,
+        isAccelerometerActive: value,
+      });
+    },
+    [state, setState]
+  );
+
+  const handleUsernameSubmit = useCallback(
+    (username) => {
+      setState({
+        ...state,
+        username,
+      });
+    },
+    [state, setState]
+  );
+
+  if (state.isLoading) {
+    return <div>Loading...</div>; // Or a proper loading component
+  }
+
   return (
     <>
-      {!isAccelerometerActive && (
+      {!state.isAccelerometerActive && (
         <Intro
           socket={socket}
-          onAccelerometerActivate={setIsAccelerometerActive}
-          onUsernameSubmit={setUsername}
+          onAccelerometerActivate={handleAccelerometerActivate}
+          onUsernameSubmit={handleUsernameSubmit}
+          initialUsername={state.username}
         />
       )}
-      {isAccelerometerActive && (
-        <UI socket={socket} mobileId={mobileId} username={username} />
+      {state.isAccelerometerActive && (
+        <UI socket={socket} mobileId={mobileId} username={state.username} />
       )}
       <AccelerometerHandler
         socket={socket}
         mobileId={mobileId}
-        isAccelerometerActive={isAccelerometerActive}
+        isAccelerometerActive={state.isAccelerometerActive}
       />
     </>
   );

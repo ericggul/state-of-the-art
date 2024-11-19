@@ -7,14 +7,19 @@ import { useNameInput } from "../utils/useNameInput";
 const isIOSDevice =
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-export default function Intro({ socket, onAccelerometerActivate }) {
-  const [introState, setIntroState] = useState(0);
+export default function Intro({
+  socket,
+  onAccelerometerActivate,
+  initialUsername,
+}) {
+  const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
   const { supportsDeviceOrientation, permission } = useAccelerometer();
   const isIOS = useMemo(() => isIOSDevice, []);
 
   const nameInputProps = useNameInput({
     socket,
     onSuccess: useCallback(() => setIntroState(1), []),
+    initialUsername,
   });
 
   const handleAccelerometerActivation = useCallback(async () => {
@@ -70,11 +75,14 @@ export default function Intro({ socket, onAccelerometerActivate }) {
           placeholder="Enter your first name"
           value={nameInputProps.username}
           onChange={nameInputProps.handleUsernameChange}
+          onBlur={nameInputProps.handleBlur}
+          onKeyPress={nameInputProps.handleKeyPress}
           required
           maxLength={20}
           aria-invalid={!!nameInputProps.error}
           disabled={nameInputProps.isVerifying}
           autoComplete="off"
+          enterKeyHint="done"
         />
         {nameInputProps.error && (
           <S.ErrorMessage>{nameInputProps.error}</S.ErrorMessage>
