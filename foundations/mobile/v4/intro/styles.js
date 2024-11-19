@@ -12,6 +12,11 @@ export const IntroContainer = styled.div`
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export const IntroForm = styled.form`
@@ -116,9 +121,12 @@ export const IntroInput = styled.input`
   outline: none;
   transition: border-color 0.3s;
   box-sizing: border-box;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 
   &:focus {
     border-color: rgba(255, 255, 255, 0.5);
+    font-size: 16px;
   }
 
   &::placeholder {

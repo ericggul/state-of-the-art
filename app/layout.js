@@ -21,9 +21,11 @@ export const metadata = {
 export const viewport = {
   themeColor: "black",
   width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: "no",
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  minimumScale: 1.0,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 const cardo = Cardo({
@@ -40,6 +42,12 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${GeistMono.variable} ${GeistSans.variable} ${cardo.variable}`}
     >
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </head>
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>

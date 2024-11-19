@@ -8,6 +8,21 @@ export const Container = styled.div`
   position: relative;
   overflow-x: hidden;
   padding-left: 48px;
+  touch-action: pan-y pinch-zoom;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Prevent iOS Safari zoom */
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+
+  /* Additional iOS specific rules */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 `;
 
 export const VerticalLine = styled.div`
@@ -52,6 +67,8 @@ export const ModelList = styled.div`
   overflow-x: hidden;
   padding: 20vh 0;
   box-sizing: border-box;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 
   /* Hide scrollbar */
   scrollbar-width: none;
