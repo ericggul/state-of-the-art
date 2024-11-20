@@ -1,7 +1,7 @@
 "use client";
 
-import MobileEl from "@/foundations/gartience/mobile";
+import ControllerEl from "@/foundations/gartience/controller";
 
 export default function Page() {
-  return <MobileEl />;
+  return <ControllerEl />;
 }

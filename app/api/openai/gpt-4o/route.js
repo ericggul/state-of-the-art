@@ -9,9 +9,8 @@ export async function POST(req) {
   const { conversations, params, maxTokens = 22 } = await req.json();
 
   try {
-    console.log(conversations);
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
