@@ -191,12 +191,14 @@ function SingleRandom({ range, visible, timeUnit }) {
     outputRadialPaths,
   ]);
 
+  console.log(stage);
+
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}
       $isTransparent={
         (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
-        stage !== "Backend"
+        stage === "Frontend"
       }
     >
       <div style={{ opacity: tokensOpacity }}>

@@ -39,7 +39,7 @@ const defaultProps = {
 };
 
 const Backend = memo(function Backend({ socket }) {
-  const { isblack, length, loop, level } = useStore();
+  const { loop, level } = useStore();
 
   useConversation({ socket });
   useAudio();
@@ -70,7 +70,6 @@ const Backend = memo(function Backend({ socket }) {
     }
   }, [level]);
 
-  const isProjector = useScreenStore((state) => state.isProjector);
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
   const isEnding = useScreenStore((state) => state.isEnding);
 

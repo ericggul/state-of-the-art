@@ -248,6 +248,6 @@ export default function useConversation({ socket = null }) {
     return [
       ...INITIAL_CONVERSATION,
       ...conversations.map((el) => el.message),
-    ].slice(-20);
+    ].slice(-15);
   };
 }
