@@ -191,8 +191,6 @@ function SingleRandom({ range, visible, timeUnit }) {
     outputRadialPaths,
   ]);
 
-  console.log(stage);
-
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}

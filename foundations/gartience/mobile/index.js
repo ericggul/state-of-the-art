@@ -3,6 +3,9 @@ import * as S from "./styles";
 import useSocketMobile from "@/utils/socket/gartience/useSocketMobile";
 import useMobileStore from "./store";
 
+import Chaos from "./chaos";
+import ThreeScene from "./3d";
+
 export default function Mobile() {
   const { state, setState, setChaos, setArchitectures } = useMobileStore();
 
@@ -13,5 +16,9 @@ export default function Mobile() {
   });
   console.log(state);
 
-  return <S.Container></S.Container>;
+  return (
+    <S.Container>
+      <ThreeScene />
+    </S.Container>
+  );
 }

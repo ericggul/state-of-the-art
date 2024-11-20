@@ -1,0 +1,125 @@
+"use client";
+
+import { useMemo, useEffect, useState, useRef, Suspense } from "react";
+import * as S from "./styles";
+
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
+import { useSpring, animated, Globals } from "@react-spring/three";
+import * as THREE from "three";
+import { Perf } from "r3f-perf";
+
+import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOrientationSupported";
+
+import Connections from "./connections";
+import { STRUCTURE } from "./structure";
+
+// Main component to render the neural network
+export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
+  return (
+    <S.Container>
+      <Canvas
+        camera={{
+          position: [-15, 0, STRUCTURE[layerIdx].position[2] + 10],
+          // lookAt: [0, 0, -15],
+          fov: 50,
+          near: 0.1,
+          far: 1000,
+        }}
+      >
+        {/* <Perf position="top-left" /> */}
+
+        <CameraLookAt layerIdx={layerIdx} />
+        <Suspense fallback={null}>
+          <Environment preset="city" />
+        </Suspense>
+
+        <pointLight position={[10, 10, 10]} />
+        <directionalLight position={[0, 10, 10]} intensity={2} />
+        <directionalLight position={[10, 0, 10]} intensity={2} />
+
+        {STRUCTURE.map((structureEl, i) => (
+          <Layer key={i} isFocusLayer={layerIdx == i} {...structureEl} expanded={layersExpanded[i]} />
+        ))}
+
+        <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+      </Canvas>
+    </S.Container>
+  );
+}
+
+function CameraLookAt({ layerIdx }) {
+  useFrame((state) => {
+    state.camera.lookAt(
+      0,
+      0,
+
+      STRUCTURE[layerIdx].position[2]
+    );
+  });
+
+  return null;
+}
+
+const Layer = (props) => {
+  const { expanded } = props;
+
+  const [smoothedExpanded, setSmoothedExpanded] = useState(0);
+
+  useSpring({
+    from: { smoothedExpanded: 0 },
+    to: { smoothedExpanded: expanded ? 1 : 0 },
+    config: { mass: 1, tension: 120, friction: 13 },
+    onChange: (value) => {
+      setSmoothedExpanded(value.value.smoothedExpanded);
+    },
+  });
+
+  return (
+    <group position={props.position}>
+      {smoothedExpanded > 0 &&
+        new Array(props.grid.xCount).fill(0).map((_, i) => (
+          <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
+            {new Array(props.grid.yCount).fill(0).map((_, j) => (
+              <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
+                <Node {...props.node} isFocusLayer={props.isFocusLayer} wireframe={props.isFocusLayer ? 20 : 1} color={props.color} key={j} opacity={smoothedExpanded} />
+              </animated.group>
+            ))}
+          </animated.group>
+        ))}
+
+      {smoothedExpanded < 1 && (
+        <>
+          <Node
+            isFocusLayer={props.isFocusLayer}
+            wireframe={props.isFocusLayer ? 50 : 1}
+            {...props.unexpandedNode}
+            color={props.color}
+            position={[0, 0, 0]}
+            scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]}
+          />
+        </>
+      )}
+    </group>
+  );
+};
+
+// Component to render each node as a box
+const Node = ({ position, size, color = "red", opacity = 0.4, scale, wireframe = 10, isFocusLayer }) => {
+  return (
+    <mesh position={position} scale={scale}>
+      <boxGeometry args={[...size, wireframe, wireframe, Math.ceil(wireframe / 3)]} />
+      <meshStandardMaterial
+        color={color}
+        roughness={0.2}
+        metalness={0.9}
+        //opacity
+        opacity={opacity}
+        transparent={true}
+        //wireframe
+        wireframe={isFocusLayer}
+        wireframeLinewidth={3}
+      />
+    </mesh>
+  );
+};
