@@ -6,7 +6,7 @@ const ANIM_SPEED = 0.33;
 
 export default function MultiModalLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model] || {};
-  const layerGap = modelConfig.layerHeight || 10;
+  const layerGap = modelConfig.layerHeight * 0.3 || 10;
 
   // Separate layers into different modalities
   const { imageLayers, textLayers, fusionLayers } = useMemo(() => {
@@ -67,11 +67,11 @@ export default function MultiModalLayers({ structure, style, model }) {
     );
 
     // Calculate radius and angle based on modality
-    const radius = 150; // Adjust for desired spread
+    const radius = 50; // Adjust for desired spread
     const angleOffset =
       {
-        image: -Math.PI / 4, // 45 degrees left
-        text: Math.PI / 4, // 45 degrees right
+        image: -Math.PI * 10, // 45 degrees left
+        text: Math.PI, // 45 degrees right
         fusion: 0, // Center
       }[modalityType] || 0;
 
@@ -86,11 +86,18 @@ export default function MultiModalLayers({ structure, style, model }) {
       const x = Math.cos(angle) * radius + cumulativeX;
       const y = Math.sin(angle) * radius;
 
+      const z =
+        {
+          image: -layer.dimensions[2] / 2,
+          text: layer.dimensions[2] / 2,
+          fusion: 0,
+        }[modalityType] || 0;
+
       cumulativeX += layerWidth + layerGap;
 
       return {
         ...layer,
-        position: [x, y, 0],
+        position: [x, y, z],
       };
     });
 
@@ -121,19 +128,7 @@ export default function MultiModalLayers({ structure, style, model }) {
     [fusionLayers]
   );
 
-  // Calculate overall structure dimensions
-  const structureWidth =
-    Math.max(
-      ...positionedImageLayers.map(
-        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
-      ),
-      ...positionedTextLayers.map(
-        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
-      ),
-      ...positionedFusionLayers.map(
-        (l) => Math.abs(l.position[0]) + (l.dimensions[0] || 20) / 2
-      )
-    ) * 2;
+  console.log(positionedImageLayers);
 
   return (
     <group>
@@ -148,6 +143,13 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={i * ANIM_SPEED}
+            rotation={
+              layer.type === "mlp"
+                ? [Math.PI / 2, 0, 0]
+                : layer.type === "attention"
+                ? [0, Math.PI / 2, 0]
+                : [0, 0, 0]
+            }
           />
         ))}
       </group>

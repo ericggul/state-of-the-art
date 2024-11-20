@@ -208,17 +208,15 @@ export const TYPE_STYLES = {
       plane: "hsl(355, 90%, 55%)", // Dark, muted red
     },
     material: {
-      metalness: 0.5, // Kept the same
-      roughness: 0.2, // Kept the same
+      metalness: 1, // Kept the same
+      roughness: 0.6, // Kept the same
       transparent: false,
     },
-    // lighting: {
-    //   environment: "studio", // Kept 'studio' for the gallery-like feel
-    //   envIntensity: 0.1, // Further reduced for a more subdued look
-    //   // pointLight: { position: [0, 200, 0], intensity: 1.5 },
-    //   // directionalLight: { position: [0, 150, -100], intensity: 0.5 },
-    //   ambientLight: { intensity: 1.0 },
-    // },
+    lighting: {
+      ambientLight: { intensity: 10.0 },
+      environment: "sunset",
+      envIntensity: 0,
+    },
     // shadows: true,
     emissive: false,
   },

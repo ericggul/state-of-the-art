@@ -2160,93 +2160,6 @@ export const AUDIOCRAFT = [
   },
 ];
 
-// Layer configurations for multi_modal models
-export const LAYER_CONFIGS = {
-  SHOW_AND_TELL: {
-    layerHeight: 10,
-    type: "multi_modal",
-  },
-  VISUAL_QUESTION_ANSWERING_VQA: {
-    layerHeight: 80,
-    type: "multi_modal",
-  },
-  CLIP: {
-    layerHeight: 15,
-    keyPrefix: "clip",
-    type: "multi_modal",
-  },
-  DALL_E: {
-    layerHeight: 400,
-    keyPrefix: "dalle",
-    type: "multi_modal",
-  },
-  DALL_E_2: {
-    layerHeight: 10,
-    keyPrefix: "dalle2",
-    type: "multi_modal",
-  },
-  FLAMINGO: {
-    layerHeight: 100,
-    keyPrefix: "flamingo",
-    type: "multi_modal",
-  },
-  BLIP_2: {
-    layerHeight: 400,
-    keyPrefix: "blip2",
-    type: "multi_modal",
-  },
-  LLAVA: {
-    layerHeight: 120,
-    keyPrefix: "llava",
-    type: "multi_modal",
-  },
-  PALM_E: {
-    layerHeight: 150,
-    keyPrefix: "palme",
-    type: "multi_modal",
-  },
-  GPT_4V: {
-    layerHeight: 150,
-    keyPrefix: "gpt4v",
-    type: "multi_modal",
-  },
-  FLORENCE: {
-    layerHeight: 120,
-    keyPrefix: "florence",
-    type: "multi_modal",
-  },
-  DALL_E_3: {
-    layerHeight: 120,
-    keyPrefix: "dalle3",
-    type: "multi_modal",
-  },
-  COGVLM: {
-    layerHeight: 120,
-    keyPrefix: "cogvlm",
-    type: "multi_modal",
-  },
-  CLAUDE_3_VISION: {
-    layerHeight: 30, // Increased height for better visualization
-    keyPrefix: "claude3v",
-    type: "multi_modal",
-  },
-  GEMINI_VISION: {
-    layerHeight: 60, // Even larger for complex visualization
-    keyPrefix: "geminiv",
-    type: "multi_modal",
-  },
-  WHISPER: {
-    layerHeight: 10,
-    keyPrefix: "whisper",
-    type: "multi_modal",
-  },
-  AUDIOCRAFT: {
-    layerHeight: 10,
-    keyPrefix: "audiocraft",
-    type: "multi_modal",
-  },
-};
-
 // Grid configurations for multi_modal models
 export const GRID_CONFIGS = {
   SHOW_AND_TELL: {
@@ -2304,21 +2217,21 @@ export const GRID_CONFIGS = {
       yInterval: 2,
     },
     attention: { xCount: 8, yCount: 8, xInterval: 2, yInterval: 2 },
-    mlp: { xCount: 768, yCount: 1, xInterval: 1, yInterval: 1 },
-    dense: { xCount: 768, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 380, yCount: 1, xInterval: 1, yInterval: 1 },
+    dense: { xCount: 380, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     decoder_diffusion: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     unet: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
     resnet_block: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
     cross_attention: { xCount: 4, yCount: 4, xInterval: 4, yInterval: 4 },
     time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
-    output: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
+    output: { xCount: 48, yCount: 48, xInterval: 1, yInterval: 1 },
   },
 
   FLAMINGO: {
-    input: { xCount: 96, yCount: 96, xInterval: 1, yInterval: 1 },
+    input: { xCount: 48, yCount: 48, xInterval: 1, yInterval: 1 },
     cnn_encoder: { xCount: 14, yCount: 14, xInterval: 2, yInterval: 2 },
     perceiver_resampler: {
-      xCount: 256,
+      xCount: 128,
       yCount: 1,
       xInterval: 3,
       yInterval: 3,
@@ -2331,7 +2244,7 @@ export const GRID_CONFIGS = {
     },
     attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
     cross_attention: { xCount: 8, yCount: 8, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 256, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
 
   BLIP_2: {
@@ -2350,16 +2263,16 @@ export const GRID_CONFIGS = {
       yInterval: 2,
     },
     cross_attention: { xCount: 4, yCount: 4, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 768, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 100, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
 
   LLAVA: {
-    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    input: { xCount: 32, yCount: 16, xInterval: 1, yInterval: 1 },
     vision_transformer: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
     transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     attention: { xCount: 16, yCount: 16, xInterval: 1, yInterval: 1 },
     cross_attention: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 64, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 32, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     projector: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
     transformer_decoder: { xCount: 32, yCount: 1, xInterval: 2, yInterval: 2 },
     layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
@@ -2385,7 +2298,7 @@ export const GRID_CONFIGS = {
   },
 
   GPT_4V: {
-    input: { xCount: 40, yCount: 40, xInterval: 1, yInterval: 1 },
+    input: { xCount: 20, yCount: 20, xInterval: 1, yInterval: 1 },
     vision_transformer: { xCount: 24, yCount: 1, xInterval: 2, yInterval: 2 },
     transformer_decoder: {
       xCount: NUM_LAYERS_GPT4V_LM * 0.5,
@@ -2394,7 +2307,7 @@ export const GRID_CONFIGS = {
       yInterval: 2,
     },
     cross_attention: { xCount: 12, yCount: 12, xInterval: 1, yInterval: 1 },
-    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 64, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
   },
 
   FLORENCE: {
@@ -2410,7 +2323,7 @@ export const GRID_CONFIGS = {
 
   DALL_E_3: {
     // Text Input and Encoders
-    input: { xCount: 77, yCount: 1, xInterval: 1, yInterval: 1 },
+    input: { xCount: 38, yCount: 1, xInterval: 1, yInterval: 1 },
 
     // CLIP Text Encoder
     clip_text_encoder: { xCount: 12, yCount: 1, xInterval: 2.5, yInterval: 2 },
@@ -2421,7 +2334,7 @@ export const GRID_CONFIGS = {
     // Common transformer components
     transformer_layer: { xCount: 12, yCount: 1, xInterval: 2, yInterval: 2 },
     attention: { xCount: 8, yCount: 8, xInterval: 1.5, yInterval: 1.5 },
-    mlp: { xCount: 128, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
+    mlp: { xCount: 64, yCount: 1, xInterval: 0.5, yInterval: 0.5 },
     layernorm: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
 
     // Prior Network
@@ -2446,7 +2359,7 @@ export const GRID_CONFIGS = {
     time_embedding: { xCount: 1, yCount: 1, xInterval: 1, yInterval: 1 },
 
     // Output
-    output: { xCount: 64, yCount: 8, xInterval: 0.1, yInterval: 0.1 },
+    output: { xCount: 64, yCount: 4, xInterval: 0.1, yInterval: 0.1 },
   },
   COGVLM: {
     input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
@@ -2459,7 +2372,7 @@ export const GRID_CONFIGS = {
     fusion: { xCount: 16, yCount: 4, xInterval: 2, yInterval: 2 },
   },
   CLAUDE_3_VISION: {
-    input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
+    input: { xCount: 32, yCount: 16, xInterval: 1, yInterval: 1 },
     hierarchical_vit: { xCount: 48, yCount: 1, xInterval: 3, yInterval: 3 },
     vision_stage: { xCount: 12, yCount: 3, xInterval: 2, yInterval: 2 },
     window_attention: {
@@ -2496,14 +2409,14 @@ export const GRID_CONFIGS = {
       xInterval: 2,
       yInterval: 2,
     },
-    modal_pathways: { xCount: 32, yCount: 32, xInterval: 1.5, yInterval: 1.5 },
+    modal_pathways: { xCount: 16, yCount: 16, xInterval: 1.5, yInterval: 1.5 },
     cross_modal_experts: {
       xCount: NUM_CLAUDE3_EXPERTS,
       yCount: 8,
       xInterval: 2,
       yInterval: 2,
     },
-    pathway_integration: { xCount: 32, yCount: 32, xInterval: 1, yInterval: 1 },
+    pathway_integration: { xCount: 16, yCount: 16, xInterval: 1, yInterval: 1 },
   },
   GEMINI_VISION: {
     input: { xCount: 64, yCount: 16, xInterval: 1, yInterval: 1 },
@@ -2604,5 +2517,92 @@ export const GRID_CONFIGS = {
       yInterval: 1.5,
     },
     deconv_block: { xCount: 16, yCount: 4, xInterval: 1, yInterval: 1 },
+  },
+};
+
+// Layer configurations for multi_modal models
+export const LAYER_CONFIGS = {
+  SHOW_AND_TELL: {
+    layerHeight: 10,
+    type: "multi_modal",
+  },
+  VISUAL_QUESTION_ANSWERING_VQA: {
+    layerHeight: 10,
+    type: "multi_modal",
+  },
+  CLIP: {
+    layerHeight: 15,
+    keyPrefix: "clip",
+    type: "multi_modal",
+  },
+  DALL_E: {
+    layerHeight: 400,
+    keyPrefix: "dalle",
+    type: "multi_modal",
+  },
+  DALL_E_2: {
+    layerHeight: 10,
+    keyPrefix: "dalle2",
+    type: "multi_modal",
+  },
+  FLAMINGO: {
+    layerHeight: 100,
+    keyPrefix: "flamingo",
+    type: "multi_modal",
+  },
+  BLIP_2: {
+    layerHeight: 10,
+    keyPrefix: "blip2",
+    type: "multi_modal",
+  },
+  LLAVA: {
+    layerHeight: 0,
+    keyPrefix: "llava",
+    type: "multi_modal",
+  },
+  PALM_E: {
+    layerHeight: 10,
+    keyPrefix: "palme",
+    type: "multi_modal",
+  },
+  GPT_4V: {
+    layerHeight: 150,
+    keyPrefix: "gpt4v",
+    type: "multi_modal",
+  },
+  FLORENCE: {
+    layerHeight: 20,
+    keyPrefix: "florence",
+    type: "multi_modal",
+  },
+  DALL_E_3: {
+    layerHeight: 120,
+    keyPrefix: "dalle3",
+    type: "multi_modal",
+  },
+  COGVLM: {
+    layerHeight: 120,
+    keyPrefix: "cogvlm",
+    type: "multi_modal",
+  },
+  CLAUDE_3_VISION: {
+    layerHeight: 100, // Increased height for better visualization
+    keyPrefix: "claude3v",
+    type: "multi_modal",
+  },
+  GEMINI_VISION: {
+    layerHeight: 1000, // Even larger for complex visualization
+    keyPrefix: "geminiv",
+    type: "multi_modal",
+  },
+  WHISPER: {
+    layerHeight: 100,
+    keyPrefix: "whisper",
+    type: "multi_modal",
+  },
+  AUDIOCRAFT: {
+    layerHeight: 10,
+    keyPrefix: "audiocraft",
+    type: "multi_modal",
   },
 };

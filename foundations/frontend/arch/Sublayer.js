@@ -21,8 +21,8 @@ const Sublayer = memo(function Sublayer({
   model,
   idx = 0,
   useGivenInterval = false,
+  rotation = [0, 0, 0],
 }) {
-  console.log("sublayer", sublayer);
   const { scale } = useSpring({
     from: { scale: 0 },
     to: { scale: 1 },
@@ -44,7 +44,7 @@ const Sublayer = memo(function Sublayer({
     : DEFAULT_GRID;
 
   return (
-    <group position={position}>
+    <group position={position} rotation={rotation}>
       <animated.group scale={scale}>
         <InstancedNodes
           xCount={grid.xCount}
