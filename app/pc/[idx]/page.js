@@ -97,6 +97,8 @@ function RelationPageContent({ idx, test }) {
     return <FrontendComponent isTesting={true} />;
   }
 
+  console.log(stage);
+
   // Full integration render for non-test mode
   return (
     <>

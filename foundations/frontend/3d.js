@@ -30,18 +30,24 @@ export default function Visualisation({ isTesting = false }) {
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {
       setTimeout(() => {
-        const box = new Box3().setFromObject(modelGroupRef.current);
-        const size = new Vector3();
-        box.getSize(size);
+        try {
+          const box = new Box3().setFromObject(modelGroupRef.current);
+          const size = new Vector3();
+          box.getSize(size);
 
-        const avgDimension = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2);
+          const avgDimension = Math.sqrt(
+            size.x ** 2 + size.y ** 2 + size.z ** 2
+          );
 
-        if (avgDimension === 0 || !isFinite(avgDimension)) {
-          console.warn("Invalid model size. Using default camera distance.");
-          setCameraDistance(400);
-        } else {
-          const distance = avgDimension * 0.23;
-          setCameraDistance(distance);
+          if (avgDimension === 0 || !isFinite(avgDimension)) {
+            console.warn("Invalid model size. Using default camera distance.");
+            setCameraDistance(400);
+          } else {
+            const distance = avgDimension * 0.23;
+            setCameraDistance(distance);
+          }
+        } catch (e) {
+          console.log(e);
         }
       }, 500);
     }

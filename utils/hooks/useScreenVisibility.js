@@ -15,12 +15,7 @@ export default function useScreenVisibility() {
     setIsTransition,
     iteration,
     setIsEnding,
-    handleReset,
   } = useScreenStore();
-
-  const handleBackendReset = useBackendStore(
-    (state) => state.handleBackendReset
-  );
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
