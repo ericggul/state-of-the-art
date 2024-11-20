@@ -3,9 +3,9 @@ import * as S from "./styles";
 
 export default function RedirectButton({ socket }) {
   function handleRedirect() {
-    socket.current.emit("omega-new-presentation-command", {
-      type: "redirect-to-sota",
-    });
+    if (socket.current) {
+      socket.current.emit("gartience-new-chaos", { chaos: true });
+    }
   }
 
   return (

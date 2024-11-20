@@ -8,7 +8,7 @@ export default function Mobile() {
 
   const socket = useSocketMobile({
     handleNewState: setState,
-    handleNewChaos: setChaos,
+    handleNewChaos: () => setChaos(true),
     handleNewArchitectures: setArchitectures,
   });
   console.log(state);

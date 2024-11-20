@@ -7,3 +7,8 @@ export const Container = styled.div`
   flex-direction: column;
   font-family: "DM Sans", sans-serif;
 `;
+
+export const QRContainer = styled.div`
+  ${FlexCenterStyle};
+  ${WholeContainer};
+`;
