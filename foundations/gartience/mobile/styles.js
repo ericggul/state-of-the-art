@@ -1,19 +1,9 @@
+import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
-import styled from "styled-components";
 
 export const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ${FlexCenterStyle};
+  ${WholeContainer};
   flex-direction: column;
-
-  ${WholeContainer}
-  ${FlexCenterStyle}
-
-
-  font-size: 3vw;
-  color: #fff;
-
-  //no cursor
-  cursor: none;
+  font-family: "DM Sans", sans-serif;
 `;

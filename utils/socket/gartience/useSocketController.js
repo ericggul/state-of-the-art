@@ -25,19 +25,6 @@ export default function useSocketController() {
     socket.current.on("connect", () => {
       console.log("Controller socket connected");
       socket.current.emit("gartience-controller-init");
-
-      // socket.current.on("new-mobile-response", (data) => {
-      //   console.log("Received new-mobile-response:", data);
-      //   handleNewResponse(data);
-      // });
-      // socket.current.on("new-mobile-init", (data) => {
-      //   console.log("Received new-mobile-init:", data);
-      //   handleNewMobileInit(data);
-      // });
-      // socket.current.on("new-mobile-visibility-change", (data) => {
-      //   console.log("Received new-mobile-visibility-change:", data);
-      //   handleNewMobileVisibility(data);
-      // });
     });
   };
 

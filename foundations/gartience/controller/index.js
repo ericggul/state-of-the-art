@@ -19,10 +19,7 @@ export default function Controller() {
   const handleStateChange = (increment) => {
     setState((st) => Math.min(Math.max(st + increment, 0), 2));
     if (socket.current) {
-      socket.current.emit("omega-new-presentation-command", {
-        type: "state-adjust",
-        state: state + increment,
-      });
+      socket.current.emit("gartience-new-state", state + increment);
     }
   };
 
