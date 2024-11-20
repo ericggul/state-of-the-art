@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import * as S from "./styles";
 
-import ControllerButton from "./controller-button";
+import ControllerButton from "./button";
+import Voice from "./voice";
 
 import useSocketController from "@/utils/socket/gartience/useSocketController";
 
@@ -31,7 +32,7 @@ export default function Controller() {
         <S.Button onClick={() => handleStateChange(1)}>+</S.Button>
       </S.StateDisplay>
       {state === 2 && <ControllerButton socket={socket} />}
-
+      <Voice socket={socket} />
       <S.Guide>
         {ITEMS.map((item, index) => (
           <S.GuideItem key={index} $active={state === index}>
