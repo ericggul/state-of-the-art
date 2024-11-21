@@ -9,7 +9,8 @@ import Chaos from "./chaos";
 import ThreeScene from "./3d";
 
 export default function Mobile() {
-  const { state, setState, setChaos, setArchitectures } = useMobileStore();
+  const { state, setState, setChaos, setArchitectures, setUsername } =
+    useMobileStore();
 
   const socket = useSocketMobile({
     handleNewState: setState,
@@ -20,7 +21,6 @@ export default function Mobile() {
 
   const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
   const [isIntroActive, setIsIntroActive] = useState(true);
-  const [username, setUsername] = useState("");
   const [showThreeScene, setShowThreeScene] = useState(false);
 
   const handleAccelerometerActivate = useCallback(
@@ -36,14 +36,14 @@ export default function Mobile() {
       setShowThreeScene(true);
       setUsername(username);
     },
-    [state, setState]
+    [setUsername]
   );
 
   console.log(showThreeScene);
 
   return (
     <S.Container>
-      {showThreeScene && (
+      {/* {showThreeScene && (
         <ThreeScene enableDeviceControls={isAccelerometerActive} />
       )}
       {isIntroActive && (
@@ -53,7 +53,8 @@ export default function Mobile() {
           onUsernameSubmit={handleUsernameSubmit}
           initialUsername={username}
         />
-      )}
+      )} */}
+      <Chaos />
     </S.Container>
   );
 }

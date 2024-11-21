@@ -1,7 +1,29 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import * as CONST from "@/utils/constant";
+import { generateInitialConversation } from "./generateInitialConversation";
+import useMobileStore from "@/foundations/gartience/mobile/store";
 
-const INITIAL_TEXT = `Is AI the brightness for the future of humanity? Or is it the darkness? `;
+const TIME_OUT = 10 * 1000;
+
+// Add timeout utility
+const withTimeout = async (promise, timeoutMs) => {
+  let timeoutId;
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error("Operation timed out"));
+    }, timeoutMs);
+  });
+
+  try {
+    const result = await Promise.race([promise, timeoutPromise]);
+    clearTimeout(timeoutId);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+};
 
 export default function useConversation({
   conversations,
@@ -9,11 +31,19 @@ export default function useConversation({
   setEmbeddings,
   setIsblack,
 }) {
+  const username = useMobileStore((state) => state.username);
   const [getNewText, setGetNewText] = useState(true);
   const hasFetchedText = useRef(false);
-
-  // Cache for embeddings
   const embeddingsCache = useRef({});
+
+  // Add these states to track progression
+  const [loop, setLoop] = useState(0);
+  const level = Math.floor(loop / 3);
+
+  const INITIAL_CONVERSATION = useMemo(
+    () => generateInitialConversation(username || "Mobile User"),
+    [username]
+  );
 
   useEffect(() => {
     if (getNewText && !hasFetchedText.current) {
@@ -25,76 +55,78 @@ export default function useConversation({
 
   async function fetchText(conversations) {
     try {
-      const text =
-        conversations.length < 6
-          ? INITIAL_TEXT +
-            conversations.map((el) => el.message.content).join(" ")
-          : conversations
-              .map((el) => el.message.content)
-              .slice(-6)
-              .join(" ");
+      const formattedConversations = [
+        ...INITIAL_CONVERSATION,
+        ...conversations.map((el) => el.message),
+      ].slice(-10);
 
       setGetNewText(false);
 
-      const response = await axios.post("/api/openai/gpt-4o-poem", {
-        text,
-      });
+      const temperature = Math.min(0.7 + (loop / 10) * 0.25, 1.3);
+      const maxTokens = level >= 5 ? 27 : 22;
+
+      const response = await withTimeout(
+        axios.post("/api/openai/gpt-4o", {
+          conversations: formattedConversations,
+          params: {
+            temperature,
+            userName: username || "Mobile User",
+          },
+          maxTokens,
+        }),
+        TIME_OUT
+      );
 
       if (
-        !response.data ||
-        !response.data.message.content ||
-        !response.data.logprobs.content
+        !response.data?.message?.content ||
+        !response.data?.logprobs?.content
       ) {
         throw new Error("No response data or message content");
       }
 
       setConversations((prev) => [...prev, response.data]);
-      const resultText = response.data.message.content;
-
-      // Extract tokens from response
       const tokens = response.data.logprobs.content.map((el) => el.token);
-
       fetchEmbedding({ tokens });
     } catch (e) {
       console.log(e, "get gpt response error");
-      // Timeout 0.5s
       await new Promise((r) => setTimeout(r, 500));
-      setGetNewText(true);
+      setIsblack(false);
+      await getNextText();
     }
   }
 
   async function getNextText() {
-    await new Promise((r) => setTimeout(r, 4500));
+    const timeout =
+      CONST.WHITE_TIME[Math.min(level, CONST.WHITE_TIME.length - 1)];
+    await new Promise((r) => setTimeout(r, timeout));
     hasFetchedText.current = false;
     setGetNewText(true);
   }
 
   async function fetchEmbedding({ tokens }) {
-    if (!tokens || tokens.length === 0) return;
+    if (!tokens?.length) return;
 
     try {
-      // Remove duplicates to avoid redundant API calls
       const uniqueTokens = [...new Set(tokens)];
+      const embeddings = await withTimeout(
+        getEmbeddingsForTokens(uniqueTokens),
+        TIME_OUT
+      );
 
-      // Fetch embeddings for unique tokens
-      const embeddings = await getEmbeddingsForTokens(uniqueTokens);
+      const timeout =
+        CONST.EXTRA_BLACK_TIME[
+          Math.min(level, CONST.EXTRA_BLACK_TIME.length - 1)
+        ];
+      await new Promise((r) => setTimeout(r, timeout));
 
-      // Build the result object
-      const result = {
-        embeddings,
-        tokens,
-      };
-
-      setEmbeddings((ebd) => [...ebd, result]);
-      //dummy delay 2s
-      await new Promise((r) => setTimeout(r, 2000));
-
+      setEmbeddings((prev) => [...prev, { embeddings, tokens }]);
       setIsblack(false);
-
-      //after 5s set is black true and
+      setLoop((l) => l + 1);
       await getNextText();
     } catch (e) {
       console.error("Failed to fetch embeddings:", e);
+      setIsblack(false);
+      await getNextText();
     }
   }
 

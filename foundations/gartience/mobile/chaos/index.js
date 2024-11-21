@@ -1,6 +1,7 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
+import Transcript from "./components/Transcript";
 
 import useAudio from "./utils/useAudio";
 import useConversation from "./utils/useConversation";
@@ -65,6 +66,8 @@ export default function Wrapper() {
         visible={true}
         timeUnit={1}
       />
+
+      <Transcript conversations={conversations} isblack={isblack} />
     </S.Container>
   );
 }

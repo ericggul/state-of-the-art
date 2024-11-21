@@ -1,16 +1,24 @@
 import { create } from "zustand";
 
-const useScreenStore = create((set) => ({
+const useMobileStore = create((set) => ({
   state: 0,
   chaos: false,
   architectures: [],
+  username: "Jeanyoon",
 
   setState: (state) => set({ state }),
   setChaos: (chaos) => set({ chaos }),
   setArchitectures: (architectures) => set({ architectures }),
+  setUsername: (username) => set({ username }),
 
   reset: () =>
-    set({ state: null, chaos: null, architectures: [], speech: null }),
+    set({
+      state: null,
+      chaos: null,
+      architectures: [],
+      speech: null,
+      username: "",
+    }),
 }));
 
-export default useScreenStore;
+export default useMobileStore;
