@@ -1,5 +1,5 @@
 import { getModelStructure } from "@/foundations/frontend/arch-models";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useDebounce from "@/utils/hooks/useDebounce";
 
 export const flattenModels = (models) => {
@@ -67,12 +67,21 @@ export const useModelStructure = (
 ) => {
   const [modelName, setModelName] = useState(null);
   const [structure, setStructure] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const prevArchRef = useRef();
 
   const debouncedModelName = useDebounce(modelName, debounceDelay);
   const debouncedStructure = useDebounce(structure, debounceDelay);
 
+  // Start loading when architectures change
   useEffect(() => {
-    if (currentArchitectures?.length > 0) {
+    if (
+      currentArchitectures?.length > 0 &&
+      currentArchitectures[0].name !== prevArchRef.current
+    ) {
+      setIsLoading(true);
+      prevArchRef.current = currentArchitectures[0].name;
+
       const rawModelName = currentArchitectures[0].name;
       const formattedName = formatModelName(rawModelName);
 
@@ -94,8 +103,11 @@ export const useModelStructure = (
     visualization: {
       modelName: debouncedModelName,
       structure: debouncedStructure,
+      isLoading,
     },
     modelName,
     structure,
+    isLoading,
+    setIsLoading, // Export this to allow ModelContainer to control loading state
   };
 };

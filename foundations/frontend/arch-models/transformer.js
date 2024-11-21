@@ -1743,16 +1743,16 @@ export const GRID_CONFIGS = {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 20, yCount: 20, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 24, yCount: 4, xInterval: 1, yInterval: 1 },
+    attention: { xCount: 10, yCount: 5, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 12, yCount: 4, xInterval: 1, yInterval: 1 },
     reduced: true,
   },
   PALM_2: {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 160, yCount: 160, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 320, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 24, yCount: 20, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 28, yCount: 4, xInterval: 1, yInterval: 1 },
+    attention: { xCount: 10, yCount: 5, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 14, yCount: 4, xInterval: 1, yInterval: 1 },
     reduced: true,
   },
   LLAMA: {

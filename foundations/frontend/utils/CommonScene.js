@@ -1,5 +1,5 @@
 // Visualization.js
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -7,9 +7,10 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 const HAL_9000_LIGHT = {
   position: [0, 0, 0], // Center of the scene
   color: 0xff0000, // Bright red
-  intensity: 200, // Strong intensity
+  intensity: 250, // Strong intensity
   distance: 10000, // Adjust based on your scene size
-  decay: 1.5, // Quadratic light falloff
+  decay: 1.2, // longer decay?
+  power: 2000,
 };
 
 export default function CommonScene({ children, style }) {
@@ -17,8 +18,10 @@ export default function CommonScene({ children, style }) {
     <>
       <Suspense fallback={null}>
         <Environment
-          preset={style.lighting.environment || "apartment"}
+          // preset={style.lighting.environment || "apartment"}
+          preset="apartment"
           intensity={style.lighting.envIntensity || 0.1}
+          path="https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/hdri/"
         />
       </Suspense>
       <ambientLight intensity={2} />

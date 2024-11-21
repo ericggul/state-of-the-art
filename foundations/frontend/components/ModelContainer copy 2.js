@@ -38,41 +38,29 @@ const getProjectorStyle = (isProjector, typeStyle) =>
   isProjector ? typeStyle : DEFAULT_STYLE;
 
 const ModelContainer = memo(
-  function ModelContainer({
-    modelName,
-    structure,
-    modelGroupRef,
-    isLoading,
-    setIsLoading,
-  }) {
+  function ModelContainer({ modelName, structure, modelGroupRef }) {
+    const [isLoading, setIsLoading] = useState(true);
     const isProjector = useScreenStore((state) => state.isProjector);
     const modelConfig = LAYER_CONFIGS[modelName];
-    const modelLoadedRef = useRef(false);
+    const prevModelNameRef = useRef(modelName);
 
-    // Track when model is actually loaded
+    // Trigger loading state immediately when modelName changes
     useEffect(() => {
-      if (structure.length > 0 && modelGroupRef.current) {
-        // Wait for the next frame to ensure the model is rendered
-        requestAnimationFrame(() => {
-          // Add a small delay to account for any animations/transitions
-          setTimeout(() => {
-            if (modelGroupRef.current) {
-              setIsLoading(false);
-              modelLoadedRef.current = true;
-            }
-          }, 500);
-        });
+      if (prevModelNameRef.current !== modelName) {
+        setIsLoading(true);
+        prevModelNameRef.current = modelName;
       }
-
-      return () => {
-        modelLoadedRef.current = false;
-      };
-    }, [structure, modelGroupRef, setIsLoading]);
-
-    // Reset loading state when model changes
-    useEffect(() => {
-      modelLoadedRef.current = false;
     }, [modelName]);
+
+    // Clear loading state after structure is ready
+    useEffect(() => {
+      if (structure.length > 0) {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }, [structure]);
 
     const { ModelComponent, typeStyle } = useMemo(() => {
       if (!modelConfig) {
@@ -112,7 +100,7 @@ const ModelContainer = memo(
               model={modelName}
             />
           )}
-          {isLoading && <LoadingUI />}
+          {isLoading && shouldRenderModel && <LoadingUI />}
         </group>
       </CommonScene>
     );
@@ -121,7 +109,6 @@ const ModelContainer = memo(
     return (
       prevProps.modelName === nextProps.modelName &&
       prevProps.modelGroupRef === nextProps.modelGroupRef &&
-      prevProps.isLoading === nextProps.isLoading &&
       prevProps.structure.length === nextProps.structure.length &&
       prevProps.structure.every(
         (item, index) =>
