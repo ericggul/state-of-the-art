@@ -52,6 +52,16 @@ export const MODELS = {
       },
     },
   },
+  "v4.x - Sequence Models": {
+    "v4.0": {
+      name: "Transformer",
+      year: 2017,
+      place: "Google Research, Google Brain",
+      citation: 89000,
+      explanation:
+        "Introduced the transformer architecture with self-attention mechanism, revolutionizing sequence modeling and becoming the foundation for modern language models.",
+    },
+  },
   "v5.x - Generative Models": {
     "v5.0": {
       name: "Generative Adversarial Networks (GANs)",

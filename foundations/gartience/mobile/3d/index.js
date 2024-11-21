@@ -101,15 +101,15 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
     <S.Container>
       <Canvas
         camera={{
-          position: [-10, 0, 15],
+          position: [-15, 0, 20],
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
       >
-        <Suspense fallback={null}>
+        {/* <Suspense fallback={null}>
           <Environment preset="city" />
-        </Suspense>
+        </Suspense> */}
 
         <pointLight position={[10, 10, 10]} />
         <directionalLight position={[0, 10, 10]} intensity={2} />

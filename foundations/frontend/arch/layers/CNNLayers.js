@@ -84,10 +84,24 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
 });
 
 const CNNLayer = React.memo(({ position, layer, style, model }) => {
-  // ... (same as before)
-
   const [expanded, setExpanded] = useState(false);
   const { isProjector } = useScreenStore();
+  const [error, setError] = useState(null);
+
+  // Validate layer structure
+  if (
+    !layer?.dimensions ||
+    !Array.isArray(layer.dimensions) ||
+    layer.dimensions.length < 3
+  ) {
+    console.error("Invalid layer dimensions:", layer);
+    return null;
+  }
+
+  if (!layer?.zSpan || !Array.isArray(layer.zSpan) || layer.zSpan.length < 2) {
+    console.error("Invalid layer zSpan:", layer);
+    return null;
+  }
 
   const { smoothedExpanded } = useSpring({
     smoothedExpanded: expanded ? 1 : 0,
@@ -109,105 +123,124 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const gridConfig = GRID_CONFIGS[model] || {};
-  let gridTypeConfig = gridConfig[layer.type] || {
-    xCount: layer.zSpan[0],
-    yCount: layer.zSpan[1],
-    xInterval: layer.dimensions[0] * 0.6,
-    yInterval: layer.dimensions[1] * 0.6,
-  };
+  try {
+    const gridConfig = GRID_CONFIGS[model] || {};
+    let gridTypeConfig = gridConfig[layer.type] || {
+      xCount: layer.zSpan[0],
+      yCount: layer.zSpan[1],
+      xInterval: layer.dimensions[0] * 0.6,
+      yInterval: layer.dimensions[1] * 0.6,
+    };
 
-  gridTypeConfig.xInterval = layer.dimensions[0] * 0.54;
-  gridTypeConfig.yInterval = layer.dimensions[1] * 0.54;
+    gridTypeConfig.xInterval = layer.dimensions[0] * 0.54;
+    gridTypeConfig.yInterval = layer.dimensions[1] * 0.54;
 
-  const grid = {
-    xCount: gridTypeConfig.xCount,
-    yCount: gridTypeConfig.yCount,
-    xInterval: gridTypeConfig.xInterval,
-    yInterval: gridTypeConfig.yInterval,
-  };
+    const grid = {
+      xCount: gridTypeConfig.xCount,
+      yCount: gridTypeConfig.yCount,
+      xInterval: gridTypeConfig.xInterval,
+      yInterval: gridTypeConfig.yInterval,
+    };
 
-  const node = {
-    size: [layer.dimensions[0] * 0.5, layer.dimensions[1] * 0.5, 1],
-    wireframeDivision: 1,
-  };
+    const node = {
+      size: [layer.dimensions[0] * 0.5, layer.dimensions[1] * 0.5, 1],
+      wireframeDivision: 1,
+    };
 
-  const unexpandedNode = {
-    size: [
-      layer.dimensions[0],
-      layer.dimensions[1],
-      Math.max(layer.dimensions[2] * 0.1, 0.5),
-    ],
-    wireframeDivision: 1,
-  };
+    const unexpandedNode = {
+      size: [
+        layer.dimensions[0],
+        layer.dimensions[1],
+        Math.max(layer.dimensions[2] * 0.1, 0.5),
+      ],
+      wireframeDivision: 1,
+    };
 
-  const color = style.colors.inner; // Using style.colors.inner as per your request
+    const color = style?.colors?.inner || "#ffffff"; // Fallback color
 
-  return (
-    <group position={position}>
-      <animated.group
-        scale-x={smoothedExpanded}
-        scale-y={smoothedExpanded}
-        scale-z={smoothedExpanded}
-      >
-        <InstancedNodes
-          {...grid}
-          node={node}
-          color={color}
-          style={style}
-          isProjector={isProjector}
-        />
-      </animated.group>
-      <animated.group
-        scale-x={smoothedExpanded.to((v) => 1 - v)}
-        scale-y={smoothedExpanded.to((v) => 1 - v)}
-        scale-z={smoothedExpanded.to((v) => 1 - v)}
-      >
-        <Node
-          {...unexpandedNode}
-          color={color}
-          style={style}
-          isProjector={isProjector}
-        />
-      </animated.group>
-    </group>
-  );
+    return (
+      <group position={position}>
+        <animated.group
+          scale-x={smoothedExpanded}
+          scale-y={smoothedExpanded}
+          scale-z={smoothedExpanded}
+        >
+          <InstancedNodes
+            {...grid}
+            node={node}
+            color={color}
+            style={style}
+            isProjector={isProjector}
+          />
+        </animated.group>
+        <animated.group
+          scale-x={smoothedExpanded.to((v) => 1 - v)}
+          scale-y={smoothedExpanded.to((v) => 1 - v)}
+          scale-z={smoothedExpanded.to((v) => 1 - v)}
+        >
+          <Node
+            {...unexpandedNode}
+            color={color}
+            style={style}
+            isProjector={isProjector}
+          />
+        </animated.group>
+      </group>
+    );
+  } catch (err) {
+    console.error("Error rendering CNNLayer:", err, { layer, model });
+    return null;
+  }
 });
 
 const CompositeLayer = React.memo(({ position, layer, style, model }) => {
-  const sublayerGap = 10;
+  if (!layer?.sublayers || !Array.isArray(layer.sublayers)) {
+    console.error("Invalid composite layer structure:", layer);
+    return null;
+  }
 
-  // Calculate the total width of sublayers
-  const sublayerWidths = layer.sublayers.map(
-    (sublayer) => sublayer.dimensions[0]
-  );
-  const totalWidth =
-    sublayerWidths.reduce((sum, width) => sum + width, 0) +
-    (layer.sublayers.length - 1) * sublayerGap;
+  try {
+    const sublayerGap = 10;
+    const sublayerWidths = layer.sublayers.map(
+      (sublayer) => sublayer?.dimensions?.[0] ?? 0
+    );
 
-  let accumulatedWidth = -totalWidth / 2;
+    const totalWidth =
+      sublayerWidths.reduce((sum, width) => sum + width, 0) +
+      (layer.sublayers.length - 1) * sublayerGap;
 
-  return (
-    <group position={position}>
-      {layer.sublayers.map((sublayer, idx) => {
-        const x =
-          accumulatedWidth +
-          sublayer.dimensions[0] / 2 +
-          (idx > 0 ? sublayerGap : 0);
-        accumulatedWidth += sublayer.dimensions[0] + sublayerGap;
+    let accumulatedWidth = -totalWidth / 2;
 
-        return (
-          <CNNLayer
-            key={`${layer.name}-sublayer-${idx}`}
-            position={[x, 0, 0]}
-            layer={sublayer}
-            style={style}
-            model={model}
-          />
-        );
-      })}
-    </group>
-  );
+    return (
+      <group position={position}>
+        {layer.sublayers.map((sublayer, idx) => {
+          if (!sublayer?.dimensions?.[0]) {
+            console.error("Invalid sublayer dimensions:", sublayer);
+            return null;
+          }
+
+          const x =
+            accumulatedWidth +
+            sublayer.dimensions[0] / 2 +
+            (idx > 0 ? sublayerGap : 0);
+          accumulatedWidth += sublayer.dimensions[0] + sublayerGap;
+
+          return (
+            <CNNLayer
+              key={`${layer.name}-sublayer-${idx}`}
+              position={[x, 0, 0]}
+              layer={sublayer}
+              style={style}
+              model={model}
+            />
+          );
+        })}
+      </group>
+    );
+  } catch (err) {
+    console.error("Error rendering CompositeLayer:", err, { layer, model });
+    return null;
+  }
 });
 
 export default CNNLayers;

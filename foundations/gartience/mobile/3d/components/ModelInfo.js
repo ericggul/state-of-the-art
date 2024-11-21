@@ -33,7 +33,7 @@ export default function ModelInfo({ name, year }) {
     <Container>
       <ModelName>{name || "Unknown Model"}</ModelName>
       <ModelYear>
-        {year || "Year Unknown"} | Neural Networks Controlling the World
+        {year || "Year Unknown"} | Neural Networks Architecture
       </ModelYear>
     </Container>
   );

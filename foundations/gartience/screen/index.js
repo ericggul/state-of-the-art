@@ -2,12 +2,10 @@ import React from "react";
 import * as S from "./styles";
 import useSocketScreen from "@/utils/socket/gartience/useSocketScreen";
 import useScreenStore from "./store";
-
-//qrcode svg
 import { QRCodeSVG } from "qrcode.react";
 import useResize from "@/utils/hooks/useResize";
-
 import Chaos from "./chaos";
+import Speech from "./Speech";
 
 export default React.memo(function Screen() {
   const {
@@ -27,15 +25,10 @@ export default React.memo(function Screen() {
     handleNewSpeech: setSpeech,
   });
 
-  console.log("speech", speech);
   return (
     <S.Container>
-      {state >= 1 && !chaos && (
-        <>
-          <QR />
-        </>
-      )}
-      {speech && !chaos && <S.SpeechText>{speech}</S.SpeechText>}
+      {state >= 1 && !chaos && <QR />}
+      {speech && !chaos && <Speech text={speech} />}
       {chaos && <Chaos />}
     </S.Container>
   );
@@ -45,7 +38,6 @@ const URL = "https://sota-xdlab.net/gartience/mobile";
 
 const QR = React.memo(function QR() {
   const [windowWidth, _] = useResize();
-
   return (
     <S.QRContainer>
       <QRCodeSVG

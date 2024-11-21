@@ -17,17 +17,37 @@ export const QRContainer = styled.div`
   height: auto;
 `;
 
+export const Cursor = styled.span`
+  display: inline-block;
+  width: 0.1em;
+  height: 1em;
+  background-color: white;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+
+  @keyframes blink {
+    from,
+    to {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+`;
+
 export const SpeechText = styled.div`
   ${FlexCenterStyle};
   width: 90vw;
   text-align: center;
   color: white;
-  font-size: 3vw;
-
+  font-size: 8vw;
+  font-weight: 700;
   line-height: 1.3;
   word-break: keep-all;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  white-space: pre-wrap;
 `;
