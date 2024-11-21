@@ -7,6 +7,8 @@ import useScreenStore from "./store";
 import { QRCodeSVG } from "qrcode.react";
 import useResize from "@/utils/hooks/useResize";
 
+import Chaos from "./chaos";
+
 export default function Screen() {
   const { state, chaos, setState, setChaos, setArchitectures, setSpeech } =
     useScreenStore();
@@ -20,7 +22,13 @@ export default function Screen() {
 
   console.log(state, chaos);
 
-  return <S.Container>{state >= 1 && !chaos && <QR />}</S.Container>;
+  return (
+    <S.Container>
+      {state >= 1 && !chaos && <QR />}
+
+      <Chaos />
+    </S.Container>
+  );
 }
 
 const URL = "https://sota-xdlab.net/gartience/mobile";
