@@ -3,7 +3,7 @@ import * as S from "./styles";
 import useSocketMobile from "@/utils/socket/gartience/useSocketMobile";
 import useMobileStore from "./store";
 
-import Intro from "@/foundations/mobile/v4/intro";
+import Intro from "./intro";
 
 import Chaos from "./chaos";
 import ThreeScene from "./3d";
@@ -21,6 +21,7 @@ export default function Mobile() {
   const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
   const [isIntroActive, setIsIntroActive] = useState(true);
   const [username, setUsername] = useState("");
+  const [showThreeScene, setShowThreeScene] = useState(false);
 
   const handleAccelerometerActivate = useCallback(
     (value) => {
@@ -32,14 +33,19 @@ export default function Mobile() {
 
   const handleUsernameSubmit = useCallback(
     (username) => {
+      setShowThreeScene(true);
       setUsername(username);
     },
     [state, setState]
   );
 
+  console.log(showThreeScene);
+
   return (
     <S.Container>
-      <ThreeScene enableDeviceControls={isAccelerometerActive} />
+      {showThreeScene && (
+        <ThreeScene enableDeviceControls={isAccelerometerActive} />
+      )}
       {isIntroActive && (
         <Intro
           socket={socket}

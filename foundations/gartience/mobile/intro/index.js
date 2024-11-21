@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
-import { useNameInput } from "../utils/useNameInput";
+import { useNameInput } from "./utils/useNameInput";
 import AnimatedTitle from "./components/AnimatedTitle";
 
 // Move outside component
@@ -13,6 +13,7 @@ const isIOSDevice =
 export default function Intro({
   socket,
   onAccelerometerActivate,
+  onUsernameSubmit,
   initialUsername,
 }) {
   const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
@@ -21,7 +22,13 @@ export default function Intro({
 
   const nameInputProps = useNameInput({
     socket,
-    onSuccess: useCallback(() => setIntroState(1), []),
+    onSuccess: useCallback(
+      (username) => {
+        setIntroState(1);
+        onUsernameSubmit(username);
+      },
+      [onUsernameSubmit]
+    ),
     initialUsername,
   });
 
