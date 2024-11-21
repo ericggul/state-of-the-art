@@ -9,38 +9,73 @@ import {
   useCallback,
 } from "react";
 import * as S from "./styles";
-
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
-import { useSpring, animated } from "@react-spring/three";
-
-import Connections from "./connections";
-import { STRUCTURE } from "./structure";
 import DeviceOrientationControls from "./DeviceOrientationControls";
-import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-export default function FC3D({ enableDeviceControls = true }) {
-  const [expandedLayers, setExpandedLayers] = useState(
-    new Array(STRUCTURE.length).fill(true)
-  );
+// Import existing components from frontend
+import BasicNNLayers from "@/foundations/frontend/arch/layers/BasicNNLayers";
+import CNNLayers from "@/foundations/frontend/arch/layers/CNNLayers";
+import VAELayers from "@/foundations/frontend/arch/layers/VAELayers";
+import TransformerLayers from "@/foundations/frontend/arch/layers/TransformerLayers";
+import RNNLayers from "@/foundations/frontend/arch/layers/RNNLayers";
 
-  const toggleRandomLayer = useCallback(() => {
-    const randomLayerIndex = Math.floor(Math.random() * STRUCTURE.length);
-    setExpandedLayers((prev) => {
-      const newExpanded = [...prev];
-      newExpanded[randomLayerIndex] = !prev[randomLayerIndex];
-      return newExpanded;
-    });
-  }, []);
+// Import configs and utils
+import { LAYER_CONFIGS } from "@/foundations/frontend/arch-models/_structure";
+import { TYPE_STYLES, DEFAULT_STYLE } from "@/foundations/frontend/style/type";
+import { useModelStructure } from "@/components/frontend/utils";
 
-  useRandomInterval(toggleRandomLayer, 500, 2000, true);
+const MODEL_COMPONENTS = {
+  basic_nn: BasicNNLayers,
+  cnn: CNNLayers,
+  transformer: TransformerLayers,
+  rnn: RNNLayers,
+  vae: VAELayers,
+};
+
+export default function FC3D({
+  enableDeviceControls = true,
+  currentArchitectures = [
+    {
+      name: "MCCULLOCH_PITTS_NEURON",
+      version: "v1.0",
+      year: "1943",
+      place: "USA",
+      citation: "McCulloch & Pitts",
+      explanation: "The first artificial neuron model",
+    },
+  ],
+}) {
+  // Use the same model structure hook from frontend
+  const {
+    visualization: { modelName, structure },
+  } = useModelStructure(currentArchitectures);
+
+  // Get the appropriate component and style based on model type
+  const { ModelComponent, style } = useMemo(() => {
+    const modelConfig = LAYER_CONFIGS[modelName];
+    if (!modelConfig) {
+      return {
+        ModelComponent: BasicNNLayers,
+        style: DEFAULT_STYLE,
+      };
+    }
+
+    const component = MODEL_COMPONENTS[modelConfig.type];
+    const typeStyle = TYPE_STYLES[modelConfig.type] || DEFAULT_STYLE;
+
+    return {
+      ModelComponent: component || BasicNNLayers,
+      style: typeStyle,
+    };
+  }, [modelName]);
 
   return (
     <S.Container>
       <Canvas
         camera={{
-          position: [-15, 0, 15],
-          fov: 60,
+          position: [-10, 0, 15],
+          fov: 50,
           near: 0.1,
           far: 1000,
         }}
@@ -53,138 +88,17 @@ export default function FC3D({ enableDeviceControls = true }) {
         <directionalLight position={[0, 10, 10]} intensity={2} />
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {STRUCTURE.map((structureEl, i) => (
-          <Layer
-            key={i}
-            {...structureEl}
-            layerIdx={i}
-            expanded={expandedLayers[i]}
-            setExpanded={() => {
-              setExpandedLayers((prev) => {
-                const newExpanded = [...prev];
-                newExpanded[i] = !prev[i];
-                return newExpanded;
-              });
-            }}
-            isFocusLayer={2 == i}
+        {structure && ModelComponent && (
+          <ModelComponent
+            structure={structure}
+            style={style}
+            model={modelName}
           />
-        ))}
-
-        <Connections
-          layersExpanded={expandedLayers}
-          structure={STRUCTURE}
-          layerFrom={STRUCTURE[0]}
-          layerTo={STRUCTURE[1]}
-        />
+        )}
 
         {enableDeviceControls && <DeviceOrientationControls />}
+        <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </S.Container>
   );
 }
-
-const Layer = (props) => {
-  const { expanded, setExpanded } = props;
-  const [smoothedExpanded, setSmoothedExpanded] = useState(0);
-
-  function handleClick(e) {
-    e.stopPropagation();
-    setExpanded();
-  }
-
-  useSpring({
-    from: { smoothedExpanded: 0 },
-    to: { smoothedExpanded: expanded ? 1 : 0 },
-    config: {
-      mass: 1.5,
-      tension: 140,
-      friction: 15,
-      clamp: false,
-    },
-    onChange: (value) => {
-      setSmoothedExpanded(value.value.smoothedExpanded);
-    },
-  });
-
-  return (
-    <group position={props.position} onClick={handleClick}>
-      {smoothedExpanded > 0 &&
-        new Array(props.grid.xCount).fill(0).map((_, i) => (
-          <animated.group
-            key={i}
-            position={[
-              (props.grid.xInterval * i -
-                ((props.grid.xCount - 1) * props.grid.xInterval) / 2) *
-                smoothedExpanded,
-              0,
-              0,
-            ]}
-          >
-            {new Array(props.grid.yCount).fill(0).map((_, j) => (
-              <animated.group
-                key={j}
-                position={[
-                  0,
-                  (props.grid.yInterval * j -
-                    ((props.grid.yCount - 1) * props.grid.yInterval) / 2) *
-                    smoothedExpanded,
-                  0,
-                ]}
-              >
-                <Node
-                  {...props.node}
-                  isFocusLayer={props.isFocusLayer}
-                  wireframe={props.isFocusLayer ? 20 : 1}
-                  color={props.color}
-                  key={j}
-                  opacity={smoothedExpanded}
-                />
-              </animated.group>
-            ))}
-          </animated.group>
-        ))}
-
-      {smoothedExpanded < 1 && (
-        <Node
-          isFocusLayer={props.isFocusLayer}
-          wireframe={props.isFocusLayer ? 50 : 1}
-          {...props.unexpandedNode}
-          color={props.color}
-          position={[0, 0, 0]}
-          scale={[
-            1 - smoothedExpanded,
-            1 - smoothedExpanded,
-            1 - smoothedExpanded,
-          ]}
-        />
-      )}
-    </group>
-  );
-};
-
-const Node = ({
-  position,
-  size,
-  color = "red",
-  opacity = 0.4,
-  scale,
-  wireframe = 10,
-  isFocusLayer,
-}) => {
-  return (
-    <mesh position={position} scale={scale}>
-      <boxGeometry
-        args={[...size, wireframe, wireframe, Math.ceil(wireframe / 3)]}
-      />
-      <meshStandardMaterial
-        color={color}
-        roughness={0.2}
-        metalness={0.9}
-        opacity={opacity}
-        transparent={true}
-        wireframe={isFocusLayer}
-        wireframeLinewidth={3}
-      />
-    </mesh>
-  );
-};

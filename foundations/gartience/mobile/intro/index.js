@@ -6,7 +6,9 @@ import AnimatedTitle from "./components/AnimatedTitle";
 
 // Move outside component
 const isIOSDevice =
-  /iPad|iPhone|iPod/.test(navigator.useragent) && !window.MSStream;
+  typeof navigator !== "undefined" &&
+  /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+  !window.MSStream;
 
 export default function Intro({
   socket,
