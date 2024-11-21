@@ -13,8 +13,8 @@ export default function Voice({ socket }) {
   const animationFrameRef = useRef(null);
   const lastTriggerTimeRef = useRef(0);
 
-  const INITIAL_VOLUME_THRESHOLD = 50;
-  const SPEAKING_VOLUME_THRESHOLD = 30;
+  const INITIAL_VOLUME_THRESHOLD = 40;
+  const SPEAKING_VOLUME_THRESHOLD = 25;
   const SILENCE_THRESHOLD = 500; // Wait 500ms of silence before advancing
   const lastSoundTimeRef = useRef(Date.now());
   const isSpeakingRef = useRef(false);
@@ -86,6 +86,18 @@ export default function Voice({ socket }) {
       setError(err.message);
     }
   };
+
+  useEffect(() => {
+    handleSocket();
+  }, [displayText]);
+
+  function handleSocket() {
+    try {
+      socket.current.emit("gartience-new-speech", displayText);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   useEffect(() => {
     return () => {

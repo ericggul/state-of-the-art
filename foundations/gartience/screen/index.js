@@ -10,8 +10,15 @@ import useResize from "@/utils/hooks/useResize";
 import Chaos from "./chaos";
 
 export default React.memo(function Screen() {
-  const { state, chaos, setState, setChaos, setArchitectures, setSpeech } =
-    useScreenStore();
+  const {
+    state,
+    chaos,
+    speech,
+    setState,
+    setChaos,
+    setArchitectures,
+    setSpeech,
+  } = useScreenStore();
 
   const socket = useSocketScreen({
     handleNewState: setState,
@@ -20,12 +27,15 @@ export default React.memo(function Screen() {
     handleNewSpeech: setSpeech,
   });
 
-  console.log(state, chaos);
-
+  console.log("speech", speech);
   return (
     <S.Container>
-      {state >= 1 && !chaos && <QR />}
-
+      {state >= 1 && !chaos && (
+        <>
+          <QR />
+        </>
+      )}
+      {speech && !chaos && <S.SpeechText>{speech}</S.SpeechText>}
       {chaos && <Chaos />}
     </S.Container>
   );
