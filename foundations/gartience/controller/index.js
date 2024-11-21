@@ -3,6 +3,7 @@ import * as S from "./styles";
 
 import ControllerButton from "./button";
 import Voice from "./voice";
+import ArchitectureSelector from "./components/ArchitectureSelector";
 
 import useSocketController from "@/utils/socket/gartience/useSocketController";
 
@@ -31,6 +32,7 @@ export default function Controller() {
         <S.StateNumber>{state}</S.StateNumber>
         <S.Button onClick={() => handleStateChange(1)}>+</S.Button>
       </S.StateDisplay>
+      {state === 1 && <ArchitectureSelector socket={socket} />}
       {state === 2 && <ControllerButton socket={socket} />}
       <Voice socket={socket} />
       <S.Guide>
