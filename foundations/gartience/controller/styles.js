@@ -1,16 +1,40 @@
 import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
-export const Container = styled.div`
-  ${FlexCenterStyle};
+export const ScrollContainer = styled.div`
   ${WholeContainer};
   position: fixed;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #1e1e1e;
+`;
+
+export const Container = styled.div`
+  ${FlexCenterStyle};
   flex-direction: column;
   font-family: "DM Sans", sans-serif;
   color: white;
   z-index: 200;
   padding: 20px;
+  min-height: 100%;
+`;
+
+export const Header = styled.div`
+  position: sticky;
+  top: 0;
+  width: 100%;
   background: #1e1e1e;
+  z-index: 10;
+  padding: 10px 0;
+`;
+
+export const Content = styled.div`
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 60px; // Add bottom padding for mobile
 `;
 
 export const StateDisplay = styled.div`

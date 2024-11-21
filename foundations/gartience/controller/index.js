@@ -15,7 +15,6 @@ const ITEMS = [
 
 export default function Controller() {
   const socket = useSocketController();
-
   const [state, setState] = useState(0);
 
   const handleStateChange = (increment) => {
@@ -26,22 +25,29 @@ export default function Controller() {
   };
 
   return (
-    <S.Container>
-      <S.StateDisplay>
-        <S.Button onClick={() => handleStateChange(-1)}>-</S.Button>
-        <S.StateNumber>{state}</S.StateNumber>
-        <S.Button onClick={() => handleStateChange(1)}>+</S.Button>
-      </S.StateDisplay>
-      {state === 1 && <ArchitectureSelector socket={socket} />}
-      {state === 2 && <ControllerButton socket={socket} />}
-      <Voice socket={socket} />
-      <S.Guide>
-        {ITEMS.map((item, index) => (
-          <S.GuideItem key={index} $active={state === index}>
-            {item}
-          </S.GuideItem>
-        ))}
-      </S.Guide>
-    </S.Container>
+    <S.ScrollContainer>
+      <S.Container>
+        <S.Header>
+          <S.StateDisplay>
+            <S.Button onClick={() => handleStateChange(-1)}>-</S.Button>
+            <S.StateNumber>{state}</S.StateNumber>
+            <S.Button onClick={() => handleStateChange(1)}>+</S.Button>
+          </S.StateDisplay>
+        </S.Header>
+
+        <S.Content>
+          {state === 1 && <ArchitectureSelector socket={socket} />}
+          {state === 2 && <ControllerButton socket={socket} />}
+          <Voice socket={socket} />
+          <S.Guide>
+            {ITEMS.map((item, index) => (
+              <S.GuideItem key={index} $active={state === index}>
+                {item}
+              </S.GuideItem>
+            ))}
+          </S.Guide>
+        </S.Content>
+      </S.Container>
+    </S.ScrollContainer>
   );
 }

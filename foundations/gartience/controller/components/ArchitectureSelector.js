@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { MODELS } from "@/components/controller/constant/models/v3";
+import { MODELS } from "./const";
 
-// Convert nested MODELS object to flat array for easier selection
 const getFlatModels = () => {
   const flatModels = [];
-  Object.values(MODELS).forEach((versionGroup) => {
-    Object.values(versionGroup).forEach((model) => {
-      if (model.name && model.year) {
+
+  const traverseModels = (obj, parentVersion) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      if (value.name && value.year) {
         flatModels.push({
-          name: model.name,
-          version: model.version || Object.keys(versionGroup)[0],
-          year: model.year,
+          name: value.name,
+          year: value.year,
+          version: value.version || parentVersion,
+          place: value.place,
+          citation: value.citation,
+          explanation: value.explanation,
         });
       }
+
+      // Recursively traverse nested objects
+      if (typeof value === "object") {
+        traverseModels(value, key);
+      }
     });
-  });
+  };
+
+  traverseModels(MODELS);
   return flatModels;
 };
 
@@ -26,7 +36,16 @@ export default function ArchitectureSelector({ socket }) {
   const handleModelSelect = (model) => {
     setSelectedModel(model.name);
     if (socket.current) {
-      socket.current.emit("gartience-new-architectures", [model]);
+      socket.current.emit("gartience-new-architectures", [
+        {
+          name: model.name,
+          version: model.version,
+          year: model.year,
+          place: model.place,
+          citation: model.citation,
+          explanation: model.explanation,
+        },
+      ]);
     }
   };
 
