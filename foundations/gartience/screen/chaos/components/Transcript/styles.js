@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const Text = styled.div`
   position: absolute;
-  bottom: 2vh;
-  font-size: 0.3vw; // Larger font for mobile
+  bottom: 4vh;
+  font-size: 1vw; // Larger font for mobile
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,9 +22,4 @@ export const Text = styled.div`
   transition: opacity 0.5s ease-in-out;
 
   -webkit-text-stroke: 0.02em rgba(255, 255, 255, 0.1);
-
-  @media (min-width: 768px) {
-    font-size: 3vw; // Slightly smaller for tablets
-    bottom: 4vh;
-  }
 `;

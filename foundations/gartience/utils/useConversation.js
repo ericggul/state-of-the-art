@@ -5,6 +5,8 @@ import { generateInitialConversation } from "./generateInitialConversation";
 import useMobileStore from "@/foundations/gartience/mobile/store";
 
 const TIME_OUT = 10 * 1000;
+const BLACK_TIME = 1.5 * 1000;
+const WHITE_TIME = 3 * 1000;
 
 // Add timeout utility
 const withTimeout = async (promise, timeoutMs) => {
@@ -30,6 +32,7 @@ export default function useConversation({
   setConversations,
   setEmbeddings,
   setIsblack,
+  isScreen = false,
 }) {
   const username = useMobileStore((state) => state.username);
   const [getNewText, setGetNewText] = useState(true);
@@ -63,7 +66,7 @@ export default function useConversation({
       setGetNewText(false);
 
       const temperature = Math.min(0.7 + (loop / 10) * 0.25, 1.3);
-      const maxTokens = level >= 5 ? 27 : 22;
+      const maxTokens = isScreen ? 32 : 22;
 
       const response = await withTimeout(
         axios.post("/api/openai/gpt-4o", {
@@ -96,8 +99,7 @@ export default function useConversation({
   }
 
   async function getNextText() {
-    const timeout =
-      CONST.WHITE_TIME[Math.min(level, CONST.WHITE_TIME.length - 1)];
+    const timeout = WHITE_TIME;
     await new Promise((r) => setTimeout(r, timeout));
     hasFetchedText.current = false;
     setGetNewText(true);
@@ -113,10 +115,7 @@ export default function useConversation({
         TIME_OUT
       );
 
-      const timeout =
-        CONST.EXTRA_BLACK_TIME[
-          Math.min(level, CONST.EXTRA_BLACK_TIME.length - 1)
-        ];
+      const timeout = BLACK_TIME;
       await new Promise((r) => setTimeout(r, timeout));
 
       setEmbeddings((prev) => [...prev, { embeddings, tokens }]);

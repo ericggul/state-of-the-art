@@ -22,32 +22,47 @@ export default function usePosCalc({
 
   const [tokenPositions, setTokenPositions] = useState([]);
 
-  // Memoized position generatorx
-  const generatePositions = useCallback(() => {
+  // Memoized position generator for animated state
+  const generateRandomPositions = useCallback(() => {
     return tokens.map(() => ({
       x: getRandom(range.x[0], range.x[1]) * windowWidth,
-      y:
-        (type === "input"
-          ? getRandom(range.y[0], (range.y[1] - range.y[0]) / 2)
-          : getRandom((range.y[1] - range.y[0]) / 2, range.y[1])) *
-        windowHeight,
+      y: getRandom(range.y[0], range.y[1]) * windowHeight,
     }));
   }, [tokens, range, windowWidth, windowHeight]);
 
+  // Memoized position calculator for non-animated state
+  const generateStaticPositions = useCallback(() => {
+    return tokens.map((_, idx) => {
+      const xPos =
+        windowWidth / 2 -
+        ((wordLength - 1) * wordInterval) / 2 +
+        idx * wordInterval;
+      let yPos = windowHeight / 2;
+
+      if (type === "input") {
+        yPos = windowHeight * 0.2;
+      } else if (type === "output") {
+        yPos = windowHeight * 0.8;
+      }
+
+      return { x: xPos, y: yPos };
+    });
+  }, [tokens, wordLength, wordInterval, windowWidth, windowHeight, type]);
+
   useEffect(() => {
     if (isAnimating) {
-      setTokenPositions(generatePositions());
+      setTokenPositions(generateRandomPositions());
 
       const intervalId = setInterval(() => {
-        setTokenPositions(generatePositions());
+        setTokenPositions(generateRandomPositions());
       }, 100 * timeUnit);
 
       return () => clearInterval(intervalId);
     } else {
       // Set static positions when not animating
-      setTokenPositions(generatePositions());
+      setTokenPositions(generateStaticPositions());
     }
-  }, [generatePositions, isAnimating]);
+  }, [generateRandomPositions, generateStaticPositions, isAnimating, timeUnit]);
 
   const wordPosCalc = useCallback(
     (idx) => {

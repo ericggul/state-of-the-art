@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
-import SingleRandom from "./SingleRandom";
+import SingleRandom from "./SingleRandom2";
 import Transcript from "./components/Transcript";
 
 import useAudio from "../../utils/useAudio";
@@ -22,6 +22,7 @@ export default function Wrapper() {
     setConversations,
     setEmbeddings,
     setIsblack,
+    isScreen: true,
   });
 
   const [inputEmbeddings, setInputEmbeddings] = useState(INPUT_EMBEDDINGS);
@@ -49,14 +50,14 @@ export default function Wrapper() {
         background: isblack ? "black" : "white",
       }}
     >
-      <SingleRandom
+      {/* <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
         range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
-        visible={isblack && length <= 15}
+        visible={true}
         timeUnit={1}
-      />
+      /> */}
 
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}

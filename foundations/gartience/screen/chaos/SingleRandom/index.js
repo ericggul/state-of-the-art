@@ -13,45 +13,87 @@ const BEZIER_DEFAULT = {
 
 const getRandom = (a, b) => Math.random() * (b - a) + a;
 
-function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range, visible, timeUnit }) {
-  const { embeddings: inputEmbeddings, tokens: inputTokens } = newInputEmbeddings;
-  const { embeddings: outputEmbeddings, tokens: outputTokens } = newOutputEmbeddings;
+const getWeightedRandom = (min, max) => {
+  const range = max - min;
+  const mid = (min + max) / 2;
+
+  // Generate a random number between 0 and 1
+  const r = Math.random();
+
+  // Use the inverse cumulative distribution function of a triangular distribution
+  let result;
+  if (r < 0.5) {
+    result = min + Math.sqrt(r * range * (mid - min));
+  } else {
+    result = max - Math.sqrt((1 - r) * range * (max - mid));
+  }
+
+  return result;
+};
+
+const useBezierParams = (
+  inputTokens,
+  outputTokens,
+  xRange,
+  yRange,
+  visible,
+  isAnimating,
+  timeUnit
+) => {
+  const [bezierParams, setBezierParams] = useState({});
+
+  const updateBezierParams = useCallback(() => {
+    if (!visible || !isAnimating) return;
+
+    const newParams = {};
+    inputTokens.forEach((_, i) => {
+      outputTokens.forEach((_, j) => {
+        const key = `${i}-${j}`;
+        newParams[key] = {
+          controlX1Factor: getWeightedRandom(-xRange, xRange),
+          controlX2Factor: getWeightedRandom(0.7 - xRange, 0.7 + xRange),
+          controlY1Factor: getWeightedRandom(10 - yRange, 10 + yRange),
+          controlY2Factor: getWeightedRandom(10 - yRange, 10 + yRange),
+        };
+      });
+    });
+
+    setBezierParams(newParams);
+  }, [inputTokens, outputTokens, xRange, yRange, visible, isAnimating]);
+
+  useRandomInterval(updateBezierParams, 5 * timeUnit, 70 * timeUnit, visible);
+
+  return bezierParams;
+};
+
+function SingleRandom({
+  newInputEmbeddings,
+  newOutputEmbeddings,
+  isblack,
+  range,
+  visible,
+  timeUnit,
+}) {
+  const { embeddings: inputEmbeddings, tokens: inputTokens } =
+    newInputEmbeddings;
+  const { embeddings: outputEmbeddings, tokens: outputTokens } =
+    newOutputEmbeddings;
 
   const crossSimilarityMatrix = useComputeCrossSimlarity({
     newInputEmbeddings,
     newOutputEmbeddings,
   });
 
-  const [bezierParams, setBezierParams] = useState(BEZIER_DEFAULT);
   const [xRange, setXRange] = useState(0);
   const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Update ranges and animation state based on `isblack` and `visible` only when necessary
   useEffect(() => {
-    if (isblack) {
-      setXRange(1.5);
-      setYRange(18);
-    } else {
-      setXRange(0);
-      setYRange(0);
-    }
+    setXRange(1.5);
+    setYRange(18);
     setIsAnimating(isblack && visible);
   }, [isblack, visible]);
-
-  // Use a memoized callback to update the bezier parameters
-  const updateBezierParams = useCallback(() => {
-    if (!visible) return;
-    setBezierParams({
-      controlX1Factor: getRandom(-xRange, xRange),
-      controlX2Factor: getRandom(0.7 - xRange, 0.7 + xRange),
-      controlY1Factor: getRandom(10 - yRange, 10 + yRange),
-      controlY2Factor: getRandom(10 - yRange, 10 + yRange),
-    });
-  }, [xRange, yRange, visible]);
-
-  // Use the custom interval hook to call the bezier update within the given time range
-  useRandomInterval(updateBezierParams, 5 * timeUnit, 70 * timeUnit, visible);
 
   const inputPosCalc = usePosCalc({
     tokens: inputTokens,
@@ -69,24 +111,38 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
     timeUnit,
   });
 
-  // Memoized bezier path creation to avoid recalculations
+  const bezierParams = useBezierParams(
+    inputTokens,
+    outputTokens,
+    xRange,
+    yRange,
+    visible,
+    isAnimating,
+    timeUnit
+  );
+
   const createBezierPath = useCallback(
-    (x1, y1, x2, y2) => {
+    (x1, y1, x2, y2, bezierParam) => {
       if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
         return "";
       }
 
-      const controlX1 = x1 + (x2 - x1) * bezierParams.controlX1Factor;
-      const controlY1 = y1 + inputPosCalc.yMargin * bezierParams.controlY1Factor;
-      const controlX2 = x1 + (x2 - x1) * bezierParams.controlX2Factor;
-      const controlY2 = y2 - outputPosCalc.yMargin * bezierParams.controlY2Factor;
+      const controlX1 = x1 + (x2 - x1) * bezierParam.controlX1Factor;
+      const controlY1 = y1 + inputPosCalc.yMargin * bezierParam.controlY1Factor;
+      const controlX2 = x1 + (x2 - x1) * bezierParam.controlX2Factor;
+      const controlY2 =
+        y2 - outputPosCalc.yMargin * bezierParam.controlY2Factor;
 
-      return `M${x1},${y1 + inputPosCalc.yMargin} C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${y2 - outputPosCalc.yMargin}`;
+      return `M${x1},${
+        y1 + inputPosCalc.yMargin
+      } C${controlX1},${controlY1} ${controlX2},${controlY2} ${x2},${
+        y2 - outputPosCalc.yMargin
+      }`;
     },
-    [bezierParams, inputPosCalc.yMargin, outputPosCalc.yMargin]
+    [inputPosCalc.yMargin, outputPosCalc.yMargin]
   );
 
-  // Memoized paths to reduce re-renders
+  // Modify paths calculation
   const paths = useMemo(() => {
     return inputTokens.flatMap((_, i) => {
       return outputTokens
@@ -95,14 +151,35 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
           if (similarity > 0.2) {
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
-            const d = createBezierPath(x1, y1, x2, y2);
-            return <path key={`arc-${i}-${j}`} d={d} fill="none" strokeWidth={Math.pow(similarity, 3) * 4} />;
+            const d = createBezierPath(
+              x1,
+              y1,
+              x2,
+              y2,
+              bezierParams[`${i}-${j}`] || BEZIER_DEFAULT
+            );
+            return (
+              <path
+                key={`arc-${i}-${j}`}
+                d={d}
+                fill="none"
+                strokeWidth={Math.pow(similarity, 3) * 4}
+              />
+            );
           }
           return null;
         })
-        .filter(Boolean); // Filter out null values
+        .filter(Boolean);
     });
-  }, [inputTokens, outputTokens, crossSimilarityMatrix, inputPosCalc, outputPosCalc, createBezierPath]);
+  }, [
+    inputTokens,
+    outputTokens,
+    crossSimilarityMatrix,
+    inputPosCalc,
+    outputPosCalc,
+    createBezierPath,
+    bezierParams,
+  ]);
 
   return (
     <S.Container
@@ -119,11 +196,23 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
         }}
       >
         {inputTokens.map((token, i) => (
-          <TokenComponent key={`input-${i}`} i={i} token={token} wordPosCalc={inputPosCalc.wordPosCalc} wordInterval={inputPosCalc.wordInterval} />
+          <TokenComponent
+            key={`input-${i}`}
+            i={i}
+            token={token}
+            wordPosCalc={inputPosCalc.wordPosCalc}
+            wordInterval={inputPosCalc.wordInterval}
+          />
         ))}
 
         {outputTokens.map((token, i) => (
-          <TokenComponent key={`output-${i}`} i={i} token={token} wordPosCalc={outputPosCalc.wordPosCalc} wordInterval={outputPosCalc.wordInterval} />
+          <TokenComponent
+            key={`output-${i}`}
+            i={i}
+            token={token}
+            wordPosCalc={outputPosCalc.wordPosCalc}
+            wordInterval={outputPosCalc.wordInterval}
+          />
         ))}
       </div>
 
@@ -133,7 +222,12 @@ function SingleRandom({ newInputEmbeddings, newOutputEmbeddings, isblack, range,
 }
 
 // Single reusable Token component for both input and output tokens
-const TokenComponent = React.memo(function TokenComponent({ i, wordPosCalc, wordInterval, token }) {
+const TokenComponent = React.memo(function TokenComponent({
+  i,
+  wordPosCalc,
+  wordInterval,
+  token,
+}) {
   return (
     <S.Token
       style={{
