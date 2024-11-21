@@ -13,23 +13,24 @@ import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOr
 
 import Connections from "./connections";
 import { STRUCTURE } from "./structure";
+import DeviceOrientationControls from "./DeviceOrientationControls";
 
 // Main component to render the neural network
-export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true, true, true] }) {
+export default function FC3D({
+  layersExpanded = [true, true, true, true, true],
+  enableDeviceControls = true,
+}) {
   return (
     <S.Container>
       <Canvas
         camera={{
-          position: [-15, 0, STRUCTURE[layerIdx].position[2] + 10],
-          // lookAt: [0, 0, -15],
+          position: [-15, 0, 10],
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
       >
-        {/* <Perf position="top-left" /> */}
-
-        <CameraLookAt layerIdx={layerIdx} />
+        <CameraLookAt />
         <Suspense fallback={null}>
           <Environment preset="city" />
         </Suspense>
@@ -39,23 +40,30 @@ export default function FC3D({ layerIdx = 2, layersExpanded = [true, true, true,
         <directionalLight position={[10, 0, 10]} intensity={2} />
 
         {STRUCTURE.map((structureEl, i) => (
-          <Layer key={i} isFocusLayer={layerIdx == i} {...structureEl} expanded={layersExpanded[i]} />
+          <Layer
+            key={i}
+            isFocusLayer={2 == i}
+            {...structureEl}
+            expanded={layersExpanded[i]}
+          />
         ))}
 
-        <Connections layersExpanded={layersExpanded} structure={STRUCTURE} layerFrom={STRUCTURE[0]} layerTo={STRUCTURE[1]} />
+        <Connections
+          layersExpanded={layersExpanded}
+          structure={STRUCTURE}
+          layerFrom={STRUCTURE[0]}
+          layerTo={STRUCTURE[1]}
+        />
+
+        {enableDeviceControls && <DeviceOrientationControls />}
       </Canvas>
     </S.Container>
   );
 }
 
-function CameraLookAt({ layerIdx }) {
+function CameraLookAt() {
   useFrame((state) => {
-    state.camera.lookAt(
-      0,
-      0,
-
-      STRUCTURE[layerIdx].position[2]
-    );
+    state.camera.lookAt(0, 0, 0);
   });
 
   return null;
@@ -79,10 +87,35 @@ const Layer = (props) => {
     <group position={props.position}>
       {smoothedExpanded > 0 &&
         new Array(props.grid.xCount).fill(0).map((_, i) => (
-          <animated.group key={i} position={[(props.grid.xInterval * i - ((props.grid.xCount - 1) * props.grid.xInterval) / 2) * smoothedExpanded, 0, 0]}>
+          <animated.group
+            key={i}
+            position={[
+              (props.grid.xInterval * i -
+                ((props.grid.xCount - 1) * props.grid.xInterval) / 2) *
+                smoothedExpanded,
+              0,
+              0,
+            ]}
+          >
             {new Array(props.grid.yCount).fill(0).map((_, j) => (
-              <animated.group key={j} position={[0, (props.grid.yInterval * j - ((props.grid.yCount - 1) * props.grid.yInterval) / 2) * smoothedExpanded, 0]}>
-                <Node {...props.node} isFocusLayer={props.isFocusLayer} wireframe={props.isFocusLayer ? 20 : 1} color={props.color} key={j} opacity={smoothedExpanded} />
+              <animated.group
+                key={j}
+                position={[
+                  0,
+                  (props.grid.yInterval * j -
+                    ((props.grid.yCount - 1) * props.grid.yInterval) / 2) *
+                    smoothedExpanded,
+                  0,
+                ]}
+              >
+                <Node
+                  {...props.node}
+                  isFocusLayer={props.isFocusLayer}
+                  wireframe={props.isFocusLayer ? 20 : 1}
+                  color={props.color}
+                  key={j}
+                  opacity={smoothedExpanded}
+                />
               </animated.group>
             ))}
           </animated.group>
@@ -96,7 +129,11 @@ const Layer = (props) => {
             {...props.unexpandedNode}
             color={props.color}
             position={[0, 0, 0]}
-            scale={[1 - smoothedExpanded, 1 - smoothedExpanded, 1 - smoothedExpanded]}
+            scale={[
+              1 - smoothedExpanded,
+              1 - smoothedExpanded,
+              1 - smoothedExpanded,
+            ]}
           />
         </>
       )}
@@ -105,10 +142,20 @@ const Layer = (props) => {
 };
 
 // Component to render each node as a box
-const Node = ({ position, size, color = "red", opacity = 0.4, scale, wireframe = 10, isFocusLayer }) => {
+const Node = ({
+  position,
+  size,
+  color = "red",
+  opacity = 0.4,
+  scale,
+  wireframe = 10,
+  isFocusLayer,
+}) => {
   return (
     <mesh position={position} scale={scale}>
-      <boxGeometry args={[...size, wireframe, wireframe, Math.ceil(wireframe / 3)]} />
+      <boxGeometry
+        args={[...size, wireframe, wireframe, Math.ceil(wireframe / 3)]}
+      />
       <meshStandardMaterial
         color={color}
         roughness={0.2}

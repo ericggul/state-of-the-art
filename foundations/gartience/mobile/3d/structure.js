@@ -24,8 +24,8 @@ export const STRUCTURE = [
       size: [8, 8, 2],
     },
     grid: {
-      xCount: 5,
-      yCount: 5,
+      xCount: 4,
+      yCount: 4,
       xInterval: 3,
       yInterval: 3,
     },
@@ -57,8 +57,8 @@ export const STRUCTURE = [
       size: [8, 8, 2],
     },
     grid: {
-      xCount: 5,
-      yCount: 5,
+      xCount: 4,
+      yCount: 4,
       xInterval: 3,
       yInterval: 3,
     },
