@@ -8,7 +8,7 @@ export const STRUCTURE = [
       size: [8, 8, 2],
     },
     grid: {
-      xCount: 3,
+      xCount: 2,
       yCount: 2,
       xInterval: 5,
       yInterval: 5,

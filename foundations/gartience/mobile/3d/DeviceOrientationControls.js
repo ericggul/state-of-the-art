@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 
 export default function DeviceOrientationControls() {
   const orientationRef = useRef({
@@ -12,7 +13,7 @@ export default function DeviceOrientationControls() {
   const eulerRef = useRef(new THREE.Euler());
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
-  const initialLengthRef = useRef(null);
+  const orbitControlsRef = useRef();
 
   useEffect(() => {
     const handleDeviceOrientation = (event) => {
@@ -45,22 +46,36 @@ export default function DeviceOrientationControls() {
     eulerRef.current.set(betaRad, alphaRad, gammaRad, "YXZ");
     quaternionRef.current.setFromEuler(eulerRef.current);
 
-    // Store the initial length on the first frame
-    if (initialLengthRef.current === null) {
-      initialLengthRef.current = state.camera.position.length();
-    }
-    const length = initialLengthRef.current;
+    // Use current camera distance for orbit
+    const currentDistance = state.camera.position.length();
 
     targetPositionRef.current
-      .set(0, 0, length)
+      .set(0, 0, currentDistance)
       .applyQuaternion(quaternionRef.current);
 
-    // Adjust for initial camera offset
+    // Adjust for initial camera offset while maintaining distance
+    targetPositionRef.current.normalize().multiplyScalar(currentDistance);
     targetPositionRef.current.z += 10;
 
-    state.camera.position.lerp(targetPositionRef.current, 0.12);
+    state.camera.position.lerp(targetPositionRef.current, 0.06);
     state.camera.lookAt(0, 0, 0);
+
+    // Update OrbitControls target
+    if (orbitControlsRef.current) {
+      orbitControlsRef.current.target.set(0, 0, 0);
+      orbitControlsRef.current.update();
+    }
   });
 
-  return null;
+  return (
+    <OrbitControls
+      ref={orbitControlsRef}
+      enablePan={true}
+      enableZoom={true}
+      enableRotate={false}
+      minDistance={5}
+      maxDistance={100}
+      zoomSpeed={0.5}
+    />
+  );
 }

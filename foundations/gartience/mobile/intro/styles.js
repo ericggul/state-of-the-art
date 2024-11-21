@@ -22,15 +22,6 @@ const scanline = keyframes`
   }
 `;
 
-const pulse = keyframes`
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-`;
-
 // Update the letterAppear animation
 const letterAppear = keyframes`
   0% {
@@ -74,6 +65,8 @@ export const IntroContainer = styled.div`
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+
+  font-family: var(--font-geist-mono), monospace;
 
   &::before {
     content: "";

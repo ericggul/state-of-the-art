@@ -1,36 +1,50 @@
 "use client";
 
-import { useMemo, useEffect, useState, useRef, Suspense } from "react";
+import {
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+  Suspense,
+  useCallback,
+} from "react";
 import * as S from "./styles";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Wireframe, Environment } from "@react-three/drei";
-import { useSpring, animated, Globals } from "@react-spring/three";
-import * as THREE from "three";
-import { Perf } from "r3f-perf";
-
-import useDeviceOrientationSupported from "@/utils/hooks/orientation/useDeviceOrientationSupported";
+import { OrbitControls, Environment } from "@react-three/drei";
+import { useSpring, animated } from "@react-spring/three";
 
 import Connections from "./connections";
 import { STRUCTURE } from "./structure";
 import DeviceOrientationControls from "./DeviceOrientationControls";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-// Main component to render the neural network
-export default function FC3D({
-  layersExpanded = [true, true, true, true, true],
-  enableDeviceControls = true,
-}) {
+export default function FC3D({ enableDeviceControls = true }) {
+  const [expandedLayers, setExpandedLayers] = useState(
+    new Array(STRUCTURE.length).fill(true)
+  );
+
+  const toggleRandomLayer = useCallback(() => {
+    const randomLayerIndex = Math.floor(Math.random() * STRUCTURE.length);
+    setExpandedLayers((prev) => {
+      const newExpanded = [...prev];
+      newExpanded[randomLayerIndex] = !prev[randomLayerIndex];
+      return newExpanded;
+    });
+  }, []);
+
+  useRandomInterval(toggleRandomLayer, 500, 2000, true);
+
   return (
     <S.Container>
       <Canvas
         camera={{
-          position: [-15, 0, 10],
-          fov: 50,
+          position: [-15, 0, 15],
+          fov: 60,
           near: 0.1,
           far: 1000,
         }}
       >
-        <CameraLookAt />
         <Suspense fallback={null}>
           <Environment preset="city" />
         </Suspense>
@@ -42,14 +56,22 @@ export default function FC3D({
         {STRUCTURE.map((structureEl, i) => (
           <Layer
             key={i}
-            isFocusLayer={2 == i}
             {...structureEl}
-            expanded={layersExpanded[i]}
+            layerIdx={i}
+            expanded={expandedLayers[i]}
+            setExpanded={() => {
+              setExpandedLayers((prev) => {
+                const newExpanded = [...prev];
+                newExpanded[i] = !prev[i];
+                return newExpanded;
+              });
+            }}
+            isFocusLayer={2 == i}
           />
         ))}
 
         <Connections
-          layersExpanded={layersExpanded}
+          layersExpanded={expandedLayers}
           structure={STRUCTURE}
           layerFrom={STRUCTURE[0]}
           layerTo={STRUCTURE[1]}
@@ -61,30 +83,31 @@ export default function FC3D({
   );
 }
 
-function CameraLookAt() {
-  useFrame((state) => {
-    state.camera.lookAt(0, 0, 0);
-  });
-
-  return null;
-}
-
 const Layer = (props) => {
-  const { expanded } = props;
-
+  const { expanded, setExpanded } = props;
   const [smoothedExpanded, setSmoothedExpanded] = useState(0);
+
+  function handleClick(e) {
+    e.stopPropagation();
+    setExpanded();
+  }
 
   useSpring({
     from: { smoothedExpanded: 0 },
     to: { smoothedExpanded: expanded ? 1 : 0 },
-    config: { mass: 1, tension: 120, friction: 13 },
+    config: {
+      mass: 1.5,
+      tension: 140,
+      friction: 15,
+      clamp: false,
+    },
     onChange: (value) => {
       setSmoothedExpanded(value.value.smoothedExpanded);
     },
   });
 
   return (
-    <group position={props.position}>
+    <group position={props.position} onClick={handleClick}>
       {smoothedExpanded > 0 &&
         new Array(props.grid.xCount).fill(0).map((_, i) => (
           <animated.group
@@ -122,26 +145,23 @@ const Layer = (props) => {
         ))}
 
       {smoothedExpanded < 1 && (
-        <>
-          <Node
-            isFocusLayer={props.isFocusLayer}
-            wireframe={props.isFocusLayer ? 50 : 1}
-            {...props.unexpandedNode}
-            color={props.color}
-            position={[0, 0, 0]}
-            scale={[
-              1 - smoothedExpanded,
-              1 - smoothedExpanded,
-              1 - smoothedExpanded,
-            ]}
-          />
-        </>
+        <Node
+          isFocusLayer={props.isFocusLayer}
+          wireframe={props.isFocusLayer ? 50 : 1}
+          {...props.unexpandedNode}
+          color={props.color}
+          position={[0, 0, 0]}
+          scale={[
+            1 - smoothedExpanded,
+            1 - smoothedExpanded,
+            1 - smoothedExpanded,
+          ]}
+        />
       )}
     </group>
   );
 };
 
-// Component to render each node as a box
 const Node = ({
   position,
   size,
@@ -160,10 +180,8 @@ const Node = ({
         color={color}
         roughness={0.2}
         metalness={0.9}
-        //opacity
         opacity={opacity}
         transparent={true}
-        //wireframe
         wireframe={isFocusLayer}
         wireframeLinewidth={3}
       />
