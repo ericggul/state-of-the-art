@@ -175,10 +175,10 @@ export default function MultiModalLayers({ structure, style, model }) {
             useGivenInterval={true}
             idx={i * ANIM_SPEED}
             rotation={
-              layer.type === "mlp"
+              layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]
-                : layer.type === "attention"
-                ? [0, Math.PI / 2, 0]
+                : layer.type === "attention" || layer.type.includes("attention")
+                ? [0, 0, Math.PI / 2]
                 : [0, 0, 0]
             }
           />
@@ -197,10 +197,10 @@ export default function MultiModalLayers({ structure, style, model }) {
             useGivenInterval={true}
             idx={i * ANIM_SPEED}
             rotation={
-              layer.type === "mlp"
+              layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]
-                : layer.type === "attention"
-                ? [0, Math.PI / 2, 0]
+                : layer.type === "attention" || layer.type.includes("attention")
+                ? [0, 0, Math.PI / 2]
                 : [0, 0, 0]
             }
           />
@@ -208,7 +208,7 @@ export default function MultiModalLayers({ structure, style, model }) {
       </group>
 
       {/* Text Stream */}
-      <group>
+      <group rotation={[Math.PI / 2, 0, 0]}>
         {positionedTextLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-text-${layer.name}-${i}`}
@@ -218,12 +218,19 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={(i + 1 / 3) * ANIM_SPEED}
+            rotation={
+              layer.type === "mlp" || layer.type.includes("mlp")
+                ? [Math.PI / 2, 0, 0]
+                : layer.type === "attention" || layer.type.includes("attention")
+                ? [0, 0, Math.PI / 2]
+                : [0, 0, 0]
+            }
           />
         ))}
       </group>
 
       {/* Fusion Layers */}
-      <group>
+      <group rotation={[Math.PI / 2, 0, 0]}>
         {positionedFusionLayers.map((layer, i) => (
           <Sublayer
             key={`${model}-fusion-${layer.name}-${i}`}
@@ -233,6 +240,13 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={(i + 2 / 3) * ANIM_SPEED}
+            rotation={
+              layer.type === "mlp" || layer.type.includes("mlp")
+                ? [Math.PI / 2, 0, 0]
+                : layer.type === "attention" || layer.type.includes("attention")
+                ? [0, 0, Math.PI / 2]
+                : [0, 0, 0]
+            }
           />
         ))}
       </group>

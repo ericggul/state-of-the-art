@@ -2586,7 +2586,7 @@ export const LAYER_CONFIGS = {
     type: "multi_modal",
   },
   CLAUDE_3_VISION: {
-    layerHeight: 100, // Increased height for better visualization
+    layerHeight: 1000, // Increased height for better visualization
     keyPrefix: "claude3v",
     type: "multi_modal",
   },
