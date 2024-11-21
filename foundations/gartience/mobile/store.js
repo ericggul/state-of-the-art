@@ -3,7 +3,16 @@ import { create } from "zustand";
 const useMobileStore = create((set) => ({
   state: 0,
   chaos: false,
-  architectures: [],
+  architectures: [
+    {
+      name: "Hopfield Network",
+      version: "v2.0.1",
+      year: "1943",
+      place: "USA",
+      citation: "McCulloch & Pitts",
+      explanation: "The first artificial neuron model",
+    },
+  ],
   username: "Jeanyoon",
 
   setState: (state) => set({ state }),

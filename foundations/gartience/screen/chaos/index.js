@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import { useState, useEffect } from "react";
-import SingleRandom from "./SingleRandom2";
+import SingleRandom from "./SingleRandom";
 import Transcript from "./components/Transcript";
 
 import useAudio from "../../utils/useAudio";
@@ -11,7 +11,7 @@ import {
   OUTPUT_EMBEDDINGS,
 } from "@/foundations/test/1-relation/utils/constant-conversation";
 
-export default function Wrapper() {
+export default React.memo(function Wrapper() {
   const [isblack, setIsblack] = useState(true);
 
   const [conversations, setConversations] = useState([]);
@@ -71,4 +71,4 @@ export default function Wrapper() {
       <Transcript conversations={conversations} isblack={isblack} />
     </S.Container>
   );
-}
+});

@@ -9,7 +9,7 @@ import useResize from "@/utils/hooks/useResize";
 
 import Chaos from "./chaos";
 
-export default function Screen() {
+export default React.memo(function Screen() {
   const { state, chaos, setState, setChaos, setArchitectures, setSpeech } =
     useScreenStore();
 
@@ -26,14 +26,14 @@ export default function Screen() {
     <S.Container>
       {state >= 1 && !chaos && <QR />}
 
-      <Chaos />
+      {chaos && <Chaos />}
     </S.Container>
   );
-}
+});
 
 const URL = "https://sota-xdlab.net/gartience/mobile";
 
-function QR() {
+const QR = React.memo(function QR() {
   const [windowWidth, _] = useResize();
 
   return (
@@ -46,4 +46,4 @@ function QR() {
       />
     </S.QRContainer>
   );
-}
+});

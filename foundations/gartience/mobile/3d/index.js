@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import React, {
   useMemo,
   useEffect,
   useState,
@@ -12,6 +12,7 @@ import * as S from "./styles";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import DeviceOrientationControls from "./DeviceOrientationControls";
+import useMobileStore from "../store";
 
 // Import ALL layer components from frontend
 import BasicNNLayers from "@/foundations/frontend/arch/layers/BasicNNLayers";
@@ -51,22 +52,27 @@ const MODEL_COMPONENTS = {
   boltzmann: BoltzmannLayers,
 };
 
-export default function FC3D({
-  enableDeviceControls = true,
-  currentArchitectures = [
-    {
-      name: "Hopfield Network",
-      version: "v2.0.1",
-      year: "1943",
-      place: "USA",
-      citation: "McCulloch & Pitts",
-      explanation: "The first artificial neuron model",
-    },
-  ],
-}) {
+export default React.memo(function FC3D({ enableDeviceControls = true }) {
+  const architectures = useMobileStore((state) => state.architectures);
+
+  console.log(architectures);
+
   const {
     visualization: { modelName, structure },
-  } = useModelStructure(currentArchitectures);
+  } = useModelStructure(
+    architectures.length > 0
+      ? architectures
+      : [
+          {
+            name: "Hopfield Network",
+            version: "v2.0.1",
+            year: "1943",
+            place: "USA",
+            citation: "McCulloch & Pitts",
+            explanation: "The first artificial neuron model",
+          },
+        ]
+  );
 
   // Match the same component selection logic as ModelContainer
   const { ModelComponent, style } = useMemo(() => {
@@ -120,10 +126,7 @@ export default function FC3D({
         {enableDeviceControls && <DeviceOrientationControls />}
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
-      <ModelInfo
-        name={currentArchitectures[0]?.name}
-        year={currentArchitectures[0]?.year}
-      />
+      <ModelInfo name={architectures[0]?.name} year={architectures[0]?.year} />
     </S.Container>
   );
-}
+});

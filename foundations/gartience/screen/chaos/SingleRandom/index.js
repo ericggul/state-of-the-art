@@ -7,11 +7,9 @@ import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 const BEZIER_DEFAULT = {
   controlX1Factor: 0,
   controlX2Factor: 1,
-  controlY1Factor: 10,
+  controlY1Factor: 15,
   controlY2Factor: 5,
 };
-
-const getRandom = (a, b) => Math.random() * (b - a) + a;
 
 const getWeightedRandom = (min, max) => {
   const range = max - min;
@@ -52,8 +50,8 @@ const useBezierParams = (
         newParams[key] = {
           controlX1Factor: getWeightedRandom(-xRange, xRange),
           controlX2Factor: getWeightedRandom(0.7 - xRange, 0.7 + xRange),
-          controlY1Factor: getWeightedRandom(10 - yRange, 10 + yRange),
-          controlY2Factor: getWeightedRandom(10 - yRange, 10 + yRange),
+          controlY1Factor: getWeightedRandom(15 - yRange, 15 + yRange),
+          controlY2Factor: getWeightedRandom(15 - yRange, 15 + yRange),
         };
       });
     });
@@ -148,7 +146,7 @@ function SingleRandom({
       return outputTokens
         .map((_, j) => {
           const similarity = crossSimilarityMatrix[i][j];
-          if (similarity > 0.2) {
+          if (similarity > 0.1) {
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
             const d = createBezierPath(
@@ -163,7 +161,7 @@ function SingleRandom({
                 key={`arc-${i}-${j}`}
                 d={d}
                 fill="none"
-                strokeWidth={Math.pow(similarity, 3) * 4}
+                strokeWidth={Math.pow(similarity, 3) * 12}
               />
             );
           }

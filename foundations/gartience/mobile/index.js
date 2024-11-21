@@ -8,9 +8,16 @@ import Intro from "./intro";
 import Chaos from "./chaos";
 import ThreeScene from "./3d";
 
-export default function Mobile() {
-  const { state, setState, setChaos, setArchitectures, setUsername } =
-    useMobileStore();
+export default React.memo(function Mobile() {
+  const {
+    state,
+    chaos,
+    setState,
+    setChaos,
+    setArchitectures,
+    username,
+    setUsername,
+  } = useMobileStore();
 
   const socket = useSocketMobile({
     handleNewState: setState,
@@ -43,18 +50,23 @@ export default function Mobile() {
 
   return (
     <S.Container>
-      {/* {showThreeScene && (
-        <ThreeScene enableDeviceControls={isAccelerometerActive} />
+      {!chaos && (
+        <>
+          {showThreeScene && (
+            <ThreeScene enableDeviceControls={isAccelerometerActive} />
+          )}
+          {isIntroActive && (
+            <Intro
+              socket={socket}
+              onAccelerometerActivate={handleAccelerometerActivate}
+              onUsernameSubmit={handleUsernameSubmit}
+              initialUsername={username}
+            />
+          )}
+        </>
       )}
-      {isIntroActive && (
-        <Intro
-          socket={socket}
-          onAccelerometerActivate={handleAccelerometerActivate}
-          onUsernameSubmit={handleUsernameSubmit}
-          initialUsername={username}
-        />
-      )} */}
-      <Chaos />
+
+      {chaos && <Chaos />}
     </S.Container>
   );
-}
+});

@@ -34,7 +34,7 @@ export default function useConversation({
   setIsblack,
   isScreen = false,
 }) {
-  const username = useMobileStore((state) => state.username);
+  const username = useMobileStore((state) => state.username) || "Jeanyoon Choi";
   const [getNewText, setGetNewText] = useState(true);
   const hasFetchedText = useRef(false);
   const embeddingsCache = useRef({});
@@ -66,7 +66,8 @@ export default function useConversation({
       setGetNewText(false);
 
       const temperature = Math.min(0.7 + (loop / 10) * 0.25, 1.3);
-      const maxTokens = isScreen ? 32 : 22;
+      const maxTokens = isScreen ? 35 : 22;
+      console.log(maxTokens);
 
       const response = await withTimeout(
         axios.post("/api/openai/gpt-4o", {

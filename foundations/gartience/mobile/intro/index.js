@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import { useNameInput } from "./utils/useNameInput";
@@ -10,13 +10,13 @@ const isIOSDevice =
   /iPad|iPhone|iPod/.test(navigator.userAgent) &&
   !window.MSStream;
 
-export default function Intro({
+export default React.memo(function Intro({
   socket,
   onAccelerometerActivate,
   onUsernameSubmit,
   initialUsername,
 }) {
-  const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
+  const [introState, setIntroState] = useState(0);
   const { supportsDeviceOrientation, permission } = useAccelerometer();
   const isIOS = useMemo(() => isIOSDevice, []);
 
@@ -139,4 +139,4 @@ export default function Intro({
       {introState === 0 ? renderIntroForm() : renderAccelerometerContent()}
     </S.IntroContainer>
   );
-}
+});
