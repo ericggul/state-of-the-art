@@ -101,7 +101,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       // Calculate scroll speed (pixels per millisecond)
       const scrollSpeed =
         Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
-      const maxSpeed = 6; // Increased from 2 to 8 for faster scrolling
+      const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED; // Increased from 2 to 8 for faster scrolling
 
       if (scrollSpeed > maxSpeed) {
         // Limit the scroll position

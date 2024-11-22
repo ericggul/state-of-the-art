@@ -26,7 +26,8 @@ export const Wrapper = styled.div`
 
 export const Row = styled.div`
   display: flex;
-  ${FlexCenterStyle}
+  // ${FlexCenterStyle}
+  align-items: center;
   width: 100%;
   height: 30vh;
   margin-top: 10vh;

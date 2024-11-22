@@ -79,11 +79,23 @@ export default function Dashboard() {
             <ModelDiagram model={currentModel} />
           </Card>
 
-          {hasPerformanceData(currentModel) && (
-            <Card title="Performance" layout={LAYOUT[0][2]}>
+          <Card title="Performance" layout={LAYOUT[0][2]}>
+            {hasPerformanceData(currentModel) ? (
               <PerformanceChart performance={currentModel.performance} />
-            </Card>
-          )}
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                No performance data available
+              </div>
+            )}
+          </Card>
         </S.Row>
 
         <S.Row>

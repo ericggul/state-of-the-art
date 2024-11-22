@@ -2,7 +2,6 @@ import { DEFAULT_MODEL } from "./constants";
 import { readCsv } from "./readCsv";
 import { getModelStructure } from "@/foundations/frontend/arch-models";
 import { formatArchitectureFromStructure } from "./architectureFormatter";
-import { getCachedCsvData } from "./cache";
 
 const processArrayFields = (row, fields) => {
   return fields.reduce((acc, field) => {
@@ -129,34 +128,20 @@ const convertCsvRowToModel = (row, currentArchitecture) => {
 };
 
 export async function getModelData(currentArchitecture) {
-  if (!currentArchitecture?.name) {
-    console.error("Invalid currentArchitecture:", currentArchitecture);
-    return DEFAULT_MODEL;
-  }
-
   try {
-    const csvData = await getCachedCsvData("/db/1122.csv");
-
-    if (!csvData || csvData.length === 0) {
-      console.error("No CSV data loaded");
-      throw new Error("No CSV data available");
-    }
-
-    console.log(
-      `Looking for model: ${currentArchitecture.name} (${currentArchitecture.version})`
-    );
-
+    const csvData = await readCsv("/db/1122.csv");
     const matchingRow = csvData.find(
       (row) =>
         row.name === currentArchitecture.name &&
         row.version === currentArchitecture.version
     );
 
+    console.log(csvData, matchingRow);
+
     if (matchingRow) {
       return convertCsvRowToModel(matchingRow, currentArchitecture);
     }
 
-    console.warn(`No matching data found for ${currentArchitecture.name}`);
     return {
       ...DEFAULT_MODEL,
       id: currentArchitecture.version,
@@ -164,7 +149,6 @@ export async function getModelData(currentArchitecture) {
       architecture: getArchitectureData(currentArchitecture.name),
     };
   } catch (error) {
-    console.error("Error in getModelData:", error);
     return {
       ...DEFAULT_MODEL,
       id: currentArchitecture.version,
