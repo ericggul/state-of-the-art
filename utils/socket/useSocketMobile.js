@@ -33,6 +33,7 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
         if (socket.current) {
           try {
             stopHeartbeat();
+
             socket.current.emit("mobile-new-visibility-change", {
               mobileId,
               isVisible: false,
@@ -42,6 +43,7 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
             socket.current.off("connect");
             socket.current.off("disconnect");
             socket.current.disconnect();
+            console.log("Socket disconnected and cleaned up");
           } catch (e) {
             console.error("Cleanup failed:", e);
           }

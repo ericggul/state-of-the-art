@@ -125,4 +125,23 @@ export default function mobileSetup({ socket, io }) {
   socket.on("screen-new-conversation", (data) => {
     socket.to("screen").emit("new-screen-conversation", data);
   });
+
+  socket.on("disconnect", () => {
+    if (activeMobile?.socketId === socket.id) {
+      console.log(`🔌 Mobile disconnected: ${activeMobile.mobileId}`);
+
+      io.to("controller").emit("new-mobile-visibility-change", {
+        mobileId: activeMobile.mobileId,
+        isVisible: false,
+        origin: "socket_disconnect",
+      });
+      io.to("screen").emit("new-mobile-visibility-change", {
+        mobileId: activeMobile.mobileId,
+        isVisible: false,
+        origin: "socket_disconnect",
+      });
+
+      activeMobile = null;
+    }
+  });
 }
