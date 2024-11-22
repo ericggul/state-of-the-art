@@ -20,6 +20,7 @@ const DEFAULT_STATE = {
   introState: 0,
   isTransition: false,
   isEnding: false,
+  lastInteractionTime: Date.now(),
 };
 
 // Reset state (excluding device-specific settings)
@@ -35,6 +36,7 @@ const RESET_STATE = {
   userName: "",
   introState: 0,
   zoomFactor: 1,
+  lastInteractionTime: Date.now(),
 };
 
 const useScreenStore = create((set) => ({
@@ -59,7 +61,9 @@ const useScreenStore = create((set) => ({
   handleNewControllerArchitectures: (data) => {
     console.log("New architectures received:", data);
     set((state) => {
-      const updates = {};
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
 
       if (!state.mobileVisibility) {
         updates.mobileVisibility = true;
@@ -73,7 +77,7 @@ const useScreenStore = create((set) => ({
         updates.introState = 3;
       }
 
-      return Object.keys(updates).length ? updates : state;
+      return updates;
     });
   },
 
@@ -83,7 +87,9 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {};
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
 
       if (!state.mobileVisibility) {
         updates.mobileVisibility = true;
@@ -104,7 +110,12 @@ const useScreenStore = create((set) => ({
   handleNewSpeech: (data) => {
     set((state) => {
       const newText = data.text || "";
-      return state.latestSpeech !== newText ? { latestSpeech: newText } : state;
+      return state.latestSpeech !== newText
+        ? {
+            latestSpeech: newText,
+            lastInteractionTime: Date.now(),
+          }
+        : state;
     });
   },
 
@@ -115,7 +126,9 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {};
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
 
       if (state.mobileVisibility !== data.isVisible) {
         updates.mobileVisibility = data.isVisible;
@@ -136,7 +149,9 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {};
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
 
       if (state.targetMobileId !== data.mobileId) {
         updates.targetMobileId = data.mobileId;
@@ -144,16 +159,17 @@ const useScreenStore = create((set) => ({
 
       if (state.stage !== "Frontend") {
         updates.stage = "Frontend";
-        // updates.isEnding = false;
       }
 
-      return Object.keys(updates).length ? updates : state;
+      return updates;
     });
   },
 
   handleNewMobileIntro: (data) => {
     set((state) => {
-      const updates = {};
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
       console.log("data", data);
 
       switch (data.type) {

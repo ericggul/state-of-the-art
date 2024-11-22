@@ -18,8 +18,8 @@ export default function CommonScene({ children, style }) {
     <>
       <Suspense fallback={null}>
         <Environment
-          // preset={style.lighting.environment || "apartment"}
-          preset="apartment"
+          preset={style.lighting.environment || "apartment"}
+          // preset="apartment"
           intensity={style.lighting.envIntensity || 0.1}
           path="https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/hdri/"
         />

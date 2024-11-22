@@ -7,6 +7,7 @@ import { Suspense, useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
+import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 
 import * as CONST from "@/utils/constant";
 
@@ -33,6 +34,7 @@ const Idle = dynamic(() => import("@/components/screen/idle"));
 const Intro = dynamic(() => import("@/components/screen/intro"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
+const Ending = dynamic(() => import("@/components/screen/ending"));
 
 // SearchParams wrapper component
 function SearchParamsWrapper({ children }) {
@@ -89,6 +91,7 @@ function RelationPageContent({ idx, test }) {
   });
 
   useScreenVisibility();
+  useInactivityCheck();
 
   const FrontendComponent = COMPONENTS[idx] || (() => <div>Not Found</div>);
 
@@ -109,6 +112,7 @@ function RelationPageContent({ idx, test }) {
       {(stage === "Backend" || iteration >= CONST.MIX_BACKEND_ITERATION) && (
         <Backend socket={socket} />
       )}
+      {isEnding && <Ending />}
     </>
   );
 }

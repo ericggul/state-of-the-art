@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import useScreenStore from "@/components/screen/store";
 import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
+import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 
 // Keep all dynamic imports together
 const Idle = dynamic(() => import("@/components/screen/idle"));
@@ -14,6 +15,7 @@ const Intro = dynamic(() => import("@/components/screen/intro"));
 const Frontend = dynamic(() => import("@/components/frontend"));
 const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
+const Ending = dynamic(() => import("@/components/screen/ending"));
 
 import * as CONST from "@/utils/constant";
 
@@ -48,6 +50,7 @@ function ScreenContent({ test }) {
     stage,
     isTransition,
     iteration,
+    isEnding,
   } = useScreenStore();
 
   useEffect(() => {
@@ -66,6 +69,7 @@ function ScreenContent({ test }) {
   });
 
   useScreenVisibility();
+  useInactivityCheck();
 
   // Simple render for test mode
   if (test) {
@@ -90,6 +94,7 @@ function ScreenContent({ test }) {
       {(stage === "Backend" || iteration >= CONST.MIX_BACKEND_ITERATION) && (
         <Backend socket={socket} />
       )}
+      {isEnding && <Ending />}
     </Suspense>
   );
 }

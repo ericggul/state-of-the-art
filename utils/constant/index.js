@@ -40,3 +40,6 @@ export const API_TIMEOUT = 15 * 1000;
 //heartbeat: mobile
 export const HEARTBEAT_INTERVAL = 500;
 export const HEARTBEAT_TIMEOUT = 1500;
+
+///inactivity from frontend
+export const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 5 minutes in milliseconds
