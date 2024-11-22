@@ -1,4 +1,4 @@
-import { OBJECT_ARRAY } from "./v3";
+import { OBJECT_ARRAY } from "./v4";
 
 export const DATA_NODES_LINKS = {
   // Update nodes to include version information

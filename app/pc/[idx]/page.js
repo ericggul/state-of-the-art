@@ -71,6 +71,7 @@ function RelationPageContent({ idx, test }) {
     stage,
     isTransition,
     iteration,
+    isEnding,
   } = useScreenStore();
 
   // Only run effects if not in test mode
