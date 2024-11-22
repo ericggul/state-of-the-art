@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { HEARTBEAT_INTERVAL } from "@/utils/constant";
 
 export default function useVisibilityCheck({
   socket,

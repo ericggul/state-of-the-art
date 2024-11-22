@@ -1,3 +1,6 @@
+// Constants
+import { HEARTBEAT_TIMEOUT, HEARTBEAT_INTERVAL } from "@/utils/constant";
+
 // Track single active mobile
 let activeMobile = null;
 
@@ -15,6 +18,7 @@ export default function mobileSetup({ socket, io }) {
     activeMobile = {
       mobileId,
       socketId: socket.id,
+      lastHeartbeat: Date.now(),
       status: "active",
     };
 
@@ -33,7 +37,7 @@ export default function mobileSetup({ socket, io }) {
     socket.join("controller");
   });
 
-  //////VISIBILITY
+  //////VISIBILITY & HEARTBEAT////
   socket.on("mobile-new-visibility-change", (data) => {
     if (activeMobile?.mobileId === data.mobileId) {
       console.log(`👁️ Visibility change for ${data.mobileId}:`, {
@@ -42,11 +46,46 @@ export default function mobileSetup({ socket, io }) {
       });
 
       activeMobile.status = data.isVisible ? "active" : "inactive";
+      activeMobile.lastHeartbeat = Date.now();
 
       socket.to("controller").emit("new-mobile-visibility-change", data);
       socket.to("screen").emit("new-mobile-visibility-change", data);
     }
   });
+
+  socket.on("mobile-new-heartbeat", ({ mobileId }) => {
+    if (activeMobile?.mobileId === mobileId) {
+      activeMobile.lastHeartbeat = Date.now();
+    }
+  });
+
+  // Global heartbeat checker
+  if (!global.heartbeatChecker) {
+    global.heartbeatChecker = setInterval(() => {
+      if (
+        activeMobile &&
+        activeMobile.status === "active" &&
+        Date.now() - activeMobile.lastHeartbeat > HEARTBEAT_TIMEOUT
+      ) {
+        console.log(
+          `❌ Mobile ${activeMobile.mobileId} timeout - no heartbeat`
+        );
+
+        io.to("controller").emit("new-mobile-visibility-change", {
+          mobileId: activeMobile.mobileId,
+          isVisible: false,
+          origin: "heartbeat_timeout",
+        });
+        io.to("screen").emit("new-mobile-visibility-change", {
+          mobileId: activeMobile.mobileId,
+          isVisible: false,
+          origin: "heartbeat_timeout",
+        });
+
+        activeMobile = null;
+      }
+    }, HEARTBEAT_INTERVAL);
+  }
 
   //////////MESSAGE HANDLING//////////
   //controller -> screen
