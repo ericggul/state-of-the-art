@@ -38,10 +38,10 @@ export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
 export const API_TIMEOUT = 15 * 1000;
 
 //heartbeat: mobile
-export const HEARTBEAT_INTERVAL = 500;
-export const HEARTBEAT_TIMEOUT = 1500;
-export const PING_INTERVAL = 500;
-export const PING_TIMEOUT = 2500;
+export const HEARTBEAT_INTERVAL = 2000;
+export const HEARTBEAT_TIMEOUT = 8000;
+export const PING_INTERVAL = 2000;
+export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
 export const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 5 minutes in milliseconds
