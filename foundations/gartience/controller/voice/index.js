@@ -13,9 +13,9 @@ export default function Voice({ socket }) {
   const animationFrameRef = useRef(null);
   const lastTriggerTimeRef = useRef(0);
 
-  const INITIAL_VOLUME_THRESHOLD = 40;
+  const INITIAL_VOLUME_THRESHOLD = 45;
   const SPEAKING_VOLUME_THRESHOLD = 25;
-  const SILENCE_THRESHOLD = 500; // Wait 500ms of silence before advancing
+  const SILENCE_THRESHOLD = 600; // Wait 500ms of silence before advancing
   const lastSoundTimeRef = useRef(Date.now());
   const isSpeakingRef = useRef(false);
 

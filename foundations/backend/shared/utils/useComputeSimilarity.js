@@ -2,7 +2,15 @@ import { useMemo, useCallback, useRef, useState, useEffect } from "react";
 
 // Function to calculate dot product of two vectors
 function dotProduct(vector1, vector2) {
-  return vector1.reduce((sum, value, index) => sum + value * vector2[index], 0);
+  try {
+    return vector1.reduce(
+      (sum, value, index) => sum + value * vector2[index],
+      0
+    );
+  } catch (e) {
+    console.log(e);
+    return 0.1;
+  }
 }
 
 // Function to compute similarity matrix

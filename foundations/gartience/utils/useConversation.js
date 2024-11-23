@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useEffect, useRef, useMemo } from "react";
-import * as CONST from "@/utils/constant";
 import { generateInitialConversation } from "./generateInitialConversation";
 import useMobileStore from "@/foundations/gartience/mobile/store";
 
