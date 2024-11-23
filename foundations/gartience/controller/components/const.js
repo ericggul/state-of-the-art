@@ -51,6 +51,14 @@ export const MODELS = {
           "Contrastive self-supervised learning method using data augmentations to learn representations.",
       },
     },
+    "v3.2.1": {
+      name: "AlexNet",
+      year: 2012,
+      place: "University of Toronto",
+      citation: 135156,
+      explanation:
+        "First deep CNN to win ImageNet competition, sparking renewed interest in deep learning.",
+    },
   },
   "v4.x - Sequence Models": {
     "v4.0": {

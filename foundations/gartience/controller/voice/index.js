@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import { TEST } from "./constant";
+import { SCRIPT } from "./constant";
 
 export default function Voice({ socket }) {
   const [displayText, setDisplayText] = useState("");
@@ -43,14 +43,14 @@ export default function Voice({ socket }) {
         if (!isSpeakingRef.current) {
           // Just started speaking
           isSpeakingRef.current = true;
-          setDisplayText(TEST[currentIndexRef.current]);
+          setDisplayText(SCRIPT[currentIndexRef.current]);
         }
       } else if (isSpeakingRef.current) {
         // Check if we've been silent long enough
         if (now - lastSoundTimeRef.current > SILENCE_THRESHOLD) {
           // Real pause detected, advance to next text
           isSpeakingRef.current = false;
-          if (currentIndexRef.current < TEST.length - 1) {
+          if (currentIndexRef.current < SCRIPT.length - 1) {
             currentIndexRef.current += 1;
             setCurrentIndex(currentIndexRef.current);
           }
@@ -119,7 +119,7 @@ export default function Voice({ socket }) {
       ) : error ? (
         <S.ErrorMessage>{error}</S.ErrorMessage>
       ) : (
-        <S.TextDisplay>{displayText}</S.TextDisplay>
+        <S.TextDisplay>{displayText.text}</S.TextDisplay>
       )}
     </S.Container>
   );

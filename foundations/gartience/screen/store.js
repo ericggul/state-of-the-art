@@ -4,7 +4,7 @@ const useScreenStore = create((set) => ({
   state: 0,
   chaos: false,
   architectures: [],
-  speech: null,
+  speech: {},
 
   setState: (state) => set({ state }),
   setChaos: (chaos) => set({ chaos }),

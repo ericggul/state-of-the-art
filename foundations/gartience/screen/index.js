@@ -28,7 +28,7 @@ export default React.memo(function Screen() {
   return (
     <S.Container>
       {state >= 1 && !chaos && <QR />}
-      {speech && !chaos && <Speech text={speech} />}
+      {speech && !chaos && <Speech text={speech?.text || ""} />}
       {chaos && <Chaos />}
     </S.Container>
   );
