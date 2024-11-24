@@ -39,11 +39,12 @@ export default function ScreenWrapper() {
 // Main content component
 function ScreenContent({ test }) {
   const {
-    handleNewControllerArchitectures,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewControllerArchitectures,
+    handleNewControllerVisibility,
     handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
@@ -60,11 +61,12 @@ function ScreenContent({ test }) {
 
   const socket = useSocketScreen({
     layerIdx: 0,
-    handleNewControllerArchitectures,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewControllerArchitectures,
+    handleNewControllerVisibility,
     handleNewScreenConversation,
   });
 
@@ -79,8 +81,6 @@ function ScreenContent({ test }) {
       </Suspense>
     );
   }
-
-  console.log("stage", stage);
 
   // Full integration render for non-test mode
   return (

@@ -57,11 +57,14 @@ export default function RelationPage() {
 // Main content component
 function RelationPageContent({ idx, test }) {
   const {
-    handleNewControllerArchitectures,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+
+    handleNewControllerArchitectures,
+    handleNewControllerVisibility,
+
     handleNewScreenConversation,
 
     setIsProjector,
@@ -80,11 +83,12 @@ function RelationPageContent({ idx, test }) {
 
   const socket = useSocketScreen({
     layerIdx: idx,
-    handleNewControllerArchitectures,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+    handleNewControllerArchitectures,
+    handleNewControllerVisibility,
     handleNewScreenConversation,
   });
 

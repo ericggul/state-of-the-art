@@ -67,6 +67,10 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-controller-architectures", data);
   });
 
+  socket.on("controller-new-visibility-change", (data) => {
+    socket.to("screen").emit("new-controller-visibility-change", data);
+  });
+
   socket.on("disconnect", () => {
     if (activeMobile?.socketId === socket.id) {
       console.log(`🔌 Mobile disconnected: ${activeMobile.mobileId}`);

@@ -54,30 +54,6 @@ const useScreenStore = create((set) => ({
   setIntroState: (introState) => set({ introState }),
   setIsEnding: (isEnding) => set({ isEnding }),
 
-  // Complex handlers
-  handleNewControllerArchitectures: (data) => {
-    console.log("New architectures received:", data);
-    set((state) => {
-      const updates = {
-        lastInteractionTime: Date.now(),
-      };
-
-      if (!state.mobileVisibility) {
-        updates.mobileVisibility = true;
-      }
-
-      if (data.currentArchitectures?.length) {
-        updates.currentArchitectures = data.currentArchitectures;
-      }
-
-      if (state.introState <= 2) {
-        updates.introState = 3;
-      }
-
-      return updates;
-    });
-  },
-
   handleNewMobileArchitecture: (data) => {
     set((state) => {
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
@@ -124,6 +100,57 @@ const useScreenStore = create((set) => ({
       }
 
       return Object.keys(updates).length ? updates : state;
+    });
+  },
+
+  handleNewControllerVisibility: (data) => {
+    console.log("New controller visibility received:", data);
+    set((state) => {
+      // If this screen isn't tracking this mobile or
+      // current visibility already matches what controller wants to set, no update needed
+      if (
+        (state.targetMobileId && state.targetMobileId !== data.mobileId) ||
+        state.mobileVisibility === data.isVisible
+      ) {
+        return state;
+      }
+
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
+
+      updates.mobileVisibility = data.isVisible;
+
+      // Handle iteration increment only when becoming visible
+      if (data.isVisible && !state.mobileVisibility) {
+        updates.iteration = state.iteration + 1;
+      }
+
+      return updates;
+    });
+  },
+
+  // Complex handlers
+  handleNewControllerArchitectures: (data) => {
+    console.log("New architectures received:", data);
+    set((state) => {
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
+
+      if (!state.mobileVisibility) {
+        updates.mobileVisibility = true;
+      }
+
+      if (data.currentArchitectures?.length) {
+        updates.currentArchitectures = data.currentArchitectures;
+      }
+
+      if (state.introState <= 2) {
+        updates.introState = 3;
+      }
+
+      return updates;
     });
   },
 
