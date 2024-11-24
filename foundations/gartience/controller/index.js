@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as S from "./styles";
 
 import ControllerButton from "./button";
@@ -16,13 +16,37 @@ const ITEMS = [
 export default function Controller() {
   const socket = useSocketController();
   const [state, setState] = useState(0);
+  const [selectedModel, setSelectedModel] = useState("Hopfield Network");
+
+  const handleModelSelect = (model) => {
+    setSelectedModel(model.name);
+    if (socket.current) {
+      socket.current.emit("gartience-new-architectures", [
+        {
+          name: model.name,
+          version: model.version,
+          year: model.year,
+          place: model.place,
+          citation: model.citation,
+          explanation: model.explanation,
+        },
+      ]);
+    }
+  };
 
   const handleStateChange = (increment) => {
     setState((st) => Math.min(Math.max(st + increment, 0), 2));
-    if (socket.current) {
-      socket.current.emit("gartience-new-state", state + increment);
-    }
   };
+
+  useEffect(() => {
+    try {
+      if (socket.current) {
+        socket.current.emit("gartience-new-state", state);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [state]);
 
   return (
     <S.ScrollContainer>
@@ -36,9 +60,19 @@ export default function Controller() {
         </S.Header>
 
         <S.Content>
-          {state === 1 && <ArchitectureSelector socket={socket} />}
+          {state === 1 && (
+            <ArchitectureSelector
+              socket={socket}
+              selectedModel={selectedModel}
+              onModelSelect={handleModelSelect}
+            />
+          )}
           {state === 2 && <ControllerButton socket={socket} />}
-          <Voice socket={socket} />
+          <Voice
+            socket={socket}
+            setState={setState}
+            onModelSelect={handleModelSelect}
+          />
           <S.Guide>
             {ITEMS.map((item, index) => (
               <S.GuideItem key={index} $active={state === index}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import * as S from "./styles";
 import useSocketScreen from "@/utils/socket/gartience/useSocketScreen";
 import useScreenStore from "./store";
@@ -26,11 +26,13 @@ export default React.memo(function Screen() {
   });
 
   return (
-    <S.Container>
-      {state >= 1 && !chaos && <QR />}
-      {speech && !chaos && <Speech text={speech?.text || ""} />}
-      {chaos && <Chaos />}
-    </S.Container>
+    <Suspense fallback={<div />}>
+      <S.Container>
+        {state >= 1 && !chaos && <QR />}
+        {speech && !chaos && <Speech text={speech?.text || ""} />}
+        {chaos && <Chaos />}
+      </S.Container>
+    </Suspense>
   );
 });
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as S from "./styles";
 import { SCRIPT } from "./constant";
+import { getFlatModels } from "../components/ArchitectureSelector";
 
-export default function Voice({ socket }) {
+export default function Voice({ socket, setState, onModelSelect }) {
   const [displayText, setDisplayText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndexRef = useRef(0);
@@ -89,6 +90,38 @@ export default function Voice({ socket }) {
 
   useEffect(() => {
     handleSocket();
+
+    // Auto-select architecture based on voice progress
+    if (displayText) {
+      const modelMap = {
+        25: "Boltzmann Machine", // 볼츠만 머신
+        26: "Variational Autoencoder (VAE)", // VAE
+        27: "AlexNet", // 알렉스넷
+        28: "SimCLR", // 트랜스포머
+        29: "Transformer",
+        30: "Generative Adversarial Networks (GANs)",
+        31: "Stable Diffusion",
+      };
+
+      if (modelMap[displayText.idx]) {
+        // Find the corresponding model from getFlatModels
+        const models = getFlatModels();
+        const targetModel = models.find(
+          (model) => model.name === modelMap[displayText.idx]
+        );
+
+        if (targetModel) {
+          onModelSelect(targetModel); // This will update both local state and emit socket
+        }
+      }
+    }
+
+    if (displayText.paragraph >= 4 && displayText.idx >= 19) {
+      setState(1);
+    }
+    if (displayText.paragraph >= 9) {
+      setState(2);
+    }
   }, [displayText]);
 
   function handleSocket() {

@@ -38,10 +38,10 @@ export const Cursor = styled.span`
 
 export const SpeechText = styled.div`
   ${FlexCenterStyle};
-  width: 90vw;
+  width: 70vw;
   text-align: center;
   color: white;
-  font-size: 8vw;
+  font-size: 4vw;
   font-weight: 700;
   line-height: 1.3;
   word-break: keep-all;

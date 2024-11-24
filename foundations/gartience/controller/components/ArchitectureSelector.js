@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { MODELS } from "./const";
 
-const getFlatModels = () => {
+export const getFlatModels = () => {
   const flatModels = [];
 
   const traverseModels = (obj, parentVersion) => {
@@ -29,25 +29,12 @@ const getFlatModels = () => {
   return flatModels;
 };
 
-export default function ArchitectureSelector({ socket }) {
-  const [selectedModel, setSelectedModel] = useState("Hopfield Network");
+export default function ArchitectureSelector({
+  socket,
+  selectedModel,
+  onModelSelect,
+}) {
   const models = getFlatModels();
-
-  const handleModelSelect = (model) => {
-    setSelectedModel(model.name);
-    if (socket.current) {
-      socket.current.emit("gartience-new-architectures", [
-        {
-          name: model.name,
-          version: model.version,
-          year: model.year,
-          place: model.place,
-          citation: model.citation,
-          explanation: model.explanation,
-        },
-      ]);
-    }
-  };
 
   return (
     <Container>
@@ -57,7 +44,7 @@ export default function ArchitectureSelector({ socket }) {
           <ListItem
             key={index}
             $active={selectedModel === model.name}
-            onClick={() => handleModelSelect(model)}
+            onClick={() => onModelSelect(model)}
           >
             {model.name} ({model.year})
           </ListItem>
