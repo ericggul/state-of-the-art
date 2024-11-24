@@ -56,10 +56,14 @@ export default function useControllerVisibility() {
 
   // Main visibility effect
   useEffect(() => {
+    console.log("isStageIdle", isStageIdle);
+    console.log("iteration", iteration);
+
     if (isStageIdle || iteration == 0) return;
 
     visibilityRef.current = mobileVisibility;
 
+    console.log("mobileVisibility", mobileVisibility);
     if (mobileVisibility) {
       setFrontendState();
     } else {

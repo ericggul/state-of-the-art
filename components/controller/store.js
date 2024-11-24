@@ -10,6 +10,7 @@ const DEFAULT_STATE = {
   stage: "Idle",
   iteration: 0,
   isReset: false,
+  lastInteractionTime: 0,
 };
 
 const useControllerStore = create((set) => ({
@@ -30,7 +31,7 @@ const useControllerStore = create((set) => ({
     console.log("New mobile connected:", data);
     set((state) => ({
       activeMobileId: data.mobileId,
-      mobileVisibility: true,
+      stage: "Frontend",
     }));
   },
 
@@ -39,16 +40,24 @@ const useControllerStore = create((set) => ({
     set((state) => {
       if (state.activeMobileId === data.mobileId) {
         const updates = {
-          mobileVisibility: data.isVisible,
-          isReset: false,
+          lastInteractionTime: Date.now(),
         };
 
-        // Handle iteration increment only when becoming visible
-        if (data.isVisible && !state.mobileVisibility) {
-          updates.iteration = state.iteration + 1;
+        console.log(state.mobileVisibility, data.isVisible);
+        if (state.mobileVisibility !== data.isVisible) {
+          updates.mobileVisibility = data.isVisible;
+          updates.isReset = false;
+
+          console.log("51");
+
+          // Handle iteration increment only when becoming visible
+          if (data.isVisible && !state.mobileVisibility) {
+            updates.iteration = state.iteration + 1;
+            console.log(updates.iteration);
+          }
         }
 
-        return updates;
+        return Object.keys(updates).length ? updates : state;
       }
       return state;
     });
@@ -68,7 +77,17 @@ const useControllerStore = create((set) => ({
 
   // Reset state
   reset: () => {
-    set(DEFAULT_STATE);
+    set((state) => {
+      // If we're already at default state, no need to update
+      if (
+        Object.entries(DEFAULT_STATE).every(
+          ([key, value]) => state[key] === value
+        )
+      ) {
+        return state;
+      }
+      return DEFAULT_STATE;
+    });
   },
 }));
 

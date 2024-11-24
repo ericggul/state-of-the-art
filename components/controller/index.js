@@ -7,16 +7,19 @@ import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
 
 import * as S from "./styles";
 
+import { useEffect } from "react";
+
 export default function Controller() {
   const {
     activeMobileId,
-    isMobileVisible,
+    mobileVisibility,
     currentArchitecture,
     handleNewMobileInit,
     handleNewMobileVisibility: handleNewMobileVisibilityStore,
     handleNewMobileArchitecture,
     stage,
     isReset,
+    reset,
   } = useControllerStore();
 
   const socket = useSocketController({
@@ -43,6 +46,15 @@ export default function Controller() {
 
   useControllerVisibility();
 
+  useEffect(() => {
+    if (isReset) {
+      const timeout = setTimeout(() => {
+        reset();
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isReset]);
+
   return (
     <S.Container>
       <S.Header>
@@ -52,8 +64,16 @@ export default function Controller() {
           Mobile ID: {activeMobileId || "No mobile connected"}
         </S.StatusItem>
         <S.StatusItem>
-          <S.StatusIndicator $active={isMobileVisible} />
-          Mobile Status: {isMobileVisible ? "Active" : "Inactive"}
+          <S.StatusIndicator $active={mobileVisibility} />
+          Mobile Status: {mobileVisibility ? "Active" : "Inactive"}
+        </S.StatusItem>
+        <S.StatusItem>
+          <S.StatusIndicator $active={stage === "Frontend"} />
+          Stage: {stage}
+        </S.StatusItem>
+        <S.StatusItem>
+          <S.StatusIndicator $active={!isReset} />
+          Reset Status: {isReset ? "Reset" : "Active"}
         </S.StatusItem>
       </S.Header>
 
