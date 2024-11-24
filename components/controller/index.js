@@ -1,4 +1,5 @@
-//hello world
+"use client";
+
 import { MODELS } from "./constant/models";
 
 export default function Controller() {

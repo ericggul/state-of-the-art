@@ -1,14 +1,12 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const Controller = dynamic(() => import("@/components/controller/_old"));
-const TempMobile = dynamic(() => import("@/components/mobile/v1"));
+const Controller = dynamic(() => import("@/components/controller"));
 
 export default function ControllerWrapper() {
   return (
     <Suspense>
       <Controller />
-      <TempMobile />
     </Suspense>
   );
 }
