@@ -1,0 +1,6 @@
+//hello world
+import { MODELS } from "./constant/models";
+
+export default function Controller() {
+  return <div>Controller</div>;
+}
