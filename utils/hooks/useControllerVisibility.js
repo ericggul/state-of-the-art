@@ -1,20 +1,20 @@
 import { useEffect, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import useScreenStore from "@/components/screen/store";
-import { iterationSpeedMultiplier } from "@/utils/constant";
-import { TIMEOUTS } from "@/utils/constant";
+import useControllerStore from "@/components/controller/store";
+import {
+  iterationSpeedMultiplier,
+  TIMEOUTS,
+  INACTIVITY_TIMEOUT,
+} from "@/utils/constant";
 
-export default function useScreenVisibility() {
-  const router = useRouter();
+export default function useControllerVisibility() {
   const {
     mobileVisibility,
-    isProjector,
-    setStage,
-    stage,
-    setIsTransition,
     iteration,
-    setIsEnding,
-  } = useScreenStore();
+    stage,
+    setStage,
+    setIsReset,
+    lastInteractionTime,
+  } = useControllerStore();
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
@@ -34,41 +34,17 @@ export default function useScreenVisibility() {
 
     const multiplier = iterationSpeedMultiplier(iteration);
 
-    setIsTransition(true);
-
-    timeouts.current.transition = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setIsTransition(false);
-      }
-    }, TIMEOUTS.TRANSITION * multiplier);
-
     timeouts.current.backend = setTimeout(() => {
       if (!visibilityRef.current) {
         setStage("Backend");
       }
     }, TIMEOUTS.BACKEND * multiplier);
 
-    const unmountFrontendDelay = isProjector
-      ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
-      : TIMEOUTS.MOBILE_RESET;
-
-    timeouts.current.unmount = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setStage(null);
-      }
-    }, unmountFrontendDelay * multiplier);
-
     const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
-    timeouts.current.ending = setTimeout(() => {
-      if (!visibilityRef.current) {
-        setIsEnding(true);
-      }
-    }, endingDelay);
-
     const resetDelay = endingDelay + TIMEOUTS.RESET;
     timeouts.current.reset = setTimeout(() => {
       if (!visibilityRef.current) {
-        clearTimeouts();
+        setIsReset(true);
       }
     }, resetDelay);
   };
@@ -76,9 +52,9 @@ export default function useScreenVisibility() {
   const setFrontendState = () => {
     clearTimeouts();
     setStage("Frontend");
-    setIsTransition(false);
   };
 
+  // Main visibility effect
   useEffect(() => {
     if (isStageIdle || iteration == 0) return;
 
@@ -91,8 +67,25 @@ export default function useScreenVisibility() {
     }
 
     return clearTimeouts;
-  }, [isStageIdle, mobileVisibility, isProjector, iteration]);
+  }, [isStageIdle, mobileVisibility, iteration]);
 
+  // Inactivity check effect
+  useEffect(() => {
+    if (stage !== "Frontend") return;
+
+    const checkInactivity = () => {
+      const now = Date.now();
+      if (now - lastInteractionTime > INACTIVITY_TIMEOUT) {
+        setIsReset(true);
+      }
+    };
+
+    const interval = setInterval(checkInactivity, 10000); // Check every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [stage, lastInteractionTime]);
+
+  // Cleanup effect
   useEffect(() => {
     return clearTimeouts;
   }, []);

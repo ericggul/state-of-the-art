@@ -2,6 +2,9 @@
 
 import useSocketController from "@/utils/socket/useSocketController";
 import useControllerStore from "./store";
+
+import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
+
 import * as S from "./styles";
 
 export default function Controller() {
@@ -12,6 +15,8 @@ export default function Controller() {
     handleNewMobileInit,
     handleNewMobileVisibility: handleNewMobileVisibilityStore,
     handleNewMobileArchitecture,
+    stage,
+    isReset,
   } = useControllerStore();
 
   const socket = useSocketController({
@@ -28,13 +33,15 @@ export default function Controller() {
       if (socket.current) {
         await socket.current.emit("controller-new-visibility-change", {
           ...data,
-          origin: "controller" + (data.origin || ""),
+          origin: "controller-" + (data.origin || ""),
         });
       }
     } catch (e) {
       console.log(e);
     }
   }
+
+  useControllerVisibility();
 
   return (
     <S.Container>

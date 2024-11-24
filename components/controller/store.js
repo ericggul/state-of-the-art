@@ -4,8 +4,12 @@ import { create } from "zustand";
 const DEFAULT_STATE = {
   // Mobile device state
   activeMobileId: null,
-  isMobileVisible: false,
+  mobileVisibility: false,
   currentArchitecture: null,
+
+  stage: "Idle",
+  iteration: 0,
+  isReset: false,
 };
 
 const useControllerStore = create((set) => ({
@@ -13,16 +17,20 @@ const useControllerStore = create((set) => ({
 
   // Simple setters
   setActiveMobileId: (id) => set({ activeMobileId: id }),
-  setIsMobileVisible: (isVisible) => set({ isMobileVisible: isVisible }),
+  setMobileVisibility: (isVisible) => set({ mobileVisibility: isVisible }),
   setCurrentArchitecture: (architecture) =>
     set({ currentArchitecture: architecture }),
+
+  setStage: (stage) => set({ stage }),
+  setIteration: (iteration) => set({ iteration }),
+  setIsReset: (isReset) => set({ isReset }),
 
   // Socket event handlers
   handleNewMobileInit: (data) => {
     console.log("New mobile connected:", data);
     set((state) => ({
       activeMobileId: data.mobileId,
-      isMobileVisible: true,
+      mobileVisibility: true,
     }));
   },
 
@@ -30,9 +38,17 @@ const useControllerStore = create((set) => ({
     console.log("Mobile visibility changed:", data);
     set((state) => {
       if (state.activeMobileId === data.mobileId) {
-        return {
-          isMobileVisible: data.isVisible,
+        const updates = {
+          mobileVisibility: data.isVisible,
+          isReset: false,
         };
+
+        // Handle iteration increment only when becoming visible
+        if (data.isVisible && !state.mobileVisibility) {
+          updates.iteration = state.iteration + 1;
+        }
+
+        return updates;
       }
       return state;
     });
