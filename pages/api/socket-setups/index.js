@@ -63,12 +63,17 @@ export default function mobileSetup({ socket, io }) {
   });
 
   //BACKUP: CONTROLLER LOGIC
+  socket.on("controller-new-init", (data) => {
+    socket.to("screen").emit("new-controller-init", data);
+  });
   socket.on("controller-new-architectures", (data) => {
     socket.to("screen").emit("new-controller-architectures", data);
   });
-
   socket.on("controller-new-visibility-change", (data) => {
     socket.to("screen").emit("new-controller-visibility-change", data);
+  });
+  socket.on("controller-new-stage-and-reset", (data) => {
+    socket.to("screen").emit("new-controller-stage-and-reset", data);
   });
 
   socket.on("disconnect", () => {

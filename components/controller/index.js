@@ -1,20 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
 import useSocketController from "@/utils/socket/useSocketController";
 import useControllerStore from "./store";
-
 import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
-
 import * as S from "./styles";
-
-import { useEffect } from "react";
 
 export default function Controller() {
   const {
     activeMobileId,
     mobileVisibility,
     currentArchitecture,
-    handleNewMobileInit,
+    handleNewMobileInit: handleNewMobileInitStore,
     handleNewMobileVisibility: handleNewMobileVisibilityStore,
     handleNewMobileArchitecture,
     stage,
@@ -22,59 +19,76 @@ export default function Controller() {
     reset,
   } = useControllerStore();
 
+  // Socket setup with handlers
   const socket = useSocketController({
-    handleNewMobileInit,
+    handleNewMobileInit: (data) => {
+      emitSocketEvent("controller-new-init", data);
+      handleNewMobileInitStore(data);
+    },
     handleNewMobileVisibility: (data) => {
       handleNewMobileVisibilityStore(data);
-      handleNewMobileVisibilitySocket(data);
+      emitSocketEvent("controller-new-visibility-change", {
+        ...data,
+        origin: "controller-" + (data.origin || ""),
+      });
     },
     handleNewMobileArchitecture,
   });
 
-  async function handleNewMobileVisibilitySocket(data) {
+  // Helper function for socket emissions
+  const emitSocketEvent = async (event, data) => {
     try {
       if (socket.current) {
-        await socket.current.emit("controller-new-visibility-change", {
-          ...data,
-          origin: "controller-" + (data.origin || ""),
-        });
+        await socket.current.emit(event, data);
       }
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
+  // Effects
   useControllerVisibility();
 
   useEffect(() => {
     if (isReset) {
-      const timeout = setTimeout(() => {
-        reset();
-      }, 5000);
+      emitSocketEvent("controller-new-stage-and-reset", { isReset });
+      const timeout = setTimeout(reset, 5000);
       return () => clearTimeout(timeout);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    emitSocketEvent("controller-new-stage-and-reset", { stage });
+  }, [stage]);
+
+  // Status indicator helper
+  const StatusItem = ({ active, label, value }) => (
+    <S.StatusItem>
+      <S.StatusIndicator $active={active} />
+      {label}: {value}
+    </S.StatusItem>
+  );
 
   return (
     <S.Container>
       <S.Header>
         <S.Title>Controller Status</S.Title>
-        <S.StatusItem>
-          <S.StatusIndicator $active={activeMobileId !== null} />
-          Mobile ID: {activeMobileId || "No mobile connected"}
-        </S.StatusItem>
-        <S.StatusItem>
-          <S.StatusIndicator $active={mobileVisibility} />
-          Mobile Status: {mobileVisibility ? "Active" : "Inactive"}
-        </S.StatusItem>
-        <S.StatusItem>
-          <S.StatusIndicator $active={stage === "Frontend"} />
-          Stage: {stage}
-        </S.StatusItem>
-        <S.StatusItem>
-          <S.StatusIndicator $active={!isReset} />
-          Reset Status: {isReset ? "Reset" : "Active"}
-        </S.StatusItem>
+        <StatusItem
+          active={activeMobileId !== null}
+          label="Mobile ID"
+          value={activeMobileId || "No mobile connected"}
+        />
+        <StatusItem
+          active={mobileVisibility}
+          label="Mobile Status"
+          value={mobileVisibility ? "Active" : "Inactive"}
+        />
+        <StatusItem active={stage === "Frontend"} label="Stage" value={stage} />
+        <StatusItem
+          active={!isReset}
+          label="Reset Status"
+          value={isReset ? "Reset" : "Active"}
+        />
       </S.Header>
 
       <S.Content>

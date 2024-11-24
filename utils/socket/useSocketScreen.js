@@ -9,8 +9,10 @@ export default function useSocketScreen({
   handleNewMobileArchitecture = () => {},
   handleNewMobileIntro = () => {},
 
+  handleNewControllerInit = () => {},
   handleNewControllerVisibility = () => {},
   handleNewControllerArchitectures = () => {},
+  handleNewControllerStageAndReset = () => {},
 
   handleNewScreenConversation = () => {},
 }) {
@@ -64,6 +66,7 @@ export default function useSocketScreen({
       socket.current.on("new-mobile-architecture", handleNewMobileArchitecture);
 
       //CONTROLLER -> SCREEN
+      socket.current.on("new-controller-init", handleNewControllerInit);
       socket.current.on(
         "new-controller-visibility-change",
         handleNewControllerVisibility
@@ -71,6 +74,10 @@ export default function useSocketScreen({
       socket.current.on(
         "new-controller-architectures",
         handleNewControllerArchitectures
+      );
+      socket.current.on(
+        "new-controller-stage-and-reset",
+        handleNewControllerStageAndReset
       );
 
       ////SCREEN -> SCREEN
