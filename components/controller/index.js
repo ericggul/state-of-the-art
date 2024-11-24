@@ -51,15 +51,26 @@ export default function Controller() {
 
   useEffect(() => {
     if (isReset) {
-      emitSocketEvent("controller-new-stage-and-reset", { isReset });
+      emitSocketEvent("controller-new-stage-and-reset", {
+        isReset,
+        type: "reset",
+      });
       const timeout = setTimeout(reset, 5000);
       return () => clearTimeout(timeout);
     }
   }, [isReset]);
 
   useEffect(() => {
-    emitSocketEvent("controller-new-stage-and-reset", { stage });
+    emitSocketEvent("controller-new-stage-and-reset", { stage, type: "stage" });
   }, [stage]);
+
+  const handleForceReset = () => {
+    emitSocketEvent("controller-new-stage-and-reset", {
+      isReset: true,
+      type: "reset",
+      force: true,
+    });
+  };
 
   // Status indicator helper
   const StatusItem = ({ active, label, value }) => (
@@ -89,6 +100,9 @@ export default function Controller() {
           label="Reset Status"
           value={isReset ? "Reset" : "Active"}
         />
+        <S.ResetButton onClick={handleForceReset}>
+          Force Reset All Screens
+        </S.ResetButton>
       </S.Header>
 
       <S.Content>

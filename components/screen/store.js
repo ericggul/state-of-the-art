@@ -54,6 +54,60 @@ const useScreenStore = create((set) => ({
   setIntroState: (introState) => set({ introState }),
   setIsEnding: (isEnding) => set({ isEnding }),
 
+  handleNewMobile: (data) => {
+    console.log("New join received:", data);
+    set((state) => {
+      if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
+        return state;
+      }
+
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
+
+      if (state.targetMobileId !== data.mobileId) {
+        updates.targetMobileId = data.mobileId;
+      }
+
+      if (state.stage !== "Frontend") {
+        updates.stage = "Frontend";
+      }
+
+      return updates;
+    });
+  },
+
+  handleNewMobileIntro: (data) => {
+    set((state) => {
+      const updates = {
+        lastInteractionTime: Date.now(),
+      };
+      console.log("data", data);
+
+      switch (data.type) {
+        case "accelerometer_activation":
+          updates.introState = 2;
+          break;
+        case "state_change":
+          if (state.introState !== data.introState) {
+            updates.introState = data.introState;
+          }
+          break;
+        case "username_submit":
+          updates.userName = data.username;
+          updates.introState = 1;
+          break;
+        case "username_update":
+          if (state.userName !== data.username) {
+            updates.userName = data.username;
+          }
+          break;
+      }
+
+      return Object.keys(updates).length ? updates : state;
+    });
+  },
+
   handleNewMobileArchitecture: (data) => {
     set((state) => {
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
@@ -103,6 +157,36 @@ const useScreenStore = create((set) => ({
     });
   },
 
+  handleNewControllerInit: (data) => {
+    console.log("New controller init received:", data);
+    set((state) => {
+      if (
+        (state.targetMobileId && state.targetMobileId === data.mobileId) ||
+        state.stage === "Frontend"
+      ) {
+        return state;
+      }
+
+      const updates = {};
+
+      // Only update if not already set
+      if (state.targetMobileId !== data.mobileId) {
+        updates.targetMobileId = data.mobileId;
+      }
+
+      if (state.stage !== "Frontend") {
+        updates.stage = "Frontend";
+      }
+
+      // Only add lastInteractionTime if there are other updates
+      if (Object.keys(updates).length) {
+        updates.lastInteractionTime = Date.now();
+      }
+
+      return Object.keys(updates).length ? updates : state;
+    });
+  },
+
   handleNewControllerVisibility: (data) => {
     console.log("New controller visibility received:", data);
     set((state) => {
@@ -115,15 +199,18 @@ const useScreenStore = create((set) => ({
         return state;
       }
 
-      const updates = {
-        lastInteractionTime: Date.now(),
-      };
+      const updates = {};
 
       updates.mobileVisibility = data.isVisible;
 
       // Handle iteration increment only when becoming visible
       if (data.isVisible && !state.mobileVisibility) {
         updates.iteration = state.iteration + 1;
+      }
+
+      // Only add lastInteractionTime if there are other updates
+      if (Object.keys(updates).length) {
+        updates.lastInteractionTime = Date.now();
       }
 
       return updates;
@@ -154,54 +241,30 @@ const useScreenStore = create((set) => ({
     });
   },
 
-  handleNewMobile: (data) => {
-    console.log("New join received:", data);
+  handleNewControllerStageAndReset: (data) => {
+    console.log("New controller stage and reset received:", data);
     set((state) => {
-      if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
-        return state;
+      const updates = {};
+
+      if (data.type === "stage") {
+        if (state.stage !== data.stage) {
+          console.log("updating state from controller!");
+          updates.stage = data.stage;
+        }
+      } else if (data.type === "reset" && data.isReset) {
+        console.log("resetting state from controller!");
+        if (data.force) {
+          console.log("force resetting state from controller!");
+          window.location.reload();
+          return RESET_STATE;
+        } else {
+          window.location.reload();
+          return RESET_STATE;
+        }
       }
 
-      const updates = {
-        lastInteractionTime: Date.now(),
-      };
-
-      if (state.targetMobileId !== data.mobileId) {
-        updates.targetMobileId = data.mobileId;
-      }
-
-      if (state.stage !== "Frontend") {
-        updates.stage = "Frontend";
-      }
-
-      return updates;
-    });
-  },
-
-  handleNewMobileIntro: (data) => {
-    set((state) => {
-      const updates = {
-        lastInteractionTime: Date.now(),
-      };
-      console.log("data", data);
-
-      switch (data.type) {
-        case "accelerometer_activation":
-          updates.introState = 2;
-          break;
-        case "state_change":
-          if (state.introState !== data.introState) {
-            updates.introState = data.introState;
-          }
-          break;
-        case "username_submit":
-          updates.userName = data.username;
-          updates.introState = 1;
-          break;
-        case "username_update":
-          if (state.userName !== data.username) {
-            updates.userName = data.username;
-          }
-          break;
+      if (Object.keys(updates).length) {
+        updates.lastInteractionTime = Date.now();
       }
 
       return Object.keys(updates).length ? updates : state;

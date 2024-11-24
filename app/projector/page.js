@@ -43,8 +43,12 @@ function ScreenContent({ test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+
+    handleNewControllerInit,
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
+    handleNewControllerStageAndReset,
+
     handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
@@ -65,13 +69,21 @@ function ScreenContent({ test }) {
     handleNewMobileVisibility,
     handleNewMobile,
     handleNewMobileIntro,
+
+    handleNewControllerInit,
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
+    handleNewControllerStageAndReset,
+
     handleNewScreenConversation,
   });
 
   useScreenVisibility();
   useInactivityCheck();
+
+  useEffect(() => {
+    console.log("Stage:", stage);
+  }, [stage]);
 
   // Simple render for test mode
   if (test) {
