@@ -12,6 +12,8 @@ const INITIAL_USER_CONTENT = (userName) => [
   `${userName} awkwardly exited the Gallery after pretending to admire the models, only to reveal an utter lack of comprehension.`,
   `Rumour has it, ${userName} walked through the Gallery as if it were a fast-food joint, leaving algorithms laughing in their wake.`,
   `Why did ${userName} even bother showing up if their understanding of neural networks was shallower than a splash in a puddle?`,
+  ///default case
+  `${userName} fled the Gallery so quickly that even the gallery's sensor system couldn't record their gaze long enough.`,
 ];
 
 export const generateInitialConversation = (userName, deviceIndex = 0) => [

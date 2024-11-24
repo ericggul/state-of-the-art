@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useSocketController from "@/utils/socket/useSocketController";
 import useControllerStore from "./store";
 import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
@@ -64,13 +64,19 @@ export default function Controller() {
     emitSocketEvent("controller-new-stage-and-reset", { stage, type: "stage" });
   }, [stage]);
 
+  const timeoutRef = useRef(null);
   const handleForceReset = () => {
     emitSocketEvent("controller-new-stage-and-reset", {
       isReset: true,
       type: "reset",
       force: true,
     });
+    timeoutRef.current = setTimeout(reset, 2000);
   };
+
+  useEffect(() => {
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
 
   // Status indicator helper
   const StatusItem = ({ active, label, value }) => (
