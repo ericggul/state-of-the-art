@@ -3,11 +3,15 @@ import io from "socket.io-client";
 
 export default function useSocketScreen({
   layerIdx = 0,
-  handleNewControllerArchitectures = () => {},
+
   handleNewMobile = () => {},
   handleNewMobileVisibility = () => {},
   handleNewMobileArchitecture = () => {},
   handleNewMobileIntro = () => {},
+
+  handleNewControllerVisibility = () => {},
+  handleNewControllerArchitectures = () => {},
+
   handleNewScreenConversation = () => {},
 }) {
   const socket = useRef(null);
@@ -21,13 +25,17 @@ export default function useSocketScreen({
       return () => {
         if (socket.current) {
           // Remove all listeners
-          socket.current.off("new-controller-architectures");
+
           socket.current.off("new-mobile-init");
           socket.current.off("new-mobile-intro");
           socket.current.off("new-mobile-visibility-change");
-          socket.current.off("new-mobile-speech");
           socket.current.off("new-mobile-architecture");
+
+          socket.current.off("new-controller-visibility-change");
+          socket.current.off("new-controller-architectures");
+
           socket.current.off("new-screen-conversation");
+
           socket.current.off("connect");
 
           // Disconnect
@@ -46,10 +54,7 @@ export default function useSocketScreen({
       console.log("Screen socket connected");
       socket.current.emit("screen-init", { layerIdx });
 
-      socket.current.on(
-        "new-controller-architectures",
-        handleNewControllerArchitectures
-      );
+      //MOBILE -> SCREEN
       socket.current.on("new-mobile-init", handleNewMobile);
       socket.current.on("new-mobile-intro", handleNewMobileIntro);
       socket.current.on(
@@ -57,6 +62,18 @@ export default function useSocketScreen({
         handleNewMobileVisibility
       );
       socket.current.on("new-mobile-architecture", handleNewMobileArchitecture);
+
+      //CONTROLLER -> SCREEN
+      socket.current.on(
+        "new-controller-visibility-change",
+        handleNewControllerVisibility
+      );
+      socket.current.on(
+        "new-controller-architectures",
+        handleNewControllerArchitectures
+      );
+
+      ////SCREEN -> SCREEN
       socket.current.on("new-screen-conversation", handleNewScreenConversation);
     });
   };

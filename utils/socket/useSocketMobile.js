@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function useSocketMobile({ mobileId, handleNewResponse }) {
+export default function useSocketMobile({ mobileId }) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
@@ -18,7 +18,6 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
               isVisible: false,
               origin: "cleanup",
             });
-            socket.current.off("new-controller-response");
             socket.current.off("connect");
             socket.current.off("disconnect");
             socket.current.disconnect();
@@ -37,8 +36,6 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
 
     socket.current.on("connect", () => {
       socket.current.emit("mobile-init", { mobileId });
-
-      socket.current.on("new-controller-response", handleNewResponse);
 
       socket.current.on("disconnect", () => {
         socket.current.emit("mobile-new-visibility-change", {

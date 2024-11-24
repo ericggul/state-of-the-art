@@ -32,7 +32,7 @@ export default function Model({
     group.current?.traverse((child) => {
       // console.log(child, child.isSkinnedMesh, child.morphTargetDictionary);
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
-        console.log(child, child.isSkinnedMesh, child.morphTargetDictionary);
+        // console.log(child, child.isSkinnedMesh, child.morphTargetDictionary);
         const index = child.morphTargetDictionary[target];
         if (
           index === undefined ||

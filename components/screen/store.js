@@ -4,7 +4,6 @@ import { create } from "zustand";
 const DEFAULT_STATE = {
   // Architecture related
   currentArchitectures: [],
-  latestSpeech: "",
   mobileVisibility: null,
   stage: "Idle",
   iteration: 0,
@@ -32,7 +31,6 @@ const RESET_STATE = {
   mobileVisibility: null,
   isEnding: false,
   iteration: 0,
-  latestSpeech: "",
   userName: "",
   introState: 0,
   zoomFactor: 1,
@@ -45,7 +43,6 @@ const useScreenStore = create((set) => ({
   // Simple setters
   setCurrentArchitectures: (architectures) =>
     set({ currentArchitectures: architectures }),
-  setLatestSpeech: (speech) => set({ latestSpeech: speech }),
   setMobileVisibility: (visibility) => set({ mobileVisibility: visibility }),
   setZoomFactor: (zoom) => set({ zoomFactor: zoom }),
   setIsProjector: (isProjector) => set({ isProjector }),

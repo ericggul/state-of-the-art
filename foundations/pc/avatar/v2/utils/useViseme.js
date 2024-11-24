@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import axios from "axios";
 
 import useScreenStore from "@/components/screen/store";
 import useDebounce from "@/utils/hooks/useDebounce";
 
+import { MODELS } from "@/components/controller/constant/models";
+
 export default function useViseme() {
-  const { latestSpeech, currentArchitectures } = useScreenStore();
+  const { currentArchitectures } = useScreenStore();
 
   const currentArchitectureRef = useRef("");
 
@@ -22,6 +24,27 @@ export default function useViseme() {
   const pendingTTSRef = useRef(null);
   const nextSpeechGenerationRef = useRef(null);
 
+  const latestSpeech = useMemo(() => {
+    try {
+      if (!currentArchitectures?.length) {
+        return "";
+      }
+
+      const architecture = currentArchitectures[0];
+      if (!architecture) {
+        return "";
+      }
+
+      const parts = [architecture.name, architecture.explanation].filter(
+        Boolean
+      ); // Remove falsy values
+
+      return parts.join(" ").trim() || "";
+    } catch (error) {
+      console.error("❌ Error generating latest speech:", error);
+      return "";
+    }
+  }, [currentArchitectures]);
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
 
   // Handle audio end and trigger next speech
@@ -29,7 +52,7 @@ export default function useViseme() {
     isPlayingRef.current = false;
 
     // Add random delay between 2-3 seconds
-    const delay = Math.random() * 2000 + 5000; // Random between 2000-3000ms
+    const delay = Math.random() * 2000 + 2000;
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 
