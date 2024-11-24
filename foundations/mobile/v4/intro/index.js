@@ -29,7 +29,9 @@ export default function Intro({
         window.DeviceOrientationEvent || window.DeviceMotionEvent;
       if (!hasMotionSupport) {
         alert("Sorry, your device does not support motion sensors");
-        return;
+
+        emitAccelerometerActivation();
+        onAccelerometerActivate(true);
       }
 
       const isIOSPermissionAPI =

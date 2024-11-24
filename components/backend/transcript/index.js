@@ -28,7 +28,15 @@ function TranscriptComponent() {
     }
   }, [isblack]);
 
-  return <S.Text>{displayMessage}</S.Text>;
+  return (
+    <S.Text
+      style={{
+        color: isblack ? "white" : "black",
+      }}
+    >
+      {displayMessage}
+    </S.Text>
+  );
 }
 
 export default React.memo(TranscriptComponent);
