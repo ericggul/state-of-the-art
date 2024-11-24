@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v4";
+import { DATA_NODES_LINKS } from "@/components/controller/constant/rhizome";
 
 export const useRelatedModels = (currentArchitectures) => {
   return useMemo(() => {

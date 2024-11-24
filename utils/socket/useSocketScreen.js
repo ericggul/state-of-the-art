@@ -4,7 +4,6 @@ import io from "socket.io-client";
 export default function useSocketScreen({
   layerIdx = 0,
   handleNewControllerArchitectures = () => {},
-  handleNewSpeech = () => {},
   handleNewMobile = () => {},
   handleNewMobileVisibility = () => {},
   handleNewMobileArchitecture = () => {},
@@ -57,7 +56,6 @@ export default function useSocketScreen({
         "new-mobile-visibility-change",
         handleNewMobileVisibility
       );
-      socket.current.on("new-mobile-speech", handleNewSpeech);
       socket.current.on("new-mobile-architecture", handleNewMobileArchitecture);
       socket.current.on("new-screen-conversation", handleNewScreenConversation);
     });

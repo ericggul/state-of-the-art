@@ -16,13 +16,6 @@ export function useSocketCommunication({
         currentArchitectures: [activeModel],
         mobileId,
       });
-
-      if (activeModel.explanation) {
-        socket.current.emit("mobile-new-speech", {
-          text: `${activeModel.name} ${activeModel.explanation}`,
-          mobileId,
-        });
-      }
     } catch (e) {
       console.error("Socket communication error:", e);
     }

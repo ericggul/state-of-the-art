@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import * as S from "./styles";
-import { MODELS } from "@/components/controller/constant/models/v4";
+import { MODELS } from "@/components/controller/constant/models";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 import useFeedback from "./utils/useFeedback";
 import { useModelListLogic } from "./utils/modelListLogic/useLogic";

@@ -13,7 +13,7 @@ import {
   ANIMATION,
   KEY_HUE,
 } from "./constants";
-import { DATA_NODES_LINKS } from "@/components/controller/constant/models/rhizome-v4";
+import { DATA_NODES_LINKS } from "@/components/controller/constant/rhizome";
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getLanguageKey } from "@/components/controller/constant/system-script";
+import { getLanguageKey } from "@/components/controller/_old/constant/system-script";
 import { v4 as uuidv4 } from "uuid"; // You might need to install this package
 
 const useMobileStore = create((set, get) => ({

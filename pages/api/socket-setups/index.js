@@ -7,7 +7,6 @@ export default function mobileSetup({ socket, io }) {
   ///////////
   socket.on("screen-init", (data) => {
     socket.join("screen");
-    socket.join(`screen-${data.layerIdx}`);
   });
 
   socket.on("mobile-init", ({ mobileId }) => {
@@ -72,10 +71,6 @@ export default function mobileSetup({ socket, io }) {
   socket.on("mobile-new-architecture", (data) => {
     socket.to("controller").emit("new-mobile-architecture", data);
     socket.to("screen").emit("new-mobile-architecture", data);
-  });
-
-  socket.on("mobile-new-speech", (data) => {
-    socket.to("screen").emit("new-mobile-speech", data);
   });
 
   socket.on("mobile-new-intro", (data) => {

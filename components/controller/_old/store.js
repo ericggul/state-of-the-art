@@ -2,7 +2,7 @@ import { create } from "zustand";
 import {
   getSystemEnsurment,
   getLanguageKey,
-} from "@/components/controller/constant/system-script";
+} from "@/components/controller/_old/constant/system-script";
 
 const WELCOME_MESSAGE = `Welcome, dear visitor, to the visionary narrative of this State-of-the-Art Architecture Gallery. May I claim the privilege of learning your name, as we open these doors to the wonders of neural networks?`;
 

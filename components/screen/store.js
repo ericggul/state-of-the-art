@@ -107,18 +107,6 @@ const useScreenStore = create((set) => ({
     });
   },
 
-  handleNewSpeech: (data) => {
-    set((state) => {
-      const newText = data.text || "";
-      return state.latestSpeech !== newText
-        ? {
-            latestSpeech: newText,
-            lastInteractionTime: Date.now(),
-          }
-        : state;
-    });
-  },
-
   handleNewMobileVisibility: (data) => {
     console.log("New visibility received:", data);
     set((state) => {

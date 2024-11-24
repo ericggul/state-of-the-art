@@ -24,7 +24,6 @@ const COMPONENTS = {
 
   2: dynamic(() => import("@/foundations/pc/text/index")),
   3: dynamic(() => import("@/foundations/pc/rhizome/v2")),
-  "3-v1": dynamic(() => import("@/foundations/pc/rhizome/v1")),
   "3-v2": dynamic(() => import("@/foundations/pc/rhizome/v2")),
 
   frame: dynamic(() => import("@/foundations/pc/frame")),
@@ -59,7 +58,6 @@ export default function RelationPage() {
 function RelationPageContent({ idx, test }) {
   const {
     handleNewControllerArchitectures,
-    handleNewSpeech,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
@@ -83,7 +81,6 @@ function RelationPageContent({ idx, test }) {
   const socket = useSocketScreen({
     layerIdx: idx,
     handleNewControllerArchitectures,
-    handleNewSpeech,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
