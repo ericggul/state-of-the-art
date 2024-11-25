@@ -1,7 +1,9 @@
 import * as S from "./styles";
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 import useMembraneSynth from "@/utils/hooks/audio/useMembraneSynth";
+
+const SOUND_URL = "/audio/intro/intro1126.wav";
 
 const Intro0 = memo(function Intro0() {
   const userName = useScreenStore((state) => state.userName);
@@ -20,13 +22,48 @@ const Intro2 = memo(function Intro2() {
 
 function Intro() {
   const introState = useScreenStore((state) => state.introState);
-  console.log(introState);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    console.log(introState, "introState");
+    if (introState >= 2) {
+      // Fade out audio over 1 second
+      const fadeOutDuration = 1000;
+      const startVolume = audioRef.current.volume;
+      const steps = 20;
+      const stepTime = fadeOutDuration / steps;
+      const volumeStep = startVolume / steps;
+
+      const fadeInterval = setInterval(() => {
+        if (audioRef.current && audioRef.current.volume > volumeStep) {
+          audioRef.current.volume = Math.max(
+            0,
+            audioRef.current.volume - volumeStep
+          );
+        } else {
+          clearInterval(fadeInterval);
+          if (audioRef.current) {
+            audioRef.current.pause();
+          }
+        }
+      }, stepTime);
+
+      return () => clearInterval(fadeInterval);
+    } else {
+      // Reset and play audio for states 0 and 1
+      audioRef.current.volume = 1;
+      audioRef.current.play();
+    }
+  }, [introState]);
 
   return (
     <>
       {introState === 0 && <Intro0 />}
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
+      <audio ref={audioRef} src={SOUND_URL} autoPlay={introState < 2} loop />
     </>
   );
 }
