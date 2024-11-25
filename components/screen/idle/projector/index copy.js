@@ -13,17 +13,52 @@ const Idle = memo(function Idle() {
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
+  const audioContextRef = useRef(null);
   const [isAudioPermitted, setIsAudioPermitted] = useState(false);
   const isVisible = useVideoFade(videoRef);
 
-  // Only handle click-to-play
+  // Initialize audio context only once
+  useEffect(() => {
+    const initAudioContext = () => {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+      }
+      return audioContextRef.current;
+    };
+
+    const setupAudio = async () => {
+      try {
+        const context = initAudioContext();
+
+        // If context is already running, try to play
+        if (context.state === "running" && audioRef.current) {
+          audioRef.current.currentTime = videoRef.current?.currentTime || 0;
+          await audioRef.current.play();
+          setIsAudioPermitted(true);
+        }
+      } catch (error) {
+        console.error("Audio setup failed:", error);
+      }
+    };
+
+    setupAudio();
+
+    // Cleanup
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
   const handleScreenClick = async () => {
     if (!isAudioPermitted && audioRef.current && videoRef.current) {
       try {
-        // Create AudioContext only on user interaction
-        const audioContext = new (window.AudioContext ||
-          window.webkitAudioContext)();
-        await audioContext.resume();
+        // Ensure audio context is resumed
+        if (audioContextRef.current) {
+          await audioContextRef.current.resume();
+        }
 
         // Sync and play audio
         audioRef.current.currentTime = videoRef.current.currentTime;
@@ -31,34 +66,28 @@ const Idle = memo(function Idle() {
         setIsAudioPermitted(true);
       } catch (error) {
         console.error("Audio playback failed:", error);
+        // Reset audio context if failed
+        audioContextRef.current = null;
         setIsAudioPermitted(false);
       }
     }
   };
 
-  // Sync audio with video when playing
+  // Ensure audio stays synced with video
   useEffect(() => {
-    if (!isAudioPermitted) return;
-
     const video = videoRef.current;
     const audio = audioRef.current;
-    if (!video || !audio) return;
 
-    const syncAudio = () => {
-      if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
-        audio.currentTime = video.currentTime;
-      }
-    };
+    if (video && audio && isAudioPermitted) {
+      const syncAudio = () => {
+        if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+          audio.currentTime = video.currentTime;
+        }
+      };
 
-    video.addEventListener("timeupdate", syncAudio);
-
-    return () => {
-      video.removeEventListener("timeupdate", syncAudio);
-      // Don't pause audio on cleanup unless component is unmounting
-      if (audio && !video.isConnected) {
-        audio.pause();
-      }
-    };
+      video.addEventListener("timeupdate", syncAudio);
+      return () => video.removeEventListener("timeupdate", syncAudio);
+    }
   }, [isAudioPermitted]);
 
   return (
