@@ -13,6 +13,7 @@ const Idle = memo(function Idle() {
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
+  const initialSyncDoneRef = useRef(false);
   const [isAudioPermitted, setIsAudioPermitted] = useState(false);
   const isVisible = useVideoFade(videoRef);
 
@@ -25,7 +26,7 @@ const Idle = memo(function Idle() {
           window.webkitAudioContext)();
         await audioContext.resume();
 
-        // Sync and play audio
+        // Initial sync and play
         audioRef.current.currentTime = videoRef.current.currentTime;
         await audioRef.current.play();
         setIsAudioPermitted(true);
@@ -36,25 +37,28 @@ const Idle = memo(function Idle() {
     }
   };
 
-  // Sync audio with video when playing
+  // Only sync audio with video on initial play
   useEffect(() => {
-    if (!isAudioPermitted) return;
+    if (!isAudioPermitted || initialSyncDoneRef.current) return;
 
     const video = videoRef.current;
     const audio = audioRef.current;
     if (!video || !audio) return;
 
-    const syncAudio = () => {
-      if (Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+    const handleInitialSync = () => {
+      if (!initialSyncDoneRef.current) {
         audio.currentTime = video.currentTime;
+        initialSyncDoneRef.current = true;
+        // Remove listener after initial sync
+        video.removeEventListener("timeupdate", handleInitialSync);
       }
     };
 
-    video.addEventListener("timeupdate", syncAudio);
+    video.addEventListener("timeupdate", handleInitialSync);
 
     return () => {
-      video.removeEventListener("timeupdate", syncAudio);
-      // Don't pause audio on cleanup unless component is unmounting
+      video.removeEventListener("timeupdate", handleInitialSync);
+      // Only pause audio if component is unmounting
       if (audio && !video.isConnected) {
         audio.pause();
       }

@@ -10,8 +10,15 @@ export const Container = styled.div`
 export const Background = styled.div`
   position: absolute;
   inset: 0;
-  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-  transition: opacity 3s ease;
+  opacity: ${({ $isVisible, $oscillatingOpacity }) => {
+    const baseOpacity = $isVisible ? 1 : 0;
+    return baseOpacity * $oscillatingOpacity;
+  }};
+  transition: opacity
+    ${({ $isVisible }) =>
+      // If $isVisible is changing, use 3s, otherwise use 1.5s for oscillation
+      typeof $isVisible === "boolean" ? "3s" : "1.5s"}
+    ease;
 `;
 
 export const Video = styled.video`

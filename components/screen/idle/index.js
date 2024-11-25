@@ -5,7 +5,7 @@ import * as S from "./styles";
 
 import dynamic from "next/dynamic";
 
-const IdlePC = dynamic(() => import("@/components/screen/idle/pc"));
+const IdlePC = dynamic(() => import("@/components/screen/idle/pc/index-v2"));
 const IdleProjector = dynamic(() =>
   import("@/components/screen/idle/projector")
 );
