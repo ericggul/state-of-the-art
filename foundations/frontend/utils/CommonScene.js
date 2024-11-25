@@ -24,7 +24,9 @@ export default function CommonScene({ children, style }) {
           path="https://cdn.jsdelivr.net/gh/pmndrs/drei-assets@master/hdri/"
         /> */}
         <Environment
-          files="/3d/environment/sunset.hdr"
+          files={`/3d/environment/${
+            style.lighting.environment || "apartment"
+          }.hdr`}
           intensity={style.lighting.envIntensity || 0.1}
         />
       </Suspense>

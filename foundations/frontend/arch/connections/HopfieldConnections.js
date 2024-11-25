@@ -14,7 +14,7 @@ function SingleLine({ from, to, style }) {
     color: style?.colors?.connection || style?.colors?.inner || "blue",
     transparent: true,
     opacity: (style?.material?.opacity || 1) * 0.5, // Increased opacity
-    linewidth: 3, // Increased line width
+    linewidth: 0.3, // Increased line width
   };
 
   if (style?.material?.emissive) {
@@ -102,7 +102,7 @@ function CurvedLine({ start, end, controlPoint, style }) {
     color: style?.colors?.connection || style?.colors?.inner || "blue",
     transparent: true,
     opacity: (style?.material?.opacity || 1) * 0.3,
-    linewidth: 2,
+    linewidth: 0.3,
   };
 
   return (

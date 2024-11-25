@@ -1,8 +1,8 @@
 // models/rnn.js
 
 // Constants for model configurations
-const NUM_RNN_LAYERS = 10;
-const NUM_LSTM_LAYERS = 10;
+const NUM_RNN_LAYERS = 8;
+const NUM_LSTM_LAYERS = 8;
 const NUM_GRU_LAYERS = 10;
 const HIDDEN_SIZE = 128;
 

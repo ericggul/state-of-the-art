@@ -39,7 +39,7 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
   for (let i = 0; i < layerHeights.length; i++) {
     const layerHeight = layerHeights[i];
     // Add a gap between layers if desired, let's use a multiplier
-    const gap = 10; // Adjust the gap as needed
+    const gap = 30; // Adjust the gap as needed
     cumulativeHeight +=
       i === 0 ? 0 : layerHeights[i - 1] / 2 + layerHeight / 2 + gap;
     layerPositions.push(cumulativeHeight);

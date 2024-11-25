@@ -1,5 +1,6 @@
 import React, { useMemo, Suspense } from "react";
 import * as THREE from "three";
+import { DoubleSide } from "three";
 
 function RNNConnections({ structure, style, expandedLayers }) {
   const connections = useMemo(() => {
@@ -59,19 +60,97 @@ function RNNConnections({ structure, style, expandedLayers }) {
         }
       }
     }
+
+    for (let i = 1; i < structure.length - 1; i++) {
+      const layer = structure[i];
+      if (
+        layer.type.includes("rnn") ||
+        layer.type.includes("lstm") ||
+        layer.type.includes("gru")
+      ) {
+        const grid =
+          expandedLayers[i] && layer.grid
+            ? layer.grid
+            : { xCount: 1, yCount: 1 };
+
+        for (let x = 0; x < grid.xCount; x++) {
+          for (let z = 0; z < grid.yCount; z++) {
+            const center = [
+              layer.position[0],
+              layer.position[1],
+              layer.position[2],
+            ];
+
+            const radiusValues = [5, 10];
+            const horizontalSpread = 2.5;
+
+            const directions = [
+              { x: 1, y: 0, z: 0 }, // right
+              { x: -1, y: 0, z: 0 }, // left
+            ];
+
+            radiusValues.forEach((radius, idx) => {
+              directions.forEach((dir, dirIdx) => {
+                const points = [];
+                const segments = 60; // More segments for smoother loop
+
+                // Create an elongated closed loop
+                for (let i = 0; i <= segments; i++) {
+                  const t = i / segments;
+                  const angle = t * Math.PI * 2; // Full circle
+
+                  // Create elongated ellipse shape
+                  points.push(
+                    new THREE.Vector3(
+                      center[0] +
+                        Math.cos(angle) * radius * dir.x * horizontalSpread +
+                        dir.z * 0.2,
+                      center[1],
+                      center[2] + Math.sin(angle) * radius * 0.4 + dir.z * 1.0
+                    )
+                  );
+                }
+
+                const geometry = new THREE.BufferGeometry().setFromPoints(
+                  points
+                );
+
+                temp.push({
+                  type: "recurrent",
+                  geometry: geometry,
+                  opacity: 0.8 - dirIdx * 0.2,
+                });
+              });
+            });
+          }
+        }
+      }
+    }
     return temp;
   }, [structure, expandedLayers]);
 
   return (
     <Suspense fallback={<div>Loading RNN Connections...</div>}>
-      {connections.map((connection, i) => (
-        <SingleLine
-          key={i}
-          from={connection.from}
-          to={connection.to}
-          style={style}
-        />
-      ))}
+      {connections.map((connection, i) => {
+        if (connection.type === "recurrent") {
+          return (
+            <RecurrentLine
+              key={`recurrent-${i}`}
+              geometry={connection.geometry}
+              style={style}
+              opacity={connection.opacity}
+            />
+          );
+        }
+        return (
+          <SingleLine
+            key={`forward-${i}`}
+            from={connection.from}
+            to={connection.to}
+            style={style}
+          />
+        );
+      })}
     </Suspense>
   );
 }
@@ -107,6 +186,23 @@ function SingleLine({ from, to, style }) {
   return (
     <line geometry={geometry}>
       <lineBasicMaterial {...lineMaterialProps} />
+    </line>
+  );
+}
+
+function RecurrentLine({ geometry, style, opacity = 0.7 }) {
+  const lineMaterialProps = {
+    color: style?.colors?.recurrent || style?.colors?.inner || "green",
+    transparent: true,
+    opacity: (style?.material?.opacity || 1) * opacity,
+    linewidth: 1.5,
+    dashSize: 2,
+    gapSize: 1.5,
+  };
+
+  return (
+    <line geometry={geometry}>
+      <lineDashedMaterial {...lineMaterialProps} />
     </line>
   );
 }

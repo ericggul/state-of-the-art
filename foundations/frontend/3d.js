@@ -28,6 +28,8 @@ export default function Visualisation({ isTesting = false }) {
   const modelGroupRef = useRef();
   const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 
+  console.log(modelName, currentArchitectures);
+
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {
       setTimeout(() => {
@@ -42,7 +44,12 @@ export default function Visualisation({ isTesting = false }) {
 
           if (avgDimension === 0 || !isFinite(avgDimension)) {
             console.warn("Invalid model size. Using default camera distance.");
-            setCameraDistance(400);
+            //if type is rnn, use a smaller distance
+            if (modelName.includes("RNN")) {
+              setCameraDistance(70);
+            } else {
+              setCameraDistance(400);
+            }
           } else {
             const distance = avgDimension * 0.23;
             setCameraDistance(distance);
