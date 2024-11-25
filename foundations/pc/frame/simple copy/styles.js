@@ -4,11 +4,6 @@ import { WholeContainer } from "@/styles";
 export const LINEWIDTH = 0.1;
 export const MARGIN = 5;
 
-const commonPositionStyles = css`
-  position: absolute;
-  background: #fff;
-`;
-
 export const Container = styled.div`
   ${WholeContainer}
   position: fixed;
@@ -18,10 +13,11 @@ export const Container = styled.div`
 `;
 
 export const VerticalLine = styled.div`
-  ${commonPositionStyles}
+  position: absolute;
   width: 0.03vw;
   top: 0;
   height: 100vh;
+  background: #fff;
   top: ${(props) => props.$top}vh;
   left: ${(props) => props.$left}vw;
   height: ${(props) => props.$height || 100}vh;
@@ -46,16 +42,17 @@ export const VerticalName = styled.div`
 `;
 
 export const HorizontalLine = styled.div`
-  ${commonPositionStyles}
+  position: absolute;
   height: ${LINEWIDTH}vw;
   width: ${(props) =>
     props.$width?.titleWidth - props.$width?.verWidth + MARGIN || "27"}vw;
   bottom: ${(props) => props.$bottom}vw;
   right: 0;
+  background: #fff;
 `;
 
 export const HorizontalLine2 = styled.div`
-  ${commonPositionStyles}
+  position: absolute;
   height: ${LINEWIDTH}vw;
   width: ${(props) => props.$width?.verWidth || "2"}vw;
   bottom: ${(props) => props.$bottom}vw;
@@ -63,6 +60,7 @@ export const HorizontalLine2 = styled.div`
     props.$width
       ? props.$width.titleWidth - props.$width.verWidth + 1 + MARGIN
       : 28}vw;
+  background: #fff;
 `;
 
 export const ModelTitle = styled.div`
@@ -86,18 +84,20 @@ export const Ver = styled.h2`
 `;
 
 export const HorizontalCube = styled.div`
-  ${commonPositionStyles}
+  position: absolute;
   right: 8vw;
   width: 4vw;
   height: 1vw;
   bottom: ${(props) => props.$bottom}vw;
   transform: translateY(100%);
+  background: #fff;
 `;
 
 export const VerticalCube = styled.div`
-  ${commonPositionStyles}
+  position: absolute;
   right: 2.5vw;
   width: 0.8vw;
   height: ${(props) => props.$bottom - 0.2}vw;
   bottom: 0.2vw;
+  background: #fff;
 `;
