@@ -26,7 +26,7 @@ const COMPONENTS = {
   3: dynamic(() => import("@/foundations/pc/rhizome/v2")),
   "3-v2": dynamic(() => import("@/foundations/pc/rhizome/v2")),
 
-  frame: dynamic(() => import("@/foundations/pc/frame")),
+  frame: dynamic(() => import("@/foundations/pc/frame/full")),
 };
 
 const Idle = dynamic(() => import("@/components/screen/idle"));

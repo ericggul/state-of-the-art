@@ -11,7 +11,7 @@ import PerformanceChart from "./components/2_PerformanceChart";
 import RelatedPapers from "./components/4_RelatedPapers";
 import ModelFeatures from "./components/3_ModelFeatures";
 
-import Frame from "@/foundations/pc/frame";
+import Frame from "@/foundations/pc/frame/full";
 
 const LAYOUT = [
   [

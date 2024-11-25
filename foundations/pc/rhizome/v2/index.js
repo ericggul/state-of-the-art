@@ -17,7 +17,7 @@ import { DATA_NODES_LINKS } from "@/components/controller/constant/rhizome";
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 
-import Frame from "@/foundations/pc/frame";
+import Frame from "@/foundations/pc/frame/full";
 
 export default function Rhizome() {
   const { currentArchitectures } = useScreenStore();

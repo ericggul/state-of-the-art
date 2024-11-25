@@ -9,7 +9,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev --experimental-https",
+    "dev": "next dev --experimental-https --experimental-https-key=./certificates/localhost-key.pem --experimental-https-cert=./certificates/localhost.pem",
     "next-dev": "next dev",
     "build": "next build",
     "start": "next start",

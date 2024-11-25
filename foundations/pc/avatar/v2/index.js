@@ -9,7 +9,7 @@ import { Stage } from "./3d/Stage";
 import { useSceneControls } from "./controls/SceneControls";
 import { Leva } from "leva";
 
-import Frame from "@/foundations/pc/frame";
+import Frame from "@/foundations/pc/frame/full";
 
 export default function Wrapper() {
   const { lightControls, stageControls, modelControls } = useSceneControls();

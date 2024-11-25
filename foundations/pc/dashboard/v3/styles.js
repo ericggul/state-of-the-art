@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
-import { LINEWIDTH, LEFT, TOP, HEIGHT } from "@/foundations/pc/frame/styles";
+import {
+  LINEWIDTH,
+  LEFT,
+  TOP,
+  HEIGHT,
+} from "@/foundations/pc/frame/full/styles";
 
 export const Container = styled.div`
   ${WholeContainer}

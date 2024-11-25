@@ -1,10 +1,15 @@
-import React, { useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useState,
+  Suspense,
+} from "react";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
-
-import Frame from "@/foundations/pc/frame";
 
 import Architecture3D from "@/foundations/frontend/3d";
 
@@ -96,10 +101,18 @@ export default function TextComponent() {
   const containerRef = useRef(null);
   const scrollPosRef = useRef(0);
   const rafRef = useRef(null);
+  const [needsScroll, setNeedsScroll] = useState(false);
+
+  // Check if scrolling is needed
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    setNeedsScroll(container.scrollHeight > container.clientHeight);
+  }, [structure]);
 
   // Auto-scrolling effect
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !needsScroll) return;
     const container = containerRef.current;
     const scrollSpeed = 1;
     let lastTimestamp = 0;
@@ -107,7 +120,6 @@ export default function TextComponent() {
     const scroll = (timestamp) => {
       if (!container) return;
 
-      // Smooth timing between frames
       const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 16.67 : 1;
       lastTimestamp = timestamp;
 
@@ -122,7 +134,6 @@ export default function TextComponent() {
       rafRef.current = requestAnimationFrame(scroll);
     };
 
-    // Start animation
     scrollPosRef.current = 0;
     container.scrollTop = 0;
     rafRef.current = requestAnimationFrame(scroll);
@@ -134,16 +145,18 @@ export default function TextComponent() {
       scrollPosRef.current = 0;
       container.scrollTop = 0;
     };
-  }, [structure]);
+  }, [structure, needsScroll]);
 
   return (
     <S.Container>
       <S.Canvas>
-        <Architecture3D />
+        <Suspense fallback={null}>
+          <Architecture3D />
+        </Suspense>
       </S.Canvas>
 
-      <S.StructureText ref={containerRef}>
-        <div className="model-structure">
+      <S.StructureText ref={containerRef} needsScroll={needsScroll}>
+        <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
           {structure.map((layer, idx) => (
             <LayerText
               key={`${layer.name}-${idx}-${currentArchitectures}`}
@@ -154,8 +167,6 @@ export default function TextComponent() {
           ))}
         </div>
       </S.StructureText>
-
-      <Frame />
     </S.Container>
   );
 }

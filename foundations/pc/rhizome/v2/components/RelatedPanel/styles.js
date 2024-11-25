@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
-import { LINEWIDTH, LEFT, HEIGHT } from "@/foundations/pc/frame/styles";
+import { LINEWIDTH, LEFT, HEIGHT } from "@/foundations/pc/frame/full/styles";
 
 export const LeftLine = styled.div`
   position: absolute;

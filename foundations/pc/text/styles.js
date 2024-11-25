@@ -1,8 +1,6 @@
 import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 
-import { LEFT, TOP } from "@/foundations/pc/frame/styles";
-
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
@@ -44,17 +42,20 @@ const depthColors = {
   4: "#0033ff",
 };
 
-export const StructureText = styled.pre`
+export const StructureText = styled.pre.withConfig({
+  shouldComponentUpdate: true,
+  shouldComponentUpdateForProp: (prop) => prop !== "needsScroll",
+})`
   color: #00ffff;
   font-size: 14px;
   line-height: 1.5;
   text-align: left;
   position: absolute;
-  left: ${LEFT + 1}vw;
+  left: 1vw;
 
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: ${(props) => (props.needsScroll ? "hidden" : "visible")};
   white-space: pre;
   ${scrollbarHide}
   z-index: 100;
@@ -131,13 +132,31 @@ export const StructureText = styled.pre`
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    padding-top: 20vh;
-    padding-bottom: 100vh;
     gap: 0.2rem;
+    position: absolute;
+    width: 100%;
+
+    // Center both vertically and horizontally when not scrolling
+    top: 50%;
+    left: 50%;
+    transform: ${
+      (props) =>
+        props.needsScroll
+          ? "translateX(-50%)" // Only center horizontally when scrolling
+          : "translate(-50%, -50%)" // Center both ways when not scrolling
+    };
 
     // Optimize for animation
-    transform: translate3d(0, 0, 0);
     will-change: transform;
     backface-visibility: hidden;
+
+    &.scrolling {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      padding-top: 15vh;
+      padding-bottom: 100vh;
+    }
   }
 `;
