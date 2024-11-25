@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef, useState, useEffect } from "react";
+import { memo, useRef, useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
@@ -8,27 +8,28 @@ import { VIDEOS } from "../utils/constants";
 
 const AUDIO_URL = "/audio/idle/idle1126.wav";
 const FADE_DURATION = 3000;
-const FADE_STEPS = 30;
+const AUDIO_FADE_STEPS = 30;
 
-const Idle = memo(function Idle({ $isFrontend }) {
+const Idle = memo(function Idle() {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
-  const audioContextRef = useRef(null);
   const initialSyncDoneRef = useRef(false);
   const fadeIntervalRef = useRef(null);
   const [isAudioPermitted, setIsAudioPermitted] = useState(false);
   const isVisible = useVideoFade(videoRef);
 
-  const fadeAudio = (audio, from, to, duration = FADE_DURATION) => {
+  // Add fade utility without changing existing functionality
+  const fadeAudio = useCallback((from, to, duration = FADE_DURATION) => {
+    const audio = audioRef.current;
     if (!audio) return;
 
     if (fadeIntervalRef.current) {
       clearInterval(fadeIntervalRef.current);
     }
 
-    const steps = FADE_STEPS;
+    const steps = AUDIO_FADE_STEPS;
     const stepValue = (to - from) / steps;
     const stepDuration = duration / steps;
     let currentStep = 0;
@@ -44,44 +45,9 @@ const Idle = memo(function Idle({ $isFrontend }) {
         audio.volume = to;
       }
     }, stepDuration);
-
-    return fadeIntervalRef.current;
-  };
-
-  useEffect(() => {
-    const initAudioContext = () => {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext ||
-          window.webkitAudioContext)();
-      }
-      return audioContextRef.current;
-    };
-
-    const setupAudio = async () => {
-      try {
-        const context = initAudioContext();
-
-        if (context.state === "running" && audioRef.current) {
-          audioRef.current.volume = 0;
-          audioRef.current.currentTime = videoRef.current?.currentTime || 0;
-          await audioRef.current.play();
-          fadeAudio(audioRef.current, 0, 1);
-          setIsAudioPermitted(true);
-        }
-      } catch (error) {
-        console.error("Audio setup failed:", error);
-      }
-    };
-
-    setupAudio();
-
-    return () => {
-      if (fadeIntervalRef.current) {
-        clearInterval(fadeIntervalRef.current);
-      }
-    };
   }, []);
 
+  // Preserve existing click-to-play with added fade in
   const handleScreenClick = async () => {
     if (!isAudioPermitted && audioRef.current && videoRef.current) {
       try {
@@ -93,7 +59,7 @@ const Idle = memo(function Idle({ $isFrontend }) {
         audio.currentTime = videoRef.current.currentTime;
         audio.volume = 0;
         await audio.play();
-        fadeAudio(audio, 0, 1);
+        fadeAudio(0, 1);
         setIsAudioPermitted(true);
       } catch (error) {
         console.error("Audio playback failed:", error);
@@ -102,19 +68,7 @@ const Idle = memo(function Idle({ $isFrontend }) {
     }
   };
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !isAudioPermitted) return;
-
-    const handleAudioEnd = () => {
-      fadeAudio(audio, 1, 0);
-      setTimeout(() => fadeAudio(audio, 0, 1), FADE_DURATION);
-    };
-
-    audio.addEventListener("ended", handleAudioEnd);
-    return () => audio.removeEventListener("ended", handleAudioEnd);
-  }, [isAudioPermitted]);
-
+  // Keep existing sync logic
   useEffect(() => {
     if (!isAudioPermitted || initialSyncDoneRef.current) return;
 
@@ -131,13 +85,34 @@ const Idle = memo(function Idle({ $isFrontend }) {
     };
 
     video.addEventListener("timeupdate", handleInitialSync);
-    return () => video.removeEventListener("timeupdate", handleInitialSync);
+
+    return () => {
+      video.removeEventListener("timeupdate", handleInitialSync);
+      if (audio && !video.isConnected) {
+        fadeAudio(audio.volume, 0, 1000);
+      }
+    };
   }, [isAudioPermitted]);
 
+  // Add loop transition fades
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !isAudioPermitted) return;
+
+    const handleAudioEnd = () => {
+      fadeAudio(1, 0);
+      setTimeout(() => fadeAudio(0, 1), FADE_DURATION);
+    };
+
+    audio.addEventListener("ended", handleAudioEnd);
+    return () => audio.removeEventListener("ended", handleAudioEnd);
+  }, [isAudioPermitted, fadeAudio]);
+
+  // Add cleanup for fade intervals
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        fadeAudio(audioRef.current, audioRef.current.volume, 0, 1000);
+      if (fadeIntervalRef.current) {
+        clearInterval(fadeIntervalRef.current);
       }
     };
   }, []);
