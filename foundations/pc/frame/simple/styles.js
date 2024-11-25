@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { WholeContainer } from "@/styles";
 
 export const LINEWIDTH = 0.1;
@@ -17,14 +17,29 @@ export const Container = styled.div`
   pointer-events: none;
 `;
 
+const lineAppear = keyframes`
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+`;
+
 export const VerticalLine = styled.div`
   ${commonPositionStyles}
   width: 0.03vw;
-  top: 0;
-  height: 100vh;
   top: ${(props) => props.$top}vh;
   left: ${(props) => props.$left}vw;
   height: ${(props) => props.$height || 100}vh;
+  transform-origin: center bottom;
+  opacity: ${(props) => (props.$isAnimating ? 0 : 1)};
+  animation: ${(props) => (props.$isAnimating ? lineAppear : "none")} 0.6s
+    cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: ${(props) => props.$index * 100}ms;
+  will-change: transform, opacity;
 `;
 
 export const VerticalName = styled.div`

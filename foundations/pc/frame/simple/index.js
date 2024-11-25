@@ -14,6 +14,8 @@ export default function Frame({ middle = false }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const animationTimeoutRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
+  const [lineKey, setLineKey] = useState(0);
+  const [shouldRender, setShouldRender] = useState(true);
 
   const bottom = middle ? 20 : 3;
 
@@ -82,8 +84,14 @@ export default function Frame({ middle = false }) {
       return;
     }
 
+    setShouldRender(false);
+    requestAnimationFrame(() => {
+      setShouldRender(true);
+      setIsAnimating(true);
+      setLineKey((prev) => prev + 1);
+    });
+
     lastUpdateRef.current = now;
-    setIsAnimating(true);
 
     animationTimeoutRef.current = setTimeout(() => {
       setIsAnimating(false);
@@ -98,7 +106,7 @@ export default function Frame({ middle = false }) {
     };
   }, [currentArchitectures]);
 
-  if (!currentArchitectures?.length) return null;
+  if (!currentArchitectures?.length || !shouldRender) return null;
 
   const { name, version } = currentArchitectures[0];
 
@@ -108,10 +116,21 @@ export default function Frame({ middle = false }) {
       <S.HorizontalLine2 $width={dimensions} $bottom={bottom} />
       {middle && (
         <>
-          <S.VerticalLine $top={-10} $left={5} />
-          <S.VerticalLine $top={20} $left={7} $height={60} />
-          <S.VerticalLine $top={-35} $left={9} />
-          <S.VerticalLine $top={-27.5} $left={11} />
+          {[
+            { top: -10, left: 5, height: 100, index: 0 },
+            { top: 20, left: 7, height: 60, index: 1 },
+            { top: -35, left: 9, height: 100, index: 2 },
+            { top: -27.5, left: 11, height: 100, index: 3 },
+          ].map(({ top, left, height, index }) => (
+            <S.VerticalLine
+              key={`line-${index}-${lineKey}`}
+              $top={top}
+              $left={left}
+              $height={height}
+              $index={index}
+              $isAnimating={isAnimating}
+            />
+          ))}
 
           <S.VerticalName $left={5} $top={40}>
             <TextScramble text={name} isAnimating={isAnimating} />
