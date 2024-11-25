@@ -2,12 +2,11 @@
 
 import { memo, useRef, useState, useEffect } from "react";
 import * as S from "./styles";
-
 import useScreenStore from "@/components/screen/store";
 
 const VIDEOS = ["01_close", "01_far", "02_close", "02_far"];
 const AUDIO_URL = "/audio/idle/idle1126.wav";
-const FADE_DURATION = 3; // 3 seconds for fade
+const FADE_DURATION = 3;
 
 const Idle = memo(function Idle() {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
@@ -17,25 +16,7 @@ const Idle = memo(function Idle() {
   const [isAudioPermitted, setIsAudioPermitted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleTimeUpdate = () => {
-      const timeLeft = video.duration - video.currentTime;
-
-      // Toggle visibility near the end of each loop
-      if (timeLeft <= FADE_DURATION) {
-        setIsVisible(false);
-      } else if (timeLeft > FADE_DURATION) {
-        setIsVisible(true);
-      }
-    };
-
-    video.addEventListener("timeupdate", handleTimeUpdate);
-    return () => video.removeEventListener("timeupdate", handleTimeUpdate);
-  }, []);
-
+  // Audio handling for projector
   useEffect(() => {
     const audioContext = new (window.AudioContext ||
       window.webkitAudioContext)();
@@ -48,29 +29,43 @@ const Idle = memo(function Idle() {
     if (!isAudioPermitted && audioRef.current && videoRef.current) {
       const currentTime = videoRef.current.currentTime;
       audioRef.current.currentTime = currentTime;
-
       audioRef.current
         .play()
-        .then(() => {
-          setIsAudioPermitted(true);
-        })
-        .catch((error) => {
-          console.error("Audio playback failed:", error);
-        });
+        .then(() => setIsAudioPermitted(true))
+        .catch((error) => console.error("Audio playback failed:", error));
     }
   };
 
+  // Video fade handling
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => {
+      const timeLeft = video.duration - video.currentTime;
+      if (timeLeft <= FADE_DURATION) {
+        setIsVisible(false);
+      } else if (timeLeft > FADE_DURATION) {
+        setIsVisible(true);
+      }
+    };
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    return () => video.removeEventListener("timeupdate", handleTimeUpdate);
+  }, []);
+
   return (
     <S.Container onClick={handleScreenClick}>
-      <S.Video
-        ref={videoRef}
-        src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
-        autoPlay
-        loop
-        muted
-        playsInline
-        $isVisible={isVisible}
-      />
+      <S.VideoWrapper $isVisible={isVisible}>
+        <video
+          ref={videoRef}
+          src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+      </S.VideoWrapper>
       <audio ref={audioRef} src={AUDIO_URL} loop autoPlay={isAudioPermitted} />
     </S.Container>
   );

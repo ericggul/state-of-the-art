@@ -6,10 +6,15 @@ export const Container = styled.div`
   ${FlexCenterStyle}
 `;
 
-export const Video = styled.video`
+export const VideoWrapper = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: cover;
   opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
   transition: opacity 3s ease;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
