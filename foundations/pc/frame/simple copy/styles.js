@@ -17,8 +17,7 @@ export const Container = styled.div`
 export const HorizontalLine = styled.div`
   position: absolute;
   height: ${LINEWIDTH}vw;
-  width: ${(props) =>
-    props.$width?.titleWidth - props.$width?.verWidth || "27"}vw;
+  width: 27vw;
   bottom: 3vw;
   right: 0;
   background: #fff;
@@ -27,17 +26,17 @@ export const HorizontalLine = styled.div`
 export const HorizontalLine2 = styled.div`
   position: absolute;
   height: ${LINEWIDTH}vw;
-  width: ${(props) => props.$width?.verWidth || "2"}vw;
+  width: 2vw;
   bottom: 3vw;
-  right: ${(props) =>
-    props.$width ? props.$width.titleWidth - props.$width.verWidth + 1 : 28}vw;
+  right: 28vw;
   background: #fff;
 `;
 
 export const ModelTitle = styled.div`
   position: absolute;
+
   bottom: 2.9vw;
-  right: ${(props) => (props.$width ? props.$width.titleWidth + 1 : 30)}vw;
+  right: 30vw;
   transform: translateY(100%) translateX(100%);
 `;
 

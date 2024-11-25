@@ -11,6 +11,7 @@ import { useModelStructure } from "@/components/frontend/utils";
 import TypewriterLayerText from "./TypewriterLayerText";
 import * as S from "./styles";
 
+import FrameSimple from "@/foundations/pc/frame/simple";
 import Architecture3D from "@/foundations/frontend/3d";
 
 // Memoize LayerText component
@@ -155,7 +156,7 @@ export default function TextComponent() {
         </Suspense>
       </S.Canvas>
 
-      <S.StructureText ref={containerRef} needsScroll={needsScroll}>
+      <S.StructureText ref={containerRef} $needsScroll={needsScroll}>
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
           {structure.map((layer, idx) => (
             <LayerText
@@ -167,6 +168,7 @@ export default function TextComponent() {
           ))}
         </div>
       </S.StructureText>
+      <FrameSimple />
     </S.Container>
   );
 }

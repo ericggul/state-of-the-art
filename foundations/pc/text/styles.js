@@ -44,7 +44,7 @@ const depthColors = {
 
 export const StructureText = styled.pre.withConfig({
   shouldComponentUpdate: true,
-  shouldComponentUpdateForProp: (prop) => prop !== "needsScroll",
+  shouldComponentUpdateForProp: (prop) => prop !== "$needsScroll",
 })`
   color: #00ffff;
   font-size: 14px;
@@ -53,9 +53,11 @@ export const StructureText = styled.pre.withConfig({
   position: absolute;
   left: 1vw;
 
+  pointer-events: none;
+
   width: 100%;
   height: 100%;
-  overflow: ${(props) => (props.needsScroll ? "hidden" : "visible")};
+  overflow: ${(props) => (props.$needsScroll ? "hidden" : "visible")};
   white-space: pre;
   ${scrollbarHide}
   z-index: 100;
@@ -141,7 +143,7 @@ export const StructureText = styled.pre.withConfig({
     left: 50%;
     transform: ${
       (props) =>
-        props.needsScroll
+        props.$needsScroll
           ? "translateX(-50%)" // Only center horizontally when scrolling
           : "translate(-50%, -50%)" // Center both ways when not scrolling
     };

@@ -11,6 +11,7 @@ export const Container = styled.div`
   position: fixed;
   background: transparent;
   z-index: 9999;
+  pointer-events: none;
 `;
 
 export const VerticalLine = styled.div`
