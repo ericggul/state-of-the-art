@@ -230,13 +230,14 @@ export const TYPE_STYLES = {
       outer: "#ff00ff",
       inner: "#00ffff",
       highlight: "#ffff00",
+      connection: `hsl(180, 100%, 50%)`,
     },
     material: {
       metalness: 0.9,
       roughness: 0.2,
     },
     shadows: true,
-    emissive: true,
+    emissive: true, // Important for neon effect
     lighting: {
       environment: "night",
       envIntensity: 0.1,
@@ -257,18 +258,20 @@ export const TYPE_STYLES = {
     name: "Diffusion Model",
     colors: {
       outer: "#c0c0c0",
-      inner: "#a0a0a0",
+      // inner: "#a0a0a0",
+      inner: "#bbb",
       environment: "#4a4a4a",
     },
     material: {
       metalness: 1.0,
-      roughness: 0.1,
+      roughness: 0.05,
       envMapIntensity: 1.0,
       transparent: false,
     },
     lighting: {
-      environment: "city",
+      environment: "sky",
       envIntensity: 1.2,
+      envMapBlurriness: 10.0,
       directionalLight: { position: [10, 20, 10], intensity: 0.8 },
       ambientLight: { intensity: 0.4 },
     },

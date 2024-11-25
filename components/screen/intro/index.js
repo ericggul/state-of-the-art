@@ -28,6 +28,7 @@ function Intro() {
   useEffect(() => {
     if (!audioRef.current || !isProjector) return;
 
+    console.log({ introState });
     if (introState >= 2) {
       // Fade out audio over 1 second
       const fadeOutDuration = 1000;

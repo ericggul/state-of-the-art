@@ -28,6 +28,7 @@ export default function CommonScene({ children, style }) {
             style.lighting.environment || "apartment"
           }.hdr`}
           intensity={style.lighting.envIntensity || 0.1}
+          blurriness={style.lighting.envMapBlurriness || 0.5}
         />
       </Suspense>
       <ambientLight intensity={2} />
