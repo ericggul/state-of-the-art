@@ -12,19 +12,33 @@ export const Container = styled.div`
   pointer-events: none;
 `;
 
-const VerticalCommon = css`
+export const VerticalLine = styled.div`
   position: absolute;
-  width: 0.05vw;
+  width: 0.03vw;
+  top: 0;
+  height: 100vh;
+  background: #fff;
+  top: ${(props) => props.$top}vh;
+  left: ${(props) => props.$left}vw;
+  height: ${(props) => props.$height || 100}vh;
 `;
 
-export const VerticalLine = styled.div`
-  ${VerticalCommon}
-  height: ${LINEWIDTH}vw;
-  width: ${(props) =>
-    props.$width?.titleWidth - props.$width?.verWidth + MARGIN || "27"}vw;
-  bottom: ${(props) => props.$bottom}vw;
-  right: 0;
-  background: #fff;
+export const VerticalName = styled.div`
+  position: absolute;
+  transform: rotate(-90deg);
+  transform-origin: left top;
+  background: transparent;
+  color: #fff;
+  white-space: nowrap;
+  font-size: 1.3vw;
+  padding: 0.5vw;
+  text-align: center;
+  font-weight: bold;
+  top: ${(props) => props.$top + 15}vh;
+  left: ${(props) => props.$left - 0.3}vw;
+  width: 2vw;
+  display: flex;
+  justify-content: center;
 `;
 
 export const HorizontalLine = styled.div`

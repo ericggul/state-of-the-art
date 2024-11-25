@@ -41,13 +41,24 @@ export default function Frame({ middle = false }) {
     <S.Container>
       <S.HorizontalLine $width={dimensions} $bottom={bottom} />
       <S.HorizontalLine2 $width={dimensions} $bottom={bottom} />
-
-      {/* {!middle && (
+      {middle && (
         <>
-          <S.HorizontalCube $bottom={bottom} />
-          <S.VerticalCube $bottom={bottom} />
+          <S.VerticalLine $top={-10} $left={5} />
+          <S.VerticalLine $top={20} $left={7} $height={60} />
+          <S.VerticalLine $top={-35} $left={9} />
+          <S.VerticalLine $top={-27.5} $left={11} />
+
+          <S.VerticalName $left={5} $top={40}>
+            {name}
+          </S.VerticalName>
+          <S.VerticalName $left={7} $top={20}>
+            {name}
+          </S.VerticalName>
+          <S.VerticalName $left={9} $top={55}>
+            {version}
+          </S.VerticalName>
         </>
-      )} */}
+      )}
 
       <S.ModelTitle ref={titleRef} $width={dimensions} $bottom={bottom}>
         <S.Ver ref={verRef}>{version}</S.Ver>
