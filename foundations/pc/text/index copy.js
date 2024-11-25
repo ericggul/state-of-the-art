@@ -104,30 +104,11 @@ export default function TextComponent() {
   const rafRef = useRef(null);
   const [needsScroll, setNeedsScroll] = useState(false);
 
-  // Check if scrolling is needed based on pure content height
+  // Check if scrolling is needed
   useEffect(() => {
     if (!containerRef.current) return;
     const container = containerRef.current;
-
-    // Get the content element (the actual structure text)
-    const contentElement = container.querySelector(".model-structure");
-    if (!contentElement) return;
-
-    // Clone the content element to measure its height without padding
-    const clone = contentElement.cloneNode(true);
-    clone.style.padding = "0";
-    clone.style.position = "absolute";
-    clone.style.visibility = "hidden";
-    document.body.appendChild(clone);
-
-    // Measure pure content height
-    const pureContentHeight = clone.getBoundingClientRect().height;
-
-    // Clean up
-    document.body.removeChild(clone);
-
-    // Compare with container height
-    setNeedsScroll(pureContentHeight > container.clientHeight);
+    setNeedsScroll(container.scrollHeight > container.clientHeight);
   }, [structure]);
 
   // Auto-scrolling effect
