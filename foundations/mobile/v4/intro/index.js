@@ -72,7 +72,7 @@ export default function Intro({
   const renderIntroForm = () => (
     <S.IntroForm onSubmit={nameInputProps.handleUsernameSubmit}>
       <AnimatedTitle text="State-of-the-Art Gallery" />
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "90%" }}>
         <S.IntroInput
           type="text"
           placeholder="Enter your first name"
@@ -98,6 +98,7 @@ export default function Intro({
           !!nameInputProps.error ||
           nameInputProps.isVerifying
         }
+        style={{ width: "90%" }}
       >
         {nameInputProps.isVerifying
           ? "GPT Validating your name..."

@@ -22,12 +22,12 @@ const Intro2 = memo(function Intro2() {
 
 function Intro() {
   const introState = useScreenStore((state) => state.introState);
+  const isProjector = useScreenStore((state) => state.isProjector);
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (!audioRef.current) return;
+    if (!audioRef.current || !isProjector) return;
 
-    console.log(introState, "introState");
     if (introState >= 2) {
       // Fade out audio over 1 second
       const fadeOutDuration = 1000;
@@ -52,18 +52,24 @@ function Intro() {
 
       return () => clearInterval(fadeInterval);
     } else {
-      // Reset and play audio for states 0 and 1
+      // Reset and play audio for states 0 and 1 only if isProjector is true
       audioRef.current.volume = 1;
-      audioRef.current.play();
+      if (isProjector) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
     }
-  }, [introState]);
+  }, [introState, isProjector]);
 
   return (
     <>
       {introState === 0 && <Intro0 />}
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
-      <audio ref={audioRef} src={SOUND_URL} autoPlay={introState < 2} loop />
+      {isProjector && (
+        <audio ref={audioRef} src={SOUND_URL} autoPlay={introState < 2} loop />
+      )}
     </>
   );
 }

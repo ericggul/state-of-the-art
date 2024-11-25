@@ -95,7 +95,7 @@ export const IntroForm = styled.form`
   ${FlexCenterStyle}
   flex-direction: column;
   gap: clamp(2.5rem, 6vw, 3rem);
-  width: min(90%, 320px);
+  width: min(95%, 400px);
   margin: 0 auto;
   position: relative;
   z-index: 1;
