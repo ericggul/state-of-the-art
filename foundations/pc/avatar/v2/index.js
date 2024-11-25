@@ -9,7 +9,7 @@ import { Stage } from "./3d/Stage";
 import { useSceneControls } from "./controls/SceneControls";
 import { Leva } from "leva";
 
-import Frame from "@/foundations/pc/frame/full";
+import Frame from "@/foundations/pc/frame/simple";
 
 export default function Wrapper() {
   const { lightControls, stageControls, modelControls } = useSceneControls();
@@ -17,6 +17,7 @@ export default function Wrapper() {
   return (
     <>
       <Leva collapsed />
+      <Frame middle={true} />
       <S.Container>
         <Suspense fallback={null}>
           <Canvas
@@ -39,7 +40,6 @@ export default function Wrapper() {
             />
           </Canvas>
         </Suspense>
-        <Frame />
       </S.Container>
     </>
   );
