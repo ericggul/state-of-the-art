@@ -11,27 +11,28 @@ export const useVideoFade = (videoRef) => {
     if (!video) return;
 
     const handleLoadedData = () => {
-      if (isInitialLoad) {
-        setTimeout(() => {
-          setIsVisible(true);
-          setIsInitialLoad(false);
-        }, 100);
-      }
+      if (!isInitialLoad) return;
+      // Keep the original setTimeout for reliable initial fade
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        setIsInitialLoad(false);
+      }, 100);
+      return () => clearTimeout(timer);
     };
 
     const handleTimeUpdate = () => {
       if (isInitialLoad) return;
-
       const timeLeft = video.duration - video.currentTime;
-      if (timeLeft <= FADE_DURATION) {
-        setIsVisible(false);
-      } else if (timeLeft > FADE_DURATION) {
-        setIsVisible(true);
-      }
+      setIsVisible(timeLeft > FADE_DURATION);
     };
 
     video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("timeupdate", handleTimeUpdate);
+
+    // Call handleLoadedData if video is already loaded
+    if (video.readyState >= 2) {
+      handleLoadedData();
+    }
 
     return () => {
       video.removeEventListener("loadeddata", handleLoadedData);

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef, useState, useEffect } from "react";
+import { memo, useRef, useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
@@ -8,8 +8,10 @@ import { useAudioFade } from "../utils/useAudioFade";
 import { VIDEOS } from "../utils/constants";
 
 const AUDIO_URL = "/audio/idle/idle1126.wav";
+const FADE_OUT_THRESHOLD = 3;
+const FADE_OUT_DURATION = 2500;
 
-const Idle = memo(function Idle({ $isFrontend }) {
+const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
@@ -21,36 +23,37 @@ const Idle = memo(function Idle({ $isFrontend }) {
   const isVisible = useVideoFade(videoRef);
   const { fadeAudio, cleanup: cleanupFade } = useAudioFade();
 
-  useEffect(() => {
-    const initAudioContext = () => {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext ||
-          window.webkitAudioContext)();
-      }
-      return audioContextRef.current;
-    };
-
-    const setupAudio = async () => {
-      try {
-        const context = initAudioContext();
-
-        if (context.state === "running" && audioRef.current) {
-          audioRef.current.volume = 0;
-          audioRef.current.currentTime = videoRef.current?.currentTime || 0;
-          await audioRef.current.play();
-          fadeAudio(audioRef.current, 0, 1);
-          setIsAudioPermitted(true);
-        }
-      } catch (error) {
-        console.error("Audio setup failed:", error);
-      }
-    };
-
-    setupAudio();
-    return cleanupFade;
+  const initAudioContext = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+    return audioContextRef.current;
   }, []);
 
-  const handleScreenClick = async () => {
+  const handleTimeUpdate = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const timeLeft = audio.duration - audio.currentTime;
+    if (timeLeft <= FADE_OUT_THRESHOLD) {
+      fadeAudio(audio, audio.volume, 0);
+    } else if (timeLeft > FADE_OUT_THRESHOLD && audio.volume === 0) {
+      fadeAudio(audio, 0, 1);
+    }
+  }, [fadeAudio]);
+
+  const handleInitialSync = useCallback(() => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (!initialSyncDoneRef.current && video && audio) {
+      audio.currentTime = video.currentTime;
+      initialSyncDoneRef.current = true;
+      video.removeEventListener("timeupdate", handleInitialSync);
+    }
+  }, []);
+
+  const handleScreenClick = useCallback(async () => {
     if (!isAudioPermitted && audioRef.current && videoRef.current) {
       try {
         const audioContext = new (window.AudioContext ||
@@ -68,58 +71,83 @@ const Idle = memo(function Idle({ $isFrontend }) {
         setIsAudioPermitted(false);
       }
     }
-  };
+  }, [isAudioPermitted, fadeAudio]);
 
+  const handleTransitionEnd = useCallback(() => {
+    setIsInitialLoad(false);
+  }, []);
+
+  // Initial audio setup
+  useEffect(() => {
+    const setupAudio = async () => {
+      try {
+        const context = initAudioContext();
+        const audio = audioRef.current;
+
+        if (context.state === "running" && audio) {
+          audio.volume = 0;
+          audio.currentTime = videoRef.current?.currentTime || 0;
+          await audio.play();
+          fadeAudio(audio, 0, 1);
+          setIsAudioPermitted(true);
+        }
+      } catch (error) {
+        console.error("Audio setup failed:", error);
+      }
+    };
+
+    setupAudio();
+    return cleanupFade;
+  }, [initAudioContext, fadeAudio, cleanupFade]);
+
+  // Audio time update handler
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !isAudioPermitted) return;
 
-    const handleTimeUpdate = () => {
-      const timeLeft = audio.duration - audio.currentTime;
-      if (timeLeft <= 3) {
-        fadeAudio(audio, audio.volume, 0);
-      } else if (timeLeft > 3 && audio.volume === 0) {
-        fadeAudio(audio, 0, 1);
-      }
-    };
-
     audio.addEventListener("timeupdate", handleTimeUpdate);
     return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [isAudioPermitted]);
+  }, [isAudioPermitted, handleTimeUpdate]);
 
+  // Initial sync effect
   useEffect(() => {
     if (!isAudioPermitted || initialSyncDoneRef.current) return;
 
     const video = videoRef.current;
-    const audio = audioRef.current;
-    if (!video || !audio) return;
-
-    const handleInitialSync = () => {
-      if (!initialSyncDoneRef.current) {
-        audio.currentTime = video.currentTime;
-        initialSyncDoneRef.current = true;
-        video.removeEventListener("timeupdate", handleInitialSync);
-      }
-    };
+    if (!video) return;
 
     video.addEventListener("timeupdate", handleInitialSync);
     return () => video.removeEventListener("timeupdate", handleInitialSync);
-  }, [isAudioPermitted]);
+  }, [isAudioPermitted, handleInitialSync]);
 
+  // Add effect to handle unmounting
+  useEffect(() => {
+    if (isUnmounting && audioRef.current) {
+      fadeAudio(
+        audioRef.current,
+        audioRef.current.volume,
+        0,
+        FADE_OUT_DURATION
+      );
+    }
+  }, [isUnmounting, fadeAudio]);
+
+  // Modify cleanup effect to avoid double fade
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        fadeAudio(audioRef.current, audioRef.current.volume, 0, 1000);
+      const audio = audioRef.current;
+      if (audio && !isUnmounting) {
+        fadeAudio(audio, audio.volume, 0, FADE_OUT_DURATION);
       }
     };
-  }, []);
+  }, [fadeAudio, isUnmounting]);
 
   return (
     <S.Container onClick={handleScreenClick}>
       <S.VideoWrapper
         $isVisible={isVisible}
         $isInitialFade={isInitialLoad}
-        onTransitionEnd={() => setIsInitialLoad(false)}
+        onTransitionEnd={handleTransitionEnd}
       >
         <video
           ref={videoRef}
