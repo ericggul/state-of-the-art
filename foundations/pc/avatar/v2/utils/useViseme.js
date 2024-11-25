@@ -7,7 +7,7 @@ import useDebounce from "@/utils/hooks/useDebounce";
 import { MODELS } from "@/components/controller/constant/models";
 
 export default function useViseme() {
-  const { currentArchitectures } = useScreenStore();
+  const { currentArchitectures, stage } = useScreenStore();
 
   const currentArchitectureRef = useRef("");
 
@@ -199,34 +199,46 @@ export default function useViseme() {
     }
   }
 
-  // Cleanup on unmount
+  // Add cleanup function
+  const cleanupAudio = () => {
+    if (previousAudioRef.current) {
+      fadeOutAudio(previousAudioRef.current);
+      previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
+      if (previousAudioRef.current.src) {
+        URL.revokeObjectURL(previousAudioRef.current.src);
+      }
+    }
+
+    if (pendingTTSRef.current?.audioPlayer) {
+      fadeOutAudio(pendingTTSRef.current.audioPlayer);
+      pendingTTSRef.current.audioPlayer.removeEventListener(
+        "ended",
+        handleAudioEnd
+      );
+      if (pendingTTSRef.current.audioPlayer.src) {
+        URL.revokeObjectURL(pendingTTSRef.current.audioPlayer.src);
+      }
+    }
+
+    // Reset all refs and state
+    pendingTTSRef.current = null;
+    nextSpeechGenerationRef.current = false;
+    isPlayingRef.current = false;
+    setVisemeMessage({});
+    setConversationHistory([]);
+  };
+
+  // Watch for stage changes
+  useEffect(() => {
+    if (stage === "Backend") {
+      cleanupAudio();
+    }
+  }, [stage]);
+
+  // Update cleanup in the unmount effect
   useEffect(() => {
     return () => {
-      // Clean up previous audio
-      if (previousAudioRef.current) {
-        previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
-        previousAudioRef.current.pause();
-        if (previousAudioRef.current.src) {
-          URL.revokeObjectURL(previousAudioRef.current.src);
-        }
-      }
-
-      // Clean up pending TTS audio
-      if (pendingTTSRef.current?.audioPlayer) {
-        pendingTTSRef.current.audioPlayer.removeEventListener(
-          "ended",
-          handleAudioEnd
-        );
-        pendingTTSRef.current.audioPlayer.pause();
-        if (pendingTTSRef.current.audioPlayer.src) {
-          URL.revokeObjectURL(pendingTTSRef.current.audioPlayer.src);
-        }
-      }
-
-      // Reset all refs and state
-      pendingTTSRef.current = null;
-      nextSpeechGenerationRef.current = false;
-      isPlayingRef.current = false;
+      cleanupAudio();
     };
   }, []);
 
