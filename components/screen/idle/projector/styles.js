@@ -11,6 +11,7 @@ export const VideoWrapper = styled.div`
   height: 100%;
   opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
   transition: opacity 3s ease;
+  transition-delay: ${({ $isInitialFade }) => $isInitialFade ? "0.5s" : "0s"};
 
   video {
     width: 100%;

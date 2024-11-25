@@ -4,11 +4,10 @@ import { memo, useRef, useState, useEffect } from "react";
 import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
+import { useAudioFade } from "../utils/useAudioFade";
 import { VIDEOS } from "../utils/constants";
 
 const AUDIO_URL = "/audio/idle/idle1126.wav";
-const FADE_DURATION = 3000;
-const FADE_STEPS = 30;
 
 const Idle = memo(function Idle({ $isFrontend }) {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
@@ -17,36 +16,10 @@ const Idle = memo(function Idle({ $isFrontend }) {
   const videoRef = useRef(null);
   const audioContextRef = useRef(null);
   const initialSyncDoneRef = useRef(false);
-  const fadeIntervalRef = useRef(null);
   const [isAudioPermitted, setIsAudioPermitted] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
-
-  const fadeAudio = (audio, from, to, duration = FADE_DURATION) => {
-    if (!audio) return;
-
-    if (fadeIntervalRef.current) {
-      clearInterval(fadeIntervalRef.current);
-    }
-
-    const steps = FADE_STEPS;
-    const stepValue = (to - from) / steps;
-    const stepDuration = duration / steps;
-    let currentStep = 0;
-
-    audio.volume = from;
-
-    fadeIntervalRef.current = setInterval(() => {
-      currentStep++;
-      if (currentStep <= steps) {
-        audio.volume = from + stepValue * currentStep;
-      } else {
-        clearInterval(fadeIntervalRef.current);
-        audio.volume = to;
-      }
-    }, stepDuration);
-
-    return fadeIntervalRef.current;
-  };
+  const { fadeAudio, cleanup: cleanupFade } = useAudioFade();
 
   useEffect(() => {
     const initAudioContext = () => {
@@ -74,12 +47,7 @@ const Idle = memo(function Idle({ $isFrontend }) {
     };
 
     setupAudio();
-
-    return () => {
-      if (fadeIntervalRef.current) {
-        clearInterval(fadeIntervalRef.current);
-      }
-    };
+    return cleanupFade;
   }, []);
 
   const handleScreenClick = async () => {
@@ -108,9 +76,9 @@ const Idle = memo(function Idle({ $isFrontend }) {
 
     const handleTimeUpdate = () => {
       const timeLeft = audio.duration - audio.currentTime;
-      if (timeLeft <= FADE_DURATION / 1000) {
+      if (timeLeft <= 3) {
         fadeAudio(audio, audio.volume, 0);
-      } else if (timeLeft > FADE_DURATION / 1000 && audio.volume === 0) {
+      } else if (timeLeft > 3 && audio.volume === 0) {
         fadeAudio(audio, 0, 1);
       }
     };
@@ -148,7 +116,11 @@ const Idle = memo(function Idle({ $isFrontend }) {
 
   return (
     <S.Container onClick={handleScreenClick}>
-      <S.VideoWrapper $isVisible={isVisible}>
+      <S.VideoWrapper
+        $isVisible={isVisible}
+        $isInitialFade={isInitialLoad}
+        onTransitionEnd={() => setIsInitialLoad(false)}
+      >
         <video
           ref={videoRef}
           src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}

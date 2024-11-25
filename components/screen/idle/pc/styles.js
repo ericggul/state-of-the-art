@@ -15,10 +15,10 @@ export const Background = styled.div`
     return baseOpacity * $oscillatingOpacity;
   }};
   transition: opacity
-    ${({ $isVisible }) =>
-      // If $isVisible is changing, use 3s, otherwise use 1.5s for oscillation
-      typeof $isVisible === "boolean" ? "3s" : "1.5s"}
+    ${({ $isVisible }) => (typeof $isVisible === "boolean" ? "3s" : "1.5s")}
     ease;
+  ${({ $isVisible }) =>
+    typeof $isVisible === "boolean" && "transition-delay: 0.5s;"}
 `;
 
 export const Video = styled.video`
@@ -33,15 +33,18 @@ export const QRCodeWrapper = styled.div`
   flex-direction: column;
   z-index: 1;
 
-  p {
-    font-size: 1.5vw;
-    font-weight: lighter;
-    margin-top: 3vw;
-    color: white;
-  }
-
   svg {
     width: 15vw;
     height: 15vw;
   }
+`;
+
+export const AnimatedText = styled.p`
+  font-size: 1.5vw;
+  font-weight: lighter;
+  margin-top: 3vw;
+  color: white;
+  opacity: ${({ $oscillatingOpacity }) => 1 - $oscillatingOpacity};
+  transition: opacity 1.5s ease;
+  min-height: 1.5em;
 `;
