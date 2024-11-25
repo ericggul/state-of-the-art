@@ -106,13 +106,17 @@ const Idle = memo(function Idle({ $isFrontend }) {
     const audio = audioRef.current;
     if (!audio || !isAudioPermitted) return;
 
-    const handleAudioEnd = () => {
-      fadeAudio(audio, 1, 0);
-      setTimeout(() => fadeAudio(audio, 0, 1), FADE_DURATION);
+    const handleTimeUpdate = () => {
+      const timeLeft = audio.duration - audio.currentTime;
+      if (timeLeft <= FADE_DURATION / 1000) {
+        fadeAudio(audio, audio.volume, 0);
+      } else if (timeLeft > FADE_DURATION / 1000 && audio.volume === 0) {
+        fadeAudio(audio, 0, 1);
+      }
     };
 
-    audio.addEventListener("ended", handleAudioEnd);
-    return () => audio.removeEventListener("ended", handleAudioEnd);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
   }, [isAudioPermitted]);
 
   useEffect(() => {
