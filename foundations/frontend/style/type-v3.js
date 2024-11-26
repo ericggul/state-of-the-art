@@ -151,12 +151,30 @@ export const TYPE_STYLES = {
     name: "Convolutional Network",
     colors: {
       outer: "hsl(180, 70%, 45%)",
-      inner: "hsl(180, 100%, 35%)",
+      inner: "hsl(200, 100%, 50%)",
       conv: "hsl(180, 80%, 55%)",
     },
     material: {
-      metalness: 0.9,
-      roughness: 0.4,
+      metalness: 0.95,
+      roughness: 0.2,
+    },
+    lighting: {
+      pointLight: {
+        position: [0, 200, 0],
+        intensity: 5,
+        color: "hsl(250, 100%, 80%)",
+      },
+      directionalLight: {
+        position: [0, 150, 100],
+        intensity: 5,
+        color: "hsl(0, 100%, 90%)",
+      },
+      directionalLight2: {
+        position: [50, 0, -100],
+        intensity: 5,
+        color: "hsl(30, 100%, 80%)",
+      },
+      ambientLight: { intensity: 3 },
     },
   },
 
@@ -231,12 +249,17 @@ export const TYPE_STYLES = {
       pointLight: {
         position: [0, 200, 0],
         intensity: 5,
-        color: "hsl(250, 100%, 80%)",
+        color: "hsl(0, 100%, 80%)",
       },
+      // pointLight2: {
+      //   position: [0, -200, -100],
+      //   intensity: 5,
+      //   color: "hsl(250, 100%, 80%)",
+      // },
       directionalLight: {
         position: [0, 150, 100],
         intensity: 5,
-        color: "hsl(250, 100%, 90%)",
+        color: "hsl(150, 100%, 80%)",
       },
       directionalLight2: {
         position: [50, 0, -100],
