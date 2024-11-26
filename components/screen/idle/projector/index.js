@@ -77,6 +77,16 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     setIsInitialLoad(false);
   }, []);
 
+  // Add audio loop handler
+  const handleAudioLoop = useCallback(() => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (video && audio) {
+      // Reset video time to match audio
+      video.currentTime = audio.currentTime;
+    }
+  }, []);
+
   // Initial audio setup
   useEffect(() => {
     const setupAudio = async () => {
@@ -100,14 +110,19 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     return cleanupFade;
   }, [initAudioContext, fadeAudio, cleanupFade]);
 
-  // Audio time update handler
+  // Modify audio time update handler
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !isAudioPermitted) return;
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
-    return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [isAudioPermitted, handleTimeUpdate]);
+    audio.addEventListener("loop", handleAudioLoop);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loop", handleAudioLoop);
+    };
+  }, [isAudioPermitted, handleTimeUpdate, handleAudioLoop]);
 
   // Initial sync effect
   useEffect(() => {

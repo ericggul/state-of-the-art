@@ -33,6 +33,17 @@ export const QRCodeWrapper = styled.div`
   flex-direction: column;
   z-index: 1;
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  animation: fadeIn 1.5s ease;
+
   svg {
     width: 15vw;
     height: 15vw;
@@ -43,8 +54,11 @@ export const AnimatedText = styled.p`
   font-size: 1.5vw;
   font-weight: lighter;
   margin-top: 3vw;
+  text-align: center;
+  max-width: 60vw;
   color: white;
-  opacity: ${({ $oscillatingOpacity }) => 1 - $oscillatingOpacity};
+  opacity: ${({ $oscillatingOpacity, $isVisible }) =>
+    $isVisible ? 1 - $oscillatingOpacity : 0};
   transition: opacity 1.5s ease;
   min-height: 1.5em;
 `;

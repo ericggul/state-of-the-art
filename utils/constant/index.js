@@ -46,7 +46,15 @@ export const PING_TIMEOUT = 8000;
 ///inactivity from frontend
 export const INACTIVITY_TIMEOUT = 1.5 * 60 * 1000; // 5 minutes in milliseconds
 
+//IDLE
+export const IDLE_QR_LINK = "https://sota-xdlab.net/mobile";
+export const IDLE_MIN_INTERVAL = 7 * 1000;
+export const IDLE_MAX_INTERVAL = 20 * 1000;
+
 export const IDLE_TEXTS = [
   "Scan the QR Code to experience the State-of-the-Art.",
-  "Experience the State-of-the-Art Gallery.",
+  "Experience SoTA: A gallery of neural networks.",
+  "Scan the QR, Dive into the State-of-the-Art.",
+  "Scan the QR Code to orchestrate artificial intelligence.",
+  "Scan the QR to join the canvas of Neural Networks.",
 ];

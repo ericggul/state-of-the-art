@@ -10,23 +10,21 @@ import { useTypewriter } from "../utils/useTypewriter";
 import { VIDEOS } from "../utils/constants";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
-const QR_LINK = "https://sota-xdlab.net/mobile";
-const MIN_INTERVAL = 10 * 1000;
-const MAX_INTERVAL = 25 * 1000;
-
-const IDLE_TEXTS = [
-  "Scan the QR Code to experience the state-of-the-art.",
-  "Please activate your accelerometer.",
-];
-
-const TEXT = IDLE_TEXTS[0];
+import {
+  IDLE_TEXTS,
+  IDLE_QR_LINK,
+  IDLE_MIN_INTERVAL,
+  IDLE_MAX_INTERVAL,
+} from "@/utils/constant";
 
 const Idle = memo(function Idle() {
   const [windowWidth] = useResize();
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const videoRef = useRef(null);
-  const [oscillatingOpacity, setOscillatingOpacity] = useState(1);
+  const [oscillatingOpacity, setOscillatingOpacity] = useState(
+    Math.random() < 0.5 ? 0 : 1
+  );
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
 
@@ -42,12 +40,14 @@ const Idle = memo(function Idle() {
 
   useRandomInterval(
     handleOscillation,
-    isInitialLoad ? null : MIN_INTERVAL,
-    isInitialLoad ? null : MAX_INTERVAL
+    isInitialLoad ? null : IDLE_MIN_INTERVAL,
+    isInitialLoad ? null : IDLE_MAX_INTERVAL
   );
 
-  const displayText = useTypewriter(
-    TEXT,
+  const targetText = IDLE_TEXTS[intDeviceIdx % IDLE_TEXTS.length];
+
+  const { text: displayText, isVisible: isTextVisible } = useTypewriter(
+    targetText,
     oscillatingOpacity === 0 && !isInitialLoad
   );
 
@@ -70,7 +70,7 @@ const Idle = memo(function Idle() {
       </S.Background>
       <S.QRCodeWrapper>
         <QRCodeSVG
-          value={QR_LINK}
+          value={IDLE_QR_LINK}
           size={windowWidth * 0.15}
           fgColor="white"
           bgColor="transparent"
@@ -78,6 +78,7 @@ const Idle = memo(function Idle() {
         <S.AnimatedText
           $oscillatingOpacity={oscillatingOpacity}
           $isInitialFade={isInitialLoad}
+          $isVisible={isTextVisible}
         >
           {displayText}
         </S.AnimatedText>
