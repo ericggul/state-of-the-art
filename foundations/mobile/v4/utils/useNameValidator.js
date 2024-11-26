@@ -33,21 +33,32 @@ export function useNameValidator() {
 
   const verifyName = useCallback(async (name) => {
     try {
-      const { data } = await nameCheckerInstance.post("/gpt-4o-namechecker", {
-        text: name,
-        params: { temperature: 0.4 },
+      // Create a promise that rejects after 2 seconds
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Timeout")), 2000);
       });
+
+      // Race between the API call and the timeout
+      const { data } = await Promise.race([
+        nameCheckerInstance.post("/gpt-4o-namechecker", {
+          text: name,
+          params: { temperature: 0.4 },
+        }),
+        timeoutPromise,
+      ]);
 
       return {
         isValid: data.validity,
         message: data.message,
       };
     } catch (error) {
-      console.error(
-        "Name verification error:",
-        error.response?.data || error.message
-      );
-      throw error;
+      console.log("Name auto-validated due to:", error.message || "API error");
+
+      // Auto-validate on timeout or any other error
+      return {
+        isValid: true,
+        message: "Name validated",
+      };
     }
   }, []);
 
