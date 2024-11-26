@@ -49,7 +49,11 @@ export default function Mobile() {
   console.log("state", state);
 
   useEffect(() => {
-    if (state.username && typeof state.isAccelerometerActive !== "undefined") {
+    if (
+      state.username &&
+      //state is acclerometeractive is either true or false but not undefined
+      typeof state.isAccelerometerActive !== "undefined"
+    ) {
       setIsIntro(false);
     }
   }, [state.username, state.isAccelerometerActive]);

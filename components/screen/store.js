@@ -56,6 +56,8 @@ const useScreenStore = create((set) => ({
   setUserName: (userName) => set({ userName }),
   setIntroState: (introState) => set({ introState }),
   setIsEnding: (isEnding) => set({ isEnding }),
+  setIsAccelerometerActive: (isAccelerometerActive) =>
+    set({ isAccelerometerActive }),
 
   handleNewMobile: (data) => {
     console.log("New join received:", data);

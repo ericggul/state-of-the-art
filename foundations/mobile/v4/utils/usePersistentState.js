@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 export function usePersistentState() {
   const [state, setState] = useState({
     username: "",
-    isAccelerometerActive: false,
+    isAccelerometerActive: undefined,
     isLoading: true,
   });
 

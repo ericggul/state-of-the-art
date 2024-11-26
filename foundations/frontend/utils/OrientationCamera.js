@@ -27,12 +27,9 @@ export const OrientationCamera = memo(
     const isAccelerometerActive = useScreenStore(
       (state) => state.isAccelerometerActive
     );
-
-    console.log("isAccelerometerActive", isAccelerometerActive);
-
-    if (!isAccelerometerActive) {
-      return <DynamicCamera cameraDistance={cameraDistance} />;
-    }
+    const setIsAccelerometerActive = useScreenStore(
+      (state) => state.setIsAccelerometerActive
+    );
 
     const sensorDataRef = useRef({
       orientation: { alpha: 0, beta: 0, gamma: 0 },
@@ -54,20 +51,41 @@ export const OrientationCamera = memo(
       cleanup: cleanupAudio,
     } = useOrientationAudio();
 
-    const handleNewMobileOrientation = (data) => {
-      sensorDataRef.current = data;
-    };
-
-    const handleNewMobileOrientationSpike = (data) => {
-      console.log("new mobile orientation spike", data);
-    };
+    // Add a ref to track if we've activated the accelerometer
+    const hasActivatedRef = useRef(false);
 
     useSocketScreenOrientation({
-      handleNewMobileOrientation,
-      handleNewMobileOrientationSpike,
+      handleNewMobileOrientation: (data) => {
+        sensorDataRef.current = data;
+        // Only set once using the ref
+        if (!hasActivatedRef.current) {
+          setIsAccelerometerActive(true);
+          hasActivatedRef.current = true;
+        }
+      },
+      handleNewMobileOrientationSpike: (data) => {
+        console.log("new mobile orientation spike", data);
+      },
     });
 
+    useEffect(() => {
+      const originalPosition = camera.position.clone();
+      const originalRotation = camera.rotation.clone();
+
+      return () => {
+        camera.position.copy(originalPosition);
+        camera.rotation.copy(originalRotation);
+        cleanupAudio();
+      };
+    }, [camera, cleanupAudio]);
+
+    useEffect(() => {
+      targetDistanceRef.current = cameraDistance;
+    }, [cameraDistance]);
+
     useFrame(() => {
+      if (!isAccelerometerActive) return;
+
       const { orientation, acceleration } = sensorDataRef.current;
       let { alpha, beta, gamma } = orientation;
 
@@ -152,21 +170,9 @@ export const OrientationCamera = memo(
       updateZoomAudio(audioZoomValue);
     });
 
-    useEffect(() => {
-      const originalPosition = camera.position.clone();
-      const originalRotation = camera.rotation.clone();
-
-      return () => {
-        camera.position.copy(originalPosition);
-        camera.rotation.copy(originalRotation);
-        cleanupAudio();
-      };
-    }, [camera, cleanupAudio]);
-
-    useEffect(() => {
-      // Update target distance when cameraDistance changes
-      targetDistanceRef.current = cameraDistance;
-    }, [cameraDistance]);
+    if (!isAccelerometerActive) {
+      return <DynamicCamera cameraDistance={cameraDistance} />;
+    }
 
     return null;
   },

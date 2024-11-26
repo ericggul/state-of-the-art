@@ -10,14 +10,12 @@ const THRESHOLD_STATE = 2;
 
 const useAudioFade = (audioRef, fadeIntervalRef, timeoutRef) => {
   const startFadeOut = () => {
-    console.log("Starting fade out");
     if (!audioRef.current) return;
 
     const startVolume = audioRef.current.volume;
     const stepTime = FADE_DURATION / FADE_STEPS;
     const volumeStep = startVolume / FADE_STEPS;
 
-    console.log("Fade parameters:", { startVolume, stepTime, volumeStep });
     clearAudioTimers(fadeIntervalRef, timeoutRef);
 
     fadeIntervalRef.current = setInterval(() => {
@@ -25,19 +23,12 @@ const useAudioFade = (audioRef, fadeIntervalRef, timeoutRef) => {
 
       if (audioRef.current.volume > volumeStep) {
         const newVolume = Math.max(0, audioRef.current.volume - volumeStep);
-        console.log("Fading volume:", {
-          from: audioRef.current.volume,
-          to: newVolume,
-          step: volumeStep,
-        });
         audioRef.current.volume = newVolume;
       } else {
-        console.log("Fade complete, starting pause delay");
         clearInterval(fadeIntervalRef.current);
         fadeIntervalRef.current = null;
 
         timeoutRef.current = setTimeout(() => {
-          console.log("Pause delay complete, stopping audio");
           if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
@@ -86,19 +77,11 @@ function Intro() {
   const startFadeOut = useAudioFade(audioRef, fadeIntervalRef, timeoutRef);
 
   useEffect(() => {
-    console.log("Initial setup effect:", {
-      introState,
-      isInitialized: isInitializedRef.current,
-      hasAudio: !!audioRef.current,
-    });
-
     if (audioRef.current && !isInitializedRef.current) {
       if (introState >= THRESHOLD_STATE) {
-        console.log("Initial setup - no audio needed");
         audioRef.current.volume = 0;
         audioRef.current.pause();
       } else {
-        console.log("Initial setup - starting audio");
         audioRef.current.volume = 1;
         audioRef.current.play();
       }
@@ -107,12 +90,6 @@ function Intro() {
   }, [introState]);
 
   useEffect(() => {
-    console.log("State change effect:", {
-      introState,
-      hasAudio: !!audioRef.current,
-      isProjector,
-    });
-
     if (!audioRef.current || !isProjector) return;
 
     // Simple logic: fade out if we reach or exceed threshold
@@ -134,17 +111,7 @@ function Intro() {
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
       {isProjector && (
-        <audio
-          ref={audioRef}
-          src={SOUND_URL}
-          autoPlay={false}
-          loop
-          onPlay={() => console.log("Audio started playing")}
-          onPause={() => console.log("Audio paused")}
-          onVolumeChange={() =>
-            console.log("Volume changed:", audioRef.current?.volume)
-          }
-        />
+        <audio ref={audioRef} src={SOUND_URL} autoPlay={false} loop />
       )}
     </>
   );
