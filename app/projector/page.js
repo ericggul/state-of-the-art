@@ -103,9 +103,7 @@ function ScreenContent({ test }) {
         <Idle $isFrontend={stage === "Frontend"} type="projector" />
       )}
       {isTransition && <Transition />}
-      {(stage === "Backend" || iteration >= CONST.MIX_BACKEND_ITERATION) && (
-        <Backend socket={socket} />
-      )}
+      {stage === "Backend" && <Backend socket={socket} />}
       {isEnding && <Ending />}
     </Suspense>
   );

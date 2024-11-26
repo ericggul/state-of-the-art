@@ -57,7 +57,7 @@ export default function TokenComponent({
       }
     },
     1,
-    80
+    40
   );
 
   // Memoize visibility calculations

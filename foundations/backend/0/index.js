@@ -30,7 +30,7 @@ function LevelZero({ visible }) {
   }, [tokens.length]);
 
   // Handle animation state
-  useRandomInterval(() => setAnimState(Math.floor(Math.random() * 8)), 1, 50);
+  useRandomInterval(() => setAnimState(Math.floor(Math.random() * 8)), 1, 30);
 
   return (
     <S.Container

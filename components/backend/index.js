@@ -15,9 +15,6 @@ import dynamic from "next/dynamic";
 
 import * as CONST from "@/utils/constant";
 
-const IframeComponent = dynamic(() => import("@/components/backend/iframe"), {
-  ssr: false,
-});
 const TranscriptComponent = dynamic(
   () => import("@/components/backend/transcript"),
   {
@@ -72,9 +69,6 @@ const Backend = memo(function Backend({ socket }) {
 
   return (
     <S.Container>
-      {level >= CONST.MIX_BACKEND_LEVEL && deviceIndex == 3 && (
-        <IframeComponent />
-      )}
       {CurrentBackend}
       {level >= CONST.MIX_BACKEND_LEVEL && deviceIndex <= 2 && (
         <S.Top $deviceIndex={deviceIndex} />

@@ -165,7 +165,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   });
 
   const tokensOpacity = useMemo(
-    () => (level >= 6 ? 0 : isblack ? 1 : 0),
+    () => (level >= 5 ? 0 : isblack ? 1 : 0),
     [level, isblack]
   );
 
@@ -194,10 +194,10 @@ function SingleRandom({ range, visible, timeUnit }) {
   return (
     <S.Container
       $isblack={isblack ? "true" : undefined}
-      $isTransparent={
-        (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
-        stage === "Frontend"
-      }
+      // $isTransparent={
+      //   (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
+      //   stage === "Frontend"
+      // }
     >
       <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer

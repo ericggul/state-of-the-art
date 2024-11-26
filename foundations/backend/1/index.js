@@ -25,7 +25,7 @@ function LevelOne({ visible }) {
   const isAnimating = useMemo(() => isblack && visible, [isblack, visible]);
 
   const ANIM_INTERVAL = useMemo(
-    () => [300, 200, 100][subLevel] || 200,
+    () => [300, 200, 70][subLevel] || 200,
     [subLevel]
   );
 

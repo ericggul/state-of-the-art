@@ -29,7 +29,7 @@ export default function useBezierParams(
       }
     }, [xRange, yRange, shouldUpdate]),
     timeUnit,
-    10 * timeUnit,
+    7 * timeUnit,
     visible
   );
 

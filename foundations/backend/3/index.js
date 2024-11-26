@@ -13,7 +13,6 @@ import {
 } from "../shared/utils/createPath";
 import { usePathsBezier, usePathsRadial } from "../shared/hooks/usePaths";
 import useComputeSimilarity from "../shared/utils/useComputeSimilarity";
-import * as CONST from "@/utils/constant";
 
 function SingleRandom({ range, visible, timeUnit }) {
   const {
