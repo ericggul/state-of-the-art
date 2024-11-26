@@ -9,4 +9,5 @@ export const Container = styled.div`
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 9999;
+  font-size: 1.5vw;
 `;

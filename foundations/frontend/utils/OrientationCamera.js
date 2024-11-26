@@ -22,6 +22,7 @@ export const OrientationCamera = memo(
   }) {
     const { camera } = useThree();
     const externalZoomFactor = useScreenStore((state) => state.zoomFactor);
+    const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
 
     const sensorDataRef = useRef({
       orientation: { alpha: 0, beta: 0, gamma: 0 },
@@ -47,8 +48,13 @@ export const OrientationCamera = memo(
       sensorDataRef.current = data;
     };
 
+    const handleNewMobileOrientationSpike = (data) => {
+      console.log("new mobile orientation spike", data);
+    };
+
     useSocketScreenOrientation({
       handleNewMobileOrientation,
+      handleNewMobileOrientationSpike,
     });
 
     useFrame(() => {

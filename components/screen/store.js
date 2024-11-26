@@ -45,6 +45,7 @@ const useScreenStore = create((set) => ({
     set({ currentArchitectures: architectures }),
   setMobileVisibility: (visibility) => set({ mobileVisibility: visibility }),
   setZoomFactor: (zoom) => set({ zoomFactor: zoom }),
+  //get the current zoom factor and invert it
   setIsProjector: (isProjector) => set({ isProjector }),
   setDeviceIndex: (deviceIndex) => set({ deviceIndex }),
   setTargetMobileId: (mobileId) => set({ targetMobileId: mobileId }),

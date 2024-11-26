@@ -301,6 +301,7 @@ export const TYPE_STYLES = {
       outer: "hsl(0, 65%, 58%)",
       inner: "hsl(200, 90%, 50%)",
       plane: "hsl(355, 90%, 55%)",
+      mlp: "hsl(200, 90%, 55%)",
     },
     material: {
       metalness: 1,

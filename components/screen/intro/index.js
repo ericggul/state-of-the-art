@@ -1,19 +1,17 @@
 import * as S from "./styles";
 import { memo, useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
-import useMembraneSynth from "@/utils/hooks/audio/useMembraneSynth";
 
 const SOUND_URL = "/audio/intro/intro1126.wav";
 
 const Intro0 = memo(function Intro0() {
   const userName = useScreenStore((state) => state.userName);
-  useMembraneSynth(userName);
 
-  return <S.Container>INTRO 0 {userName}</S.Container>;
+  return <S.Container>Welcome {userName}</S.Container>;
 });
 
 const Intro1 = memo(function Intro1() {
-  return <S.Container>INTRO 1</S.Container>;
+  return <S.Container>Please activate your accelerometer</S.Container>;
 });
 
 const Intro2 = memo(function Intro2() {

@@ -16,7 +16,7 @@ export const TIMEOUTS = {
 
   ////RESET LOGIC
   ENDING: 160 * 1000,
-  ENDING_BASE: 70 * 1000,
+  ENDING_BASE: 60 * 1000,
   RESET: 20 * 1000,
 
   //TEST TEMPORARILY
@@ -32,8 +32,8 @@ export const DEVICE_DELAY_MULTIPLIER = 450;
 
 //conversation: black and white time
 //backend > useConversation
-export const EXTRA_BLACK_TIME = [1500, 4000, 2000, 2000, 1000, 0, 0];
-export const WHITE_TIME = [3000, 4000, 3000, 2000, 2000, 1500, 1000];
+export const EXTRA_BLACK_TIME = [2500, 5000, 3000, 3000, 1000, 0, 0];
+export const WHITE_TIME = [4000, 4000, 4000, 3000, 3000, 1500, 1500];
 
 export const API_TIMEOUT = 15 * 1000;
 
@@ -44,4 +44,4 @@ export const PING_INTERVAL = 2000;
 export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
-export const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 5 minutes in milliseconds
+export const INACTIVITY_TIMEOUT = 1.5 * 60 * 1000; // 5 minutes in milliseconds

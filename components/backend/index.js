@@ -68,6 +68,7 @@ const Backend = memo(function Backend({ socket }) {
   }, [level]);
 
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
+  const isProjector = useScreenStore((state) => state.isProjector);
 
   return (
     <S.Container>
@@ -78,7 +79,7 @@ const Backend = memo(function Backend({ socket }) {
       {level >= CONST.MIX_BACKEND_LEVEL && deviceIndex <= 2 && (
         <S.Top $deviceIndex={deviceIndex} />
       )}
-      <TranscriptComponent />
+      {!isProjector && <TranscriptComponent />}
     </S.Container>
   );
 });

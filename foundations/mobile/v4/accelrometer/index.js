@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
+import useAccSpikeTracker from "@/utils/hooks/orientation/useAccSpikeTracker";
 
 const INITIAL_SENSOR_STATE = { x: 0, y: 0, z: 0 };
 const INITIAL_ORIENTATION_STATE = { alpha: 0, beta: 0, gamma: 0 };
@@ -11,6 +12,12 @@ const AccelerometerHandler = ({ mobileId, isAccelerometerActive }) => {
   const socket = useSocketMobileOrientation({
     mobileId,
     isAccelerometerActive,
+  });
+
+  // Add spike tracking
+  useAccSpikeTracker({
+    accData: acceleration,
+    socket,
   });
 
   const orientationDetector = useCallback((e) => {

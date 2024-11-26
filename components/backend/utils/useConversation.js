@@ -56,7 +56,7 @@ export default function useConversation({ socket = null }) {
   );
 
   const timeScale = useMemo(
-    () => (deviceIndex >= 0 && deviceIndex <= 4 ? deviceIndex / 4 : 1),
+    () => (deviceIndex >= 0 && deviceIndex <= 3 ? deviceIndex / 4 : 0),
     [deviceIndex]
   );
 
