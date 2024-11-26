@@ -183,9 +183,10 @@ export default function useConversation({ socket = null }) {
 
       const timeout =
         timeScale *
-        CONST.EXTRA_BLACK_TIME[
-          Math.min(level, CONST.EXTRA_BLACK_TIME.length - 1)
-        ];
+          CONST.EXTRA_BLACK_TIME[
+            Math.min(level, CONST.EXTRA_BLACK_TIME.length - 1)
+          ] +
+        1000;
       await new Promise((r) => setTimeout(r, timeout));
 
       // Only update states if we got valid embeddings
