@@ -216,7 +216,7 @@ export const TYPE_STYLES = {
     colors: {
       outer: "#7d7d7d",
       //255
-      inner: "hsl(255, 100%, 50%)",
+      inner: "hsl(245, 100%, 65%)",
       highlight: "#333333",
     },
     material: {
@@ -228,9 +228,29 @@ export const TYPE_STYLES = {
     emissive: false,
     lighting: {
       environment: "sunset",
-      pointLight: { position: [0, 200, 0], intensity: 3 },
-      directionalLight: { position: [0, 150, 100], intensity: 3 },
-      ambientLight: { intensity: 0.5 },
+      pointLight: {
+        position: [0, 200, 0],
+        intensity: 5,
+        color: "hsl(250, 100%, 80%)",
+      },
+      directionalLight: {
+        position: [0, 150, 100],
+        intensity: 5,
+        color: "hsl(250, 100%, 90%)",
+      },
+      directionalLight2: {
+        position: [50, 0, -100],
+        intensity: 5,
+        color: "hsl(250, 100%, 80%)",
+      },
+      ambientLight: { intensity: 3 },
+    },
+    postprocessing: {
+      bloom: {
+        intensity: 0.2,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.9,
+      },
     },
   },
 
