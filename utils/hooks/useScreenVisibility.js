@@ -21,6 +21,7 @@ export default function useScreenVisibility() {
   const visibilityRef = useRef(mobileVisibility);
 
   const clearTimeouts = () => {
+    console.log("🧹 Clearing timeouts:", Object.keys(timeouts.current));
     Object.values(timeouts.current).forEach((timeout) => {
       if (timeout) clearTimeout(timeout);
     });
@@ -29,21 +30,26 @@ export default function useScreenVisibility() {
 
   const scheduleStateChanges = () => {
     if (iteration == 0) return;
+    console.log("📅 Scheduling state changes:", {
+      iteration,
+      multiplier: iterationSpeedMultiplier(iteration),
+    });
 
     clearTimeouts();
-
     const multiplier = iterationSpeedMultiplier(iteration);
 
     setIsTransition(true);
 
     timeouts.current.transition = setTimeout(() => {
       if (!visibilityRef.current) {
+        console.log("🔄 Transition ended, visibility:", visibilityRef.current);
         setIsTransition(false);
       }
     }, TIMEOUTS.TRANSITION * multiplier);
 
     timeouts.current.backend = setTimeout(() => {
       if (!visibilityRef.current) {
+        console.log("🔙 Setting stage to Backend");
         setStage("Backend");
       }
     }, TIMEOUTS.BACKEND * multiplier);
@@ -51,6 +57,13 @@ export default function useScreenVisibility() {
     const unmountFrontendDelay = isProjector
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
+
+    console.log("⏱️ Delays:", {
+      unmountFrontend: unmountFrontendDelay,
+      ending: endingDelay,
+      reset: resetDelay,
+      isProjector,
+    });
 
     timeouts.current.unmount = setTimeout(() => {
       if (!visibilityRef.current) {
@@ -74,12 +87,21 @@ export default function useScreenVisibility() {
   };
 
   const setFrontendState = () => {
+    console.log("🎭 Setting Frontend state");
     clearTimeouts();
     setStage("Frontend");
     setIsTransition(false);
   };
 
   useEffect(() => {
+    console.log("👁️ Visibility effect:", {
+      isStageIdle,
+      mobileVisibility,
+      isProjector,
+      iteration,
+      currentStage: stage,
+    });
+
     if (isStageIdle || iteration == 0) return;
 
     visibilityRef.current = mobileVisibility;

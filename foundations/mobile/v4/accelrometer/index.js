@@ -38,20 +38,22 @@ const AccelerometerHandler = ({ mobileId, isAccelerometerActive }) => {
 
   // Setup sensor listeners
   useEffect(() => {
-    if (isAccelerometerActive) {
+    try {
       window.addEventListener("deviceorientation", orientationDetector);
       window.addEventListener("devicemotion", accelerationDetector);
-    }
 
-    return () => {
-      window.removeEventListener("deviceorientation", orientationDetector);
-      window.removeEventListener("devicemotion", accelerationDetector);
-    };
-  }, [isAccelerometerActive, orientationDetector, accelerationDetector]);
+      return () => {
+        window.removeEventListener("deviceorientation", orientationDetector);
+        window.removeEventListener("devicemotion", accelerationDetector);
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }, [orientationDetector, accelerationDetector]);
 
   // Emit sensor data
   useEffect(() => {
-    if (!isAccelerometerActive || !socket.current) return;
+    if (!socket.current) return;
 
     try {
       socket.current.emit("mobile-orientation-update", {
@@ -62,7 +64,7 @@ const AccelerometerHandler = ({ mobileId, isAccelerometerActive }) => {
     } catch (e) {
       console.error("Error emitting orientation update:", e);
     }
-  }, [orientation, acceleration, isAccelerometerActive, mobileId, socket]);
+  }, [orientation, acceleration, mobileId, socket]);
 
   return null;
 };

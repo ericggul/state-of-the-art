@@ -9,11 +9,7 @@ export default function useSocketMobileOrientation({
   const initialized = useRef(false);
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      isAccelerometerActive &&
-      !initialized.current
-    ) {
+    if (typeof window !== "undefined" && !initialized.current) {
       socketInitializer();
       initialized.current = true;
     }
@@ -24,7 +20,7 @@ export default function useSocketMobileOrientation({
         initialized.current = false;
       }
     };
-  }, [mobileId, isAccelerometerActive]);
+  }, [mobileId]);
 
   const socketInitializer = async () => {
     await fetch("/api/socket");

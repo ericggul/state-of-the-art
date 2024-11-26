@@ -234,7 +234,7 @@ export const TYPE_STYLES = {
     colors: {
       outer: "#7d7d7d",
       //255
-      inner: "hsl(245, 100%, 65%)",
+      inner: "hsl(245, 100%, 67%)",
       highlight: "#333333",
     },
     material: {
@@ -251,11 +251,11 @@ export const TYPE_STYLES = {
         intensity: 5,
         color: "hsl(0, 100%, 80%)",
       },
-      // pointLight2: {
-      //   position: [0, -200, -100],
-      //   intensity: 5,
-      //   color: "hsl(250, 100%, 80%)",
-      // },
+      pointLight2: {
+        position: [0, -200, -100],
+        intensity: 5,
+        color: "hsl(250, 100%, 80%)",
+      },
       directionalLight: {
         position: [0, 150, 100],
         intensity: 5,
