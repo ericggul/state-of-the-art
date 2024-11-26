@@ -46,12 +46,10 @@ export default function useAccelerometer() {
 
     // iOS-specific permission handling
     try {
-      let granted = true;
-
       if (typeof DeviceMotionEvent?.requestPermission === "function") {
         const motionState = await DeviceMotionEvent.requestPermission();
         if (motionState !== "granted") {
-          granted = false;
+          throw new Error("motion_denied");
         }
       }
 
@@ -59,33 +57,23 @@ export default function useAccelerometer() {
         const orientationState =
           await DeviceOrientationEvent.requestPermission();
         if (orientationState !== "granted") {
-          granted = false;
+          throw new Error("orientation_denied");
         }
-      }
-
-      if (!granted) {
-        const message =
-          "To enable motion sensors on iOS:\n" +
-          "1. Open the Settings app\n" +
-          "2. Scroll down and tap Safari\n" +
-          "3. Scroll down to 'Motion & Orientation Access'\n" +
-          "4. Toggle it ON\n" +
-          "5. Open Safari, tap the 'AA' icon in the address bar\n" +
-          "6. Select 'Website Settings' and ensure 'Motion & Orientation Access' is allowed\n" +
-          "7. Return to this page and try again\n\n" +
-          "You can continue with limited functionality.";
-        alert(message);
-        setPermission(false);
-        return { granted: false, fallback: true };
       }
 
       setPermission(true);
       return { granted: true, fallback: false };
     } catch (error) {
-      // Handle unexpected errors (like when permission API is not available)
-      console.error("Error requesting motion access:", error);
-      setPermission(false);
-      return { granted: false, fallback: true };
+      const instructions =
+        "To enable motion sensors on iOS:\n" +
+        "1. Open the Settings app\n" +
+        "2. Scroll down and tap Safari\n" +
+        "3. Scroll down to 'Motion & Orientation Access'\n" +
+        "4. Toggle it ON\n" +
+        "5. Open Safari, tap the 'AA' icon in the address bar\n" +
+        "6. Select 'Website Settings' and ensure 'Motion & Orientation Access' is allowed\n" +
+        "7. Return to this page and try again";
+      throw new Error(`Permission denied. ${instructions}`);
     }
   };
 

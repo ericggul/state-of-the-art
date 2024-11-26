@@ -11,6 +11,7 @@ const isIOSDevice =
 export default function Intro({
   socket,
   onAccelerometerActivate,
+  onUsernameSubmit,
   initialUsername,
 }) {
   const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
@@ -18,9 +19,18 @@ export default function Intro({
     useAccelerometer();
   const isIOS = useMemo(() => isIOSDevice, []);
 
+  // Create handleSuccess callback before nameInputProps
+  const handleSuccess = useCallback(
+    (username) => {
+      onUsernameSubmit(username);
+      setIntroState(1);
+    },
+    [onUsernameSubmit]
+  );
+
   const nameInputProps = useNameInput({
     socket,
-    onSuccess: useCallback(() => setIntroState(1), []),
+    onSuccess: handleSuccess,
     initialUsername,
   });
 
@@ -30,9 +40,14 @@ export default function Intro({
 
       emitAccelerometerActivation(result);
       onAccelerometerActivate(result.granted);
+
+      if (result.fallback) {
+        onAccelerometerActivate(false);
+      }
     } catch (error) {
       console.error("Error activating accelerometer:", error);
       alert(error.message);
+      onAccelerometerActivate(false);
     }
   }, [onAccelerometerActivate, requestAccess]);
 

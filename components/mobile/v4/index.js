@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import UI from "@/foundations/mobile/v4";
 import Intro from "@/foundations/mobile/v4/intro";
 import AccelerometerHandler from "@/foundations/mobile/v4/accelrometer";
@@ -45,6 +45,14 @@ export default function Mobile() {
     },
     [state, setState]
   );
+
+  console.log("state", state);
+
+  useEffect(() => {
+    if (state.username && typeof state.isAccelerometerActive !== "undefined") {
+      setIsIntro(false);
+    }
+  }, [state.username, state.isAccelerometerActive]);
 
   if (state.isLoading) {
     return <Loading customText="Initializing State" />;
