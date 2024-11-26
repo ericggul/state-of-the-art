@@ -6,31 +6,45 @@ export default function LoadingUI() {
     <Html center>
       <div
         style={{
-          color: "white",
-          background: "rgba(0,0,0,0.7)",
-          padding: "20px 40px",
-          borderRadius: "8px",
-          textAlign: "center",
-          fontFamily: "monospace",
-          userSelect: "none",
+          width: "60px",
+          height: "60px",
+          position: "relative",
         }}
       >
-        <div style={{ fontSize: "1.2em", marginBottom: "10px" }}>
-          Loading Architecture
-        </div>
+        {/* Outer rotating ring */}
         <div
           style={{
-            width: "50px",
-            height: "2px",
-            background: "white",
-            animation: "loading 1.5s infinite",
-            "@keyframes loading": {
-              "0%": { transform: "scaleX(0)" },
-              "50%": { transform: "scaleX(1)" },
-              "100%": { transform: "scaleX(0)" },
-            },
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            border: "2px solid rgba(255,255,255,0.1)",
+            borderTop: "2px solid rgba(255,255,255,0.8)",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
           }}
         />
+        {/* Inner rotating ring */}
+        <div
+          style={{
+            position: "absolute",
+            width: "70%",
+            height: "70%",
+            top: "15%",
+            left: "15%",
+            border: "2px solid rgba(255,255,255,0.1)",
+            borderBottom: "2px solid rgba(255,255,255,0.6)",
+            borderRadius: "50%",
+            animation: "spin 1.5s linear infinite reverse",
+          }}
+        />
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+        </style>
       </div>
     </Html>
   );
