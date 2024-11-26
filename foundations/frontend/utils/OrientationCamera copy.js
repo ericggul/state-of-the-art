@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, memo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { DynamicCamera } from "./DynamicCamera";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
 import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
@@ -24,15 +23,6 @@ export const OrientationCamera = memo(
     const { camera } = useThree();
     const externalZoomFactor = useScreenStore((state) => state.zoomFactor);
     const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
-    const isAccelerometerActive = useScreenStore(
-      (state) => state.isAccelerometerActive
-    );
-
-    console.log("isAccelerometerActive", isAccelerometerActive);
-
-    if (!isAccelerometerActive) {
-      return <DynamicCamera cameraDistance={cameraDistance} />;
-    }
 
     const sensorDataRef = useRef({
       orientation: { alpha: 0, beta: 0, gamma: 0 },

@@ -20,6 +20,7 @@ const DEFAULT_STATE = {
   isTransition: false,
   isEnding: false,
   lastInteractionTime: Date.now(),
+  isAccelerometerActive: false,
 };
 
 // Reset state (excluding device-specific settings)
@@ -35,6 +36,7 @@ const RESET_STATE = {
   introState: 0,
   zoomFactor: 1,
   lastInteractionTime: Date.now(),
+  isAccelerometerActive: false,
 };
 
 const useScreenStore = create((set) => ({
@@ -88,6 +90,7 @@ const useScreenStore = create((set) => ({
       switch (data.type) {
         case "accelerometer_activation":
           updates.introState = 2;
+          updates.isAccelerometerActive = data.activated;
           break;
         case "state_change":
           if (state.introState !== data.introState) {
