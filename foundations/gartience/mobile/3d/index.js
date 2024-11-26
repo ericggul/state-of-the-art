@@ -30,7 +30,10 @@ import BoltzmannLayers from "@/foundations/frontend/arch/layers/BoltzmannLayers"
 
 // Import configs and utils
 import { LAYER_CONFIGS } from "@/foundations/frontend/arch-models/_structure";
-import { TYPE_STYLES, DEFAULT_STYLE } from "@/foundations/frontend/style/type";
+import {
+  TYPE_STYLES,
+  DEFAULT_STYLE,
+} from "@/foundations/frontend/style/type-v2";
 import { useModelStructure } from "@/components/frontend/utils";
 
 // Import model info component

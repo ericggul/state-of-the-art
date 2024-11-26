@@ -88,42 +88,57 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
   const { isProjector } = useScreenStore();
   const [error, setError] = useState(null);
 
-  // Validate layer structure
-  if (
-    !layer?.dimensions ||
-    !Array.isArray(layer.dimensions) ||
-    layer.dimensions.length < 3
-  ) {
-    console.error("Invalid layer dimensions:", layer);
-    return null;
-  }
-
-  if (!layer?.zSpan || !Array.isArray(layer.zSpan) || layer.zSpan.length < 2) {
-    console.error("Invalid layer zSpan:", layer);
-    return null;
-  }
-
-  const { smoothedExpanded } = useSpring({
-    smoothedExpanded: expanded ? 1 : 0,
-    config: { mass: 1, tension: 120, friction: 13 },
-  });
-
-  useEffect(() => {
-    const toggleExpanded = () => {
-      setExpanded((prev) => !prev);
-    };
-
-    const minInterval = 1000;
-    const maxInterval = 8000;
-    const randomInterval =
-      Math.random() * (maxInterval - minInterval) + minInterval;
-
-    const timer = setInterval(toggleExpanded, randomInterval);
-
-    return () => clearInterval(timer);
-  }, []);
-
   try {
+    // More permissive validation for FC layers
+    if (!layer?.dimensions || !Array.isArray(layer.dimensions)) {
+      console.error("Invalid layer dimensions:", layer);
+      return null;
+    }
+
+    // Special handling for FC and output layers which might have different dimension structures
+    const isFCOrOutput = layer.type === "fc" || layer.type === "output";
+    if (isFCOrOutput) {
+      if (layer.dimensions.length < 1) {
+        console.error("Invalid FC/output layer dimensions:", layer);
+        return null;
+      }
+    } else {
+      // Regular layer validation
+      if (layer.dimensions.length < 3) {
+        console.error("Invalid layer dimensions:", layer);
+        return null;
+      }
+    }
+
+    if (
+      !layer?.zSpan ||
+      !Array.isArray(layer.zSpan) ||
+      layer.zSpan.length < 2
+    ) {
+      console.error("Invalid layer zSpan:", layer);
+      return null;
+    }
+
+    const { smoothedExpanded } = useSpring({
+      smoothedExpanded: expanded ? 1 : 0,
+      config: { mass: 1, tension: 120, friction: 13 },
+    });
+
+    useEffect(() => {
+      const toggleExpanded = () => {
+        setExpanded((prev) => !prev);
+      };
+
+      const minInterval = 1000;
+      const maxInterval = 8000;
+      const randomInterval =
+        Math.random() * (maxInterval - minInterval) + minInterval;
+
+      const timer = setInterval(toggleExpanded, randomInterval);
+
+      return () => clearInterval(timer);
+    }, []);
+
     const gridConfig = GRID_CONFIGS[model] || {};
     let gridTypeConfig = gridConfig[layer.type] || {
       xCount: layer.zSpan[0],

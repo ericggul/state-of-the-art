@@ -3,6 +3,8 @@ import Sublayer from "../Sublayer";
 import VAEConnections from "../connections/VAEConnections";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
+const SCALE = 1;
+
 export default function VAELayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model];
   const layerHeight = modelConfig.layerHeight || 60;
@@ -31,6 +33,7 @@ export default function VAELayers({ structure, style, model }) {
   return (
     <group>
       <VAEConnections structure={layers} style={style} />
+
       {layers.map((layer, i) => (
         <Sublayer
           key={`${model}-${i}`}

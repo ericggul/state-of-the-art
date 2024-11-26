@@ -13,7 +13,10 @@ import MultiModalLayers from "../arch/layers/MultiModalLayers";
 import ReinforcementLayers from "../arch/layers/ReinforcementLayers";
 import HopfieldLayers from "../arch/layers/HopfieldLayers";
 import BoltzmannLayers from "../arch/layers/BoltzmannLayers";
-import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type";
+
+//type v2: 1125
+//type v3: 1126, 쨍한 느낌 주기
+import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type-v3";
 
 import CommonScene from "../utils/CommonScene";
 import useScreenStore from "@/components/screen/store";

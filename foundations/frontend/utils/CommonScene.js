@@ -7,9 +7,9 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 const HAL_9000_LIGHT = {
   position: [0, 0, 0], // Center of the scene
   color: 0xff0000, // Bright red
-  intensity: 250, // Strong intensity
+  intensity: 1000, // Strong intensity
   distance: 10000, // Adjust based on your scene size
-  decay: 1.2, // longer decay?
+  decay: 1.0, // longer decay?
   power: 2000,
 };
 
@@ -34,6 +34,9 @@ export default function CommonScene({ children, style }) {
       <ambientLight intensity={2} />
       {style.lighting.pointLight && (
         <pointLight {...style.lighting.pointLight} />
+      )}
+      {style.lighting.pointLight2 && (
+        <pointLight {...style.lighting.pointLight2} />
       )}
       {style.lighting.directionalLight && (
         <directionalLight {...style.lighting.directionalLight} />
