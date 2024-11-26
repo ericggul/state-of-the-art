@@ -92,12 +92,13 @@ function Intro() {
       hasAudio: !!audioRef.current,
     });
 
-    if (audioRef.current && !isInitializedRef.current) {
+    if (audioRef.current) {
       if (introState >= THRESHOLD_STATE) {
-        console.log("Initial setup - no audio needed");
-        audioRef.current.volume = 0;
+        console.log("Initial setup - immediately stopping audio");
         audioRef.current.pause();
-      } else {
+        audioRef.current.currentTime = 0;
+        audioRef.current.volume = 0;
+      } else if (!isInitializedRef.current) {
         console.log("Initial setup - starting audio");
         audioRef.current.volume = 1;
         audioRef.current.play();
@@ -109,22 +110,53 @@ function Intro() {
   useEffect(() => {
     console.log("State change effect:", {
       introState,
-      hasAudio: !!audioRef.current,
+      prevState: prevStateRef.current,
       isProjector,
+      hasAudio: !!audioRef.current,
+      audioVolume: audioRef.current?.volume,
+      isPlaying: !audioRef.current?.paused,
     });
 
     if (!audioRef.current || !isProjector) return;
 
-    // Simple logic: fade out if we reach or exceed threshold
-    if (introState >= THRESHOLD_STATE) {
-      startFadeOut();
-    } else {
-      audioRef.current.volume = 1;
-      audioRef.current.play();
+    const wasBeforeThreshold = prevStateRef.current < THRESHOLD_STATE;
+    const isAfterThreshold = introState >= THRESHOLD_STATE;
+    const needsFadeOut = wasBeforeThreshold && isAfterThreshold;
+
+    if (wasBeforeThreshold) {
+      prevStateRef.current = introState;
+    }
+
+    console.log("State transition:", {
+      wasBeforeThreshold,
+      isAfterThreshold,
+      needsFadeOut,
+      introState,
+    });
+
+    if (wasBeforeThreshold !== !isAfterThreshold) {
+      clearAudioTimers(fadeIntervalRef, timeoutRef);
+
+      if (needsFadeOut) {
+        startFadeOut();
+      } else if (!isAfterThreshold) {
+        console.log("Starting playback");
+        audioRef.current.volume = 1;
+        audioRef.current.play();
+      }
     }
 
     return () => {
+      console.log("Cleanup effect:", {
+        hasFadeInterval: !!fadeIntervalRef.current,
+        hasTimeout: !!timeoutRef.current,
+        isAfterThreshold,
+      });
       clearAudioTimers(fadeIntervalRef, timeoutRef);
+      if (isAfterThreshold && audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     };
   }, [introState, isProjector, startFadeOut]);
 
@@ -137,7 +169,7 @@ function Intro() {
         <audio
           ref={audioRef}
           src={SOUND_URL}
-          autoPlay={false}
+          autoPlay={introState < THRESHOLD_STATE}
           loop
           onPlay={() => console.log("Audio started playing")}
           onPause={() => console.log("Audio paused")}
