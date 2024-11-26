@@ -13,7 +13,13 @@ import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 const QR_LINK = "https://sota-xdlab.net/mobile";
 const MIN_INTERVAL = 10 * 1000;
 const MAX_INTERVAL = 25 * 1000;
-const TEXT = "Scan the QR Code to experience the state-of-the-art.";
+
+const IDLE_TEXTS = [
+  "Scan the QR Code to experience the state-of-the-art.",
+  "Please activate your accelerometer.",
+];
+
+const TEXT = IDLE_TEXTS[0];
 
 const Idle = memo(function Idle() {
   const [windowWidth] = useResize();

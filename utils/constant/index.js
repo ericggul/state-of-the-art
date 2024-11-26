@@ -45,3 +45,8 @@ export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
 export const INACTIVITY_TIMEOUT = 1.5 * 60 * 1000; // 5 minutes in milliseconds
+
+export const IDLE_TEXTS = [
+  "Scan the QR Code to experience the State-of-the-Art.",
+  "Experience the State-of-the-Art Gallery.",
+];
