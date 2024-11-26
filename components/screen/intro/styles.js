@@ -8,6 +8,17 @@ export const Container = styled.div`
   background: black;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 9999;
+  z-index: 990;
   font-size: 1.5vw;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  animation: fadeIn 2s both;
 `;

@@ -3,10 +3,60 @@ import { memo, useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 
 const SOUND_URL = "/audio/intro/intro1126.wav";
+const FADE_DURATION = 1000;
+const PAUSE_DELAY = 500;
+const FADE_STEPS = 20;
+const THRESHOLD_STATE = 2;
+
+const useAudioFade = (audioRef, fadeIntervalRef, timeoutRef) => {
+  const startFadeOut = () => {
+    if (!audioRef.current) return;
+
+    const startVolume = audioRef.current.volume;
+    const stepTime = FADE_DURATION / FADE_STEPS;
+    const volumeStep = startVolume / FADE_STEPS;
+
+    // Clear any existing intervals/timeouts
+    clearAudioTimers(fadeIntervalRef, timeoutRef);
+
+    fadeIntervalRef.current = setInterval(() => {
+      if (!audioRef.current) return;
+
+      if (audioRef.current.volume > volumeStep) {
+        audioRef.current.volume = Math.max(
+          0,
+          audioRef.current.volume - volumeStep
+        );
+      } else {
+        clearInterval(fadeIntervalRef.current);
+        fadeIntervalRef.current = null;
+
+        timeoutRef.current = setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+          }
+        }, PAUSE_DELAY);
+      }
+    }, stepTime);
+  };
+
+  return startFadeOut;
+};
+
+const clearAudioTimers = (fadeIntervalRef, timeoutRef) => {
+  if (fadeIntervalRef.current) {
+    clearInterval(fadeIntervalRef.current);
+    fadeIntervalRef.current = null;
+  }
+  if (timeoutRef.current) {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  }
+};
 
 const Intro0 = memo(function Intro0() {
   const userName = useScreenStore((state) => state.userName);
-
   return <S.Container>Welcome {userName}</S.Container>;
 });
 
@@ -22,44 +72,53 @@ function Intro() {
   const introState = useScreenStore((state) => state.introState);
   const isProjector = useScreenStore((state) => state.isProjector);
   const audioRef = useRef(null);
+  const fadeIntervalRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const prevStateRef = useRef(introState);
+  const isInitializedRef = useRef(false);
+
+  const startFadeOut = useAudioFade(audioRef, fadeIntervalRef, timeoutRef);
+
+  useEffect(() => {
+    if (audioRef.current && !isInitializedRef.current) {
+      if (introState >= THRESHOLD_STATE) {
+        audioRef.current.volume = 0;
+        audioRef.current.pause();
+      } else {
+        audioRef.current.volume = 1;
+        audioRef.current.play();
+      }
+      isInitializedRef.current = true;
+    }
+  }, [introState]);
 
   useEffect(() => {
     if (!audioRef.current || !isProjector) return;
 
-    console.log({ introState });
-    if (introState >= 2) {
-      // Fade out audio over 1 second
-      const fadeOutDuration = 1000;
-      const startVolume = audioRef.current.volume;
-      const steps = 20;
-      const stepTime = fadeOutDuration / steps;
-      const volumeStep = startVolume / steps;
+    const wasBeforeThreshold = prevStateRef.current < THRESHOLD_STATE;
+    const isAfterThreshold = introState >= THRESHOLD_STATE;
+    const needsFadeOut = wasBeforeThreshold && isAfterThreshold;
+    prevStateRef.current = introState;
 
-      const fadeInterval = setInterval(() => {
-        if (audioRef.current && audioRef.current.volume > volumeStep) {
-          audioRef.current.volume = Math.max(
-            0,
-            audioRef.current.volume - volumeStep
-          );
-        } else {
-          clearInterval(fadeInterval);
-          if (audioRef.current) {
-            audioRef.current.pause();
-          }
-        }
-      }, stepTime);
+    if (wasBeforeThreshold !== !isAfterThreshold) {
+      clearAudioTimers(fadeIntervalRef, timeoutRef);
 
-      return () => clearInterval(fadeInterval);
-    } else {
-      // Reset and play audio for states 0 and 1 only if isProjector is true
-      audioRef.current.volume = 1;
-      if (isProjector) {
+      if (needsFadeOut) {
+        startFadeOut();
+      } else if (!isAfterThreshold) {
+        audioRef.current.volume = 1;
         audioRef.current.play();
-      } else {
-        audioRef.current.pause();
       }
     }
-  }, [introState, isProjector]);
+
+    return () => {
+      clearAudioTimers(fadeIntervalRef, timeoutRef);
+      if (isAfterThreshold && audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, [introState, isProjector, startFadeOut]);
 
   return (
     <>
@@ -67,7 +126,12 @@ function Intro() {
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
       {isProjector && (
-        <audio ref={audioRef} src={SOUND_URL} autoPlay={introState < 2} loop />
+        <audio
+          ref={audioRef}
+          src={SOUND_URL}
+          autoPlay={introState < THRESHOLD_STATE}
+          loop
+        />
       )}
     </>
   );

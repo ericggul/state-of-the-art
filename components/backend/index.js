@@ -36,7 +36,7 @@ const Backend = memo(function Backend({ socket }) {
   const { loop, level } = useStore();
 
   useConversation({ socket });
-  // useAudio();
+  useAudio();
 
   useEffect(() => {
     console.log(`Loop: ${loop}, Level: ${level}`);

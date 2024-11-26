@@ -28,8 +28,6 @@ export default function Visualisation({ isTesting = false }) {
   const modelGroupRef = useRef();
   const [cameraDistance, setCameraDistance] = useState(INITIAL_CAMERA_DISTANCE);
 
-  console.log(modelName, currentArchitectures);
-
   useEffect(() => {
     if (modelGroupRef.current && structure.length > 0) {
       setTimeout(() => {

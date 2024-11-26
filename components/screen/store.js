@@ -256,11 +256,11 @@ const useScreenStore = create((set) => ({
         console.log("resetting state from controller!");
         if (data.force) {
           console.log("force resetting state from controller!");
-          window.location.reload();
-          return RESET_STATE;
+          window.location.reload(true);
+          // return RESET_STATE;
         } else {
-          window.location.reload();
-          return RESET_STATE;
+          window.location.reload(true);
+          // return RESET_STATE;
         }
       }
 
