@@ -58,3 +58,5 @@ export const IDLE_TEXTS = [
   "Scan the QR Code to orchestrate artificial intelligence.",
   "Scan the QR to join the canvas of Neural Networks.",
 ];
+
+export const VERIFY_NAME_TIMEOUT = 3000;

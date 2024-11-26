@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from "react";
 import axios from "axios";
 
+import { VERIFY_NAME_TIMEOUT } from "@/utils/constant";
+
 // Move outside hook to prevent recreation
 const nameCheckerInstance = axios.create({
   baseURL: "/api/openai",
@@ -35,7 +37,7 @@ export function useNameValidator() {
     try {
       // Create a promise that rejects after 2 seconds
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("Timeout")), 2000);
+        setTimeout(() => reject(new Error("Timeout")), VERIFY_NAME_TIMEOUT);
       });
 
       // Race between the API call and the timeout

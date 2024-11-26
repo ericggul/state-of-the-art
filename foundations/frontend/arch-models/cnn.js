@@ -175,19 +175,41 @@ export const EFFICIENTNET = [
       seRatio,
       repeats,
     ] = config;
+
+    // Calculate dimensions based on the network architecture
+    const size = Math.max(7, Math.floor(224 / 2 ** (blockIndex + 1)));
+
     return Array.from({ length: repeats }, (_, repeatIndex) => ({
       name: `MBConv${expansionRatio} Block ${blockIndex + 1}_${
         repeatIndex + 1
       }`,
       type: "mbconv",
-      dimensions: [
-        224 / 2 ** (blockIndex + 1),
-        224 / 2 ** (blockIndex + 1),
-        outputChannels,
-      ],
+      dimensions: [size, size, outputChannels],
       zSpan: [8, 8],
     }));
-  }),
+  }).filter(Boolean), // Remove any null/undefined entries
+  // ...EFFICIENTNET_B0_CONFIG.flatMap((config, blockIndex) => {
+  //   const [
+  //     outputChannels,
+  //     kernelSize,
+  //     stride,
+  //     expansionRatio,
+  //     seRatio,
+  //     repeats,
+  //   ] = config;
+  //   return Array.from({ length: repeats }, (_, repeatIndex) => ({
+  //     name: `MBConv${expansionRatio} Block ${blockIndex + 1}_${
+  //       repeatIndex + 1
+  //     }`,
+  //     type: "mbconv",
+  //     dimensions: [
+  //       224 / 2 ** (blockIndex + 1),
+  //       224 / 2 ** (blockIndex + 1),
+  //       outputChannels,
+  //     ],
+  //     zSpan: [8, 8],
+  //   }));
+  // }),
   { name: "Conv2", type: "conv", dimensions: [7, 7, 1280], zSpan: [32, 32] },
   {
     name: "Global Average Pool",
@@ -293,7 +315,6 @@ export const RESNET = [
   },
   { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
 ];
-
 // Improve DenseNet (DenseNet-121 implementation)
 const DENSE_BLOCK_CONFIG = [6, 12, 24, 16];
 

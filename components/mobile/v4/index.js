@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import UI from "@/foundations/mobile/v4";
 import Intro from "@/foundations/mobile/v4/intro";
 import AccelerometerHandler from "@/foundations/mobile/v4/accelrometer";
@@ -23,9 +23,11 @@ export default function Mobile() {
   });
 
   const isVisible = useMobileVisibility({ socket, mobileId });
+  const [isIntro, setIsIntro] = useState(true);
 
   const handleAccelerometerActivate = useCallback(
     (value) => {
+      setIsIntro(false);
       setState({
         ...state,
         isAccelerometerActive: value,
@@ -50,7 +52,7 @@ export default function Mobile() {
 
   return (
     <>
-      {!state.isAccelerometerActive && (
+      {isIntro && (
         <Intro
           socket={socket}
           onAccelerometerActivate={handleAccelerometerActivate}
@@ -58,7 +60,7 @@ export default function Mobile() {
           initialUsername={state.username}
         />
       )}
-      {state.isAccelerometerActive && (
+      {!isIntro && (
         <UI socket={socket} mobileId={mobileId} username={state.username} />
       )}
       <AccelerometerHandler

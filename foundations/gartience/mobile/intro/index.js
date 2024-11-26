@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useMemo } from "react";
 import * as S from "./styles";
-import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
+import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer-gartience";
 import { useNameInput } from "./utils/useNameInput";
 import AnimatedTitle from "./components/AnimatedTitle";
 

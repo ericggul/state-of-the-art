@@ -14,7 +14,8 @@ export default function Intro({
   initialUsername,
 }) {
   const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
-  const { supportsDeviceOrientation, permission } = useAccelerometer();
+  const { supportsDeviceOrientation, permission, requestAccess } =
+    useAccelerometer();
   const isIOS = useMemo(() => isIOSDevice, []);
 
   const nameInputProps = useNameInput({
@@ -25,47 +26,20 @@ export default function Intro({
 
   const handleAccelerometerActivation = useCallback(async () => {
     try {
-      const hasMotionSupport =
-        window.DeviceOrientationEvent || window.DeviceMotionEvent;
-      if (!hasMotionSupport) {
-        alert("Sorry, your device does not support motion sensors");
+      const result = await requestAccess();
 
-        emitAccelerometerActivation();
-        onAccelerometerActivate(true);
-      }
-
-      const isIOSPermissionAPI =
-        typeof DeviceMotionEvent.requestPermission === "function";
-      if (isIOSPermissionAPI) {
-        const permission = await DeviceMotionEvent.requestPermission();
-        if (permission === "granted") {
-          emitAccelerometerActivation();
-          onAccelerometerActivate(true);
-        } else {
-          alert("Permission denied for motion sensors");
-
-          ////TO DO: WHICH LOGIC HERE?
-          emitAccelerometerActivation();
-          onAccelerometerActivate(true);
-        }
-      } else {
-        emitAccelerometerActivation();
-        onAccelerometerActivate(true);
-      }
+      emitAccelerometerActivation(result);
+      onAccelerometerActivate(result.granted);
     } catch (error) {
       console.error("Error activating accelerometer:", error);
-      alert("Error activating motion sensors.");
-
-      ////TO DO: WHICH LOGIC HERE?
-      emitAccelerometerActivation();
-      onAccelerometerActivate(true);
+      alert(error.message);
     }
-  }, [onAccelerometerActivate]);
+  }, [onAccelerometerActivate, requestAccess]);
 
-  function emitAccelerometerActivation() {
+  function emitAccelerometerActivation(result) {
     socket.current.emit("mobile-new-intro", {
       type: "accelerometer_activation",
-      activated: true,
+      activated: result.granted,
     });
   }
 
@@ -114,8 +88,8 @@ export default function Intro({
         baseDelay={0.3} // Delay start of animation
       />
       <S.IntroText>
-        To explore the state-of-the-art neural networks, we need access to your
-        device's accelerometer.
+        For more immersive experience, you must activate your device's
+        accelerometer.
       </S.IntroText>
       <S.ActivateButton
         onClick={handleAccelerometerActivation}
