@@ -30,13 +30,11 @@ export default function useScreenVisibility() {
 
   const scheduleStateChanges = () => {
     if (iteration == 0) return;
-    console.log("📅 Scheduling state changes:", {
-      iteration,
-      multiplier: iterationSpeedMultiplier(iteration),
-    });
 
     clearTimeouts();
+
     const multiplier = iterationSpeedMultiplier(iteration);
+    console.log("📅 Scheduling state changes:", { iteration, multiplier });
 
     setIsTransition(true);
 
@@ -58,13 +56,6 @@ export default function useScreenVisibility() {
       ? TIMEOUTS.TRANSITION - TIMEOUTS.PROJECTOR_OFFSET
       : TIMEOUTS.MOBILE_RESET;
 
-    console.log("⏱️ Delays:", {
-      unmountFrontend: unmountFrontendDelay,
-      ending: endingDelay,
-      reset: resetDelay,
-      isProjector,
-    });
-
     timeouts.current.unmount = setTimeout(() => {
       if (!visibilityRef.current) {
         setStage(null);
@@ -72,13 +63,21 @@ export default function useScreenVisibility() {
     }, unmountFrontendDelay * multiplier);
 
     const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
+    const resetDelay = endingDelay + TIMEOUTS.RESET;
+
+    console.log("⏱️ Delays:", {
+      unmountFrontend: unmountFrontendDelay,
+      ending: endingDelay,
+      reset: resetDelay,
+      isProjector,
+    });
+
     timeouts.current.ending = setTimeout(() => {
       if (!visibilityRef.current) {
         setIsEnding(true);
       }
     }, endingDelay);
 
-    const resetDelay = endingDelay + TIMEOUTS.RESET;
     timeouts.current.reset = setTimeout(() => {
       if (!visibilityRef.current) {
         clearTimeouts();
