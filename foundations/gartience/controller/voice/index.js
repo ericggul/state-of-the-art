@@ -5,6 +5,7 @@ import { getFlatModels } from "../components/ArchitectureSelector";
 
 export default function Voice({ socket, setState, onModelSelect }) {
   const [displayText, setDisplayText] = useState("");
+  const [nextText, setNextText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndexRef = useRef(0);
   const [error, setError] = useState(null);
@@ -13,8 +14,9 @@ export default function Voice({ socket, setState, onModelSelect }) {
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const lastTriggerTimeRef = useRef(0);
+  const [initialThreshold, setInitialThreshold] = useState(45);
 
-  const INITIAL_VOLUME_THRESHOLD = 45;
+  const INITIAL_VOLUME_THRESHOLD = initialThreshold;
   const SPEAKING_VOLUME_THRESHOLD = 25;
   const SILENCE_THRESHOLD = 600; // Wait 500ms of silence before advancing
   const lastSoundTimeRef = useRef(Date.now());
@@ -35,21 +37,22 @@ export default function Voice({ socket, setState, onModelSelect }) {
 
       const now = Date.now();
 
-      // Initial trigger or continuing speech
       if (
         (!isSpeakingRef.current && average > INITIAL_VOLUME_THRESHOLD) ||
         (isSpeakingRef.current && average > SPEAKING_VOLUME_THRESHOLD)
       ) {
         lastSoundTimeRef.current = now;
         if (!isSpeakingRef.current) {
-          // Just started speaking
           isSpeakingRef.current = true;
           setDisplayText(SCRIPT[currentIndexRef.current]);
+          if (currentIndexRef.current + 1 < SCRIPT.length) {
+            setNextText(SCRIPT[currentIndexRef.current + 1]);
+          } else {
+            setNextText({ text: "End of script reached" });
+          }
         }
       } else if (isSpeakingRef.current) {
-        // Check if we've been silent long enough
         if (now - lastSoundTimeRef.current > SILENCE_THRESHOLD) {
-          // Real pause detected, advance to next text
           isSpeakingRef.current = false;
           if (currentIndexRef.current < SCRIPT.length - 1) {
             currentIndexRef.current += 1;
@@ -145,6 +148,19 @@ export default function Voice({ socket, setState, onModelSelect }) {
 
   return (
     <S.Container>
+      <S.ThresholdContainer>
+        <S.ThresholdLabel>
+          Voice Sensitivity: {initialThreshold}
+        </S.ThresholdLabel>
+        <S.ThresholdSlider
+          type="range"
+          min="35"
+          max="65"
+          value={initialThreshold}
+          onChange={(e) => setInitialThreshold(Number(e.target.value))}
+        />
+      </S.ThresholdContainer>
+
       {!isInitialized ? (
         <S.StartButton onClick={requestMicrophoneAccess}>
           마이크 접근 허용하기
@@ -152,7 +168,10 @@ export default function Voice({ socket, setState, onModelSelect }) {
       ) : error ? (
         <S.ErrorMessage>{error}</S.ErrorMessage>
       ) : (
-        <S.TextDisplay>{displayText.text}</S.TextDisplay>
+        <>
+          <S.TextDisplay>Current: {displayText.text}</S.TextDisplay>
+          <S.NextTextDisplay>Next: {nextText.text}</S.NextTextDisplay>
+        </>
       )}
     </S.Container>
   );

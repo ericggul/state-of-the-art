@@ -28,9 +28,17 @@ export default React.memo(function Screen() {
   return (
     <Suspense fallback={<div />}>
       <S.Container>
-        {state >= 1 && !chaos && <QR />}
-        {speech && !chaos && <Speech text={speech?.text || ""} />}
-        {chaos && <Chaos />}
+        <S.ContentContainer>
+          {state >= 1 && !chaos && <QR />}
+          {speech && !chaos && (
+            <Speech
+              text={speech?.text || ""}
+              en={speech?.en || ""}
+              hasQR={state >= 1}
+            />
+          )}
+          {chaos && <Chaos />}
+        </S.ContentContainer>
       </S.Container>
     </Suspense>
   );
@@ -44,7 +52,7 @@ const QR = React.memo(function QR() {
     <S.QRContainer>
       <QRCodeSVG
         value={URL}
-        size={windowWidth * 0.11}
+        size={windowWidth * 0.14}
         bgColor="transparent"
         fgColor="white"
       />

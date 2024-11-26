@@ -8,22 +8,37 @@ export const Container = styled.div`
   position: relative;
 `;
 
+export const ContentContainer = styled.div`
+  ${FlexCenterStyle};
+  width: 65vw;
+  height: 100%;
+  position: relative;
+  margin: 0 auto;
+`;
+
 export const QRContainer = styled.div`
   ${FlexCenterStyle};
   position: absolute;
-  top: 2vh;
-  right: 2vw;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
   width: auto;
   height: auto;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2vw;
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 `;
 
 export const Cursor = styled.span`
   display: inline-block;
-  width: 0.1em;
+  width: 0.08em;
   height: 1em;
-  background-color: white;
+  background-color: #fff;
   margin-left: 2px;
-  animation: blink 1s step-end infinite;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  animation: blink 0.8s step-end infinite;
 
   @keyframes blink {
     from,
@@ -36,18 +51,54 @@ export const Cursor = styled.span`
   }
 `;
 
-export const SpeechText = styled.div`
+export const SpeechContainer = styled.div`
   ${FlexCenterStyle};
-  width: 70vw;
-  text-align: center;
-  color: white;
-  font-size: 4vw;
-  font-weight: 700;
-  line-height: 1.3;
-  word-break: keep-all;
+  flex-direction: column;
+  gap: 1vw;
+  width: 100%;
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+
+  ${(props) =>
+    props.$hasQR
+      ? css`
+          left: 0;
+          transform: translate(0, -50%);
+          width: 60%;
+          align-items: flex-start;
+        `
+      : css`
+          left: 50%;
+          transform: translate(-50%, -50%);
+          align-items: center;
+        `}
+`;
+
+export const SpeechText = styled.div`
+  width: 100%;
+  color: white;
+  font-size: 2.5vw;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: keep-all;
   white-space: pre-wrap;
+  transition: all 0.3s ease;
+
+  ${(props) =>
+    props.$hasQR
+      ? css`
+          text-align: left;
+        `
+      : css`
+          text-align: center;
+        `}
+`;
+
+export const SpeechTextEn = styled(SpeechText)`
+  font-size: 1.6vw;
+  font-weight: 600;
+  opacity: 0.9;
+  font-family: "Courier New", monospace;
+  color: #a0f0ff;
 `;
