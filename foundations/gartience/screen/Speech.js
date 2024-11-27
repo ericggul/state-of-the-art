@@ -42,7 +42,7 @@ const Speech = React.memo(function Speech({ text, en, hasQR }) {
       }
     },
     10, // Faster min delay
-    40, // Faster max delay
+    80, // Faster max delay
     currentIndexEn < en.length
   );
 
