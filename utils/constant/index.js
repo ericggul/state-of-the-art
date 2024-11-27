@@ -15,8 +15,8 @@ export const TIMEOUTS = {
   MOBILE_RESET: 500,
 
   ////RESET LOGIC
-  ENDING: 160 * 1000,
-  ENDING_BASE: 60 * 1000,
+  ENDING: 150 * 1000,
+  ENDING_BASE: 45 * 1000,
   RESET: 20 * 1000,
 
   //TEST TEMPORARILY
@@ -28,7 +28,7 @@ export const TIMEOUTS = {
 //transition: delay between devices
 //screen > transition
 export const BASE_DELAY = 700;
-export const DEVICE_DELAY_MULTIPLIER = 450;
+export const DEVICE_DELAY_MULTIPLIER = 350;
 
 //conversation: black and white time
 //backend > useConversation

@@ -55,48 +55,11 @@ export const OrientationCamera = memo(
     // Add a ref to track if we've activated the accelerometer
     const hasActivatedRef = useRef(false);
 
-    // Add refs for timeout handling
-    const lastDataTimestampRef = useRef(Date.now());
-    const timeoutRef = useRef(null);
-
-    // Sync hasActivatedRef with isAccelerometerActive
-    useEffect(() => {
-      hasActivatedRef.current = isAccelerometerActive;
-    }, [isAccelerometerActive]);
-
-    // Check for data timeout when stage is frontend
-    useEffect(() => {
-      const checkDataTimeout = () => {
-        console.log("checkDataTimeout", stage, hasActivatedRef.current);
-        if (stage === "frontend" && hasActivatedRef.current) {
-          const timeSinceLastData = Date.now() - lastDataTimestampRef.current;
-          console.log("timeSinceLastData", timeSinceLastData);
-          if (timeSinceLastData > 5000) {
-            // 5 seconds
-            hasActivatedRef.current = false;
-            setIsAccelerometerActive(false);
-          }
-        }
-      };
-
-      if (stage === "frontend") {
-        timeoutRef.current = setInterval(checkDataTimeout, 1000); // Check every second
-      }
-
-      return () => {
-        if (timeoutRef.current) {
-          clearInterval(timeoutRef.current);
-        }
-      };
-    }, [stage, setIsAccelerometerActive]);
-
     useSocketScreenOrientation({
       handleNewMobileOrientation: (data) => {
         console.log("data", data);
         sensorDataRef.current = data;
-        lastDataTimestampRef.current = Date.now(); // Update timestamp
-
-        // Only set once using the ref if not already active
+        // Only set once using the ref
         if (!hasActivatedRef.current) {
           setIsAccelerometerActive(true);
           hasActivatedRef.current = true;
@@ -104,7 +67,6 @@ export const OrientationCamera = memo(
       },
       handleNewMobileOrientationSpike: (data) => {
         console.log("new mobile orientation spike", data);
-        lastDataTimestampRef.current = Date.now(); // Update timestamp for spikes too
       },
     });
 

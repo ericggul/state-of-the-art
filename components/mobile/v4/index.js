@@ -11,7 +11,10 @@ import Loading from "@/foundations/mobile/v4/loading";
 
 export default function Mobile() {
   const [state, setState] = usePersistentState();
+  const [introState, setIntroState] = useState(() => (state.username ? 1 : 0));
   const mobileId = useMemo(() => "DUMMY", []);
+
+  console.log("persistent state", state);
 
   const handleNewResponse = useCallback((data) => {
     console.log("New response from controller:", data);
@@ -42,18 +45,13 @@ export default function Mobile() {
         ...state,
         username,
       });
+      setIntroState(1);
     },
     [state, setState]
   );
 
-  console.log("state", state);
-
   useEffect(() => {
-    if (
-      state.username &&
-      //state is acclerometeractive is either true or false but not undefined
-      typeof state.isAccelerometerActive !== "undefined"
-    ) {
+    if (state.username && typeof state.isAccelerometerActive !== "undefined") {
       setIsIntro(false);
     }
   }, [state.username, state.isAccelerometerActive]);
@@ -62,6 +60,12 @@ export default function Mobile() {
     return <Loading customText="Initializing State" />;
   }
 
+  console.log(introState);
+
+  function handleError(error) {
+    setIntroState(1);
+    setIsIntro(true);
+  }
   return (
     <>
       {isIntro && (
@@ -70,6 +74,8 @@ export default function Mobile() {
           onAccelerometerActivate={handleAccelerometerActivate}
           onUsernameSubmit={handleUsernameSubmit}
           initialUsername={state.username}
+          introState={introState}
+          setIntroState={setIntroState}
         />
       )}
       {!isIntro && (
@@ -79,6 +85,7 @@ export default function Mobile() {
         socket={socket}
         mobileId={mobileId}
         isAccelerometerActive={state.isAccelerometerActive}
+        handleError={handleError}
       />
     </>
   );

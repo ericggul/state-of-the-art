@@ -5,5 +5,5 @@ export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
 
-  background: rgb(0, 47, 167);
+  background: rgb(0, 0, 255);
 `;

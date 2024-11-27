@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import { useNameInput } from "../utils/useNameInput";
@@ -13,17 +13,16 @@ export default function Intro({
   onAccelerometerActivate,
   onUsernameSubmit,
   initialUsername,
+  introState,
+  setIntroState,
 }) {
-  const [introState, setIntroState] = useState(initialUsername ? 1 : 0);
   const { supportsDeviceOrientation, permission, requestAccess } =
     useAccelerometer();
   const isIOS = useMemo(() => isIOSDevice, []);
 
-  // Create handleSuccess callback before nameInputProps
   const handleSuccess = useCallback(
     (username) => {
       onUsernameSubmit(username);
-      setIntroState(1);
     },
     [onUsernameSubmit]
   );
@@ -98,10 +97,12 @@ export default function Intro({
 
   const renderAccelerometerContent = () => (
     <S.IntroContent>
-      <AnimatedTitle
-        text={`Hi, ${nameInputProps.username}!`}
-        baseDelay={0.3} // Delay start of animation
-      />
+      {nameInputProps.username && (
+        <AnimatedTitle
+          text={`Hi, ${nameInputProps.username}!`}
+          baseDelay={0.3} // Delay start of animation
+        />
+      )}
       <S.IntroText>
         For more immersive experience, you must activate your device's
         accelerometer.
