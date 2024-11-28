@@ -5,8 +5,6 @@ import { useInitialScroll } from "./useInitialScroll";
 import { useSocketCommunication } from "./useSocketCommunication";
 import { CONSTANTS } from "./constants";
 
-const SCROLL_THROTTLE_MS = 16; // Approximately 60fps
-
 export function useModelListLogic({ initialModels, socket, mobileId }) {
   // States
   const [models, setModels] = useState(initialModels);
@@ -88,47 +86,37 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     return () => clearTimeout(timeout);
   }, []);
 
-  // Optimize scroll handling
   useEffect(() => {
     const listElement = listRef.current;
     if (!listElement) return;
 
     let lastScrollTime = Date.now();
     let lastScrollTop = listElement.scrollTop;
-    let rafId = null;
 
-    const handleScroll = () => {
-      if (rafId) return;
+    const handleScroll = (e) => {
+      const currentTime = Date.now();
+      const currentScrollTop = listElement.scrollTop;
+      const timeDelta = currentTime - lastScrollTime;
 
-      rafId = requestAnimationFrame(() => {
-        const currentTime = Date.now();
-        const currentScrollTop = listElement.scrollTop;
+      // Calculate scroll speed (pixels per millisecond)
+      const scrollSpeed =
+        Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
+      const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED; // Increased from 2 to 8 for faster scrolling
 
-        if (currentTime - lastScrollTime >= SCROLL_THROTTLE_MS) {
-          const timeDelta = currentTime - lastScrollTime;
-          const scrollSpeed =
-            Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
-          const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED;
+      if (scrollSpeed > maxSpeed) {
+        // Limit the scroll position
+        const maxScrollDelta = maxSpeed * timeDelta;
+        const direction = currentScrollTop > lastScrollTop ? 1 : -1;
+        listElement.scrollTop = lastScrollTop + maxScrollDelta * direction;
+        e.preventDefault();
+      }
 
-          if (scrollSpeed > maxSpeed) {
-            const maxScrollDelta = maxSpeed * timeDelta;
-            const direction = currentScrollTop > lastScrollTop ? 1 : -1;
-            listElement.scrollTop = lastScrollTop + maxScrollDelta * direction;
-          }
-
-          lastScrollTime = currentTime;
-          lastScrollTop = listElement.scrollTop;
-        }
-
-        rafId = null;
-      });
+      lastScrollTime = currentTime;
+      lastScrollTop = listElement.scrollTop;
     };
 
-    listElement.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      listElement.removeEventListener("scroll", handleScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+    listElement.addEventListener("scroll", handleScroll, { passive: false });
+    return () => listElement.removeEventListener("scroll", handleScroll);
   }, []);
 
   return {

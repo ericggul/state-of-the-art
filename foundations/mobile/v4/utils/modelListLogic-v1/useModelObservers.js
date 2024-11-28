@@ -61,28 +61,21 @@ export function useModelObservers({
   useEffect(() => {
     currentItemObserverRef.current = new IntersectionObserver(
       (entries) => {
-        requestAnimationFrame(() => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-              const isUserScroll =
-                Date.now() - lastInteractionTimeRef.current <
-                CONSTANTS.USER_SCROLL_THRESHOLD;
-              if (isUserScroll) setIsUserInteraction(true);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const isUserScroll =
+              Date.now() - lastInteractionTimeRef.current <
+              CONSTANTS.USER_SCROLL_THRESHOLD;
+            if (isUserScroll) setIsUserInteraction(true);
 
-              const index = Number(entry.target.getAttribute("data-index"));
-              setCurrentIndex(index);
-              setManuallySelectedIndex(null);
-              updateDotPosition(index);
-            }
-          });
+            const index = Number(entry.target.getAttribute("data-index"));
+            setCurrentIndex(index);
+            setManuallySelectedIndex(null);
+            updateDotPosition(index);
+          }
         });
       },
-      {
-        ...CONSTANTS.LIST_OBSERVER_OPTIONS,
-        root: listRef.current,
-        threshold: [0.5], // Only trigger when item is more visible
-        rootMargin: "-20% 0px", // Reduce trigger area
-      }
+      { ...CONSTANTS.LIST_OBSERVER_OPTIONS, root: listRef.current }
     );
 
     return () => currentItemObserverRef.current?.disconnect();

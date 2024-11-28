@@ -87,15 +87,8 @@ export const ModelList = styled.div`
   overflow-x: hidden;
   padding: 20vh 0;
   box-sizing: border-box;
-
-  /* Optimize touch handling */
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
-
-  /* Enable hardware acceleration */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000;
 
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -103,7 +96,6 @@ export const ModelList = styled.div`
     display: none;
   }
 
-  /* Add a subtle fade-in effect */
   animation: ${fadeIn} 1s ease-out both;
   animation-delay: 0.5s;
 `;
