@@ -183,8 +183,15 @@ export const IntroText = styled.p`
   font-size: clamp(0.875rem, 4vw, 1rem);
   line-height: 1.5;
   margin: 0;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.02em;
+
+  b {
+    font-weight: 900;
+    opacity: 1;
+    color: rgba(255, 255, 255, 1);
+    text-transform: uppercase;
+  }
 `;
 
 export const IntroInput = styled.input`

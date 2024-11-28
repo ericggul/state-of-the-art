@@ -104,7 +104,7 @@ export default function Intro({
         />
       )}
       <S.IntroText>
-        For more immersive experience, you must activate your device's
+        For more immersive experience, you must <b>ALLOW</b> your device's
         accelerometer.
       </S.IntroText>
       <S.ActivateButton
