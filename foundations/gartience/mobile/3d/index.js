@@ -39,6 +39,9 @@ import { useModelStructure } from "@/components/frontend/utils";
 // Import model info component
 import ModelInfo from "./components/ModelInfo";
 
+// Import LoadingUI component
+import LoadingUI from "@/foundations/frontend/components/LoadingUI";
+
 // Match MODEL_COMPONENTS exactly with frontend
 const MODEL_COMPONENTS = {
   basic_nn: BasicNNLayers,
@@ -57,8 +60,17 @@ const MODEL_COMPONENTS = {
 
 export default React.memo(function FC3D({ enableDeviceControls = true }) {
   const architectures = useMobileStore((state) => state.architectures);
+  const [isLoading, setIsLoading] = useState(true);
+  const modelGroupRef = useRef(null);
 
-  console.log(architectures);
+  const raisePhone = useMemo(
+    () =>
+      architectures.length > 0 &&
+      architectures.find((arch) => arch.name === "PPO"),
+    [architectures]
+  );
+
+  console.log(raisePhone, architectures);
 
   const {
     visualization: { modelName, structure },
@@ -67,13 +79,21 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
       ? architectures
       : [
           {
-            name: "Hopfield Network",
-            version: "v2.0.1",
-            year: "1943",
-            place: "USA",
-            citation: "McCulloch & Pitts",
-            explanation: "The first artificial neuron model",
+            name: "Perceptron",
+            year: 1958,
+            place: "Frank Rosenblatt, Cornell Aeronautical Laboratory",
+            citation: 13000,
+            explanation:
+              "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
           },
+          // {
+          //   name: "Hopfield Network",
+          //   version: "v2.0.1",
+          //   year: "1943",
+          //   place: "USA",
+          //   citation: "McCulloch & Pitts",
+          //   explanation: "The first artificial neuron model",
+          // },
         ]
   );
 
@@ -100,36 +120,74 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
     return { ModelComponent: component, style: typeStyle };
   }, [modelName]);
 
+  // Add effect to handle loading state
+  useEffect(() => {
+    if (structure && modelGroupRef.current) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (modelGroupRef.current) {
+            setIsLoading(false);
+          }
+        }, 500);
+      });
+    }
+    return () => setIsLoading(true);
+  }, [structure, modelName]);
+
   return (
     <S.Container>
-      <Canvas
-        camera={{
-          position: [-15, 0, 20],
-          fov: 50,
-          near: 0.1,
-          far: 1000,
-        }}
-      >
-        {/* <Suspense fallback={null}>
-          <Environment preset="city" />
-        </Suspense> */}
+      <Suspense fallback={null}>
+        <Canvas
+          camera={{
+            position: [-15, 0, 20],
+            fov: 50,
+            near: 0.1,
+            far: 1000,
+          }}
+          dpr={[1, 2]}
+          performance={{ min: 0.5 }}
+          frameloop="demand"
+          gl={{
+            powerPreference: "high-performance",
+            antialias: false,
+            stencil: false,
+            depth: true,
+            alpha: false,
+          }}
+        >
+          <Suspense fallback={null}>
+            <Environment
+              files={`/3d/environment/sky.hdr`}
+              intensity={style.lighting.envIntensity || 0.1}
+              blurriness={style.lighting.envMapBlurriness || 0.5}
+            />
+          </Suspense>
 
-        <pointLight position={[10, 10, 10]} />
-        <directionalLight position={[0, 10, 10]} intensity={2} />
-        <directionalLight position={[10, 0, 10]} intensity={2} />
+          <pointLight position={[10, 10, 10]} />
+          <directionalLight position={[0, 10, 10]} intensity={2} />
+          <directionalLight position={[10, 0, 10]} intensity={2} />
 
-        {structure && ModelComponent && (
-          <ModelComponent
-            structure={structure}
-            style={style}
-            model={modelName}
+          <group ref={modelGroupRef}>
+            {structure && ModelComponent && (
+              <ModelComponent
+                structure={structure}
+                style={style}
+                model={modelName}
+              />
+            )}
+            {isLoading && <LoadingUI />}
+          </group>
+
+          {enableDeviceControls && <DeviceOrientationControls />}
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
           />
-        )}
-
-        {enableDeviceControls && <DeviceOrientationControls />}
-        <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
-      </Canvas>
+        </Canvas>
+      </Suspense>
       <ModelInfo name={architectures[0]?.name} year={architectures[0]?.year} />
+      {raisePhone && <S.RaisePhone>Raise Your Phone</S.RaisePhone>}
     </S.Container>
   );
 });

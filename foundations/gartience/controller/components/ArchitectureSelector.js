@@ -57,7 +57,7 @@ export default function ArchitectureSelector({
 const Container = styled.div`
   margin: 20px 0;
   width: 100%;
-  max-height: 300px;
+  max-height: 200px;
   overflow-y: auto;
 `;
 

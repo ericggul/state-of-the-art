@@ -164,7 +164,7 @@ export const BottomVerticalLine = styled.div`
 `;
 
 export const IntroTitle = styled.h1`
-  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-size: clamp(1rem, 4vw, 1.25rem);
   margin: 0;
   text-align: center;
   line-height: 1.3;

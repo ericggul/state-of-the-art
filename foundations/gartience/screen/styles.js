@@ -6,6 +6,16 @@ export const Container = styled.div`
   ${WholeContainer};
   flex-direction: column;
   position: relative;
+
+  font-family: "SF Pro KR", "SF Pro Display", "SF Pro", "Apple SD Gothic Neo",
+    "Pretendard Variable", -apple-system, BlinkMacSystemFont, system-ui,
+    "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
+
+  //korean: force
 `;
 
 export const ContentContainer = styled.div`
@@ -28,10 +38,8 @@ export const QRContainer = styled.div`
   background: rgba(0, 0, 0, 0.4);
   padding: 2.5vw;
   border-radius: 1.5vw;
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1),
-    0 0 60px rgba(255, 255, 255, 0.05);
+
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const Cursor = styled.span`
@@ -89,7 +97,12 @@ export const SpeechText = styled.div`
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
     0 0 40px rgba(255, 255, 255, 0.1);
-  letter-spacing: -0.02em;
+  font-family: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
 
   ${(props) =>
     props.$hasQR

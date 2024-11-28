@@ -5,12 +5,12 @@ const useMobileStore = create((set) => ({
   chaos: false,
   architectures: [
     {
-      name: "Hopfield Network",
-      version: "v2.0.1",
-      year: "1943",
-      place: "USA",
-      citation: "McCulloch & Pitts",
-      explanation: "The first artificial neuron model",
+      name: "Perceptron",
+      year: 1958,
+      place: "Frank Rosenblatt, Cornell Aeronautical Laboratory",
+      citation: 13000,
+      explanation:
+        "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
     },
   ],
   username: "Jeanyoon",

@@ -101,9 +101,17 @@ export default function Voice({ socket, setState, onModelSelect }) {
         26: "Variational Autoencoder (VAE)", // VAE
         27: "AlexNet", // 알렉스넷
         28: "SimCLR", // 트랜스포머
-        29: "Transformer",
-        30: "Generative Adversarial Networks (GANs)",
-        31: "Stable Diffusion",
+        29: "Hopfield Network", // 홉필드 네트워크
+        30: "Multi-Layer Perceptron (MLP)",
+        31: "Generative Adversarial Networks (GANs)",
+        32: "RNN (Recurrent Neural Network)",
+        33: "Stable Diffusion",
+        34: "ALBERT",
+        35: "Show and Tell",
+        37: "Basic Autoencoder",
+        39: "DCGAN",
+        40: "DDPM",
+        41: "PPO",
       };
 
       if (modelMap[displayText.idx]) {
@@ -146,6 +154,32 @@ export default function Voice({ socket, setState, onModelSelect }) {
     };
   }, []);
 
+  const handleNext = () => {
+    if (currentIndexRef.current < SCRIPT.length - 1) {
+      currentIndexRef.current += 1;
+      setCurrentIndex(currentIndexRef.current);
+      setDisplayText(SCRIPT[currentIndexRef.current]);
+      if (currentIndexRef.current + 1 < SCRIPT.length) {
+        setNextText(SCRIPT[currentIndexRef.current + 1]);
+      } else {
+        setNextText({ text: "End of script reached" });
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndexRef.current > 0) {
+      currentIndexRef.current -= 1;
+      setCurrentIndex(currentIndexRef.current);
+      setDisplayText(SCRIPT[currentIndexRef.current]);
+      if (currentIndexRef.current + 1 < SCRIPT.length) {
+        setNextText(SCRIPT[currentIndexRef.current + 1]);
+      } else {
+        setNextText({ text: "End of script reached" });
+      }
+    }
+  };
+
   return (
     <S.Container>
       <S.ThresholdContainer>
@@ -171,6 +205,13 @@ export default function Voice({ socket, setState, onModelSelect }) {
         <>
           <S.TextDisplay>Current: {displayText.text}</S.TextDisplay>
           <S.NextTextDisplay>Next: {nextText.text}</S.NextTextDisplay>
+          <S.Navigation>
+            <S.NavButton onClick={handlePrevious}>-</S.NavButton>
+            <S.ScriptPosition>
+              {currentIndexRef.current + 1}/{SCRIPT.length}
+            </S.ScriptPosition>
+            <S.NavButton onClick={handleNext}>+</S.NavButton>
+          </S.Navigation>
         </>
       )}
     </S.Container>

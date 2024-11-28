@@ -93,3 +93,36 @@ export const NextTextDisplay = styled.div`
   text-align: center;
   margin-top: 5px;
 `;
+
+export const Navigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+export const NavButton = styled.button`
+  width: 40px;
+  height: 40px;
+  border: 2px solid #007aff;
+  background: transparent;
+  color: #007aff;
+  font-size: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 122, 255, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(0, 122, 255, 0.2);
+  }
+`;
+
+export const ScriptPosition = styled.div`
+  font-size: 16px;
+  color: #333;
+`;
