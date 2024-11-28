@@ -8,9 +8,11 @@ function Transcript({ isblack }) {
 
   return (
     <S.Text
-      style={{
-        color: isblack ? "#fff" : "#000",
-      }}
+      style={
+        {
+          // color: isblack ? "#fff" : "#000",
+        }
+      }
     >
       {displayMessage}
     </S.Text>

@@ -18,6 +18,9 @@ export const Text = styled.div`
   color: #ffffff;
   text-shadow: 0 0 5px rgba(255, 255, 255, 1);
 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
 

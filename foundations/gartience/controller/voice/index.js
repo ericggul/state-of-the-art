@@ -97,21 +97,21 @@ export default function Voice({ socket, setState, onModelSelect }) {
     // Auto-select architecture based on voice progress
     if (displayText) {
       const modelMap = {
-        25: "Boltzmann Machine", // 볼츠만 머신
-        26: "Variational Autoencoder (VAE)", // VAE
-        27: "AlexNet", // 알렉스넷
-        28: "SimCLR", // 트랜스포머
-        29: "Hopfield Network", // 홉필드 네트워크
-        30: "Multi-Layer Perceptron (MLP)",
-        31: "Generative Adversarial Networks (GANs)",
-        32: "RNN (Recurrent Neural Network)",
-        33: "Stable Diffusion",
-        34: "ALBERT",
-        35: "Show and Tell",
-        37: "Basic Autoencoder",
-        39: "DCGAN",
-        40: "DDPM",
-        41: "PPO",
+        35: "Boltzmann Machine", // 볼츠만 머신
+        36: "Variational Autoencoder (VAE)", // VAE
+        37: "AlexNet", // 알렉스넷
+        38: "SimCLR", // 트랜스포머
+        39: "Hopfield Network", // 홉필드 네트워크
+        40: "Multi-Layer Perceptron (MLP)",
+        41: "Generative Adversarial Networks (GANs)",
+        42: "RNN (Recurrent Neural Network)",
+        43: "Stable Diffusion",
+        44: "ALBERT",
+        45: "Show and Tell",
+        46: "Basic Autoencoder",
+        47: "DCGAN",
+        48: "DDPM",
+        49: "PPO",
       };
 
       if (modelMap[displayText.idx]) {
@@ -127,7 +127,7 @@ export default function Voice({ socket, setState, onModelSelect }) {
       }
     }
 
-    if (displayText.paragraph >= 4 && displayText.idx >= 19) {
+    if (displayText.paragraph >= 4) {
       setState(1);
     }
     if (displayText.paragraph >= 9) {
@@ -203,8 +203,12 @@ export default function Voice({ socket, setState, onModelSelect }) {
         <S.ErrorMessage>{error}</S.ErrorMessage>
       ) : (
         <>
-          <S.TextDisplay>Current: {displayText.text}</S.TextDisplay>
-          <S.NextTextDisplay>Next: {nextText.text}</S.NextTextDisplay>
+          <S.TextDisplay>
+            Current: {displayText.text.slice(0, 80)}
+          </S.TextDisplay>
+          <S.NextTextDisplay>
+            Next: {nextText.text.slice(0, 70)}
+          </S.NextTextDisplay>
           <S.Navigation>
             <S.NavButton onClick={handlePrevious}>-</S.NavButton>
             <S.ScriptPosition>

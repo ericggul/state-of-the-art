@@ -37,9 +37,9 @@ export default React.memo(function Screen() {
               hasQR={state >= 1}
             />
           )}
-          {chaos && <Chaos />}
         </S.ContentContainer>
       </S.Container>
+      {chaos && <Chaos />}
     </Suspense>
   );
 });

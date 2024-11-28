@@ -25,4 +25,5 @@ export const RaisePhone = styled.div`
   -webkit-backdrop-filter: blur(2px);
   z-index: 100;
   pointer-events: none !important;
+  flex-direction: column;
 `;

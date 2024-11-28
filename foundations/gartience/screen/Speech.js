@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import * as S from "./styles";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
@@ -47,16 +47,18 @@ const Speech = React.memo(function Speech({ text, en, hasQR }) {
   );
 
   return (
-    <S.SpeechContainer $hasQR={hasQR}>
-      <S.SpeechText $hasQR={hasQR}>
-        {displayedTextKo}
-        {currentIndexKo < text.length && <S.Cursor />}
-      </S.SpeechText>
-      <S.SpeechTextEn $hasQR={hasQR}>
-        {displayedTextEn}
-        {currentIndexEn < en.length && <S.Cursor />}
-      </S.SpeechTextEn>
-    </S.SpeechContainer>
+    <Suspense fallback={<div />}>
+      <S.SpeechContainer $hasQR={hasQR}>
+        <S.SpeechText $hasQR={hasQR}>
+          {displayedTextKo}
+          {currentIndexKo < text.length && <S.Cursor />}
+        </S.SpeechText>
+        <S.SpeechTextEn $hasQR={hasQR}>
+          {displayedTextEn}
+          {currentIndexEn < en.length && <S.Cursor />}
+        </S.SpeechTextEn>
+      </S.SpeechContainer>
+    </Suspense>
   );
 });
 

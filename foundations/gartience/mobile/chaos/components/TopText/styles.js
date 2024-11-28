@@ -10,5 +10,8 @@ export const Text = styled.div`
   text-align: center;
   max-width: 90%;
   font-family: var(--cardo), serif;
-  color: #ffffff;
+  color: #000;
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 `;

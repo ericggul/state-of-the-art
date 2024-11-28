@@ -70,21 +70,13 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
       ? architectures
       : [
           {
-            name: "Perceptron",
-            year: 1958,
-            place: "Frank Rosenblatt, Cornell Aeronautical Laboratory",
-            citation: 13000,
-            explanation:
-              "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
+            name: "Hopfield Network",
+            version: "v2.0.1",
+            year: "1943",
+            place: "USA",
+            citation: "McCulloch & Pitts",
+            explanation: "The first artificial neuron model",
           },
-          // {
-          //   name: "Hopfield Network",
-          //   version: "v2.0.1",
-          //   year: "1943",
-          //   place: "USA",
-          //   citation: "McCulloch & Pitts",
-          //   explanation: "The first artificial neuron model",
-          // },
         ]
   );
 
@@ -191,7 +183,12 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
         </Canvas>
       </Suspense>
       <ModelInfo name={architectures[0]?.name} year={architectures[0]?.year} />
-      {raisePhone && <S.RaisePhone>Raise Your Phone</S.RaisePhone>}
+      {raisePhone && (
+        <S.RaisePhone>
+          <p>Raise Your Phone</p>
+          <p>& Phone Volume Up</p>
+        </S.RaisePhone>
+      )}
     </S.Container>
   );
 });
