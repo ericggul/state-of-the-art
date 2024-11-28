@@ -13,7 +13,7 @@ function SingleLine({ from, to, style }) {
     color: style?.colors?.connection || style?.colors?.inner || "blue",
     transparent: true,
     opacity: (style?.material?.opacity || 1) * 0.5,
-    linewidth: 3,
+    linewidth: 1,
   };
 
   return (

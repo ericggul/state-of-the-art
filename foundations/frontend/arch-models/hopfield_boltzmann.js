@@ -57,13 +57,13 @@ export const GRID_CONFIGS = {
       nodeCount: NUM_VISIBLE_UNITS,
       radius: 20,
       layerPosition: -25,
-      connectionWidth: 2,
+      connectionWidth: 1,
     },
     hidden_units: {
       nodeCount: NUM_HIDDEN_UNITS,
       radius: 15,
       layerPosition: 25,
-      connectionWidth: 2,
+      connectionWidth: 1,
     },
   },
 };

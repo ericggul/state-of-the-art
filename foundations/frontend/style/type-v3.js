@@ -56,7 +56,7 @@ export const TYPE_STYLES = {
     name: "Hopfield Network",
     colors: {
       outer: "hsl(90, 70%, 45%)", // Lime theme
-      inner: "hsl(90, 95%, 35%)",
+      inner: "hsl(90, 85%, 35%)",
       memory: "hsl(90, 80%, 55%)",
     },
     material: {
@@ -64,12 +64,40 @@ export const TYPE_STYLES = {
       metalness: 0.75,
     },
   },
+  // boltzmann: {
+  //   ...BASE_STYLE,
+  //   name: "Boltzmann Machine",
+  //   colors: {
+  //     outer: "#ff00ff",
+  //     inner: "hsl(30, 70%, 80%)",
+  //     highlight: "#ffff00",
+  //   },
+  //   material: {
+  //     metalness: 1.0,
+  //     roughness: 0.2,
+  //   },
+  //   shadows: true,
+  //   emissive: true, // Important for neon effect
+  //   lighting: {
+  //     environment: "night",
+  //     envIntensity: 1,
+  //     pointLight: { position: [0, 50, 0], intensity: 2 },
+  //     ambientLight: { intensity: 0.1 },
+  //   },
+  //   postprocessing: {
+  //     bloom: {
+  //       intensity: 10,
+  //       luminanceThreshold: 0.4,
+  //       luminanceSmoothing: 0.9,
+  //     },
+  //   },
+  // },
   boltzmann: {
     ...BASE_STYLE,
     name: "Boltzmann Machine",
     colors: {
       outer: "#ff00ff",
-      inner: "hsl(30, 100%, 60%)",
+      inner: "hsl(30, 70%,80%)",
       highlight: "#ffff00",
     },
     material: {
