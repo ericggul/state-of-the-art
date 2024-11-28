@@ -145,7 +145,7 @@ const ProgressBar = styled.div`
   animation: ${progress} 1.5s ease-in-out infinite;
 `;
 
-export default function Loading({ customText = "Initializing Interface" }) {
+export default function Loading({ customText = "Initialising Interface" }) {
   return (
     <LoadingContainer>
       <TopVerticalLine />

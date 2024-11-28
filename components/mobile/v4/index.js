@@ -14,8 +14,6 @@ export default function Mobile() {
   const [introState, setIntroState] = useState(() => (state.username ? 1 : 0));
   const mobileId = useMemo(() => "DUMMY", []);
 
-  console.log("persistent state", state);
-
   const handleNewResponse = useCallback((data) => {
     console.log("New response from controller:", data);
   }, []);
@@ -57,7 +55,7 @@ export default function Mobile() {
   }, [state.username, state.isAccelerometerActive]);
 
   if (state.isLoading) {
-    return <Loading customText="Initializing State" />;
+    return <Loading customText="Initialising State" />;
   }
 
   console.log(introState);

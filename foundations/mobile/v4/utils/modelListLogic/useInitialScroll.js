@@ -18,6 +18,7 @@ export function useInitialScroll({
     let completeTimeoutId;
 
     const initScroll = () => {
+      return;
       console.log("InitScroll called");
       const itemHeight = listElement.children[0]?.offsetHeight || 0;
       console.log("Item height:", itemHeight);

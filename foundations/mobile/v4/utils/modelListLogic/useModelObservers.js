@@ -16,7 +16,6 @@ export function useModelObservers({
 }) {
   const observerRef = useRef(null);
   const currentItemObserverRef = useRef(null);
-  const topObserverRef = useRef(null);
 
   // Utility functions
   const updateDotPosition = useCallback(
@@ -30,46 +29,21 @@ export function useModelObservers({
   );
 
   // Model management
-  const addMoreModels = useCallback(
-    (direction = "bottom") => {
-      if (isAddingModelsRef.current) return;
-      isAddingModelsRef.current = true;
+  const addMoreModels = useCallback(() => {
+    if (isAddingModelsRef.current) return;
+    isAddingModelsRef.current = true;
 
-      setModels((prevModels) => {
-        const newModels = [...Array(CONSTANTS.NEW_MODELS_COUNT)].map(
-          () => initialModels[Math.floor(Math.random() * initialModels.length)]
-        );
+    setModels((prevModels) => {
+      const newModels = [...Array(CONSTANTS.NEW_MODELS_COUNT)].map(
+        () => initialModels[Math.floor(Math.random() * initialModels.length)]
+      );
+      const updatedModels = [...prevModels, ...newModels];
+      isAddingModelsRef.current = false;
+      return updatedModels;
+    });
+  }, [initialModels]);
 
-        const listElement = listRef.current;
-        const scrollTop = listElement?.scrollTop;
-        const scrollHeight = listElement?.scrollHeight;
-        const updatedModels =
-          direction === "top"
-            ? [...newModels, ...prevModels]
-            : [...prevModels, ...newModels];
-
-        if (direction === "top" && listElement && scrollTop !== undefined) {
-          requestAnimationFrame(() => {
-            listElement.scrollTop =
-              scrollTop + (listElement.scrollHeight - scrollHeight);
-          });
-        }
-
-        isAddingModelsRef.current = false;
-        return updatedModels;
-      });
-    },
-    [initialModels, listRef]
-  );
-
-  const addModelsToTop = useCallback(
-    () => addMoreModels("top"),
-    [addMoreModels]
-  );
-  const addModelsToBottom = useCallback(
-    () => addMoreModels("bottom"),
-    [addMoreModels]
-  );
+  const addModelsToBottom = useCallback(() => addMoreModels(), [addMoreModels]);
 
   // Observer setup
   useEffect(() => {
@@ -79,17 +53,10 @@ export function useModelObservers({
       CONSTANTS.INTERSECTION_OPTIONS
     );
 
-    topObserverRef.current = new IntersectionObserver(
-      (entries) =>
-        entries[entries.length - 1].isIntersecting && addModelsToTop(),
-      CONSTANTS.INTERSECTION_OPTIONS
-    );
-
     return () => {
       observerRef.current?.disconnect();
-      topObserverRef.current?.disconnect();
     };
-  }, [addModelsToTop, addModelsToBottom]);
+  }, [addModelsToBottom]);
 
   useEffect(() => {
     currentItemObserverRef.current = new IntersectionObserver(
@@ -121,14 +88,11 @@ export function useModelObservers({
 
   // Observer attachment
   useEffect(() => {
-    const [firstItem, lastItem] = [
-      itemRefs.current[0],
-      itemRefs.current[itemRefs.current.length - 1],
-    ];
+    const lastItem = itemRefs.current[itemRefs.current.length - 1];
 
-    if (firstItem && topObserverRef.current)
-      topObserverRef.current.observe(firstItem);
-    if (lastItem && observerRef.current) observerRef.current.observe(lastItem);
+    if (lastItem && observerRef.current) {
+      observerRef.current.observe(lastItem);
+    }
 
     itemRefs.current.forEach((ref) => {
       if (ref && currentItemObserverRef.current) {
@@ -137,16 +101,15 @@ export function useModelObservers({
     });
 
     return () => {
-      [observerRef, topObserverRef, currentItemObserverRef].forEach((ref) =>
+      [observerRef, currentItemObserverRef].forEach((ref) =>
         ref.current?.disconnect()
       );
     };
   }, [models]);
 
   return {
-    observerRefs: { observerRef, currentItemObserverRef, topObserverRef },
+    observerRefs: { observerRef, currentItemObserverRef },
     updateDotPosition,
-    addModelsToTop,
     addModelsToBottom,
   };
 }

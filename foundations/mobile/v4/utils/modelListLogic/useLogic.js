@@ -25,7 +25,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     [manuallySelectedIndex, currentIndex]
   );
 
-  const { observerRefs, updateDotPosition, addModelsToTop, addModelsToBottom } =
+  const { observerRefs, updateDotPosition, addModelsToBottom } =
     useModelObservers({
       models,
       setModels,
@@ -49,7 +49,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       currentIndex,
     });
 
-  useInitialScroll({ listRef });
+  // useInitialScroll({ listRef });
 
   useSocketCommunication({
     activeIndex,
