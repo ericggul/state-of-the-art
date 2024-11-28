@@ -2,6 +2,7 @@ import * as S from "./styles";
 import React, { useState, useEffect } from "react";
 import SingleRandom from "./SingleRandom";
 import Transcript from "./components/Transcript";
+import TopText from "./components/TopText";
 
 import useAudio from "../../utils/useAudio";
 import useConversation from "../../utils/useConversation";
@@ -66,6 +67,7 @@ export default React.memo(function Wrapper() {
         visible={true}
         timeUnit={1}
       />
+      <TopText isblack={isblack} />
 
       <Transcript conversations={conversations} isblack={isblack} />
     </S.Container>
