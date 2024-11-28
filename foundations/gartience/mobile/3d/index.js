@@ -63,15 +63,6 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
   const [isLoading, setIsLoading] = useState(true);
   const modelGroupRef = useRef(null);
 
-  const raisePhone = useMemo(
-    () =>
-      architectures.length > 0 &&
-      architectures.find((arch) => arch.name === "PPO"),
-    [architectures]
-  );
-
-  console.log(raisePhone, architectures);
-
   const {
     visualization: { modelName, structure },
   } = useModelStructure(
@@ -97,6 +88,33 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
         ]
   );
 
+  // Reset loading state ONLY when architectures change
+  useEffect(() => {
+    setIsLoading(true);
+  }, [architectures]);
+
+  // Only set loading to false when structure is ready
+  useEffect(() => {
+    if (structure && modelGroupRef.current) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (modelGroupRef.current) {
+            setIsLoading(false);
+          }
+        }, 500);
+      });
+    }
+  }, [structure]); // Now structure is defined when this effect runs
+
+  const raisePhone = useMemo(
+    () =>
+      architectures.length > 0 &&
+      architectures.find((arch) => arch.name === "PPO"),
+    [architectures]
+  );
+
+  console.log(raisePhone, architectures);
+
   // Match the same component selection logic as ModelContainer
   const { ModelComponent, style } = useMemo(() => {
     const modelConfig = LAYER_CONFIGS[modelName];
@@ -119,20 +137,6 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
 
     return { ModelComponent: component, style: typeStyle };
   }, [modelName]);
-
-  // Add effect to handle loading state
-  useEffect(() => {
-    if (structure && modelGroupRef.current) {
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          if (modelGroupRef.current) {
-            setIsLoading(false);
-          }
-        }, 500);
-      });
-    }
-    return () => setIsLoading(true);
-  }, [structure, modelName]);
 
   return (
     <S.Container>
