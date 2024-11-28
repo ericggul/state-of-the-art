@@ -12,23 +12,19 @@ export const Background = styled.div`
   inset: 0;
   opacity: ${({ $isVisible, $oscillatingOpacity }) => {
     const baseOpacity = $isVisible ? 1 : 0;
-    return typeof $oscillatingOpacity === "number"
-      ? baseOpacity * $oscillatingOpacity
-      : baseOpacity;
+    return baseOpacity * $oscillatingOpacity;
   }};
   transition: opacity
     ${({ $isVisible }) => (typeof $isVisible === "boolean" ? "3s" : "1.5s")}
     ease;
   ${({ $isVisible }) =>
     typeof $isVisible === "boolean" && "transition-delay: 0.5s;"}
-  display: block !important;
 `;
 
 export const Video = styled.video`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block !important;
 `;
 
 export const QRCodeWrapper = styled.div`

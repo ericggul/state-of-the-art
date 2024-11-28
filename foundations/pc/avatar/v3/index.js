@@ -22,7 +22,8 @@ export default function Wrapper() {
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
 
-          <Environment preset="city" background={false} />
+          {/* <Environment preset="city" background={false} /> */}
+          <Environment files={`/3d/environment/sky.hdr`} />
 
           <Stage />
 

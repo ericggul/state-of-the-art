@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef, useState, useCallback } from "react";
+import { memo, useRef, useState, useCallback, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import * as S from "./styles";
 import useResize from "@/utils/hooks/useResize";
@@ -27,6 +27,16 @@ const Idle = memo(function Idle() {
   );
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.load();
+      video.play().catch((error) => {
+        console.error("Video playback failed:", error);
+      });
+    }
+  }, [intDeviceIdx]);
 
   const handleOscillation = useCallback(() => {
     if (!isInitialLoad) {
@@ -66,6 +76,7 @@ const Idle = memo(function Idle() {
           loop
           muted
           playsInline
+          preload="auto"
         />
       </S.Background>
       <S.QRCodeWrapper>
