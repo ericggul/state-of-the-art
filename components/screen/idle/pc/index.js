@@ -22,21 +22,64 @@ const Idle = memo(function Idle() {
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const videoRef = useRef(null);
-  const [oscillatingOpacity, setOscillatingOpacity] = useState(
-    Math.random() < 0.5 ? 0 : 1
-  );
+  const [oscillatingOpacity, setOscillatingOpacity] = useState(1);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
 
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      video.load();
-      video.play().catch((error) => {
-        console.error("Video playback failed:", error);
+      console.log("🎬 Initial video setup", {
+        src: video.src,
+        readyState: video.readyState,
+        networkState: video.networkState,
       });
+
+      if (video.readyState < 3) {
+        video.load();
+      }
+
+      const playVideo = async () => {
+        try {
+          await video.play();
+          console.log("✅ Video playing successfully");
+        } catch (error) {
+          console.error("❌ Video playback failed:", {
+            error,
+            src: video.src,
+            readyState: video.readyState,
+          });
+          if (error.name === "AbortError" && video.readyState >= 3) {
+            console.log("🔄 Retrying video playback");
+            video.play().catch((e) => console.error("❌ Retry failed:", e));
+          }
+        }
+      };
+
+      playVideo();
     }
   }, [intDeviceIdx]);
+
+  useEffect(() => {
+    console.log("🎨 Render state:", {
+      isVisible,
+      isInitialLoad,
+      oscillatingOpacity,
+    });
+  }, [isVisible, isInitialLoad, oscillatingOpacity]);
+
+  useEffect(() => {
+    console.log("🎨 Opacity state:", {
+      isVisible,
+      oscillatingOpacity,
+      isInitialLoad,
+      finalOpacity: isVisible
+        ? typeof oscillatingOpacity === "number"
+          ? oscillatingOpacity
+          : 1
+        : 0,
+    });
+  }, [isVisible, oscillatingOpacity, isInitialLoad]);
 
   const handleOscillation = useCallback(() => {
     if (!isInitialLoad) {

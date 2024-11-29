@@ -12,11 +12,11 @@ export const useVideoFade = (videoRef) => {
 
     const handleLoadedData = () => {
       if (!isInitialLoad) return;
-      // Keep the original setTimeout for reliable initial fade
       const timer = setTimeout(() => {
+        console.log("🎥 Setting initial visibility", { isInitialLoad });
         setIsVisible(true);
         setIsInitialLoad(false);
-      }, 100);
+      }, 300);
       return () => clearTimeout(timer);
     };
 
@@ -29,7 +29,6 @@ export const useVideoFade = (videoRef) => {
     video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("timeupdate", handleTimeUpdate);
 
-    // Call handleLoadedData if video is already loaded
     if (video.readyState >= 2) {
       handleLoadedData();
     }
