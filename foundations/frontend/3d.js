@@ -11,7 +11,6 @@ import { useModelStructure } from "@/components/frontend/utils";
 import TransitionPostProcessing from "./utils/TransitionPostProcessing";
 import PostProcessing from "./utils/PostProcessing";
 import ModelContainer from "./components/ModelContainer";
-import PositionalAudio from "./utils/PositionalAudio";
 
 const INITIAL_CAMERA_DISTANCE = 10000;
 

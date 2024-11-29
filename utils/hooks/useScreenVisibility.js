@@ -9,33 +9,42 @@ export default function useScreenVisibility() {
   const {
     mobileVisibility,
     isProjector,
-    setStage,
     stage,
-    setIsTransition,
     iteration,
+
+    setStage,
     setIsEnding,
+    setIsTransition,
   } = useScreenStore();
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
   const visibilityRef = useRef(mobileVisibility);
+  const iterationRef = useRef(iteration);
+  useEffect(() => {
+    iterationRef.current = iteration;
+  }, [iteration]);
 
   const clearTimeouts = () => {
-    console.log("🧹 Clearing timeouts:", Object.keys(timeouts.current));
-    Object.values(timeouts.current).forEach((timeout) => {
-      if (timeout) clearTimeout(timeout);
-    });
-    timeouts.current = {};
+    try {
+      console.log("🧹 Clearing timeouts:", Object.keys(timeouts.current));
+      Object.values(timeouts.current).forEach((timeout) => {
+        if (timeout) clearTimeout(timeout);
+      });
+      timeouts.current = {};
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const scheduleStateChanges = () => {
-    if (iteration == 0) return;
-
+    if (iterationRef.current == 0) return;
     clearTimeouts();
-
-    const multiplier = iterationSpeedMultiplier(iteration);
-    console.log("📅 Scheduling state changes:", { iteration, multiplier });
-
+    const multiplier = iterationSpeedMultiplier(iterationRef.current);
+    console.log("📅 Scheduling state changes:", {
+      iteration: iterationRef.current,
+      multiplier,
+    });
     setIsTransition(true);
 
     timeouts.current.transition = setTimeout(() => {
@@ -97,11 +106,12 @@ export default function useScreenVisibility() {
       isStageIdle,
       mobileVisibility,
       isProjector,
-      iteration,
       currentStage: stage,
     });
 
-    if (isStageIdle || iteration == 0) return;
+    console.log(iteration, iterationRef.current);
+
+    if (isStageIdle || iterationRef.current == 0) return;
 
     visibilityRef.current = mobileVisibility;
 
@@ -110,9 +120,8 @@ export default function useScreenVisibility() {
     } else {
       scheduleStateChanges();
     }
-
     return clearTimeouts;
-  }, [isStageIdle, mobileVisibility, isProjector, iteration]);
+  }, [isStageIdle, mobileVisibility]);
 
   useEffect(() => {
     return clearTimeouts;

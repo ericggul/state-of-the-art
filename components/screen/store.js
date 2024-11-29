@@ -243,33 +243,23 @@ const useScreenStore = create((set) => ({
         updates.introState = 3;
       }
 
-      return updates;
+      return Object.keys(updates).length ? updates : state;
     });
   },
 
   handleNewControllerStageAndReset: (data) => {
     console.log("New controller stage and reset received:", data);
     set((state) => {
-      const updates = {};
-
-      if (data.type === "stage") {
-        if (state.stage !== data.stage) {
-          console.log("updating state from controller!");
-          updates.stage = data.stage;
-        }
-      } else if (data.type === "reset" && data.isReset) {
-        console.log("resetting state from controller!");
-        if (data.force) {
-          console.log("force resetting state from controller!");
-          window.location.reload(true);
-          // return RESET_STATE;
-        } else {
-          window.location.reload(true);
-          // return RESET_STATE;
-        }
+      // Reset handling could be more explicit
+      if (data.type === "reset" && data.isReset) {
+        window.location.reload(true);
+        return state; // Explicit return while reload happens
       }
 
-      if (Object.keys(updates).length) {
+      const updates = {};
+      if (data.type === "stage" && state.stage !== data.stage) {
+        console.log("updating state from controller!");
+        updates.stage = data.stage;
         updates.lastInteractionTime = Date.now();
       }
 

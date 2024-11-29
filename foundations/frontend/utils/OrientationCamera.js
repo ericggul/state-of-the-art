@@ -92,7 +92,6 @@ export const OrientationCamera = memo(
 
     useSocketScreenOrientation({
       handleNewMobileOrientation: (data) => {
-        console.log("data", data);
         sensorDataRef.current = data;
         lastDataTimestampRef.current = Date.now(); // Update timestamp
 
