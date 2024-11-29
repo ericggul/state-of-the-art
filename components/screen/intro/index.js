@@ -109,7 +109,7 @@ function Intro() {
     <S.Wrapper
       style={{
         opacity: introState >= 3 ? 0 : 1,
-        background: introState >= 3 ? "black" : "transparent",
+        background: introState >= 2 ? "black" : "transparent",
       }}
     >
       {introState === 0 && <Intro0 />}

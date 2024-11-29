@@ -113,8 +113,6 @@ export default function useScreenVisibility() {
       currentStage: stage,
     });
 
-    console.log(iteration, iterationRef.current);
-
     if (isStageIdle || iterationRef.current == 0) return;
 
     if (mobileVisibility) {

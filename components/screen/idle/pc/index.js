@@ -29,12 +29,6 @@ const Idle = memo(function Idle() {
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      console.log("🎬 Initial video setup", {
-        src: video.src,
-        readyState: video.readyState,
-        networkState: video.networkState,
-      });
-
       if (video.readyState < 3) {
         video.load();
       }
@@ -42,16 +36,9 @@ const Idle = memo(function Idle() {
       const playVideo = async () => {
         try {
           await video.play();
-          console.log("✅ Video playing successfully");
         } catch (error) {
-          console.error("❌ Video playback failed:", {
-            error,
-            src: video.src,
-            readyState: video.readyState,
-          });
           if (error.name === "AbortError" && video.readyState >= 3) {
-            console.log("🔄 Retrying video playback");
-            video.play().catch((e) => console.error("❌ Retry failed:", e));
+            video.play().catch((e) => console.error("Retry failed:", e));
           }
         }
       };
@@ -59,27 +46,6 @@ const Idle = memo(function Idle() {
       playVideo();
     }
   }, [intDeviceIdx]);
-
-  useEffect(() => {
-    console.log("🎨 Render state:", {
-      isVisible,
-      isInitialLoad,
-      oscillatingOpacity,
-    });
-  }, [isVisible, isInitialLoad, oscillatingOpacity]);
-
-  useEffect(() => {
-    console.log("🎨 Opacity state:", {
-      isVisible,
-      oscillatingOpacity,
-      isInitialLoad,
-      finalOpacity: isVisible
-        ? typeof oscillatingOpacity === "number"
-          ? oscillatingOpacity
-          : 1
-        : 0,
-    });
-  }, [isVisible, oscillatingOpacity, isInitialLoad]);
 
   const handleOscillation = useCallback(() => {
     if (!isInitialLoad) {

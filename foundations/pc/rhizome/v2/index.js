@@ -47,8 +47,6 @@ export default function Rhizome() {
     []
   );
 
-  console.log(data);
-
   const { simulationRef, nodesRef, linksRef, boundaryRef } = useSimulation(
     svgRef,
     dimensions,

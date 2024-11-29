@@ -13,7 +13,6 @@ export const useVideoFade = (videoRef) => {
     const handleLoadedData = () => {
       if (!isInitialLoad) return;
       const timer = setTimeout(() => {
-        console.log("🎥 Setting initial visibility", { isInitialLoad });
         setIsVisible(true);
         setIsInitialLoad(false);
       }, 300);

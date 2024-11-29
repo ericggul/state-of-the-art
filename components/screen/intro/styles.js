@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   z-index: 1000;
   background: black;
   pointer-events: none !important;
+  transition: background 2s ease-in-out;
 `;
 
 export const Container = styled.div`
