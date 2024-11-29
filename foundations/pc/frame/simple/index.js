@@ -62,7 +62,7 @@ export default function Frame({ middle = false }) {
 
         setDimensions({
           titleWidth: titleVw + 2,
-          verWidth: verVw + 1,
+          verWidth: verVw,
         });
       }
     };

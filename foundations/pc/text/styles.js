@@ -162,3 +162,12 @@ export const StructureText = styled.pre.withConfig({
     }
   }
 `;
+
+export const LeftBlur = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 40vw;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
+`;
