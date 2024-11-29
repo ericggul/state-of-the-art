@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { FlexCenterStyle, WholeContainer } from "@/styles";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 40vh;
+  height: 35vh;
   background-color: #f0f0f0;
 `;
 
@@ -21,7 +20,7 @@ export const ErrorMessage = styled.div`
   color: red;
   font-size: 18px;
   text-align: center;
-  padding: 10px;
+  padding: 20px;
 `;
 
 export const StartButton = styled.button`
@@ -103,7 +102,8 @@ export const Navigation = styled.div`
 `;
 
 export const NavButton = styled.button`
-  ${FlexCenterStyle}
+  width: 40px;
+  height: 40px;
   border: 2px solid #007aff;
   background: transparent;
   color: #007aff;
@@ -111,8 +111,6 @@ export const NavButton = styled.button`
   border-radius: 50%;
   cursor: pointer;
   margin: 0 10px;
-  width: 40px;
-  height: 40px;
   transition: background-color 0.2s;
 
   &:hover {

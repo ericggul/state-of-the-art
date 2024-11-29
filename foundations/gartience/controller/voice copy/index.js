@@ -22,9 +22,6 @@ export default function Voice({ socket, setState, onModelSelect }) {
   const lastSoundTimeRef = useRef(Date.now());
   const isSpeakingRef = useRef(false);
 
-  const streamRef = useRef(null);
-  const microphoneRef = useRef(null);
-
   const monitorSound = () => {
     if (!analyserRef.current) return;
 
@@ -34,42 +31,37 @@ export default function Voice({ socket, setState, onModelSelect }) {
     const checkSound = () => {
       if (!analyserRef.current) return;
 
-      try {
-        analyserRef.current.getByteFrequencyData(dataArray);
-        const average =
-          dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
+      analyserRef.current.getByteFrequencyData(dataArray);
+      const average =
+        dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
 
-        const now = Date.now();
+      const now = Date.now();
 
-        if (
-          (!isSpeakingRef.current && average > INITIAL_VOLUME_THRESHOLD) ||
-          (isSpeakingRef.current && average > SPEAKING_VOLUME_THRESHOLD)
-        ) {
-          lastSoundTimeRef.current = now;
-          if (!isSpeakingRef.current) {
-            isSpeakingRef.current = true;
-            setDisplayText(SCRIPT[currentIndexRef.current]);
-            if (currentIndexRef.current + 1 < SCRIPT.length) {
-              setNextText(SCRIPT[currentIndexRef.current + 1]);
-            } else {
-              setNextText({ text: "End of script reached" });
-            }
-          }
-        } else if (isSpeakingRef.current) {
-          if (now - lastSoundTimeRef.current > SILENCE_THRESHOLD) {
-            isSpeakingRef.current = false;
-            if (currentIndexRef.current < SCRIPT.length - 1) {
-              currentIndexRef.current += 1;
-              setCurrentIndex(currentIndexRef.current);
-            }
+      if (
+        (!isSpeakingRef.current && average > INITIAL_VOLUME_THRESHOLD) ||
+        (isSpeakingRef.current && average > SPEAKING_VOLUME_THRESHOLD)
+      ) {
+        lastSoundTimeRef.current = now;
+        if (!isSpeakingRef.current) {
+          isSpeakingRef.current = true;
+          setDisplayText(SCRIPT[currentIndexRef.current]);
+          if (currentIndexRef.current + 1 < SCRIPT.length) {
+            setNextText(SCRIPT[currentIndexRef.current + 1]);
+          } else {
+            setNextText({ text: "End of script reached" });
           }
         }
-
-        animationFrameRef.current = requestAnimationFrame(checkSound);
-      } catch (error) {
-        console.error("Sound monitoring error:", error);
-        cancelAnimationFrame(animationFrameRef.current);
+      } else if (isSpeakingRef.current) {
+        if (now - lastSoundTimeRef.current > SILENCE_THRESHOLD) {
+          isSpeakingRef.current = false;
+          if (currentIndexRef.current < SCRIPT.length - 1) {
+            currentIndexRef.current += 1;
+            setCurrentIndex(currentIndexRef.current);
+          }
+        }
       }
+
+      animationFrameRef.current = requestAnimationFrame(checkSound);
     };
 
     checkSound();
@@ -80,7 +72,6 @@ export default function Voice({ socket, setState, onModelSelect }) {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      streamRef.current = stream;
 
       audioContextRef.current = new (window.AudioContext ||
         window.webkitAudioContext)();
@@ -88,7 +79,6 @@ export default function Voice({ socket, setState, onModelSelect }) {
 
       const microphone =
         audioContextRef.current.createMediaStreamSource(stream);
-      microphoneRef.current = microphone;
       microphone.connect(analyserRef.current);
 
       analyserRef.current.fftSize = 128;
@@ -160,12 +150,6 @@ export default function Voice({ socket, setState, onModelSelect }) {
       }
       if (audioContextRef.current) {
         audioContextRef.current.close();
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
-      if (microphoneRef.current) {
-        microphoneRef.current.disconnect();
       }
     };
   }, []);

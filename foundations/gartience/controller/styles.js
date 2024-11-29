@@ -15,7 +15,7 @@ export const Container = styled.div`
   font-family: "DM Sans", sans-serif;
   color: white;
   z-index: 200;
-  padding: 20px;
+  padding: 10px;
   min-height: 100%;
 `;
 
@@ -25,7 +25,7 @@ export const Header = styled.div`
   width: 100%;
   background: #1e1e1e;
   z-index: 10;
-  padding: 10px 0;
+  padding: 5px 0;
 `;
 
 export const Content = styled.div`
@@ -33,14 +33,14 @@ export const Content = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-bottom: 60px; // Add bottom padding for mobile
+  gap: 10px;
+  padding-bottom: 30px; // Add bottom padding for mobile
 `;
 
 export const StateDisplay = styled.div`
   ${FlexCenterStyle};
   width: 100%;
-  padding: 20px 0;
+  padding: 0px 0;
   margin: 20px 0;
   z-index: 500;
 `;
