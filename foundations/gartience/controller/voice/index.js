@@ -111,14 +111,14 @@ export default function Voice({ socket, setState, onModelSelect }) {
         36: "Variational Autoencoder (VAE)", // VAE
         37: "AlexNet", // 알렉스넷
         38: "SimCLR", // 트랜스포머
-        39: "Hopfield Network", // 홉필드 네트워크
-        40: "Multi-Layer Perceptron (MLP)",
-        41: "Generative Adversarial Networks (GANs)",
-        42: "RNN (Recurrent Neural Network)",
-        43: "Stable Diffusion",
-        44: "ALBERT",
-        45: "Show and Tell",
-        46: "Basic Autoencoder",
+        39: "Multi-Layer Perceptron (MLP)",
+        40: "Generative Adversarial Networks (GANs)",
+        41: "RNN (Recurrent Neural Network)",
+        42: "Stable Diffusion",
+        43: "ALBERT",
+        44: "Show and Tell",
+        45: "Basic Autoencoder",
+        46: "Perceptron",
         47: "DCGAN",
         48: "DDPM",
         49: "PPO",
