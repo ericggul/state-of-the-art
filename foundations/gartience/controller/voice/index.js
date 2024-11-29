@@ -203,12 +203,19 @@ export default function Voice({ socket, setState, onModelSelect }) {
         <S.ErrorMessage>{error}</S.ErrorMessage>
       ) : (
         <>
-          <S.TextDisplay>
-            Current: {displayText.text.slice(0, 80)}
-          </S.TextDisplay>
-          <S.NextTextDisplay>
-            Next: {nextText.text.slice(0, 70)}
-          </S.NextTextDisplay>
+          <Suspense fallback={null}>
+            <S.TextDisplay>
+              Current:{" "}
+              {displayText && displayText.text
+                ? displayText.text.slice(0, 80)
+                : ""}
+            </S.TextDisplay>
+            <S.NextTextDisplay>
+              Next:{" "}
+              {nextText && nextText.text ? nextText.text.slice(0, 70) : ""}
+            </S.NextTextDisplay>
+          </Suspense>
+
           <S.Navigation>
             <S.NavButton onClick={handlePrevious}>-</S.NavButton>
             <S.ScriptPosition>
