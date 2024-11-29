@@ -1735,7 +1735,8 @@ export const GRID_CONFIGS = {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 32, yCount: 6, xInterval: 300, yInterval: 300 },
+    // attention: { xCount: 32, yCount: 6, xInterval: 300, yInterval: 300 },
+    attention: { xCount: 56, yCount: 4, xInterval: 300, yInterval: 300 },
     ffn: { xCount: 24, yCount: 4, xInterval: 200, yInterval: 500 },
     reduced: true,
   },
@@ -1743,16 +1744,16 @@ export const GRID_CONFIGS = {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 128, yCount: 128, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 256, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 10, yCount: 5, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 12, yCount: 4, xInterval: 1, yInterval: 1 },
+    attention: { xCount: 10, yCount: 3, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 12, yCount: 2, xInterval: 1, yInterval: 1 },
     reduced: true,
   },
   PALM_2: {
     ///Original Values: Drop-off due to performance issues
     // attention: { xCount: 160, yCount: 160, xInterval: 1, yInterval: 1 },
     // ffn: { xCount: 320, yCount: 8, xInterval: 1, yInterval: 3 },
-    attention: { xCount: 10, yCount: 5, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 14, yCount: 4, xInterval: 1, yInterval: 1 },
+    attention: { xCount: 10, yCount: 3, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 14, yCount: 2, xInterval: 1, yInterval: 1 },
     reduced: true,
   },
   LLAMA: {
@@ -1950,8 +1951,8 @@ export const GRID_CONFIGS = {
     ffn: { xCount: 32, yCount: 4, xInterval: 128, yInterval: 5 },
   },
   MEGATRON_LM: {
-    attention: { xCount: 32, yCount: 10, xInterval: 1, yInterval: 1 },
-    ffn: { xCount: 64, yCount: 4, xInterval: 1, yInterval: 3 },
+    attention: { xCount: 32, yCount: 8, xInterval: 1, yInterval: 1 },
+    ffn: { xCount: 64, yCount: 2, xInterval: 1, yInterval: 3 },
     reduced: true, // Following pattern of other large models
   },
   DEBERTA: {
@@ -2080,7 +2081,7 @@ export const GRID_CONFIGS = {
     },
     cross_modal_attention: {
       xCount: 32,
-      yCount: 7,
+      yCount: 3,
       xInterval: 2,
       yInterval: 2,
     },
@@ -2095,26 +2096,26 @@ export const GRID_CONFIGS = {
   CLAUDE_3: {
     sliding_window_attention: {
       xCount: 32,
-      yCount: 8,
+      yCount: 12,
       xInterval: 2,
       yInterval: 2,
       window_size: 8192,
     },
     constitutional_gate: {
-      xCount: 16,
-      yCount: 4,
+      xCount: 13,
+      yCount: 2,
       xInterval: 2,
       yInterval: 2,
     },
     swiglu_ffn: {
-      xCount: 48,
+      xCount: 80,
       yCount: 4,
       xInterval: 1,
       yInterval: 4,
     },
     rmsnorm: {
-      xCount: 24,
-      yCount: 4,
+      xCount: 11,
+      yCount: 2,
       xInterval: 2,
       yInterval: 2,
     },
@@ -2193,14 +2194,14 @@ export const GRID_CONFIGS = {
       yInterval: 32,
     },
     moe_router: {
-      xCount: 16,
-      yCount: 8,
+      xCount: 14,
+      yCount: 2,
       xInterval: 4,
       yInterval: 4,
       num_experts: 32,
     },
     moe_ffn: {
-      xCount: 64,
+      xCount: 60,
       yCount: 8,
       xInterval: 128,
       yInterval: 8,
@@ -2208,14 +2209,14 @@ export const GRID_CONFIGS = {
       active_experts: 1,
     },
     rmsnorm: {
-      xCount: 16,
-      yCount: 4,
+      xCount: 12,
+      yCount: 2,
       xInterval: 2,
       yInterval: 2,
     },
     auxiliary_loss: {
       xCount: 8,
-      yCount: 4,
+      yCount: 1,
       xInterval: 4,
       yInterval: 2,
     },

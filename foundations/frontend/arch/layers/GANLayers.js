@@ -4,7 +4,7 @@ import GANConnections from "../connections/GANConnections";
 
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
-const MAX_DIMENSION = 10000;
+const MAX_DIMENSION = 20000;
 
 function scaleDimensions(dimensions) {
   const maxDim = Math.max(...dimensions);

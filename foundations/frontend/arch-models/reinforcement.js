@@ -1503,8 +1503,8 @@ export const GRID_CONFIGS = {
       yInterval: 1,
     },
     encoder: {
-      xCount: 512,
-      yCount: 512,
+      xCount: 256,
+      yCount: 256,
       xInterval: 1,
       yInterval: 1,
     },

@@ -720,7 +720,7 @@ export const GRID_CONFIGS = {
   },
   STYLEGAN: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
@@ -728,12 +728,12 @@ export const GRID_CONFIGS = {
       xInterval: 0.1,
       yInterval: 0.1,
     },
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    conv: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
   },
   STYLEGAN2: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
-    style_block: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
-    residual: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
+    style_block: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
+    residual: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
     input: { xCount: NOISE_DIM, yCount: 1, xInterval: 1, yInterval: 1 },
     output: {
       xCount: LARGE_IMAGE_DIM[0],
@@ -741,7 +741,7 @@ export const GRID_CONFIGS = {
       xInterval: 0.1,
       yInterval: 0.1,
     },
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    conv: { xCount: 4, yCount: 8, xInterval: 4, yInterval: 4 },
   },
   STYLEGAN3: {
     mapping_network: { xCount: 8, yCount: 1, xInterval: 4, yInterval: 4 },
@@ -755,7 +755,7 @@ export const GRID_CONFIGS = {
       xInterval: 0.1,
       yInterval: 0.1,
     },
-    conv: { xCount: 8, yCount: 8, xInterval: 4, yInterval: 4 },
+    conv: { xCount: 2, yCount: 8, xInterval: 4, yInterval: 4 },
   },
   PIX2PIX: {
     encoder_block: {
