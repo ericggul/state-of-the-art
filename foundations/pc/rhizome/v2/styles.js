@@ -18,8 +18,8 @@ export const Container = styled.div`
     cursor: pointer;
     position: absolute;
     top: 3vh;
-    left: 10vw;
-    width: 90vw;
+    left: 3vw;
+    width: 97vw;
     height: 100vh;
   }
 

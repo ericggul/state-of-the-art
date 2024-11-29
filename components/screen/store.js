@@ -104,7 +104,7 @@ const useScreenStore = create((set) => ({
           updates.introState = 1;
           break;
         case "username_update":
-          updates.introState = 1;
+          updates.introState = 0;
           updates.userName = data.username;
           break;
       }

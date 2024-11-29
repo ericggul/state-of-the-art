@@ -32,7 +32,7 @@ export default function Rhizome() {
       nodes: DATA_NODES_LINKS.nodes.map((node) => ({
         ...node,
         id: node.name,
-        text: node.name, // Apply the sanitizer here
+        text: node.name,
         majorVersion: getMajorVersion(node.version),
         color: getVersionColor(getMajorVersion(node.version)),
       })),
@@ -99,7 +99,7 @@ export default function Rhizome() {
     const { width: boundaryWidth, height: boundaryHeight } =
       boundaryRef.current;
 
-    // Reset all nodes to default state first (text at bottom)
+    // Reset all nodes to default state first
     nodesRef.current
       .selectAll("circle")
       .transition()
@@ -118,9 +118,8 @@ export default function Rhizome() {
       .selectAll("text")
       .transition()
       .duration(DURATION)
-      .attr("x", 0)
-      .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS + window.innerHeight * 0.015)
-      .attr("text-anchor", "middle")
+      .attr("x", (d) => VISUAL.NODE.DEFAULT.RADIUS + 6)
+      .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS / 2)
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
       .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.2)`);
 
@@ -147,7 +146,7 @@ export default function Rhizome() {
             connectedNodes.add(link.source.text);
         });
 
-        // Highlight main node (text at top - keep as is)
+        // Highlight main node
         nodeToHighlight
           .select("circle")
           .transition()
@@ -165,7 +164,7 @@ export default function Rhizome() {
           .attr("x", 0)
           .attr(
             "y",
-            (d) => -VISUAL.NODE.HIGHLIGHTED.RADIUS - window.innerHeight * 0.03
+            (d) => VISUAL.NODE.HIGHLIGHTED.RADIUS + window.innerHeight * 0.03
           )
           .attr("text-anchor", "middle")
           .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
@@ -173,7 +172,7 @@ export default function Rhizome() {
           .attr("opacity", 1)
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
-        // Highlight connected nodes (text at bottom)
+        // Highlight connected nodes
         nodesRef.current.each(function (d) {
           if (connectedNodes.has(d.text)) {
             d3.select(this)
@@ -188,14 +187,8 @@ export default function Rhizome() {
               .select("text")
               .transition()
               .duration(DURATION)
-              .attr("x", 0)
-              .attr(
-                "y",
-                (d) =>
-                  VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS +
-                  window.innerHeight * 0.015
-              )
-              .attr("text-anchor", "middle")
+              .attr("x", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS + 10)
+              .attr("y", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS / 2)
               .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
               .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.8)`)
               .attr("opacity", 1);

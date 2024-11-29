@@ -21,14 +21,14 @@ export const ANIMATION = {
 // Force Simulation Constants
 export const FORCE = {
   LINK: {
-    DISTANCE: 80,
+    DISTANCE: 50,
     STRENGTH: 0.3,
   },
   CHARGE: {
     STRENGTH: -250,
   },
-  VELOCITY_DECAY: 0.2,
-  ALPHA_DECAY: 0.01,
+  VELOCITY_DECAY: 0.25,
+  ALPHA_DECAY: 0.001,
 };
 
 // Visual Style Constants
@@ -44,7 +44,7 @@ export const VISUAL = {
       RADIUS: 12,
       OPACITY: 1,
       STROKE_WIDTH: 4,
-      FONT_SIZE: "1.8vw",
+      FONT_SIZE: "1.5vw",
     },
     SUB_HIGHLIGHTED: {
       RADIUS: 6,
@@ -54,8 +54,8 @@ export const VISUAL = {
     },
   },
   LINK: {
-    CURVE_FACTOR: 0.55,
-    STROKE_WIDTH: 1.0,
+    CURVE_FACTOR: 0.3,
+    STROKE_WIDTH: 0.8,
     OPACITY: 0.5,
     HIGHLIGHTED: {
       OPACITY: 1.0,
@@ -81,16 +81,16 @@ export const LAYOUT = {
     TARGET: {
       // X_FACTOR: 0.6,
       // Y_FACTOR: 0.7,
-      X_FACTOR: 0.7,
+      X_FACTOR: 0.5,
       Y_FACTOR: 0.8,
     },
     CONNECTED: {
-      X_FACTOR: 0.2,
-      Y_SPREAD: 0.8,
+      X_FACTOR: 0.4,
+      Y_SPREAD: 1.0,
     },
     UNCONNECTED: {
       X_FACTOR: -0.4,
-      Y_SPREAD: 0.8,
+      Y_SPREAD: 1.0,
     },
     FORCE: {
       STRENGTH: 0.9,
