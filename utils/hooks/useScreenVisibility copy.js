@@ -11,6 +11,7 @@ export default function useScreenVisibility() {
     isProjector,
     stage,
     iteration,
+
     setStage,
     setIsEnding,
     setIsTransition,
@@ -18,8 +19,8 @@ export default function useScreenVisibility() {
 
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
+  const visibilityRef = useRef(mobileVisibility);
   const iterationRef = useRef(iteration);
-
   useEffect(() => {
     iterationRef.current = iteration;
   }, [iteration]);
@@ -47,16 +48,14 @@ export default function useScreenVisibility() {
     setIsTransition(true);
 
     timeouts.current.transition = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
-        console.log("🔄 Transition ended, visibility:", mobileVisibility);
+      if (!visibilityRef.current) {
+        console.log("🔄 Transition ended, visibility:", visibilityRef.current);
         setIsTransition(false);
       }
     }, TIMEOUTS.TRANSITION * multiplier);
 
     timeouts.current.backend = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
+      if (!visibilityRef.current) {
         console.log("🔙 Setting stage to Backend");
         setStage("Backend");
       }
@@ -67,8 +66,7 @@ export default function useScreenVisibility() {
       : TIMEOUTS.MOBILE_RESET;
 
     timeouts.current.unmount = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
+      if (!visibilityRef.current) {
         setStage(null);
       }
     }, unmountFrontendDelay * multiplier);
@@ -84,15 +82,13 @@ export default function useScreenVisibility() {
     });
 
     timeouts.current.ending = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
+      if (!visibilityRef.current) {
         setIsEnding(true);
       }
     }, endingDelay);
 
     timeouts.current.reset = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
+      if (!visibilityRef.current) {
         clearTimeouts();
       }
     }, resetDelay);
@@ -116,6 +112,8 @@ export default function useScreenVisibility() {
     console.log(iteration, iterationRef.current);
 
     if (isStageIdle || iterationRef.current == 0) return;
+
+    visibilityRef.current = mobileVisibility;
 
     if (mobileVisibility) {
       setFrontendState();

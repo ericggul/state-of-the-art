@@ -14,7 +14,7 @@ const ANIMATION_SPEED = {
 const HEIGHT_MULTIPLIER = 0.5;
 const ZOOM_RANGE = {
   MIN: 0.01,
-  MAX: 1.0,
+  MAX: 1.3,
 };
 
 export const DynamicCamera = memo(
