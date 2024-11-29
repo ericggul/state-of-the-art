@@ -10,12 +10,14 @@ export async function POST(req) {
       process.env["AZURE_SPEECH_REGION"]
     );
 
-    const voiceName = "en-GB-SoniaNeural";
+    const voiceName = "en-GB-RyanNeural";
     speechConfig.speechSynthesisVoiceName = voiceName;
 
     const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
       <voice name="${voiceName}">
-        <prosody rate="${rate}">${text}</prosody>
+        <prosody rate="0.9" pitch="-10%">
+          ${text}
+        </prosody>
       </voice>
     </speak>`;
 

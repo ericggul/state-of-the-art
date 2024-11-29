@@ -73,10 +73,6 @@ export default function useViseme() {
       setVisemeMessage(message);
       isPlayingRef.current = true;
 
-      if (audioProcessorRef.current) {
-        audioProcessorRef.current.initialize(message.audioPlayer);
-      }
-
       message.audioPlayer.currentTime = 0;
       message.audioPlayer.volume = 1;
       message.audioPlayer.play();
@@ -202,15 +198,15 @@ export default function useViseme() {
       setVisemeMessage(message);
       isPlayingRef.current = true;
 
-      if (audioProcessorRef.current) {
-        audioProcessorRef.current.initialize(message.audioPlayer);
-      }
-
       message.audioPlayer.currentTime = 0;
       message.audioPlayer.volume = 1;
       message.audioPlayer.play();
 
       generateNextSpeech();
+
+      if (audioProcessorRef.current) {
+        audioProcessorRef.current.initialize(message.audioPlayer);
+      }
     } catch (e) {
       console.error("❌ TTS Error:", e.message);
       isPlayingRef.current = false;
