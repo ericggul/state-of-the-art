@@ -14,6 +14,7 @@ function LevelZero({ visible }) {
     subLevel,
   } = useStore();
   const stage = useScreenStore((state) => state.stage);
+  const isProjector = useScreenStore((state) => state.isProjector);
 
   const { wordPosCalc, wordInterval } = usePosCalc({ tokens });
   const [targetWordIdx, setTargetWordIdx] = useState(0);
@@ -50,6 +51,7 @@ function LevelZero({ visible }) {
           isAnimating={isAnimating}
           subLevel={subLevel}
           animState={animState}
+          isProjector={isProjector}
         />
       ))}
     </S.Container>

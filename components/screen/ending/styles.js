@@ -17,7 +17,7 @@ export const Container = styled.div`
     z-index: -1;
 
     /* Initial state and transitions */
-    transition: all 3s ease-in-out;
+    transition: all 3s ease-in-out6
     background: rgba(0, 0, 0, 0);
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
@@ -29,7 +29,7 @@ export const Container = styled.div`
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
-      animation: darkenBackground 10s 3s forwards;
+      animation: darkenBackground 13s 6s forwards;
     `}
   }
 

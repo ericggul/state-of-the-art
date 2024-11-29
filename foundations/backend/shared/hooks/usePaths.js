@@ -166,7 +166,10 @@ export function usePathsV1({
               textAnchor="middle"
               alignmentBaseline="middle"
               fontSize="0.7vw"
+              fontFamily="monospace"
+              fontWeight="200"
               opacity={getTextOpacity(type)}
+              style={{ letterSpacing: "0.02em" }}
             >
               {similarity.toFixed(2)}
             </text>
@@ -346,6 +349,9 @@ export function usePathsV2({
                 textAnchor="middle"
                 alignmentBaseline="middle"
                 fontSize="0.7vw"
+                fontFamily="monospace"
+                fontWeight="200"
+                letterSpacing="0.02em"
                 opacity={opacityMultiply}
               >
                 {similarity.toFixed(2)}

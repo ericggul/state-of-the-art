@@ -23,6 +23,7 @@ export default function TokenComponent({
   isAnimating,
   subLevel,
   animState,
+  isProjector,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -32,10 +33,11 @@ export default function TokenComponent({
   const [x, y] = useMemo(() => wordPosCalc(i), [wordPosCalc, i]);
 
   // Initialize embeddings
+  const embeddingLength = useMemo(() => (isProjector ? 25 : 20), [isProjector]);
   useEffect(() => {
     if (!embedding) return;
-    const pos = embedding.filter((el) => el > 0).slice(0, 25);
-    const neg = embedding.filter((el) => el < 0).slice(0, 25);
+    const pos = embedding.filter((el) => el > 0).slice(0, embeddingLength);
+    const neg = embedding.filter((el) => el < 0).slice(0, embeddingLength);
     setDisplayEmbeddings({ pos, neg });
   }, [embedding]);
 
