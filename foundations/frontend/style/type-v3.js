@@ -127,7 +127,7 @@ export const TYPE_STYLES = {
     colors: {
       outer: "hsl(30, 70%, 45%)",
       inner: "hsl(20, 95%, 55%)",
-      connection: "hsl(20, 85%, 30%)",
+      connection: "hsl(20, 65%, 43%)",
       latent: "hsl(30, 80%, 55%)",
     },
     material: {

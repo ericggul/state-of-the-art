@@ -1,5 +1,3 @@
-//DELETED REDUNDANT/UNNECESSARY MODELS
-
 export const MODELS = {
   "v1.x - Foundation Models": {
     "v1.0": {
@@ -7,6 +5,7 @@ export const MODELS = {
       year: 1943,
       place: "U.S. Department of Commerce",
       citation: 31925,
+      category: "basic_nn",
       explanation:
         "Introduced the first mathematical model of a neuron, laying the foundation for neural network research.",
     },
@@ -15,6 +14,7 @@ export const MODELS = {
       year: 1958,
       place: "Cornell Aeronautical Laboratory",
       citation: 20597,
+      category: "basic_nn",
       explanation:
         "Introduced the perceptron algorithm, the first trainable neural network using supervised learning.",
     },
@@ -23,6 +23,7 @@ export const MODELS = {
       year: 1965,
       place: "U.S. Department of Commerce",
       citation: 404,
+      category: "basic_nn",
       explanation:
         "A feedforward artificial neural network with multiple layers of perceptrons. MLPs are capable of distinguishing data that is not linearly separable and form the foundation for deep learning.",
       "v1.2.1": {
@@ -32,6 +33,7 @@ export const MODELS = {
         citation: 40430,
         explanation:
           "Introduced the backpropagation algorithm for training multi-layer neural networks.",
+        category: "basic_nn",
       },
     },
   },
@@ -45,6 +47,7 @@ export const MODELS = {
         citation: 28105,
         explanation:
           "Introduced recurrent neural networks for associative memory and optimization.",
+        category: "hopfield_boltzmann",
       },
       "v2.0.2": {
         name: "Boltzmann Machine",
@@ -53,6 +56,7 @@ export const MODELS = {
         citation: 5916,
         explanation:
           "Early stochastic recurrent neural network capable of learning internal representations.",
+        category: "hopfield_boltzmann",
       },
     },
     "v2.1": {
@@ -64,6 +68,7 @@ export const MODELS = {
         citation: 23900,
         explanation:
           "Neural network that learns to copy its input to output, useful for feature learning and dimensionality reduction.",
+        category: "vae",
       },
       "v2.1.2": {
         name: "Variational Autoencoder (VAE)",
@@ -72,6 +77,7 @@ export const MODELS = {
         citation: 39468,
         explanation:
           "Probabilistic generative model that learns latent representations, enabling data generation.",
+        category: "vae",
         "v2.1.2.1": {
           name: "Beta-VAE",
           year: 2017,
@@ -79,6 +85,7 @@ export const MODELS = {
           citation: 5412,
           explanation:
             "Introduces a hyperparameter β to control disentanglement in learned representations.",
+          category: "vae",
         },
       },
     },
@@ -91,6 +98,7 @@ export const MODELS = {
         citation: 20280,
         explanation:
           "Contrastive self-supervised learning method using data augmentations to learn representations.",
+        category: "self_supervised",
       },
       "v2.2.2": {
         name: "MoCo",
@@ -99,6 +107,7 @@ export const MODELS = {
         citation: 13540,
         explanation:
           "Contrastive learning method using a momentum encoder and queue for large dictionaries.",
+        category: "self_supervised",
       },
     },
     "v2.3": {
@@ -110,6 +119,7 @@ export const MODELS = {
         citation: 5429,
         explanation:
           "Self-supervised method using knowledge distillation without labels to learn visual features.",
+        category: "self_supervised",
       },
       "v2.3.2": {
         name: "DINOv2",
@@ -118,6 +128,7 @@ export const MODELS = {
         citation: 1648,
         explanation:
           "An improved version of DINO for self-supervised learning on larger datasets.",
+        category: "self_supervised",
       },
     },
   },
@@ -131,6 +142,7 @@ export const MODELS = {
         citation: 9660,
         explanation:
           "Hierarchical neural network that inspired modern CNNs, introducing the concept of local feature detectors.",
+        category: "cnn",
       },
     },
     "v3.1": {
@@ -142,6 +154,7 @@ export const MODELS = {
         citation: 6760,
         explanation:
           "One of the earliest convolutional neural networks, designed for handwritten and machine-printed character recognition.",
+        category: "cnn",
       },
       "v3.1.2": {
         name: "LeNet-5",
@@ -150,6 +163,7 @@ export const MODELS = {
         citation: 70544,
         explanation:
           "Pioneering convolutional neural network for handwritten digit recognition, demonstrating the effectiveness of CNNs.",
+        category: "cnn",
       },
     },
     "v3.2": {
@@ -161,6 +175,7 @@ export const MODELS = {
         citation: 135156,
         explanation:
           "First deep CNN to win ImageNet competition, sparking renewed interest in deep learning.",
+        category: "cnn",
       },
       "v3.2.2": {
         name: "VGGNet",
@@ -169,6 +184,7 @@ export const MODELS = {
         citation: 132477,
         explanation:
           "Demonstrated that increasing depth with small convolution filters improves performance.",
+        category: "cnn",
       },
       "v3.2.3": {
         name: "GoogLeNet",
@@ -177,6 +193,7 @@ export const MODELS = {
         citation: 62896,
         explanation:
           "Introduced Inception modules to improve computational efficiency and depth.",
+        category: "cnn",
       },
       "v3.2.4": {
         name: "ResNet",
@@ -185,6 +202,7 @@ export const MODELS = {
         citation: 242492,
         explanation:
           "Introduced residual connections to train very deep networks, enabling networks over 100 layers.",
+        category: "cnn",
       },
       "v3.2.5": {
         name: "DenseNet",
@@ -193,6 +211,7 @@ export const MODELS = {
         citation: 48567,
         explanation:
           "Connected each layer to every other layer to promote feature reuse and reduce parameters.",
+        category: "cnn",
       },
       "v3.2.6": {
         name: "EfficientNet",
@@ -201,6 +220,7 @@ export const MODELS = {
         citation: 23775,
         explanation:
           "Scaled networks using a compound coefficient to balance network depth, width, and resolution.",
+        category: "cnn",
       },
     },
     "v3.3": {
@@ -212,6 +232,7 @@ export const MODELS = {
         citation: 47287,
         explanation:
           "Applied Transformer architecture to image recognition tasks, treating images as sequences of patches.",
+        category: "transformer",
       },
       "v3.3.2": {
         name: "Swin Transformer",
@@ -221,6 +242,7 @@ export const MODELS = {
         citation: 23368,
         explanation:
           "Hierarchical Transformer using shifted windows for computer vision tasks.",
+        category: "transformer",
       },
       "v3.3.3": {
         name: "DeiT",
@@ -229,6 +251,7 @@ export const MODELS = {
         citation: 6997,
         explanation:
           "Improved training methods to make ViT models data-efficient.",
+        category: "transformer",
       },
       "v3.3.4": {
         name: "EVA",
@@ -237,6 +260,7 @@ export const MODELS = {
         citation: 579,
         explanation:
           "Large-scale vision foundation model with strong transfer learning capabilities.",
+        category: "transformer",
       },
     },
     "v3.4": {
@@ -248,6 +272,7 @@ export const MODELS = {
         citation: 95843,
         explanation:
           "Introduced skip connections between encoder and decoder, important for image segmentation tasks.",
+        category: "cnn",
       },
       "v3.4.2": {
         name: "SegNet",
@@ -256,6 +281,7 @@ export const MODELS = {
         citation: 20698,
         explanation:
           "Deep convolutional encoder-decoder architecture for image segmentation.",
+        category: "cnn",
       },
       "v3.4.3": {
         name: "YOLO (You Only Look Once)",
@@ -265,6 +291,7 @@ export const MODELS = {
         citation: 54448,
         explanation:
           "Real-time object detection system, important for computer vision tasks.",
+        category: "cnn",
       },
     },
     "v3.5": {
@@ -276,6 +303,7 @@ export const MODELS = {
         citation: 27889,
         explanation:
           "Lightweight CNN architecture using depthwise separable convolutions for mobile devices.",
+        category: "cnn",
       },
       "v3.5.2": {
         name: "MobileNetV2",
@@ -284,6 +312,7 @@ export const MODELS = {
         citation: 25578,
         explanation:
           "Improved mobile architecture using inverted residuals and linear bottlenecks.",
+        category: "cnn",
       },
       "v3.5.3": {
         name: "MobileNetV3",
@@ -292,6 +321,7 @@ export const MODELS = {
         citation: 9045,
         explanation:
           "Optimized mobile architecture using neural architecture search and squeeze-and-excite blocks.",
+        category: "cnn",
       },
     },
     "v3.6": {
@@ -303,6 +333,7 @@ export const MODELS = {
         citation: 6661,
         explanation:
           "Foundation model for image segmentation, capable of segmenting any object from prompts.",
+        category: "transformer",
       },
       "v3.6.2": {
         name: "SEEM",
@@ -312,6 +343,7 @@ export const MODELS = {
         citation: 422,
         explanation:
           "Segment Everything Everywhere Model, extending SAM's capabilities to more tasks.",
+        category: "transformer",
       },
     },
   },
@@ -326,6 +358,7 @@ export const MODELS = {
         citation: 40394,
         explanation:
           "Introduced context units to retain state information, allowing for processing sequences.",
+        category: "rnn",
       },
       "v4.0.2": {
         name: "Long Short-Term Memory (LSTM)",
@@ -334,6 +367,7 @@ export const MODELS = {
         citation: 115630,
         explanation:
           "Addressed the vanishing gradient problem in RNNs, enabling learning of long-term dependencies.",
+        category: "rnn",
       },
     },
     "v4.1": {
@@ -343,6 +377,7 @@ export const MODELS = {
       citation: 141723,
       explanation:
         "Introduced self-attention mechanisms and eliminated recurrence, revolutionizing sequence modeling.",
+      category: "transformer",
       "v4.1.1": {
         name: "Encoder-Decoder Transformers",
         "v4.1.1.1": {
@@ -352,6 +387,7 @@ export const MODELS = {
           citation: 19380,
           explanation:
             "Unified NLP tasks into a text-to-text format, using a large-scale pre-trained model.",
+          category: "transformer",
         },
         "v4.1.1.2": {
           name: "BART",
@@ -360,6 +396,7 @@ export const MODELS = {
           citation: 11236,
           explanation:
             "Combined BERT and GPT architectures, effective for text generation and comprehension.",
+          category: "transformer",
         },
         "v4.1.1.3": {
           name: "Megatron-LM",
@@ -368,6 +405,7 @@ export const MODELS = {
           citation: 1766,
           explanation:
             "Scaled transformer model with efficient model and data parallelism.",
+          category: "transformer",
         },
       },
       "v4.1.2": {
@@ -379,6 +417,7 @@ export const MODELS = {
           citation: 118772,
           explanation:
             "Pre-trained deep bidirectional representations, setting state-of-the-art on multiple NLP tasks.",
+          category: "transformer",
         },
         "v4.1.2.2": {
           name: "RoBERTa",
@@ -388,6 +427,7 @@ export const MODELS = {
           citation: 16222,
           explanation:
             "Optimized BERT's pretraining procedure for better performance.",
+          category: "transformer",
         },
         "v4.1.2.3": {
           name: "DeBERTa",
@@ -396,6 +436,7 @@ export const MODELS = {
           citation: 2662,
           explanation:
             "Decoding-enhanced BERT with disentangled attention mechanism.",
+          category: "transformer",
         },
       },
       "v4.1.3": {
@@ -407,6 +448,7 @@ export const MODELS = {
           citation: 11620,
           explanation:
             "Introduced unsupervised pre-training for language models using Transformer decoder.",
+          category: "transformer",
         },
         "v4.1.3.2": {
           name: "GPT-2",
@@ -415,6 +457,7 @@ export const MODELS = {
           citation: 14283,
           explanation:
             "Scaled-up GPT model, capable of generating coherent and contextually relevant text.",
+          category: "transformer",
         },
         "v4.1.3.3": {
           name: "GPT-3",
@@ -423,6 +466,7 @@ export const MODELS = {
           citation: 35502,
           explanation:
             "Large-scale language model with 175 billion parameters, demonstrating strong few-shot learning.",
+          category: "transformer",
         },
         "v4.1.3.4": {
           name: "GPT-4",
@@ -431,6 +475,7 @@ export const MODELS = {
           citation: 5553,
           explanation:
             "Advanced language model with improved reasoning and understanding capabilities.",
+          category: "transformer",
         },
         "v4.1.3.5": {
           name: "PaLM",
@@ -439,6 +484,7 @@ export const MODELS = {
           citation: 5001,
           explanation:
             "540-billion parameter Transformer model demonstrating strong performance across tasks.",
+          category: "transformer",
         },
         "v4.1.3.6": {
           name: "PaLM 2",
@@ -447,6 +493,7 @@ export const MODELS = {
           citation: 1391,
           explanation:
             "An updated version of PaLM with enhanced multilingual, reasoning, and coding capabilities.",
+          category: "transformer",
         },
         "v4.1.3.7": {
           name: "Claude",
@@ -455,6 +502,7 @@ export const MODELS = {
           citation: 1101,
           explanation:
             "Advanced language model focusing on constitutional AI and alignment principles.",
+          category: "transformer",
         },
         "v4.1.3.8": {
           name: "LaMDA",
@@ -463,6 +511,7 @@ export const MODELS = {
           citation: 1520,
           explanation:
             "Language Model for Dialogue Applications, specialized in conversational AI.",
+          category: "transformer",
         },
         "v4.1.3.9": {
           name: "Open-Source Models",
@@ -473,6 +522,7 @@ export const MODELS = {
             citation: 10520,
             explanation:
               "A collection of foundation language models ranging from 7B to 65B parameters.",
+            category: "transformer",
           },
           "v4.1.3.9.2": {
             name: "LLaMA 2",
@@ -481,6 +531,7 @@ export const MODELS = {
             citation: 10084,
             explanation:
               "Improved version of LLaMA with better performance and commercial usage rights.",
+            category: "transformer",
           },
           "v4.1.3.9.3": {
             name: "Mistral",
@@ -489,6 +540,7 @@ export const MODELS = {
             citation: 858,
             explanation:
               "Efficient 7B model with strong performance relative to its size.",
+            category: "transformer",
           },
           "v4.1.3.9.4": {
             name: "Mixtral",
@@ -497,6 +549,7 @@ export const MODELS = {
             citation: 1017,
             explanation:
               "Mixture-of-experts model combining multiple Mistral architectures.",
+            category: "transformer",
           },
           "v4.1.3.9.5": {
             name: "Phi-2",
@@ -505,6 +558,7 @@ export const MODELS = {
             citation: 157,
             explanation:
               "Small but powerful model showing strong reasoning capabilities.",
+            category: "transformer",
           },
         },
         "v4.1.3.10": {
@@ -516,6 +570,7 @@ export const MODELS = {
             citation: 2023,
             explanation:
               "Family of multimodal models with Ultra, Pro, and Nano variants.",
+            category: "transformer",
           },
           "v4.1.3.10.2": {
             name: "Claude 3",
@@ -524,6 +579,7 @@ export const MODELS = {
             citation: 208,
             explanation:
               "Latest Claude series with Opus, Sonnet, and Haiku variants.",
+            category: "transformer",
           },
         },
       },
@@ -537,6 +593,7 @@ export const MODELS = {
         citation: 4464,
         explanation:
           "Extended the Transformer architecture to handle longer sequences, introduced relative positional encodings.",
+        category: "transformer",
       },
       "v4.2.2": {
         name: "XLNet",
@@ -545,6 +602,7 @@ export const MODELS = {
         citation: 10314,
         explanation:
           "Generalized autoregressive pretraining method, overcame limitations of BERT using permutation language modeling.",
+        category: "transformer",
       },
       "v4.2.3": {
         name: "ELECTRA",
@@ -553,6 +611,8 @@ export const MODELS = {
         citation: 4349,
         explanation:
           "More sample-efficient pretraining method for language models, uses a discriminative model to predict whether tokens are original or replaced.",
+        category: "transformer",
+
         "v4.2.3.1": {
           name: "Longformer",
           year: 2020,
@@ -561,6 +621,7 @@ export const MODELS = {
           citation: 4282,
           explanation:
             "Extended transformer with efficient attention pattern for processing very long documents.",
+          category: "transformer",
         },
         "v4.2.3.2": {
           name: "Reformer",
@@ -569,6 +630,7 @@ export const MODELS = {
           citation: 2825,
           explanation:
             "Efficient transformer using locality-sensitive hashing and reversible layers.",
+          category: "transformer",
         },
         "v4.2.3.3": {
           name: "BigBird",
@@ -577,6 +639,7 @@ export const MODELS = {
           citation: 2245,
           explanation:
             "Transformer with sparse attention patterns for processing longer sequences.",
+          category: "transformer",
         },
       },
       "v4.2.4": {
@@ -586,6 +649,7 @@ export const MODELS = {
         citation: 1804,
         explanation:
           "Introduced the concept of sparsely-activated models, achieved trillion-parameter models through conditional computation.",
+        category: "transformer",
       },
       "v4.2.5": {
         name: "ALBERT",
@@ -594,6 +658,7 @@ export const MODELS = {
         citation: 7861,
         explanation:
           "A Lite BERT for self-supervised learning of language representations, introduced parameter sharing to reduce model size.",
+        category: "transformer",
       },
       "v4.2.6": {
         name: "DistilBERT",
@@ -602,6 +667,7 @@ export const MODELS = {
         citation: 7456,
         explanation:
           "A distilled version of BERT, smaller and faster while retaining BERT's language understanding capabilities.",
+        category: "transformer",
       },
     },
     "v4.3": {
@@ -613,6 +679,7 @@ export const MODELS = {
         citation: 1153,
         explanation:
           "Enhanced Representation through Knowledge Integration, incorporated external knowledge into pretraining.",
+        category: "transformer",
       },
       "v4.3.2": {
         name: "XLM",
@@ -621,6 +688,7 @@ export const MODELS = {
         citation: 1655,
         explanation:
           "Cross-lingual Language Model Pretraining, important for multilingual NLP tasks.",
+        category: "transformer",
       },
       "v4.3.3": {
         name: "mT5",
@@ -629,6 +697,7 @@ export const MODELS = {
         citation: 2320,
         explanation:
           "Multilingual version of T5, supporting 101 languages with shared vocabulary.",
+        category: "transformer",
       },
     },
   },
@@ -640,6 +709,7 @@ export const MODELS = {
       citation: 74528,
       explanation:
         "Introduced the GAN framework, where two neural networks compete in a zero-sum game to generate realistic data.",
+      category: "gan",
       "v5.0.1": {
         name: "Architectural Variants",
         "v5.0.1.1": {
@@ -649,6 +719,7 @@ export const MODELS = {
           citation: 18893,
           explanation:
             "Deep Convolutional GAN; introduced convolutional architectures to GANs for improved image generation.",
+          category: "gan",
         },
         "v5.0.1.2": {
           name: "WGAN",
@@ -657,6 +728,7 @@ export const MODELS = {
           citation: 17460,
           explanation:
             "Wasserstein GAN; addressed instability in GAN training by using Wasserstein distance.",
+          category: "gan",
         },
         "v5.0.1.3": {
           name: "Progressive GAN",
@@ -665,6 +737,7 @@ export const MODELS = {
           citation: 8838,
           explanation:
             "Progressive Growing of GANs; improved high-resolution image generation by progressively increasing resolution during training.",
+          category: "gan",
         },
       },
       "v5.0.2": {
@@ -676,6 +749,7 @@ export const MODELS = {
           citation: 14155,
           explanation:
             "Extended GANs to condition on auxiliary information like class labels.",
+          category: "gan",
         },
         "v5.0.2.2": {
           name: "CycleGAN",
@@ -684,6 +758,7 @@ export const MODELS = {
           citation: 24951,
           explanation:
             "Unpaired image-to-image translation using cycle-consistent adversarial networks.",
+          category: "gan",
         },
         "v5.0.2.3": {
           name: "Pix2Pix",
@@ -692,6 +767,7 @@ export const MODELS = {
           citation: 24742,
           explanation:
             "Paired image-to-image translation using conditional adversarial networks.",
+          category: "gan",
         },
       },
       "v5.0.3": {
@@ -703,6 +779,7 @@ export const MODELS = {
           citation: 12400,
           explanation:
             "Introduced style-based generator architecture, enabling control over image synthesis at different levels.",
+          category: "gan",
         },
         "v5.0.3.2": {
           name: "StyleGAN2",
@@ -711,6 +788,7 @@ export const MODELS = {
           citation: 6790,
           explanation:
             "Improved upon StyleGAN by addressing artifacts and enhancing image quality.",
+          category: "gan",
         },
         "v5.0.3.3": {
           name: "StyleGAN3",
@@ -719,6 +797,7 @@ export const MODELS = {
           citation: 1640,
           explanation:
             "Further improvements in image synthesis, addressing aliasing issues and enabling better consistency.",
+          category: "gan",
         },
       },
     },
@@ -731,6 +810,7 @@ export const MODELS = {
         citation: 14543,
         explanation:
           "Introduced diffusion models for image generation, matching or surpassing GAN performance.",
+        category: "diffusion",
       },
       "v5.1.2": {
         name: "Improved DDPM",
@@ -739,6 +819,7 @@ export const MODELS = {
         citation: 3090,
         explanation:
           "Enhanced DDPM with better sampling techniques and architectural improvements.",
+        category: "diffusion",
       },
       "v5.1.3": {
         name: "Latent Diffusion Models",
@@ -750,6 +831,7 @@ export const MODELS = {
           citation: 12514,
           explanation:
             "An efficient diffusion model operating in latent space, enabling high-resolution image synthesis with reduced computational cost.",
+          category: "diffusion",
         },
       },
       "v5.1.4": {
@@ -761,6 +843,7 @@ export const MODELS = {
           citation: 1132,
           explanation:
             "Enhanced version of Stable Diffusion with improved image quality and text understanding.",
+          category: "diffusion",
         },
         "v5.1.4.2": {
           name: "SDXL Turbo",
@@ -769,6 +852,7 @@ export const MODELS = {
           citation: 196,
           explanation:
             "Real-time version of SDXL capable of generating images in a single step.",
+          category: "diffusion",
         },
         "v5.1.4.3": {
           name: "IP-Adapter",
@@ -777,6 +861,7 @@ export const MODELS = {
           citation: 337,
           explanation:
             "Image prompt adapter for diffusion models, enabling better image-conditioned generation.",
+          category: "diffusion",
         },
       },
       "v5.1.5": {
@@ -788,6 +873,7 @@ export const MODELS = {
           citation: 432,
           explanation:
             "Text-to-video model based on Stable Diffusion architecture.",
+          category: "diffusion",
         },
         "v5.1.5.2": {
           name: "Sora",
@@ -796,6 +882,7 @@ export const MODELS = {
           citation: 134,
           explanation:
             "Advanced text-to-video model capable of generating complex, long-form videos.",
+          category: "diffusion",
         },
         "v5.1.5.3": {
           name: "Lumiere",
@@ -804,6 +891,7 @@ export const MODELS = {
           citation: 118,
           explanation:
             "Text-to-video diffusion model with focus on motion consistency and temporal coherence.",
+          category: "diffusion",
         },
         "v5.1.5.4": {
           name: "Gen-2",
@@ -812,6 +900,7 @@ export const MODELS = {
           citation: 400,
           explanation:
             "Text-to-video and image-to-video generation model with strong editing capabilities.",
+          category: "diffusion",
         },
       },
       "v5.1.6": {
@@ -823,6 +912,7 @@ export const MODELS = {
           citation: 437,
           explanation:
             "Text-to-3D point cloud generation model using diffusion.",
+          category: "diffusion",
         },
         "v5.1.6.2": {
           name: "GET3D",
@@ -831,6 +921,7 @@ export const MODELS = {
           citation: 407,
           explanation:
             "Generative model for textured 3D meshes from text descriptions.",
+          category: "diffusion",
         },
       },
     },
@@ -845,6 +936,7 @@ export const MODELS = {
         citation: 7845,
         explanation:
           "Early neural image captioning model combining CNN and RNN architectures.",
+        category: "multi_modal",
       },
       "v6.0.2": {
         name: "Visual Question Answering (VQA)",
@@ -853,6 +945,7 @@ export const MODELS = {
         citation: 6446,
         explanation:
           "Pioneered the task of answering natural language questions about images.",
+        category: "multi_modal",
       },
     },
     "v6.1": {
@@ -864,6 +957,7 @@ export const MODELS = {
         citation: 24571,
         explanation:
           "Contrastive Language-Image Pre-training, enabling zero-shot transfer to various visual tasks.",
+        category: "multi_modal",
       },
       "v6.1.2": {
         name: "Florence",
@@ -872,6 +966,7 @@ export const MODELS = {
         citation: 873,
         explanation:
           "Unified vision foundation model supporting various vision-language tasks.",
+        category: "multi_modal",
       },
     },
     "v6.2": {
@@ -883,6 +978,7 @@ export const MODELS = {
         citation: 4966,
         explanation:
           "A generative model that creates images from textual descriptions using a Transformer architecture.",
+        category: "multi_modal",
       },
       "v6.2.2": {
         name: "DALL-E 2",
@@ -891,6 +987,7 @@ export const MODELS = {
         citation: 6144,
         explanation:
           "Improved version of DALL-E with higher resolution and greater photorealism.",
+        category: "multi_modal",
       },
       "v6.2.3": {
         name: "DALL-E 3",
@@ -899,6 +996,7 @@ export const MODELS = {
         citation: 592,
         explanation:
           "Enhanced version with improved text understanding and artistic capabilities.",
+        category: "multi_modal",
       },
     },
     "v6.3": {
@@ -910,6 +1008,7 @@ export const MODELS = {
         citation: 3163,
         explanation:
           "A visual language model with few-shot learning capabilities in multimodal contexts.",
+        category: "multi_modal",
       },
       "v6.3.2": {
         name: "BLIP-2",
@@ -918,6 +1017,7 @@ export const MODELS = {
         citation: 3909,
         explanation:
           "Bootstrapping Language-Image Pre-training with frozen image encoders and LLMs.",
+        category: "multi_modal",
       },
       "v6.3.3": {
         name: "CogVLM",
@@ -926,6 +1026,7 @@ export const MODELS = {
         citation: 417,
         explanation:
           "Large vision-language model with strong cognitive capabilities and reasoning.",
+        category: "multi_modal",
       },
     },
     "v6.4": {
@@ -938,6 +1039,7 @@ export const MODELS = {
         citation: 3937,
         explanation:
           "Large Language and Vision Assistant, combining GPT-style language models with visual understanding.",
+        category: "multi_modal",
       },
       "v6.4.2": {
         name: "PaLM-E",
@@ -946,6 +1048,7 @@ export const MODELS = {
         citation: 1397,
         explanation:
           "An embodied multimodal language model combining vision and language for robotic control.",
+        category: "multi_modal",
       },
       "v6.4.3": {
         name: "GPT-4V",
@@ -954,6 +1057,7 @@ export const MODELS = {
         citation: 476,
         explanation:
           "An extension of GPT-4 capable of processing and generating visual content along with text.",
+        category: "multi_modal",
       },
       "v6.4.4": {
         name: "Claude 3 Vision",
@@ -962,6 +1066,7 @@ export const MODELS = {
         citation: 208,
         explanation:
           "Multimodal version of Claude capable of processing images with high accuracy.",
+        category: "multi_modal",
       },
       "v6.4.5": {
         name: "Gemini Vision",
@@ -970,6 +1075,7 @@ export const MODELS = {
         citation: 113,
         explanation:
           "Multimodal capabilities of Gemini, with advanced visual understanding and reasoning.",
+        category: "multi_modal",
       },
     },
     "v6.5": {
@@ -981,6 +1087,7 @@ export const MODELS = {
         citation: 3218,
         explanation:
           "Robust speech recognition model supporting multiple languages.",
+        category: "multi_modal",
       },
     },
   },
@@ -994,6 +1101,7 @@ export const MODELS = {
         citation: 16264,
         explanation:
           "Introduced deep learning to Q-learning, achieving human-level performance on Atari games.",
+        category: "reinforcement",
       },
       "v7.0.2": {
         name: "A3C",
@@ -1002,6 +1110,7 @@ export const MODELS = {
         citation: 11980,
         explanation:
           "Asynchronous Advantage Actor-Critic, a policy gradient method that uses asynchronous updates.",
+        category: "reinforcement",
       },
       "v7.0.3": {
         name: "PPO",
@@ -1010,6 +1119,7 @@ export const MODELS = {
         citation: 21674,
         explanation:
           "Proximal Policy Optimization, providing stable policy updates for reinforcement learning.",
+        category: "reinforcement",
       },
     },
     "v7.1": {
@@ -1020,6 +1130,7 @@ export const MODELS = {
         place: "Deepmind",
         citation: 20360,
         explanation: "First AI to defeat a world champion in the game of Go.",
+        category: "reinforcement",
       },
       "v7.1.2": {
         name: "AlphaGo Zero",
@@ -1028,6 +1139,7 @@ export const MODELS = {
         citation: 11585,
         explanation:
           "Learned Go solely through self-play, surpassing all previous versions.",
+        category: "reinforcement",
       },
       "v7.1.3": {
         name: "AlphaZero",
@@ -1036,6 +1148,7 @@ export const MODELS = {
         citation: 2407,
         explanation:
           "Generalized AlphaGo to chess and shogi, learning solely through self-play.",
+        category: "reinforcement",
       },
       "v7.1.4": {
         name: "MuZero",
@@ -1044,6 +1157,7 @@ export const MODELS = {
         citation: 2604,
         explanation:
           "Mastered Go, chess, shogi, and Atari without knowledge of the game rules.",
+        category: "reinforcement",
       },
     },
     "v7.2": {
@@ -1055,6 +1169,7 @@ export const MODELS = {
         citation: 4858,
         explanation:
           "First AI to defeat top professional players in StarCraft II, a complex real-time strategy game.",
+        category: "reinforcement",
       },
     },
     "v7.3": {
@@ -1066,6 +1181,7 @@ export const MODELS = {
           "DeepMind, The Francis Crick Institute, University College London",
         citation: 3381,
         explanation: "Revolutionary protein structure prediction system.",
+        category: "reinforcement",
       },
       "v7.3.2": {
         name: "AlphaFold 2",
@@ -1074,6 +1190,7 @@ export const MODELS = {
         citation: 29012,
         explanation:
           "Dramatically improved protein structure prediction to atomic accuracy.",
+        category: "reinforcement",
       },
     },
   },

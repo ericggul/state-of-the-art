@@ -7,7 +7,10 @@ import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
 
 const lerp = (start, end, t) => start + (end - start) * t;
-const LERPING_FACTOR = 0.03;
+// const LERPING_FACTOR = 0.03;
+// const ZOOM_LERPING_FACTOR = 0.03;
+
+const LERPING_FACTOR = 0.02;
 const ZOOM_LERPING_FACTOR = 0.03;
 
 const ZOOM_LIMITS = {

@@ -16,7 +16,7 @@ export const MULTI_LAYER_PERCEPTRON_MLP = [
   { name: "Hidden Layer", type: "hidden", neurons: 4 },
   { name: "Output Layer", type: "output", neurons: 2 },
   { name: "Input Layer", type: "input", neurons: 3 },
-  { name: "Hidden Layer", type: "hidden", neurons: 4 },
+  { name: "Hidden Layer", type: "hidden", neurons: 6 },
   { name: "Output Layer", type: "output", neurons: 2 },
   { name: "Input Layer", type: "input", neurons: 3 },
   { name: "Hidden Layer", type: "hidden", neurons: 4 },
@@ -25,11 +25,10 @@ export const MULTI_LAYER_PERCEPTRON_MLP = [
 
 export const BACKPROPAGATION_ALGORITHM = [
   { name: "Input Layer", type: "input", neurons: 4 },
-  { name: "Hidden Layer", type: "hidden", neurons: 6 },
+  { name: "Hidden Layer", type: "hidden", neurons: 8 },
   { name: "Hidden Layer", type: "hidden", neurons: 5 },
   { name: "Hidden Layer", type: "hidden", neurons: 6 },
-  { name: "Hidden Layer", type: "hidden", neurons: 5 },
-  { name: "Hidden Layer", type: "hidden", neurons: 4 },
+  { name: "Hidden Layer", type: "hidden", neurons: 7 },
   { name: "Output Layer", type: "output", neurons: 4 },
 ];
 
