@@ -106,14 +106,19 @@ function Intro() {
   }, [introState, isProjector, startFadeOut]);
 
   return (
-    <>
+    <S.Wrapper
+      style={{
+        opacity: introState >= 3 ? 0 : 1,
+        background: introState >= 3 ? "black" : "transparent",
+      }}
+    >
       {introState === 0 && <Intro0 />}
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
       {isProjector && (
         <audio ref={audioRef} src={SOUND_URL} autoPlay={false} loop />
       )}
-    </>
+    </S.Wrapper>
   );
 }
 

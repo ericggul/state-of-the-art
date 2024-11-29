@@ -58,9 +58,9 @@ export default function TypewriterText({ text, speed = 50 }) {
     const typeWriter = (fullText, index = 0) => {
       if (index <= fullText.length) {
         setDisplayText(fullText.substring(0, index));
-        if (index > previousText.current.length) {
-          playTypingSound();
-        }
+        // if (index > previousText.current.length) {
+        //   playTypingSound();
+        // }
         timeoutRef.current = setTimeout(
           () => typeWriter(fullText, index + 1),
           speed
@@ -74,7 +74,7 @@ export default function TypewriterText({ text, speed = 50 }) {
       const eraseWriter = (index = previousText.current.length) => {
         if (index > 0) {
           setDisplayText(previousText.current.substring(0, index));
-          playErasingSound();
+          // playErasingSound();
           timeoutRef.current = setTimeout(
             () => eraseWriter(index - 1),
             speed / 2

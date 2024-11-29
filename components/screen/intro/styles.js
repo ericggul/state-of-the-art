@@ -1,6 +1,14 @@
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 import styled from "styled-components";
 
+export const Wrapper = styled.div`
+  ${WholeContainer}
+  ${FlexCenterStyle}
+  z-index: 1000;
+  background: black;
+  pointer-events: none !important;
+`;
+
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
@@ -8,7 +16,7 @@ export const Container = styled.div`
   background: black;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 990;
+  z-index: 1000;
   font-size: 1.5vw;
 
   @keyframes fadeIn {

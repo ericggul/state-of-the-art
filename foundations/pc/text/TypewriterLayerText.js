@@ -94,9 +94,9 @@ export default React.memo(function TypewriterLayerText({
               ...prev,
               [currentPart]: partText.substring(0, partIndex),
             }));
-            if (partIndex > 0 && partIndex % 2 === 0) {
-              playTypingSound();
-            }
+            // if (partIndex > 0 && partIndex % 2 === 0) {
+            //   playTypingSound();
+            // }
             partIndex++;
             timeoutId = setTimeout(typePartChar, speed);
           } else {

@@ -46,9 +46,9 @@ export default function TypewriterText({ text, speed = 50 }) {
     const typeWriter = (fullText, index = 0) => {
       if (index <= fullText.length) {
         setDisplayText(fullText.substring(0, index));
-        if (index > previousText.current.length && index % 2 === 0) {
-          playTypingSound();
-        }
+        // if (index > previousText.current.length && index % 2 === 0) {
+        //   playTypingSound();
+        // }
         timeoutRef.current = setTimeout(
           () => typeWriter(fullText, index + 1),
           speed

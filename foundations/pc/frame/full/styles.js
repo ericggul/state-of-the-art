@@ -10,7 +10,7 @@ export const Container = styled.div`
   ${WholeContainer}
   position: fixed;
   background: transparent;
-  z-index: 9999;
+  z-index: 999;
   pointer-events: none;
 `;
 
