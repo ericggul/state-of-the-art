@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useMemo, useState, useEffect } from "react";
-import UI from "@/foundations/mobile/v4";
-import Intro from "@/foundations/mobile/v4/intro";
-import AccelerometerHandler from "@/foundations/mobile/v4/accelrometer";
+import UI from "@/foundations/mobile";
+import Intro from "@/foundations/mobile/intro";
+import AccelerometerHandler from "@/foundations/mobile/accelrometer";
 import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
-import { usePersistentState } from "@/foundations/mobile/v4/utils/usePersistentState";
-import Loading from "@/foundations/mobile/v4/loading";
+import { usePersistentState } from "@/foundations/mobile/utils/usePersistentState";
+import Loading from "@/foundations/mobile/loading";
 
 export default function Mobile() {
   const [state, setState] = usePersistentState();

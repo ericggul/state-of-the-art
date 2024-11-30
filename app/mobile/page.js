@@ -3,9 +3,9 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Loading from "@/foundations/mobile/v4/loading";
+import Loading from "@/foundations/mobile/loading";
 
-const MobileV4 = dynamic(() => import("@/components/mobile/v4"));
+const MobileV4 = dynamic(() => import("@/components/mobile"));
 
 function MobileSelector() {
   const searchParams = useSearchParams();
