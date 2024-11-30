@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
 import { flattenModels, filterModels } from "@/components/frontend/utils";
 import useFeedback from "./utils/useFeedback";
 import { useModelListLogic } from "./utils/modelListLogic/useLogic";
 
-export default function Mobile({ socket, mobileId }) {
+const Mobile = memo(function Mobile({ socket, mobileId }) {
   const modelsArray = useMemo(() => filterModels(flattenModels(MODELS)), []);
 
   return (
@@ -17,9 +17,9 @@ export default function Mobile({ socket, mobileId }) {
       />
     </S.Container>
   );
-}
+});
 
-function ModelList({ initialModels, socket, mobileId }) {
+const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
   const {
     models,
     activeIndex,
@@ -73,4 +73,6 @@ function ModelList({ initialModels, socket, mobileId }) {
       </S.ScrollHint>
     </>
   );
-}
+});
+
+export default Mobile;

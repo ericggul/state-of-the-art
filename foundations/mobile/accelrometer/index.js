@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef, memo } from "react";
 import useSocketMobileOrientation from "@/utils/socket/orientation/useSocketMobile";
 import useAccSpikeTracker from "@/utils/hooks/orientation/useAccSpikeTracker";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
@@ -6,11 +6,11 @@ import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 const INITIAL_SENSOR_STATE = { x: 0, y: 0, z: 0 };
 const INITIAL_ORIENTATION_STATE = { alpha: 0, beta: 0, gamma: 0 };
 
-const AccelerometerHandler = ({
+const AccelerometerHandler = memo(function AccelerometerHandler({
   mobileId,
   isAccelerometerActive,
   handleError,
-}) => {
+}) {
   const [orientation, setOrientation] = useState(INITIAL_ORIENTATION_STATE);
   const [acceleration, setAcceleration] = useState(INITIAL_SENSOR_STATE);
   const { permission, requestAccess } = useAccelerometer();
@@ -127,6 +127,6 @@ const AccelerometerHandler = ({
   }, [orientation, acceleration, mobileId, socket, isAccelerometerActive]);
 
   return null;
-};
+});
 
 export default AccelerometerHandler;

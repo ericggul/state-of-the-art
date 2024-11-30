@@ -60,4 +60,4 @@ export const IDLE_TEXTS = [
   "Scan the QR to join the canvas of Neural Networks.",
 ];
 
-export const VERIFY_NAME_TIMEOUT = 3000;
+export const VERIFY_NAME_TIMEOUT = 3500;

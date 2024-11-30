@@ -13,6 +13,7 @@ export default function Mobile() {
   const [state, setState] = usePersistentState();
   const mobileId = useMemo(() => "DUMMY", []);
   const [isIntro, setIsIntro] = useState(true);
+  const [introState, setIntroState] = useState(state.username ? 1 : 0);
 
   const handleNewResponse = useCallback((data) => {
     console.log("New response from controller:", data);
@@ -25,6 +26,20 @@ export default function Mobile() {
     return <Loading customText="Initialising State" />;
   }
 
+  function handleAccelerometerError() {
+    setIsIntro(true);
+    setIntroState(1);
+    console.log("32");
+    try {
+      socket.current.emit("mobile-new-intro", {
+        type: "state_change",
+        introState: 1,
+      });
+    } catch (error) {
+      console.error("Error emitting intro state:", error);
+    }
+  }
+
   return (
     <>
       <IntroWrapper
@@ -33,6 +48,8 @@ export default function Mobile() {
         socket={socket}
         isIntro={isIntro}
         setIsIntro={setIsIntro}
+        introState={introState}
+        setIntroState={setIntroState}
       />
       {!isIntro && (
         <UI socket={socket} mobileId={mobileId} username={state.username} />
@@ -41,19 +58,22 @@ export default function Mobile() {
         socket={socket}
         mobileId={mobileId}
         isAccelerometerActive={state.isAccelerometerActive}
-        handleError={() => {
-          setIsIntro(true);
-        }}
+        handleError={handleAccelerometerError}
       />
     </>
   );
 }
 
-function IntroWrapper({ state, setState, socket, isIntro, setIsIntro }) {
-  const [introState, setIntroState] = useState(() => (state.username ? 1 : 0));
-
+function IntroWrapper({
+  state,
+  setState,
+  socket,
+  isIntro,
+  setIsIntro,
+  introState,
+  setIntroState,
+}) {
   useEffect(() => {
-    console.log("introState", introState);
     try {
       socket.current.emit("mobile-new-intro", {
         type: "state_change",
@@ -63,6 +83,10 @@ function IntroWrapper({ state, setState, socket, isIntro, setIsIntro }) {
       console.error("Error emitting intro state:", error);
     }
   }, [introState]);
+
+  useEffect(() => {
+    console.log("isIntro", isIntro);
+  }, [isIntro]);
 
   const handleAccelerometerActivate = useCallback(
     (value) => {
