@@ -315,7 +315,7 @@ export const IOSDialogContainer = styled.div`
   border-radius: 13px;
   padding: 20px;
   width: 270px;
-  margin: 20px;
+  margin: 5px;
 `;
 
 export const IOSDialogTitle = styled.div`

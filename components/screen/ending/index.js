@@ -1,9 +1,9 @@
-import * as S from "./styles";
 import { memo, useState, useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
 import useBackendStore from "@/components/backend/store";
 import * as CONST from "@/utils/constant";
 import { useRouter } from "next/navigation";
+import EndingUI from "./EndingUI";
 
 function Ending() {
   const [isVisible, setIsVisible] = useState(false);
@@ -47,12 +47,7 @@ function Ending() {
     // router.refresh();
   }
 
-  return (
-    <S.Container $isVisible={isVisible} $isFadingOut={isFadingOut}>
-      <h1>DUMMY ENDING</h1>
-      <p>DUMMY CREDIT</p>
-    </S.Container>
-  );
+  return <EndingUI isVisible={isVisible} isFadingOut={isFadingOut} />;
 }
 
 export default memo(Ending);

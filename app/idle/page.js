@@ -10,7 +10,7 @@ export default function IdleWrapper() {
   return (
     <Suspense>
       <Idle isTesting={true} />
-      {/* <Ending /> */}
+      <Ending />
     </Suspense>
   );
 }

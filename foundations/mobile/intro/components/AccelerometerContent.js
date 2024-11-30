@@ -12,17 +12,21 @@ export default function AccelerometerContent({
       {isIOS ? (
         <S.IOSDialogContainer>
           <S.IOSDialogTitle>
-            "State-of-Art Gallery" Would Like to Access Motion and Orientation
+            "State-of-the-Art" Would Like to Access Motion and Orientation
           </S.IOSDialogTitle>
           <S.IOSDialogMessage>
-            This lets you explore the gallery through device motion and
-            orientation.
+            This lets you explore the gallery immersively. Your data is secured
+            and not shared with anyone.
           </S.IOSDialogMessage>
           <S.IOSButtonGroup>
             <S.IOSButton
-              onClick={() => alert("Please allow motion access to continue")}
+              onClick={() =>
+                alert(
+                  "We definitely recommend you to allow for an immersive experience"
+                )
+              }
             >
-              Cancel
+              Not Now
             </S.IOSButton>
             <S.IOSButton $primary onClick={handleAccelerometerActivation}>
               Allow
