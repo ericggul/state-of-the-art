@@ -2,9 +2,9 @@ import { useCallback, useMemo } from "react";
 import * as S from "./styles";
 import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer";
 import { useNameInput } from "../utils/useNameInput";
-import AnimatedTitle from "./components/AnimatedTitle";
+import IntroForm from "./components/IntroForm";
+import AccelerometerContent from "./components/AccelerometerContent";
 
-// Move outside component
 const isIOSDevice =
   /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
@@ -35,10 +35,8 @@ export default function Intro({
   const handleAccelerometerActivation = useCallback(async () => {
     try {
       const result = await requestAccess();
-
       emitAccelerometerActivation(result);
       onAccelerometerActivate(result.granted);
-
       if (result.fallback) {
         onAccelerometerActivate(false);
       }
@@ -56,67 +54,19 @@ export default function Intro({
     });
   }
 
-  const renderIntroForm = () => (
-    <S.IntroForm onSubmit={nameInputProps.handleUsernameSubmit}>
-      <AnimatedTitle text="State-of-the-Art Gallery" />
-      <div style={{ width: "90%" }}>
-        <S.IntroInput
-          type="text"
-          placeholder="Enter your first name"
-          value={nameInputProps.username}
-          onChange={nameInputProps.handleUsernameChange}
-          onBlur={nameInputProps.handleBlur}
-          onKeyPress={nameInputProps.handleKeyPress}
-          required
-          maxLength={20}
-          aria-invalid={!!nameInputProps.error}
-          disabled={nameInputProps.isVerifying}
-          autoComplete="off"
-          enterKeyHint="done"
-        />
-        {nameInputProps.error && (
-          <S.ErrorMessage>{nameInputProps.error}</S.ErrorMessage>
-        )}
-      </div>
-      <S.IntroButton
-        type="submit"
-        disabled={
-          !nameInputProps.username.trim() ||
-          !!nameInputProps.error ||
-          nameInputProps.isVerifying
-        }
-        style={{ width: "90%" }}
-      >
-        {nameInputProps.isVerifying
-          ? "GPT Validating your name..."
-          : "Continue"}
-      </S.IntroButton>
-    </S.IntroForm>
-  );
-
-  const renderAccelerometerContent = () => (
-    <S.IntroContent>
-      {nameInputProps.username && (
-        <AnimatedTitle
-          text={`Hi, ${nameInputProps.username}!`}
-          baseDelay={0.3} // Delay start of animation
-        />
-      )}
-      <S.IntroText>
-        Experience the gallery in its full interactive form by <b>ALLOWING</b>{" "}
-        your device's motion sensors.
-      </S.IntroText>
-      <S.ActivateButton onClick={handleAccelerometerActivation}>
-        Activate Accelerometer
-      </S.ActivateButton>
-    </S.IntroContent>
-  );
-
   return (
     <S.IntroContainer>
       <S.TopVerticalLine />
       <S.BottomVerticalLine />
-      {introState === 0 ? renderIntroForm() : renderAccelerometerContent()}
+      {introState === 0 ? (
+        <IntroForm nameInputProps={nameInputProps} />
+      ) : (
+        <AccelerometerContent
+          username={nameInputProps.username}
+          isIOS={isIOS}
+          handleAccelerometerActivation={handleAccelerometerActivation}
+        />
+      )}
     </S.IntroContainer>
   );
 }

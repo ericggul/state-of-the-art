@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import * as S from "@/foundations/mobile/intro/styles";
+import * as S from "../styles";
 
 export default function AnimatedTitle({ text, baseDelay = 0 }) {
   const letters = useMemo(() => {
