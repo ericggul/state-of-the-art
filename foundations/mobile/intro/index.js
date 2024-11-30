@@ -14,7 +14,6 @@ export default function Intro({
   onUsernameSubmit,
   initialUsername,
   introState,
-  setIntroState,
 }) {
   const { supportsDeviceOrientation, permission, requestAccess } =
     useAccelerometer();

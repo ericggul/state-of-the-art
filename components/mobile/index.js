@@ -11,30 +11,69 @@ import Loading from "@/foundations/mobile/loading";
 
 export default function Mobile() {
   const [state, setState] = usePersistentState();
-  const [introState, setIntroState] = useState(() => (state.username ? 1 : 0));
   const mobileId = useMemo(() => "DUMMY", []);
+  const [isIntro, setIsIntro] = useState(true);
 
   const handleNewResponse = useCallback((data) => {
     console.log("New response from controller:", data);
   }, []);
 
-  const socket = useSocketMobile({
-    mobileId,
-    handleNewResponse,
-  });
+  const socket = useSocketMobile({ mobileId, handleNewResponse });
+  useMobileVisibility({ socket, mobileId });
 
-  const isVisible = useMobileVisibility({ socket, mobileId });
-  const [isIntro, setIsIntro] = useState(true);
+  if (state.isLoading) {
+    return <Loading customText="Initialising State" />;
+  }
+
+  return (
+    <>
+      <IntroWrapper
+        state={state}
+        setState={setState}
+        socket={socket}
+        isIntro={isIntro}
+        setIsIntro={setIsIntro}
+      />
+      {!isIntro && (
+        <UI socket={socket} mobileId={mobileId} username={state.username} />
+      )}
+      <AccelerometerHandler
+        socket={socket}
+        mobileId={mobileId}
+        isAccelerometerActive={state.isAccelerometerActive}
+        handleError={() => {
+          setIsIntro(true);
+        }}
+      />
+    </>
+  );
+}
+
+function IntroWrapper({ state, setState, socket, isIntro, setIsIntro }) {
+  const [introState, setIntroState] = useState(() => (state.username ? 1 : 0));
+
+  useEffect(() => {
+    console.log("introState", introState);
+    try {
+      socket.current.emit("mobile-new-intro", {
+        type: "state_change",
+        introState,
+      });
+    } catch (error) {
+      console.error("Error emitting intro state:", error);
+    }
+  }, [introState]);
 
   const handleAccelerometerActivate = useCallback(
     (value) => {
+      setIntroState(2);
       setIsIntro(false);
       setState({
         ...state,
         isAccelerometerActive: value,
       });
     },
-    [state, setState]
+    [state, setState, setIsIntro]
   );
 
   const handleUsernameSubmit = useCallback(
@@ -51,40 +90,19 @@ export default function Mobile() {
   useEffect(() => {
     if (state.username && typeof state.isAccelerometerActive !== "undefined") {
       setIsIntro(false);
+      setIntroState(2);
     }
   }, [state.username, state.isAccelerometerActive]);
 
-  if (state.isLoading) {
-    return <Loading customText="Initialising State" />;
-  }
+  if (!isIntro) return null;
 
-  console.log(introState);
-
-  function handleError(error) {
-    setIntroState(1);
-    setIsIntro(true);
-  }
   return (
-    <>
-      {isIntro && (
-        <Intro
-          socket={socket}
-          onAccelerometerActivate={handleAccelerometerActivate}
-          onUsernameSubmit={handleUsernameSubmit}
-          initialUsername={state.username}
-          introState={introState}
-          setIntroState={setIntroState}
-        />
-      )}
-      {!isIntro && (
-        <UI socket={socket} mobileId={mobileId} username={state.username} />
-      )}
-      <AccelerometerHandler
-        socket={socket}
-        mobileId={mobileId}
-        isAccelerometerActive={state.isAccelerometerActive}
-        handleError={handleError}
-      />
-    </>
+    <Intro
+      socket={socket}
+      onAccelerometerActivate={handleAccelerometerActivate}
+      onUsernameSubmit={handleUsernameSubmit}
+      initialUsername={state.username}
+      introState={introState}
+    />
   );
 }
