@@ -11,6 +11,7 @@ export default function useScreenVisibility() {
     isProjector,
     stage,
     iteration,
+    introState,
     setStage,
     setIsEnding,
     setIsTransition,
@@ -113,7 +114,7 @@ export default function useScreenVisibility() {
       currentStage: stage,
     });
 
-    if (isStageIdle || iterationRef.current == 0) return;
+    if (isStageIdle || iterationRef.current == 0 || introState <= 2) return;
 
     if (mobileVisibility) {
       setFrontendState();
@@ -121,7 +122,7 @@ export default function useScreenVisibility() {
       scheduleStateChanges();
     }
     return clearTimeouts;
-  }, [isStageIdle, mobileVisibility]);
+  }, [isStageIdle, mobileVisibility, introState]);
 
   useEffect(() => {
     return clearTimeouts;

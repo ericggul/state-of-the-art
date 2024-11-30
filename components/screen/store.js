@@ -155,6 +155,8 @@ const useScreenStore = create((set) => ({
 
         if (data.isVisible && !state.mobileVisibility) {
           updates.iteration = state.iteration + 1;
+          updates.stage = "Frontend";
+          updates.isTransition = false;
         }
       }
 

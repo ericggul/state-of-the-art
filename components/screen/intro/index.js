@@ -65,9 +65,14 @@ const Intro2 = memo(function Intro2() {
   return <S.Container>Scroll down on your phone</S.Container>;
 });
 
+const TurnPhone = memo(function TurnPhone() {
+  return <S.Container>Please turn your phone back on</S.Container>;
+});
+
 function Intro() {
   const introState = useScreenStore((state) => state.introState);
   const isProjector = useScreenStore((state) => state.isProjector);
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
   const audioRef = useRef(null);
   const fadeIntervalRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -115,6 +120,7 @@ function Intro() {
       {introState === 0 && <Intro0 />}
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
+      {!mobileVisibility && introState <= 2 && <TurnPhone />}
       {isProjector && (
         <audio ref={audioRef} src={SOUND_URL} autoPlay={false} loop />
       )}

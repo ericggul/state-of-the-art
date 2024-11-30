@@ -103,13 +103,10 @@ export default function Intro({
         />
       )}
       <S.IntroText>
-        For more immersive experience, you must <b>ALLOW</b> your device's
-        accelerometer.
+        Experience the gallery in its full interactive form by <b>ALLOWING</b>{" "}
+        your device's motion sensors.
       </S.IntroText>
-      <S.ActivateButton
-        onClick={handleAccelerometerActivation}
-        disabled={isIOS && permission === "denied"}
-      >
+      <S.ActivateButton onClick={handleAccelerometerActivation}>
         Activate Accelerometer
       </S.ActivateButton>
     </S.IntroContent>

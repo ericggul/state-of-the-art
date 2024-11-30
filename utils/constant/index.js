@@ -44,8 +44,8 @@ export const PING_INTERVAL = 2000;
 export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
-// export const INACTIVITY_TIMEOUT = 1.5 * 60 * 1000; // 5 minutes in milliseconds
-export const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 5 minutes in milliseconds
+export const FRONTEND_INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+export const INTRO_INACTIVITY_TIMEOUT = 60 * 1000; // 1 minute
 
 //IDLE
 export const IDLE_QR_LINK = "https://sota-xdlab.net/mobile";
