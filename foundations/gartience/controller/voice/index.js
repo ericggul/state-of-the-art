@@ -14,7 +14,7 @@ export default function Voice({ socket, setState, onModelSelect }) {
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const lastTriggerTimeRef = useRef(0);
-  const [initialThreshold, setInitialThreshold] = useState(45);
+  const [initialThreshold, setInitialThreshold] = useState(55);
 
   const INITIAL_VOLUME_THRESHOLD = initialThreshold;
   const SPEAKING_VOLUME_THRESHOLD = 25;
@@ -204,8 +204,8 @@ export default function Voice({ socket, setState, onModelSelect }) {
         </S.ThresholdLabel>
         <S.ThresholdSlider
           type="range"
-          min="35"
-          max="65"
+          min="45"
+          max="70"
           value={initialThreshold}
           onChange={(e) => setInitialThreshold(Number(e.target.value))}
         />
