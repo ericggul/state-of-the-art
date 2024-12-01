@@ -279,8 +279,8 @@ export const SCRIPT = [
   {
     idx: 47,
     paragraph: 9,
-    text: "이제 셋을 세면서 동시에 손을 모두 내리겠습니다.",
-    en: "Now, as I count to three, let us all lower our hands simultaneously.",
+    text: "이제 셋을 세보겠습니다.",
+    en: "Now, let's count to three.",
   },
   {
     idx: 48,

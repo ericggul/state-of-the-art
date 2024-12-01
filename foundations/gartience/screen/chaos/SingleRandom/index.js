@@ -52,9 +52,9 @@ const useBezierParams = (
         const key = `${i}-${j}`;
         newParams[key] = {
           controlX1Factor: getWeightedRandom(-1, 1),
-          controlX2Factor: getWeightedRandom(-1, 3),
-          controlY1Factor: getWeightedRandom(-10, 30),
-          controlY2Factor: getWeightedRandom(-20, 40),
+          controlX2Factor: getWeightedRandom(0, 2),
+          controlY1Factor: getWeightedRandom(-0, 20),
+          controlY2Factor: getWeightedRandom(-0, 20),
         };
       });
     });

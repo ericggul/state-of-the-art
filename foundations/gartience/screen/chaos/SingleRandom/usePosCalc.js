@@ -5,7 +5,7 @@ import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 const randomiseRange = () => {
-  const startOff = getRandom(-0.1, 0.2);
+  const startOff = getRandom(0, 0.25);
   const xRandom = getRandom(startOff, 0.47);
   let yRandom;
 
