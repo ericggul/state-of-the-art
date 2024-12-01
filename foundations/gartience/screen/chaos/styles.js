@@ -11,7 +11,7 @@ export const Container = styled.div`
   ${FlexCenterStyle}
 
 
-  font-size: 0.3vw;
+  font-size: 1vw;
   color: #fff;
 
   //no cursor

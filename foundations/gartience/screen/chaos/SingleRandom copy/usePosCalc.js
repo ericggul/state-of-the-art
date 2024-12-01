@@ -55,7 +55,7 @@ export default function usePosCalc({
 
       const intervalId = setInterval(() => {
         setTokenPositions(generateRandomPositions());
-      }, 23 * timeUnit);
+      }, 100 * timeUnit);
 
       return () => clearInterval(intervalId);
     } else {

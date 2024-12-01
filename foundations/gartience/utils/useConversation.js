@@ -64,8 +64,8 @@ export default function useConversation({
 
       setGetNewText(false);
 
-      const temperature = Math.min(0.7 + (loop / 10) * 0.25, 1.3);
-      const maxTokens = isScreen ? 35 : 22;
+      const temperature = Math.min(0.85 + (loop / 10) * 0.25, 1.3);
+      const maxTokens = isScreen ? 26 : 22;
       console.log(maxTokens);
 
       const response = await withTimeout(

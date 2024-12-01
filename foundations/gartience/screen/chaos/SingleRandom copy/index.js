@@ -48,16 +48,10 @@ const useBezierParams = (
       outputTokens.forEach((_, j) => {
         const key = `${i}-${j}`;
         newParams[key] = {
-          controlX1Factor: getWeightedRandom(-xRange * 2, xRange * 2),
-          controlX2Factor: getWeightedRandom(0.3, 1.7),
-          controlY1Factor: getWeightedRandom(
-            10 - yRange * 1.5,
-            20 + yRange * 1.5
-          ),
-          controlY2Factor: getWeightedRandom(
-            10 - yRange * 1.5,
-            20 + yRange * 1.5
-          ),
+          controlX1Factor: getWeightedRandom(-xRange, xRange),
+          controlX2Factor: getWeightedRandom(0.7 - xRange, 0.7 + xRange),
+          controlY1Factor: getWeightedRandom(15 - yRange, 15 + yRange),
+          controlY2Factor: getWeightedRandom(15 - yRange, 15 + yRange),
         };
       });
     });
@@ -65,13 +59,10 @@ const useBezierParams = (
     setBezierParams(newParams);
   }, [inputTokens, outputTokens, xRange, yRange, visible, isAnimating]);
 
-  useRandomInterval(updateBezierParams, 2 * timeUnit, 10 * timeUnit, visible);
+  useRandomInterval(updateBezierParams, 5 * timeUnit, 70 * timeUnit, visible);
 
   return bezierParams;
 };
-
-const X_RANGE_MAX = 1.5;
-const Y_RANGE_MAX = 18;
 
 function SingleRandom({
   newInputEmbeddings,
@@ -155,7 +146,7 @@ function SingleRandom({
       return outputTokens
         .map((_, j) => {
           const similarity = crossSimilarityMatrix[i][j];
-          if (similarity > 0.03) {
+          if (similarity > 0.1) {
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
             const d = createBezierPath(
