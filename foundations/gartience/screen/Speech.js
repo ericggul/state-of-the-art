@@ -1,12 +1,15 @@
 import React, { useState, useEffect, Suspense } from "react";
 import * as S from "./styles";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
+import useMembraneSynth from "@/utils/hooks/audio/useMembraneSynth";
 
 const Speech = React.memo(function Speech({ text, en, hasQR }) {
   const [displayedTextKo, setDisplayedTextKo] = useState("");
   const [displayedTextEn, setDisplayedTextEn] = useState("");
   const [currentIndexKo, setCurrentIndexKo] = useState(0);
   const [currentIndexEn, setCurrentIndexEn] = useState(0);
+
+  useMembraneSynth(displayedTextKo, { volume: -18 });
 
   // Reset when text changes
   useEffect(() => {

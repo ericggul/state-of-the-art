@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useEffect, useRef } from "react";
 import * as S from "./styles";
-import { SCRIPT } from "./constant";
+import { SCRIPT, MODEL_CHANGE } from "./constant";
 import { getFlatModels } from "../components/ArchitectureSelector";
 
 export default function Voice({ socket, setState, onModelSelect }) {
@@ -15,6 +15,19 @@ export default function Voice({ socket, setState, onModelSelect }) {
   const animationFrameRef = useRef(null);
   const lastTriggerTimeRef = useRef(0);
   const [initialThreshold, setInitialThreshold] = useState(55);
+
+  useEffect(() => {
+    try {
+      console.log(currentIndex);
+      if (currentIndex >= SCRIPT.length - 2) {
+        if (socket.current) {
+          socket.current.emit("gartience-new-chaos", { chaos: true });
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [currentIndex]);
 
   const INITIAL_VOLUME_THRESHOLD = initialThreshold;
   const SPEAKING_VOLUME_THRESHOLD = 25;
@@ -107,21 +120,21 @@ export default function Voice({ socket, setState, onModelSelect }) {
     // Auto-select architecture based on voice progress
     if (displayText) {
       const modelMap = {
-        35: "Boltzmann Machine", // 볼츠만 머신
-        36: "Variational Autoencoder (VAE)", // VAE
-        37: "AlexNet", // 알렉스넷
-        38: "SimCLR", // 트랜스포머
-        39: "Multi-Layer Perceptron (MLP)",
-        40: "Generative Adversarial Networks (GANs)",
-        41: "RNN (Recurrent Neural Network)",
-        42: "Stable Diffusion",
-        43: "ALBERT",
-        44: "Show and Tell",
-        45: "Basic Autoencoder",
-        46: "Perceptron",
-        47: "DCGAN",
-        48: "DDPM",
-        49: "PPO",
+        [MODEL_CHANGE]: "Boltzmann Machine",
+        [MODEL_CHANGE + 1]: "Variational Autoencoder (VAE)",
+        [MODEL_CHANGE + 2]: "AlexNet",
+        [MODEL_CHANGE + 3]: "SimCLR",
+        [MODEL_CHANGE + 4]: "Multi-Layer Perceptron (MLP)",
+        [MODEL_CHANGE + 5]: "Generative Adversarial Networks (GANs)",
+        [MODEL_CHANGE + 6]: "RNN (Recurrent Neural Network)",
+        [MODEL_CHANGE + 7]: "Stable Diffusion",
+        [MODEL_CHANGE + 8]: "ALBERT",
+        [MODEL_CHANGE + 9]: "Show and Tell",
+        [MODEL_CHANGE + 10]: "Basic Autoencoder",
+        [MODEL_CHANGE + 11]: "Perceptron",
+        [MODEL_CHANGE + 12]: "DCGAN",
+        [MODEL_CHANGE + 13]: "DDPM",
+        [MODEL_CHANGE + 14]: "PPO",
       };
 
       if (modelMap[displayText.idx]) {

@@ -7,14 +7,18 @@ export default function useMembraneSynth(value, options = {}) {
 
   // Initialize synth
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      synthRef.current = new Tone.MembraneSynth().toDestination();
-      synthRef.current.volume.value = options.volume ?? -10;
-    }
+    try {
+      if (typeof window !== "undefined") {
+        synthRef.current = new Tone.MembraneSynth().toDestination();
+        synthRef.current.volume.value = options.volume ?? -10;
+      }
 
-    return () => {
-      if (synthRef.current) synthRef.current.dispose();
-    };
+      return () => {
+        if (synthRef.current) synthRef.current.dispose();
+      };
+    } catch (e) {
+      console.log(e);
+    }
   }, [options.volume]);
 
   // Play sound on value change
