@@ -179,7 +179,7 @@ function SingleRandom({
       return outputTokens
         .map((_, j) => {
           const similarity = crossSimilarityMatrix[i][j];
-          if (similarity > 0.05) {
+          if (similarity > 0.08) {
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
             const d = createBezierPath(

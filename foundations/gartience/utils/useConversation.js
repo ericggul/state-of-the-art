@@ -4,8 +4,8 @@ import { generateInitialConversation } from "./generateInitialConversation";
 import useMobileStore from "@/foundations/gartience/mobile/store";
 
 const TIME_OUT = 10 * 1000;
-const BLACK_TIME = 0 * 1000;
-const WHITE_TIME = 3.5 * 1000;
+const BLACK_TIME = 1.0 * 1000;
+const WHITE_TIME = 3.0 * 1000;
 
 // Add timeout utility
 const withTimeout = async (promise, timeoutMs) => {

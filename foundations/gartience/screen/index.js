@@ -52,7 +52,7 @@ const QR = React.memo(function QR() {
     <S.QRContainer>
       <QRCodeSVG
         value={URL}
-        size={windowWidth * 0.14}
+        size={windowWidth * 0.18}
         bgColor="transparent"
         fgColor="white"
       />

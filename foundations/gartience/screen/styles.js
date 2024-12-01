@@ -20,7 +20,7 @@ export const Container = styled.div`
 
 export const ContentContainer = styled.div`
   ${FlexCenterStyle};
-  width: 65vw;
+  width: 80vw;
   height: 100%;
   position: relative;
   margin: 0 auto;
@@ -89,7 +89,7 @@ export const SpeechContainer = styled.div`
 export const SpeechText = styled.div`
   width: 100%;
   color: white;
-  font-size: 2.2vw;
+  font-size: 2.3vw;
   font-weight: 700;
   line-height: 1.3;
   word-break: keep-all;
@@ -117,7 +117,7 @@ export const SpeechText = styled.div`
 `;
 
 export const SpeechTextEn = styled(SpeechText)`
-  font-size: 1.6vw;
+  font-size: 1.7vw;
   font-weight: 500;
   opacity: 0.95;
   font-family: "SF Mono", "Fira Code", "Courier New", monospace;

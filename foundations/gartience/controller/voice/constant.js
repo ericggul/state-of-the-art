@@ -15,8 +15,8 @@ export const SCRIPT = [
   {
     idx: 3,
     paragraph: 1,
-    text: "제가 직접 코딩한 이 인터랙티브 웹 작품을 통해,",
-    en: "Through this interactive web piece that I engineered,",
+    text: "제가 직접 Three.js로 코딩한 이 인터랙티브 웹 작품을 통해,",
+    en: "Through this interactive web piece that I programmed using Three.js,",
   },
   {
     idx: 4,
@@ -75,7 +75,7 @@ export const SCRIPT = [
   {
     idx: 13,
     paragraph: 3,
-    text: "그리고 그 말의 뜻이 아닌 크기에 따라 텍스트가 자동 생성됩니다.",
+    text: "그리고 그 말의 뜻이 아닌 소리의 크기에 따라 텍스트가 자동 생성됩니다.",
     en: "And text is automatically generated based on the amplitude of my speech, rather than its semantic content.",
   },
   {
