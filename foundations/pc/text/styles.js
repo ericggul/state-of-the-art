@@ -16,6 +16,25 @@ export const Canvas = styled.div`
   opacity: 0.5;
   transform: translateZ(0);
 
+  background-color: #000000;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${(props) => `linear-gradient(
+      45deg,
+      transparent 0%,
+      hsla(${props.$hue}, 100%, 50%, 1) 50%,
+      transparent 100%
+    )`};
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
   canvas {
     position: absolute;
     top: 0;
@@ -34,13 +53,21 @@ const scrollbarHide = css`
   }
 `;
 
-const depthColors = {
-  0: "#00ffff",
-  1: "#00ccff",
-  2: "#0099ff",
-  3: "#0066ff",
-  4: "#0033ff",
+// Create a function to generate depth colors based on KEY_HUE
+const getDepthColor = (depth, hue) => {
+  const saturation = 100;
+  const lightness = 65 - depth * 10; // Decrease lightness with depth
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
+
+// Create dynamic depth colors based on KEY_HUE
+const generateDepthColors = (hue) => ({
+  0: getDepthColor(0, hue),
+  1: getDepthColor(1, hue),
+  2: getDepthColor(2, hue),
+  3: getDepthColor(3, hue),
+  4: getDepthColor(4, hue),
+});
 
 export const StructureText = styled.pre.withConfig({
   shouldComponentUpdate: true,
@@ -82,12 +109,12 @@ export const StructureText = styled.pre.withConfig({
   }
 
   .tree-line {
-    color: #666;
+    color: ${(props) => `hsla(${props.$hue}, 25%, 40%, 1)`};
     user-select: none;
     transform: translateZ(0);
 
     .branch-char {
-      color: #888;
+      color: ${(props) => `hsla(${props.$hue}, 30%, 50%, 1)`};
       font-weight: bold;
     }
   }
@@ -121,14 +148,17 @@ export const StructureText = styled.pre.withConfig({
     font-size: 12px;
   }
 
-  ${Object.entries(depthColors).map(
-    ([depth, color]) => css`
-      .depth-${depth} {
-        color: ${color};
-        transform: translateZ(0);
-      }
-    `
-  )}
+  ${({ $hue }) => {
+    const depthColors = generateDepthColors($hue);
+    return Object.entries(depthColors).map(
+      ([depth, color]) => css`
+        .depth-${depth} {
+          color: ${color};
+          transform: translateZ(0);
+        }
+      `
+    );
+  }}
 
   .model-structure {
     display: flex;

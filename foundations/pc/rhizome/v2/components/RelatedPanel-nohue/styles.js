@@ -8,7 +8,7 @@ export const LeftLine = styled.div`
   width: ${LEFT}vw;
   top: ${HEIGHT - 15}vh;
   left: ${LEFT}vw;
-  background: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+  background: #fff;
 `;
 
 export const RelatedPanel = styled.div`
@@ -17,9 +17,9 @@ export const RelatedPanel = styled.div`
   height: 30vh;
   bottom: ${100 - HEIGHT - 3}vh;
   left: ${LEFT * 2}vw;
-  border: ${LINEWIDTH}vw solid
-    ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+  border: ${LINEWIDTH}vw solid rgba(255, 255, 255, 1);
   padding: 1vw;
+
   border-radius: 0 0 3vw 0;
 
   &::before {
@@ -29,13 +29,23 @@ export const RelatedPanel = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${(props) => `hsla(${props.$hue}, 100%, 5%, 0.9)`};
+    background: rgba(0, 0, 0, 0.8);
     clip-path: polygon(0 0, 100% 0, 100% 80%, 80% 100%, 0 100%);
     z-index: -1;
   }
 
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  // background: rgba(0, 0, 0, 0.5);
+
+  &::-webkit-scrollbar {
+    width: 2px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
   &::-webkit-scrollbar-thumb {
-    background: ${(props) => `hsla(${props.$hue}, 50%, 75%, 0.2)`};
+    background: rgba(255, 255, 255, 0.2);
   }
 `;
 
@@ -44,8 +54,10 @@ export const PanelTitle = styled.div`
   top: -4vh;
   left: 0;
   width: 100%;
-  color: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+
+  color: #ffffff;
   font-size: 1vw;
+
   flex-shrink: 0;
 `;
 
@@ -71,8 +83,8 @@ export const RelatedItem = styled.div`
   padding: 0.4vw 0.5vw;
   padding-right: 1vw;
   border-radius: 2px;
-  background: ${(props) => `hsla(${props.$hue}, 30%, 5%, 0.6)`};
-  border: 1px solid ${(props) => `hsla(${props.$hue}, 50%, 75%, 0.1)`};
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -86,14 +98,13 @@ export const RelatedItem = styled.div`
     position: absolute;
     top: 0.4vw;
     left: 0.2vw;
-    color: ${(props) => `hsla(${props.$hue}, 50%, 75%, 0.4)`};
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.85vw;
   }
 
   &:hover {
-    background: ${(props) => `hsla(${props.$hue}, 30%, 5%, 0.8)`};
-    border-color: ${(props) =>
-      `hsla(${props.$hue}, 50%, 75%, ${props.$strength * 0.5})`};
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, ${(props) => props.$strength * 0.5});
   }
 `;
 
@@ -113,12 +124,12 @@ export const ModelName = styled.div`
 `;
 
 export const ModelVersion = styled.div`
-  color: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.6)`};
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.8vw;
   padding: 0.1vw 0.3vw;
-  background: ${(props) => `hsla(${props.$hue}, 30%, 75%, 0.05)`};
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 2px;
-  border: 1px solid ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.1)`};
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 export const RelationText = styled.div`

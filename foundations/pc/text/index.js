@@ -14,9 +14,10 @@ import * as S from "./styles";
 import FrameSimple from "@/foundations/pc/frame/simple";
 import Architecture3D from "@/foundations/frontend/3d";
 
-// Memoize LayerText component
+const KEY_HUE = 200;
+
 const LayerText = React.memo(
-  ({ layer, depth = 0, showGrid = false, startDelay = 0 }) => {
+  ({ layer, depth = 0, showGrid = false, startDelay = 0, hue = KEY_HUE }) => {
     // Move formatting functions inside the component
     const formatDimensions = useCallback((dims) => {
       if (!dims) return "";
@@ -75,6 +76,7 @@ const LayerText = React.memo(
               depth={depth}
               enableSound={depth < 3}
               startDelay={startDelay + baseDelay}
+              hue={hue}
             />
           </span>
         </div>
@@ -86,6 +88,7 @@ const LayerText = React.memo(
               depth={depth + 1}
               showGrid={showGrid}
               startDelay={startDelay + baseDelay + idx * 100}
+              hue={hue}
             />
           ))}
         </div>
@@ -98,7 +101,7 @@ export default function TextComponent() {
   const { currentArchitectures } = useScreenStore();
   const {
     visualization: { structure },
-  } = useModelStructure(currentArchitectures, 150);
+  } = useModelStructure(currentArchitectures, KEY_HUE);
   const containerRef = useRef(null);
   const scrollPosRef = useRef(0);
   const rafRef = useRef(null);
@@ -169,7 +172,7 @@ export default function TextComponent() {
 
   return (
     <S.Container>
-      <S.Canvas>
+      <S.Canvas $hue={KEY_HUE}>
         <Suspense fallback={null}>
           <Architecture3D />
         </Suspense>
@@ -177,7 +180,11 @@ export default function TextComponent() {
 
       <S.LeftBlur />
 
-      <S.StructureText ref={containerRef} $needsScroll={needsScroll}>
+      <S.StructureText
+        ref={containerRef}
+        $needsScroll={needsScroll}
+        $hue={KEY_HUE}
+      >
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
           {structure.map((layer, idx) => (
             <LayerText
@@ -185,6 +192,7 @@ export default function TextComponent() {
               layer={layer}
               showGrid={true}
               startDelay={idx * 600 + 50}
+              hue={KEY_HUE}
             />
           ))}
           <div

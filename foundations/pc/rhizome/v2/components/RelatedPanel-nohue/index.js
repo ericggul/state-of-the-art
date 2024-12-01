@@ -3,8 +3,6 @@ import { ANIMATION } from "../../constants";
 import TypewriterText from "../TypewriterText";
 import * as S from "./styles";
 
-const KEY_HUE = 200;
-
 export default function RelatedPanel({ currentModel, relatedModels }) {
   const listRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
@@ -53,25 +51,21 @@ export default function RelatedPanel({ currentModel, relatedModels }) {
 
   return (
     <>
-      <S.LeftLine $hue={KEY_HUE} />
-      <S.RelatedPanel $hue={KEY_HUE}>
-        <S.PanelTitle $hue={KEY_HUE}>
+      <S.LeftLine />
+      <S.RelatedPanel>
+        <S.PanelTitle>
           <TypewriterText text={`Connected to ${currentModel}`} speed={30} />
         </S.PanelTitle>
         <S.RelatedList ref={listRef}>
           {relatedModels.map(
             (model, index) =>
               visibleItems.includes(index) && (
-                <S.RelatedItem
-                  key={index}
-                  $strength={model.value / 10}
-                  $hue={KEY_HUE}
-                >
+                <S.RelatedItem key={index} $strength={model.value / 10}>
                   <S.ModelHeader>
                     <S.ModelName>
                       <TypewriterText text={model.name} speed={20} />
                     </S.ModelName>
-                    <S.ModelVersion $hue={KEY_HUE}>
+                    <S.ModelVersion>
                       <TypewriterText text={model.version} speed={20} />
                     </S.ModelVersion>
                   </S.ModelHeader>

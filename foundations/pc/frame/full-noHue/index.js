@@ -45,12 +45,12 @@ export default function Frame() {
 
   return (
     <S.Container>
-      <S.VerticalLine $hue={KEY_HUE} />
-      <S.HorizontalLine $hue={KEY_HUE} />
-      <S.HorizontalLine2 $hue={KEY_HUE} />
+      <S.VerticalLine />
+      <S.HorizontalLine />
+      <S.HorizontalLine2 />
 
       {currentArchitectures && currentArchitectures.length > 0 && (
-        <S.ModelTitle $hue={KEY_HUE}>
+        <S.ModelTitle>
           <S.Title>
             <TextScramble
               text={currentArchitectures[0].name}

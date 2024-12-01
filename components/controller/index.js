@@ -49,19 +49,19 @@ export default function Controller() {
   // Effects
   useControllerVisibility();
 
-  useEffect(() => {
-    if (isReset) {
-      emitSocketEvent("controller-new-stage-and-reset", {
-        isReset,
-        type: "reset",
-      });
-      const timeout = setTimeout(reset, 5000);
-      return () => clearTimeout(timeout);
-    }
-  }, [isReset]);
+  // useEffect(() => {
+  //   if (isReset) {
+  //     emitSocketEvent("controller-new-stage-and-reset", {
+  //       isReset,
+  //       type: "reset",
+  //     });
+  //     const timeout = setTimeout(reset, 5000);
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [isReset]);
 
   useEffect(() => {
-    emitSocketEvent("controller-new-stage-and-reset", { stage, type: "stage" });
+    // emitSocketEvent("controller-new-stage-and-reset", { stage, type: "stage" });
   }, [stage]);
 
   const timeoutRef = useRef(null);

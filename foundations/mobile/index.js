@@ -32,7 +32,7 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     showScrollHint,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
-  useFeedback(activeIndex);
+  // useFeedback(activeIndex);
 
   return (
     <>

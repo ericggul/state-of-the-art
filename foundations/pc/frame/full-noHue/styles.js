@@ -20,7 +20,7 @@ export const VerticalLine = styled.div`
   height: ${HEIGHT}vh;
   top: 0;
   left: ${LEFT}vw;
-  background: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+  background: #fff;
 `;
 
 export const HorizontalLine = styled.div`
@@ -29,7 +29,7 @@ export const HorizontalLine = styled.div`
   width: 45vw;
   top: ${TOP}vw;
   left: 0;
-  background: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+  background: #fff;
 `;
 
 export const HorizontalLine2 = styled.div`
@@ -38,7 +38,7 @@ export const HorizontalLine2 = styled.div`
   width: 25vw;
   top: ${TOP}vw;
   left: 50vw;
-  background: ${(props) => `hsla(${props.$hue}, 100%, 75%, 0.9)`};
+  background: #fff;
 
   &::before {
     content: "";
@@ -46,7 +46,7 @@ export const HorizontalLine2 = styled.div`
     width: 1vw;
     height: 1vw;
     border-radius: 50%;
-    background: ${(props) => `hsla(${props.$hue}, 100%, 75%, 1)`};
+    background: #fff;
     top: 0;
     left: -0.5vw;
     transform: translateY(-50%);
@@ -55,8 +55,7 @@ export const HorizontalLine2 = styled.div`
 
 export const ModelTitle = styled.div`
   position: absolute;
-  // background: ${(props) => `hsla(${props.$hue}, 60%, 15%, 0.5)`};
-  color: ${(props) => `hsla(${props.$hue}, 100%, 80%, 1)`};
+  background: rgba(0, 0, 0, 0.3);
   left: ${LEFT + 1.5}vw;
   top: ${TOP}vw;
   padding: 0.3vw 1vw;
