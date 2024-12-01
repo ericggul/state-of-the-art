@@ -15,8 +15,8 @@ export const SCRIPT = [
   {
     idx: 3,
     paragraph: 1,
-    text: "제가 직접 Three.js로 코딩한 이 인터랙티브 웹 작품을 통해,",
-    en: "Through this interactive web piece that I programmed using Three.js,",
+    text: "제가 직접 Three.js로 코딩한 이 멀티 디바이스 웹 작품을 통해,",
+    en: "Through this Multi-Device Web Artwork that I programmed using Three.js,",
   },
   {
     idx: 4,
@@ -99,8 +99,8 @@ export const SCRIPT = [
   {
     idx: 17,
     paragraph: 3,
-    text: "이것이 바로 LLM을 넘어서는, 진정한 다다이즘의 실천이 아니겠습니까?",
-    en: "Is this not precisely what transcends LLMs and embodies the authentic practice of Dadaism?",
+    text: "이것이 바로 LLM을 넘어서는, 기술에 기반한 진정한 다다이즘의 실천이 아니겠습니까?",
+    en: "Is this not precisely what transcends LLMs and embodies the authentic practice of Dadaism - built upon technology?",
   },
   {
     idx: 18,
@@ -117,8 +117,8 @@ export const SCRIPT = [
   {
     idx: 20,
     paragraph: 3,
-    text: "다다입니다.",
-    en: "This is Dada.",
+    text: "혹은 백남준이 플럭서스에서 펼친것과 같은 네오-다다",
+    en: "Or neo-Dadaism, as exemplified by Nam June Paik’s Fluxus movement",
   },
   {
     idx: 21,
