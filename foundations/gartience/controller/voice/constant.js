@@ -15,8 +15,8 @@ export const SCRIPT = [
   {
     idx: 3,
     paragraph: 1,
-    text: "제가 직접 Three.js로 코딩한 이 멀티 디바이스 웹 작품을 통해,",
-    en: "Through this Multi-Device Web Artwork that I programmed using Three.js,",
+    text: "제가 직접 Three.js, ChatGPT API, 그리고 Device Accelerometer API를 사용해 코딩한 이 멀티 디바이스 웹 작품을 통해,",
+    en: "Through this Multi-Device Web Artwork that I programmed using Three.js, ChatGPT API, and the Device Accelerometer API,",
   },
   {
     idx: 4,
@@ -81,8 +81,8 @@ export const SCRIPT = [
   {
     idx: 14,
     paragraph: 3,
-    text: "이 인터랙션은 제가 G아티언스를 위해 만든 간단한 소프트웨어를 통해 코딩되었는데,",
-    en: "This interaction was coded using simple software that I developed for GArtience.",
+    text: "이 인터랙션은 제가 G아티언스를 위해 만든 소프트웨어를 통해 코딩되었는데,",
+    en: "This interaction was coded using customised software that I programmed for GArtience.",
   },
   {
     idx: 15,
