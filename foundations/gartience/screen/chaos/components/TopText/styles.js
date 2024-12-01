@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Text = styled.div`
   position: absolute;
   top: 4vh;
-  font-size: 1vw;
+  font-size: 1.2vw;
   display: flex;
   justify-content: center;
   align-items: center;
