@@ -23,7 +23,7 @@ function Transcript({ conversations, isblack }) {
         color: isblack ? "#fff" : "#000",
       }}
     >
-      {displayMessage}
+      {"GPT: " + displayMessage}
     </S.Text>
   );
 }
