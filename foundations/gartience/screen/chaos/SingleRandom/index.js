@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import * as S from "./styles";
+import useResize from "@/utils/hooks/useResize";
 import usePosCalc from "./usePosCalc";
 import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
@@ -29,6 +30,8 @@ const getWeightedRandom = (min, max) => {
   return result;
 };
 
+const getRandom = (min, max) => Math.random() * (max - min) + min;
+
 const useBezierParams = (
   inputTokens,
   outputTokens,
@@ -48,16 +51,10 @@ const useBezierParams = (
       outputTokens.forEach((_, j) => {
         const key = `${i}-${j}`;
         newParams[key] = {
-          controlX1Factor: getWeightedRandom(-xRange * 2, xRange * 2),
-          controlX2Factor: getWeightedRandom(0.3, 1.7),
-          controlY1Factor: getWeightedRandom(
-            10 - yRange * 1.5,
-            20 + yRange * 1.5
-          ),
-          controlY2Factor: getWeightedRandom(
-            10 - yRange * 1.5,
-            20 + yRange * 1.5
-          ),
+          controlX1Factor: getWeightedRandom(-1, 1),
+          controlX2Factor: getWeightedRandom(-1, 3),
+          controlY1Factor: getWeightedRandom(-10, 30),
+          controlY2Factor: getWeightedRandom(-20, 40),
         };
       });
     });
@@ -65,13 +62,15 @@ const useBezierParams = (
     setBezierParams(newParams);
   }, [inputTokens, outputTokens, xRange, yRange, visible, isAnimating]);
 
-  useRandomInterval(updateBezierParams, 2 * timeUnit, 10 * timeUnit, visible);
+  useRandomInterval(updateBezierParams, 1 * timeUnit, 8 * timeUnit, visible);
 
   return bezierParams;
 };
 
-const X_RANGE_MAX = 1.5;
-const Y_RANGE_MAX = 18;
+const X_RANGE_MIN = 0.5;
+const X_RANGE_MAX = 2.5;
+const Y_RANGE_MIN = 10;
+const Y_RANGE_MAX = 25;
 
 function SingleRandom({
   newInputEmbeddings,
@@ -95,11 +94,34 @@ function SingleRandom({
   const [yRange, setYRange] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Update ranges and animation state based on `isblack` and `visible` only when necessary
+  // Update ranges more frequently
   useEffect(() => {
-    setXRange(1.5);
-    setYRange(18);
-    setIsAnimating(isblack && visible);
+    if (!isblack || !visible) {
+      setXRange(0);
+      setYRange(0);
+      setIsAnimating(false);
+      return;
+    }
+
+    setIsAnimating(true);
+
+    // Initial values
+    setXRange(getWeightedRandom(X_RANGE_MIN, X_RANGE_MAX));
+    setYRange(getWeightedRandom(Y_RANGE_MIN, Y_RANGE_MAX));
+
+    // Continuously update ranges
+    const intervalId = setInterval(() => {
+      setXRange((prev) => {
+        const target = getWeightedRandom(X_RANGE_MIN, X_RANGE_MAX);
+        return target;
+      });
+      setYRange((prev) => {
+        const target = getWeightedRandom(Y_RANGE_MIN, Y_RANGE_MAX);
+        return target;
+      });
+    }, 10); // Update every 50ms for smooth animation
+
+    return () => clearInterval(intervalId);
   }, [isblack, visible]);
 
   const inputPosCalc = usePosCalc({
@@ -149,13 +171,15 @@ function SingleRandom({
     [inputPosCalc.yMargin, outputPosCalc.yMargin]
   );
 
+  const [windowWidth, _] = useResize();
+
   // Modify paths calculation
   const paths = useMemo(() => {
     return inputTokens.flatMap((_, i) => {
       return outputTokens
         .map((_, j) => {
           const similarity = crossSimilarityMatrix[i][j];
-          if (similarity > 0.03) {
+          if (similarity > 0.05) {
             const [x1, y1] = inputPosCalc.wordPosCalc(i);
             const [x2, y2] = outputPosCalc.wordPosCalc(j);
             const d = createBezierPath(
@@ -170,7 +194,7 @@ function SingleRandom({
                 key={`arc-${i}-${j}`}
                 d={d}
                 fill="none"
-                strokeWidth={Math.pow(similarity, 3) * 8}
+                strokeWidth={Math.pow(similarity, 3.2) * windowWidth * 0.003}
               />
             );
           }
@@ -186,6 +210,7 @@ function SingleRandom({
     outputPosCalc,
     createBezierPath,
     bezierParams,
+    windowWidth,
   ]);
 
   return (

@@ -56,15 +56,15 @@ export default React.memo(function Wrapper() {
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
         range={{ x: [0.3, 0.7], y: [0.3, 0.7] }}
-        visible={true}
-        timeUnit={1}
+        visible={!isblack}
+        timeUnit={10}
       />
 
       <SingleRandom
         newInputEmbeddings={inputEmbeddings}
         newOutputEmbeddings={outputEmbeddings}
         isblack={isblack}
-        range={{ x: [0.1, 0.9], y: [0.1, 0.9] }}
+        range={{ x: [0.2, 0.8], y: [0.2, 0.8] }}
         visible={true}
         timeUnit={1}
       />

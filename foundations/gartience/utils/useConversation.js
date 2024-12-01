@@ -4,8 +4,8 @@ import { generateInitialConversation } from "./generateInitialConversation";
 import useMobileStore from "@/foundations/gartience/mobile/store";
 
 const TIME_OUT = 10 * 1000;
-const BLACK_TIME = 1.5 * 1000;
-const WHITE_TIME = 3 * 1000;
+const BLACK_TIME = 0 * 1000;
+const WHITE_TIME = 3.5 * 1000;
 
 // Add timeout utility
 const withTimeout = async (promise, timeoutMs) => {
@@ -64,8 +64,8 @@ export default function useConversation({
 
       setGetNewText(false);
 
-      const temperature = Math.min(0.85 + (loop / 10) * 0.25, 1.3);
-      const maxTokens = isScreen ? 26 : 22;
+      const temperature = Math.min(0.85 + (loop / 10) * 0.15, 1.1);
+      const maxTokens = isScreen ? 22 : 22;
       console.log(maxTokens);
 
       const response = await withTimeout(

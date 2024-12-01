@@ -1,7 +1,25 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import useResize from "@/utils/hooks/useResize";
+import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const getRandom = (min, max) => Math.random() * (max - min) + min;
+
+const randomiseRange = () => {
+  const startOff = getRandom(-0.1, 0.2);
+  const xRandom = getRandom(startOff, 0.47);
+  let yRandom;
+
+  if (Math.random() < 0.7) {
+    yRandom = 0.5 + startOff - xRandom;
+  } else {
+    yRandom = getRandom(0.1, 0.9);
+  }
+
+  return {
+    x: [xRandom, 1 - xRandom],
+    y: [yRandom, 1 - yRandom],
+  };
+};
 
 export default function usePosCalc({
   tokens,
@@ -11,31 +29,44 @@ export default function usePosCalc({
   type,
 }) {
   const [windowWidth, windowHeight] = useResize();
-  const wordLength = tokens.length;
+  const [currentRange, setCurrentRange] = useState(range);
+  const [tokenPositions, setTokenPositions] = useState([]);
+
+  // Update range randomly
+  useRandomInterval(
+    () => {
+      if (isAnimating) {
+        setCurrentRange(randomiseRange());
+      }
+    },
+    5 * timeUnit,
+    30 * timeUnit,
+    isAnimating
+  );
+
+  const generateRandomPositions = useCallback(() => {
+    const basePosition = () => ({
+      x: getRandom(currentRange.x[0], currentRange.x[1]) * windowWidth,
+    });
+
+    return tokens.map(() => ({
+      ...basePosition(),
+      y: getRandom(currentRange.y[0], currentRange.y[1]) * windowHeight,
+    }));
+  }, [tokens, currentRange, windowWidth, windowHeight, type]);
 
   const wordInterval = useMemo(() => {
-    if (wordLength === 0) return 0;
-    return Math.min(0.05 * windowWidth, (windowWidth * 0.9) / wordLength);
-  }, [windowWidth, wordLength]);
+    if (tokens.length === 0) return 0;
+    return Math.min(0.05 * windowWidth, (windowWidth * 0.9) / tokens.length);
+  }, [windowWidth, tokens.length]);
 
   const yMargin = useMemo(() => windowHeight * 0.03, [windowHeight]);
 
-  const [tokenPositions, setTokenPositions] = useState([]);
-
-  // Memoized position generator for animated state
-  const generateRandomPositions = useCallback(() => {
-    return tokens.map(() => ({
-      x: getRandom(range.x[0], range.x[1]) * windowWidth,
-      y: getRandom(range.y[0], range.y[1]) * windowHeight,
-    }));
-  }, [tokens, range, windowWidth, windowHeight]);
-
-  // Memoized position calculator for non-animated state
   const generateStaticPositions = useCallback(() => {
     return tokens.map((_, idx) => {
       const xPos =
         windowWidth / 2 -
-        ((wordLength - 1) * wordInterval) / 2 +
+        ((tokens.length - 1) * wordInterval) / 2 +
         idx * wordInterval;
       let yPos = windowHeight / 2;
 
@@ -47,19 +78,16 @@ export default function usePosCalc({
 
       return { x: xPos, y: yPos };
     });
-  }, [tokens, wordLength, wordInterval, windowWidth, windowHeight, type]);
+  }, [tokens, wordInterval, windowWidth, windowHeight, type]);
 
   useEffect(() => {
     if (isAnimating) {
       setTokenPositions(generateRandomPositions());
-
       const intervalId = setInterval(() => {
         setTokenPositions(generateRandomPositions());
-      }, 23 * timeUnit);
-
+      }, getRandom(1, 8) * timeUnit); // Randomized interval for more chaos
       return () => clearInterval(intervalId);
     } else {
-      // Set static positions when not animating
       setTokenPositions(generateStaticPositions());
     }
   }, [generateRandomPositions, generateStaticPositions, isAnimating, timeUnit]);
