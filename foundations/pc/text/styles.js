@@ -2,6 +2,13 @@ import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 import { animated } from "react-spring";
 
+// Add this at the top with other utility functions
+const cycleHue = (hue) => {
+  if (hue < 60) return hue + 180;
+  if (hue > 240) return hue - 180;
+  return hue;
+};
+
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
@@ -108,16 +115,19 @@ export const StructureText = styled(animated.pre)`
   }
 
   .tree-line {
-    color: ${(props) => `hsla(${props.$hue}, 10%, 40%, 0.4)`};
+    color: ${(props) => `hsla(${cycleHue(props.$hue)}, 60%, 65%, 0.9)`};
     user-select: none;
     transform: translateZ(0);
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
+    text-shadow: 0 0 15px
+      hsla(${(props) => cycleHue(props.$hue)}, 70%, 50%, 0.4);
 
     .branch-char {
-      color: ${(props) => `hsla(${props.$hue}, 15%, 60%, 0.5)`};
-      font-weight: 300;
-      text-shadow: 0 0 15px hsla(${(props) => props.$hue}, 30%, 80%, 0.2);
+      color: ${(props) => `hsla(${cycleHue(props.$hue)}, 85%, 75%, 1)`};
+      font-weight: 500;
+      text-shadow: 0 0 20px
+        hsla(${(props) => cycleHue(props.$hue)}, 80%, 50%, 0.5);
     }
   }
 
@@ -130,32 +140,37 @@ export const StructureText = styled(animated.pre)`
   }
 
   .dims {
-    color: ${(props) => `hsla(${props.$hue + 120}, 40%, 85%, 0.8)`};
+    color: ${(props) => `hsla(${cycleHue(props.$hue + 120)}, 70%, 75%, 0.9)`};
     margin-left: 8px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue + 120}, 70%, 50%, 0.2);
+    font-weight: 400;
+    text-shadow: 0 0 10px
+      hsla(${(props) => cycleHue(props.$hue + 120)}, 70%, 50%, 0.3);
   }
 
   .type {
-    color: ${(props) => `hsla(${props.$hue}, 10%, 80%, 0.6)`};
+    color: ${(props) => `hsla(${cycleHue(props.$hue - 30)}, 60%, 75%, 0.8)`};
     margin-left: 8px;
-    font-weight: 300;
+    font-weight: 400;
+    text-shadow: 0 0 10px
+      hsla(${(props) => cycleHue(props.$hue - 30)}, 60%, 50%, 0.2);
   }
 
   .params {
-    color: ${(props) => `hsla(${props.$hue - 60}, 40%, 85%, 0.7)`};
+    color: ${(props) => `hsla(${cycleHue(props.$hue - 90)}, 70%, 75%, 0.85)`};
     margin-left: 8px;
     font-size: 12px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue - 60}, 70%, 50%, 0.15);
+    font-weight: 400;
+    text-shadow: 0 0 10px
+      hsla(${(props) => cycleHue(props.$hue - 90)}, 70%, 50%, 0.25);
   }
 
   .grid {
-    color: ${(props) => `hsla(${props.$hue + 60}, 40%, 85%, 0.7)`};
+    color: ${(props) => `hsla(${cycleHue(props.$hue + 90)}, 70%, 75%, 0.85)`};
     margin-left: 8px;
     font-size: 12px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue + 60}, 70%, 50%, 0.15);
+    font-weight: 400;
+    text-shadow: 0 0 10px
+      hsla(${(props) => cycleHue(props.$hue + 90)}, 70%, 50%, 0.25);
   }
 
   ${({ $hue }) => {
@@ -165,8 +180,20 @@ export const StructureText = styled(animated.pre)`
         .depth-${depth} {
           color: ${color};
           transform: translateZ(0);
-          text-shadow: 0 0 15px hsla(${$hue}, ${20 - depth * 2}%, 80%, 0.15);
+          text-shadow: 0 0 20px
+            hsla(${cycleHue($hue)}, ${30 - depth * 2}%, 80%, 0.25);
           transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .depth-${depth} .name {
+          color: hsla(
+            ${cycleHue($hue)},
+            ${75 - depth * 5}%,
+            ${85 - depth * 5}%,
+            ${0.95 - depth * 0.1}
+          );
+          text-shadow: 0 0 15px
+            hsla(${cycleHue($hue)}, 70%, 50%, ${0.4 - depth * 0.05});
         }
       `
     );

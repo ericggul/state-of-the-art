@@ -13,7 +13,7 @@ import * as S from "./styles";
 
 import FrameSimple from "@/foundations/pc/frame/simple";
 import Architecture3D from "@/foundations/frontend/3d";
-import { HueContext, HueProvider } from "./components/HueProvider";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 const LayerText = React.memo(
   ({ layer, depth = 0, showGrid = false, startDelay = 0, hue = KEY_HUE }) => {
@@ -116,16 +116,17 @@ export default function TextComponent() {
     (state) => state.currentArchitectures
   );
   const targetHue = currentArchitectures?.[0]?.hue ?? 230;
+  const debouncedHue = useDebounce(targetHue, 100);
 
   return (
-    <HueProvider targetHue={targetHue}>
-      <TextContent currentArchitectures={currentArchitectures} />
-    </HueProvider>
+    <TextContent
+      currentArchitectures={currentArchitectures}
+      hue={debouncedHue}
+    />
   );
 }
 
-function TextContent({ currentArchitectures }) {
-  const { hue } = React.useContext(HueContext);
+function TextContent({ currentArchitectures, hue }) {
   const {
     visualization: { structure },
   } = useModelStructure(currentArchitectures, hue);

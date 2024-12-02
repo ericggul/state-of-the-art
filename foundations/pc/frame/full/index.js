@@ -2,16 +2,16 @@ import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
 import TextScramble from "../../utils/TextScramble";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 export default function Frame() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
+  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
+  const debouncedHue = useDebounce(keyHue, 100);
+
   const [isAnimating, setIsAnimating] = useState(false);
   const animationTimeoutRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
-
-  // Get hue from currentArchitectures
-  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
-  // const keyHue = 230;
 
   useEffect(() => {
     const now = Date.now();
@@ -47,12 +47,12 @@ export default function Frame() {
 
   return (
     <S.Container>
-      <S.VerticalLine $hue={keyHue} />
-      <S.HorizontalLine $hue={keyHue} />
-      <S.HorizontalLine2 $hue={keyHue} />
+      <S.VerticalLine $hue={debouncedHue} />
+      <S.HorizontalLine $hue={debouncedHue} />
+      <S.HorizontalLine2 $hue={debouncedHue} />
 
       {currentArchitectures && currentArchitectures.length > 0 && (
-        <S.ModelTitle $hue={keyHue}>
+        <S.ModelTitle $hue={debouncedHue}>
           <S.Title>
             <TextScramble text={currentArchitectures[0].name} />
           </S.Title>
