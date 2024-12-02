@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 1vw;
   padding: 1.2vw;
 
@@ -13,8 +12,8 @@ export const Container = styled.div`
 
 export const ImageWrapper = styled.div`
   position: relative;
-  width: 100%;
-  min-height: 17vh;
+  width: 22vw;
+  height: 100%;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
 
@@ -31,6 +30,9 @@ export const Image = styled.img`
 
 export const Description = styled.div`
   font-size: 0.7vw;
+  width: 12vw;
+  display: flex;
+  align-items: center;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
 `;
