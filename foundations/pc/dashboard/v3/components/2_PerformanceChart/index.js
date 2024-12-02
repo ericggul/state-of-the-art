@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import * as S from "./styles";
 
-const KEY_HUE = 30;
+const KEY_HUE = 300;
 
 ChartJS.register(
   CategoryScale,

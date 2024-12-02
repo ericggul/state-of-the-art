@@ -14,7 +14,7 @@ import * as S from "./styles";
 import FrameSimple from "@/foundations/pc/frame/simple";
 import Architecture3D from "@/foundations/frontend/3d";
 
-const KEY_HUE = 200;
+const KEY_HUE = 300;
 
 const LayerText = React.memo(
   ({ layer, depth = 0, showGrid = false, startDelay = 0, hue = KEY_HUE }) => {
