@@ -9,6 +9,7 @@ import React, {
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
 import TextScramble from "@/foundations/pc/utils/TextScramble";
+import TypewriterLayerText from "@/foundations/pc/utils/TypewriterLayerText";
 import * as S from "./styles";
 
 import FrameSimple from "@/foundations/pc/frame/simple";
@@ -70,29 +71,14 @@ const LayerText = React.memo(
             <span className="branch-char">{branchChar}</span>
           </span>{" "}
           <span className={`depth-${depth}`}>
-            <span className="name">
-              <TextScramble text={layer.name} />
-            </span>
-            {dimensionText && (
-              <span className="dims">
-                <TextScramble text={dimensionText} />
-              </span>
-            )}
-            {layer.type && (
-              <span className="type">
-                <TextScramble text={` <${layer.type}>`} />
-              </span>
-            )}
-            {paramsText && (
-              <span className="params">
-                <TextScramble text={` (${paramsText})`} />
-              </span>
-            )}
-            {gridText && (
-              <span className="grid">
-                <TextScramble text={` {${gridText}}`} />
-              </span>
-            )}
+            <TypewriterLayerText
+              text={fullText}
+              speed={20 + depth * 2}
+              depth={depth}
+              enableSound={depth < 3}
+              startDelay={startDelay + baseDelay}
+              hue={hue}
+            />
           </span>
         </div>
         <div className="sublayers">

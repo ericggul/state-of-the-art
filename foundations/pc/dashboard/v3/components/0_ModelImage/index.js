@@ -1,5 +1,6 @@
 import React from "react";
 import TypewriterText from "../TypewriterText";
+import TextScramble from "@/foundations/pc/utils/TextScramble";
 import * as S from "./styles";
 
 const IMAGE_BASE = "/db/images/";
@@ -17,7 +18,7 @@ export default function ModelImage({ model }) {
         />
       </S.ImageWrapper>
       <S.Description>
-        <TypewriterText text={model?.explanation || ""} speed={20} />
+        <TextScramble text={model?.explanation || ""} />
       </S.Description>
     </S.Container>
   );

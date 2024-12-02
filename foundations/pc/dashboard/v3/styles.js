@@ -8,11 +8,11 @@ import {
   HEIGHT,
 } from "@/foundations/pc/frame/full/styles";
 
-const KEY_HUE = 300;
+const KEY_HUE = 230;
 
 export const Container = styled.div`
   ${WholeContainer}
-  background: hsl(${KEY_HUE}, 5%, 5%);
+  background: hsl(${KEY_HUE}, 5%, 2%);
   padding: 4vw;
   padding-top: 6vw;
 `;

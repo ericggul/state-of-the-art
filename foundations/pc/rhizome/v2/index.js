@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
-import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
 import { useRelatedModels } from "./hooks/useRelatedModels";
 import RelatedPanel from "./components/RelatedPanel";
@@ -52,17 +51,6 @@ export default function Rhizome() {
     dimensions,
     data
   );
-
-  // Initialize Tone.js synth
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      synthRef.current = new Tone.MembraneSynth().toDestination();
-      synthRef.current.volume.value = -5;
-    }
-    return () => {
-      if (synthRef.current) synthRef.current.dispose();
-    };
-  }, []);
 
   // Play sound on architecture change
   useEffect(() => {
@@ -122,7 +110,7 @@ export default function Rhizome() {
       .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS + window.innerHeight * 0.015)
       .attr("text-anchor", "middle")
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
-      .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.2)`);
+      .attr("fill", `hsla(${KEY_HUE}, 10%, 50%, 0.2)`);
 
     // Reset all links to default state
     linksRef.current
@@ -169,7 +157,7 @@ export default function Rhizome() {
           )
           .attr("text-anchor", "middle")
           .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
-          .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.95)`)
+          .attr("fill", `hsla(${KEY_HUE}, 10%, 90%, 0.95)`)
           .attr("opacity", 1)
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
@@ -192,12 +180,11 @@ export default function Rhizome() {
               .attr(
                 "y",
                 (d) =>
-                  VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS +
-                  window.innerHeight * 0.015
+                  VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS + window.innerHeight * 0.02
               )
               .attr("text-anchor", "middle")
               .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
-              .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.8)`)
+              .attr("fill", `hsla(${KEY_HUE}, 10%, 90%, 0.8)`)
               .attr("opacity", 1);
           }
         });

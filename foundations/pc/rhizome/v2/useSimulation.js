@@ -115,7 +115,8 @@ export const useSimulation = (svgRef, dimensions, data) => {
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
       .attr("text-shadow", "0 0 3px rgba(0,0,0,0.5)")
-      .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, ${VISUAL.TEXT.OPACITY})`);
+      .attr("fill", `hsla(${KEY_HUE}, 15%, 95%, ${VISUAL.TEXT.OPACITY})`)
+      .attr("opacity", 0.8);
 
     // Optimized tick function
     simulation.on("tick", () => {

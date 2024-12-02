@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 import { LINEWIDTH, LEFT, HEIGHT } from "@/foundations/pc/frame/full/styles";
 
-const KEY_HUE = 300;
+const KEY_HUE = 230;
 
 export const LeftLine = styled.div`
   position: absolute;

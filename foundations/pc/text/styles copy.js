@@ -55,8 +55,8 @@ const scrollbarHide = css`
 
 // Create a function to generate depth colors based on KEY_HUE
 const getDepthColor = (depth, hue) => {
-  const saturation = 20 - depth * 3; // Decrease saturation with depth
-  const lightness = 90 - depth * 8; // More subtle lightness decrease
+  const saturation = 30;
+  const lightness = 85 - depth * 10; // Decrease lightness with depth
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
@@ -78,7 +78,7 @@ export const StructureText = styled.pre.withConfig({
   line-height: 1.5;
   text-align: left;
   position: absolute;
-  left: 0.5vw;
+  left: 1vw;
 
   pointer-events: none;
 
@@ -109,15 +109,13 @@ export const StructureText = styled.pre.withConfig({
   }
 
   .tree-line {
-    color: ${(props) => `hsla(${props.$hue}, 10%, 40%, 0.4)`};
+    color: ${(props) => `hsla(${props.$hue}, 15%, 30%, 1)`};
     user-select: none;
     transform: translateZ(0);
-    letter-spacing: 0.05em;
 
     .branch-char {
-      color: ${(props) => `hsla(${props.$hue}, 15%, 60%, 0.5)`};
-      font-weight: 300;
-      text-shadow: 0 0 15px hsla(${(props) => props.$hue}, 30%, 80%, 0.2);
+      color: ${(props) => `hsla(${props.$hue},20%, 20%, 1)`};
+      font-weight: bold;
     }
   }
 
@@ -126,36 +124,28 @@ export const StructureText = styled.pre.withConfig({
     align-items: center;
     min-height: 1.5em;
     transform: translateZ(0);
-    letter-spacing: 0.02em;
   }
 
   .dims {
-    color: ${(props) => `hsla(${props.$hue + 120}, 40%, 85%, 0.8)`};
+    color: #00ff00;
     margin-left: 8px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue + 120}, 70%, 50%, 0.2);
   }
 
   .type {
-    color: ${(props) => `hsla(${props.$hue}, 10%, 80%, 0.6)`};
+    color: #888;
     margin-left: 8px;
-    font-weight: 300;
   }
 
   .params {
-    color: ${(props) => `hsla(${props.$hue - 60}, 40%, 85%, 0.7)`};
+    color: #ff00ff;
     margin-left: 8px;
     font-size: 12px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue - 60}, 70%, 50%, 0.15);
   }
 
   .grid {
-    color: ${(props) => `hsla(${props.$hue + 60}, 40%, 85%, 0.7)`};
+    color: #ffff00;
     margin-left: 8px;
     font-size: 12px;
-    font-weight: 300;
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue + 60}, 70%, 50%, 0.15);
   }
 
   ${({ $hue }) => {
@@ -165,8 +155,6 @@ export const StructureText = styled.pre.withConfig({
         .depth-${depth} {
           color: ${color};
           transform: translateZ(0);
-          text-shadow: 0 0 15px hsla(${$hue}, ${20 - depth * 2}%, 80%, 0.15);
-          transition: color 0.3s ease, text-shadow 0.3s ease;
         }
       `
     );
@@ -202,10 +190,6 @@ export const StructureText = styled.pre.withConfig({
       padding-top: 15vh;
       padding-bottom: 100vh;
     }
-
-    filter: drop-shadow(
-      0 0 20px hsla(${(props) => props.$hue}, 20%, 50%, 0.05)
-    );
   }
 `;
 

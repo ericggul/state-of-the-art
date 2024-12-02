@@ -2,7 +2,7 @@ import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
 
-const KEY_HUE = 300;
+const KEY_HUE = 230;
 
 export default function Frame() {
   return (

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { WholeContainer } from "@/styles";
 
-const KEY_HUE = 300;
+const KEY_HUE = 230;
 
 export const LINEWIDTH = 0.15;
 export const LEFT = 3;

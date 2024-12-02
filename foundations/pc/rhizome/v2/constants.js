@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 // Animation and Transition Constants
-export const KEY_HUE = 300;
+export const KEY_HUE = 230;
 
 export const DURATION = 200;
 export const ANIMATION = {
@@ -108,11 +108,11 @@ export const getVersionColor = (majorVersion) => {
     .scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8])
     .range([
-      `hsl(${KEY_HUE - 10}, 100%, 65%)`, // -20
+      `hsl(${KEY_HUE - 18}, 100%, 65%)`, // -20
       `hsl(${KEY_HUE - 10}, 100%, 50%)`, // -10
       `hsl(${KEY_HUE}, 100%, 70%)`, // base hue
-      `hsl(${KEY_HUE + 10}, 100%, 55%)`, // +10
-      `hsl(${KEY_HUE + 10}, 100%, 65%)`, // +20
+      `hsl(${KEY_HUE + 13}, 100%, 55%)`, // +10
+      `hsl(${KEY_HUE + 13}, 100%, 65%)`, // +20
       `hsl(${KEY_HUE - 15}, 100%, 60%)`, // -15
       `hsl(${KEY_HUE - 5}, 100%, 45%)`, // -5
       `hsl(${KEY_HUE + 5}, 100%, 60%)`, // +5

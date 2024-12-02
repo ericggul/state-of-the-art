@@ -32,7 +32,16 @@ export const Description = styled.div`
   font-size: 0.7vw;
   width: 12vw;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
+  line-height: 1.4;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  hyphens: auto;
+
+  max-height: 100%;
 `;
