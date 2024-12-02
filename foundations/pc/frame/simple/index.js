@@ -3,10 +3,9 @@ import useStore from "@/components/screen/store";
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import TextScramble from "../../utils/TextScramble";
 
-const KEY_HUE = 230;
-
 export default function Frame({ middle = false }) {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
+  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
   const titleRef = useRef(null);
   const verRef = useRef(null);
   const [dimensions, setDimensions] = useState({
@@ -114,8 +113,8 @@ export default function Frame({ middle = false }) {
 
   return (
     <S.Container>
-      <S.HorizontalLine $hue={KEY_HUE} $width={dimensions} $bottom={bottom} />
-      <S.HorizontalLine2 $hue={KEY_HUE} $width={dimensions} $bottom={bottom} />
+      <S.HorizontalLine $hue={keyHue} $width={dimensions} $bottom={bottom} />
+      <S.HorizontalLine2 $hue={keyHue} $width={dimensions} $bottom={bottom} />
       {middle && (
         <>
           {[
@@ -126,7 +125,7 @@ export default function Frame({ middle = false }) {
           ].map(({ top, left, height, index }) => (
             <S.VerticalLine
               key={`line-${index}-${lineKey}`}
-              $hue={KEY_HUE}
+              $hue={keyHue}
               $top={top}
               $left={left}
               $height={height}
@@ -135,20 +134,20 @@ export default function Frame({ middle = false }) {
             />
           ))}
 
-          <S.VerticalName $hue={KEY_HUE} $left={5} $top={40}>
+          <S.VerticalName $hue={keyHue} $left={5} $top={40}>
             <TextScramble text={name} />
           </S.VerticalName>
-          <S.VerticalName $hue={KEY_HUE} $left={7} $top={20}>
+          <S.VerticalName $hue={keyHue} $left={7} $top={20}>
             <TextScramble text={name} />
           </S.VerticalName>
-          <S.VerticalName $hue={KEY_HUE} $left={9} $top={55}>
+          <S.VerticalName $hue={keyHue} $left={9} $top={55}>
             <TextScramble text={version} />
           </S.VerticalName>
         </>
       )}
 
       <S.ModelTitle
-        $hue={KEY_HUE}
+        $hue={keyHue}
         ref={titleRef}
         $width={dimensions}
         $bottom={bottom}

@@ -4,7 +4,6 @@ import { create } from "zustand";
 const DEFAULT_STATE = {
   // Architecture related
   currentArchitectures: [],
-  keyHue: 230,
   mobileVisibility: null,
   stage: "Idle",
   iteration: 0,
@@ -30,7 +29,6 @@ const RESET_STATE = {
   stage: "Idle",
   isTransition: false,
   currentArchitectures: [],
-  keyHue: 230,
   mobileVisibility: null,
   isEnding: false,
   iteration: 0,
@@ -131,8 +129,6 @@ const useScreenStore = create((set) => ({
 
       if (data.currentArchitectures?.length) {
         updates.currentArchitectures = data.currentArchitectures;
-        //search from the family of hues and find the closest one
-        console.log(data.currentArchitectures);
       }
 
       if (state.introState <= 2) {

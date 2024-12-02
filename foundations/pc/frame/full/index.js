@@ -3,13 +3,14 @@ import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
 import TextScramble from "../../utils/TextScramble";
 
-const KEY_HUE = 230;
-
 export default function Frame() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
   const [isAnimating, setIsAnimating] = useState(false);
   const animationTimeoutRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
+
+  // Get hue from currentArchitectures
+  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
 
   useEffect(() => {
     const now = Date.now();
@@ -45,12 +46,12 @@ export default function Frame() {
 
   return (
     <S.Container>
-      <S.VerticalLine $hue={KEY_HUE} />
-      <S.HorizontalLine $hue={KEY_HUE} />
-      <S.HorizontalLine2 $hue={KEY_HUE} />
+      <S.VerticalLine $hue={keyHue} />
+      <S.HorizontalLine $hue={keyHue} />
+      <S.HorizontalLine2 $hue={keyHue} />
 
       {currentArchitectures && currentArchitectures.length > 0 && (
-        <S.ModelTitle $hue={KEY_HUE}>
+        <S.ModelTitle $hue={keyHue}>
           <S.Title>
             <TextScramble text={currentArchitectures[0].name} />
           </S.Title>

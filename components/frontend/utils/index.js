@@ -1,6 +1,7 @@
 import { getModelStructure } from "@/foundations/frontend/arch-models";
 import { useState, useEffect, useRef } from "react";
 import useDebounce from "@/utils/hooks/useDebounce";
+import { getCategoryColor, getCategoryHue } from "./colors";
 
 export const flattenModels = (models) => {
   let flattened = [];
@@ -17,6 +18,8 @@ export const flattenModels = (models) => {
           place: value.place || "",
           citation: value.citation || "",
           explanation: value.explanation || "",
+          category: value.category || "",
+          hue: getCategoryHue(value.category),
         });
         flatten(value, currentVersion);
       }
