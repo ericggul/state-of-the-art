@@ -104,7 +104,7 @@ export default function Rhizome() {
       .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
       .attr("stroke", (d) =>
         d.majorVersion
-          ? d3.color(getVersionColor(d.majorVersion)).darker(0.5)
+          ? d3.color(getVersionColor(d.majorVersion, debouncedHue)).darker(0.5)
           : "none"
       )
       .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH);
@@ -147,7 +147,7 @@ export default function Rhizome() {
           .select("circle")
           .transition()
           .duration(DURATION)
-          .attr("fill", (d) => d3.color(d.color).brighter(1.2))
+          .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
           .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
           .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
           .attr("stroke", "rgba(255, 255, 255, 0.9)")
