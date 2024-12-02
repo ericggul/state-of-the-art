@@ -10,7 +10,8 @@ export default function Frame() {
   const lastUpdateRef = useRef(Date.now());
 
   // Get hue from currentArchitectures
-  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
+  // const keyHue = currentArchitectures?.[0]?.hue ?? 230;
+  const keyHue = 230;
 
   useEffect(() => {
     const now = Date.now();

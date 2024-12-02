@@ -5,7 +5,8 @@ import TextScramble from "../../utils/TextScramble";
 
 export default function Frame({ middle = false }) {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
-  const keyHue = currentArchitectures?.[0]?.hue ?? 230;
+  // const keyHue = currentArchitectures?.[0]?.hue ?? 230;
+  const keyHue = 230;
   const titleRef = useRef(null);
   const verRef = useRef(null);
   const [dimensions, setDimensions] = useState({
