@@ -66,5 +66,5 @@ export const ModelTitle = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 4vw;
+  font-size: 3vw;
 `;

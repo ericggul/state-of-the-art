@@ -11,17 +11,18 @@ import PerformanceChart from "./components/2_PerformanceChart";
 import RelatedPapers from "./components/4_RelatedPapers";
 import ModelFeatures from "./components/3_ModelFeatures";
 
-import Frame from "@/foundations/pc/frame/full";
+import Frame from "@/foundations/pc/frame/full-noHue";
+import Lines from "./components/Lines";
 
 const LAYOUT = [
   [
     {
-      width: "25vw",
-      marginRight: "3vw",
-      height: "32vh",
+      width: "38vw",
+      marginRight: "1.5vw",
+      height: "34vh",
     },
-    { width: "25vw", marginRight: "3vw", height: "32vh" },
-    { width: "35vw", height: "32vh" },
+    { width: "17vw", marginRight: "1.5vw", height: "34vh" },
+    { width: "35vw", height: "34vh" },
   ],
   [
     { width: "25vw", marginRight: "3vw" },
@@ -69,6 +70,7 @@ export default function Dashboard() {
   return (
     <S.Container>
       <Frame />
+      <Lines />
       <S.Wrapper>
         <S.Row>
           <Card title="Model Overview" layout={LAYOUT[0][0]}>

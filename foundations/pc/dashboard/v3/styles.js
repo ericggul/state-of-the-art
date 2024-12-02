@@ -41,6 +41,9 @@ export const Row = styled.div`
 export const Card = styled.div`
   position: relative;
   height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
 
   border: ${LINEWIDTH * 1.5}vw solid white;
 `;
