@@ -32,7 +32,7 @@ export const Description = styled.div`
   font-size: 0.7vw;
   width: 12vw;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
   line-height: 1.4;

@@ -16,36 +16,9 @@ export default React.memo(function TypewriterText({
   startDelay = 0,
 }) {
   const [displayText, setDisplayText] = useState("");
-  const typingSynthRef = useRef(null);
+
   const lastPlayedTime = useRef(0);
   const timeoutRef = useRef(null);
-
-  // Memoize sound setup
-  const setupSound = React.useCallback(() => {
-    if (typeof window !== "undefined" && enableSound) {
-      typingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      typingSynthRef.current.volume.value = -20 - depth * 2;
-    }
-  }, [enableSound, depth]);
-
-  useEffect(() => {
-    setupSound();
-    return () => typingSynthRef.current?.dispose();
-  }, [setupSound]);
-
-  const playTypingSound = () => {
-    if (typingSynthRef.current && enableSound) {
-      const now = Date.now();
-      if (now - lastPlayedTime.current < 30) return;
-
-      try {
-        typingSynthRef.current.triggerAttackRelease(`C${3 + depth}`, "32n");
-        lastPlayedTime.current = now;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
 
   useEffect(() => {
     let isActive = true;
@@ -55,9 +28,7 @@ export default React.memo(function TypewriterText({
 
       if (index <= fullText.length) {
         setDisplayText(fullText.substring(0, index));
-        if (index > 0 && index % 2 === 0) {
-          playTypingSound();
-        }
+
         timeoutRef.current = setTimeout(
           () => typeWriter(fullText, index + 1),
           speed
