@@ -14,7 +14,6 @@ import {
 } from "./constants";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/rhizome";
 import useScreenStore from "@/components/screen/store";
-import useDebounce from "@/utils/hooks/useDebounce";
 import * as S from "./styles";
 
 import Frame from "@/foundations/pc/frame/full";
@@ -23,9 +22,6 @@ export default function Rhizome() {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
-  const targetHue = currentArchitectures?.[0]?.hue ?? 230; // Default to 230 if no hue specified
-  const debouncedHue = useDebounce(targetHue, 100);
-
   const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const synthRef = useRef(null);
@@ -55,8 +51,7 @@ export default function Rhizome() {
   const { simulationRef, nodesRef, linksRef, boundaryRef } = useSimulation(
     svgRef,
     dimensions,
-    data,
-    debouncedHue
+    data
   );
 
   // Play sound on architecture change
@@ -117,7 +112,7 @@ export default function Rhizome() {
       .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS + window.innerHeight * 0.015)
       .attr("text-anchor", "middle")
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
-      .attr("fill", `hsla(${debouncedHue}, 10%, 50%, 0.2)`);
+      .attr("fill", `hsla(${KEY_HUE}, 10%, 50%, 0.2)`);
 
     // Reset all links to default state
     linksRef.current
@@ -164,7 +159,7 @@ export default function Rhizome() {
           )
           .attr("text-anchor", "middle")
           .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
-          .attr("fill", `hsla(${debouncedHue}, 10%, 90%, 0.95)`)
+          .attr("fill", `hsla(${KEY_HUE}, 10%, 90%, 0.95)`)
           .attr("opacity", 1)
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
@@ -191,7 +186,7 @@ export default function Rhizome() {
               )
               .attr("text-anchor", "middle")
               .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
-              .attr("fill", `hsla(${debouncedHue}, 10%, 90%, 0.8)`)
+              .attr("fill", `hsla(${KEY_HUE}, 10%, 90%, 0.8)`)
               .attr("opacity", 1);
           }
         });
@@ -285,7 +280,7 @@ export default function Rhizome() {
         .alphaTarget(ANIMATION.ALPHA.IDLE)
         .restart();
     }
-  }, [currentArchitectures, dimensions, data, debouncedHue]);
+  }, [currentArchitectures, dimensions, data]);
 
   // Clear positions on selection change
   useEffect(() => {
@@ -301,7 +296,6 @@ export default function Rhizome() {
         <RelatedPanel
           currentModel={currentArchitectures[0].name}
           relatedModels={relatedModels}
-          hue={debouncedHue}
         />
       )}
       <Frame />

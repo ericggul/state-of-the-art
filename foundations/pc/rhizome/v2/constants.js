@@ -103,19 +103,19 @@ export const LAYOUT = {
 };
 
 // Color Scale
-export const getVersionColor = (majorVersion, hue = 230) => {
+export const getVersionColor = (majorVersion) => {
   const colorScale = d3
     .scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8])
     .range([
-      `hsl(${hue - 18}, 100%, 65%)`, // -20
-      `hsl(${hue - 10}, 100%, 50%)`, // -10
-      `hsl(${hue}, 100%, 70%)`, // base hue
-      `hsl(${hue + 13}, 100%, 55%)`, // +10
-      `hsl(${hue + 13}, 100%, 65%)`, // +20
-      `hsl(${hue - 15}, 100%, 60%)`, // -15
-      `hsl(${hue - 5}, 100%, 45%)`, // -5
-      `hsl(${hue + 5}, 100%, 60%)`, // +5
+      `hsl(${KEY_HUE - 18}, 100%, 65%)`, // -20
+      `hsl(${KEY_HUE - 10}, 100%, 50%)`, // -10
+      `hsl(${KEY_HUE}, 100%, 70%)`, // base hue
+      `hsl(${KEY_HUE + 13}, 100%, 55%)`, // +10
+      `hsl(${KEY_HUE + 13}, 100%, 65%)`, // +20
+      `hsl(${KEY_HUE - 15}, 100%, 60%)`, // -15
+      `hsl(${KEY_HUE - 5}, 100%, 45%)`, // -5
+      `hsl(${KEY_HUE + 5}, 100%, 60%)`, // +5
     ]);
   return majorVersion ? colorScale(majorVersion) : "rgba(255, 255, 255, 0.6)";
 };

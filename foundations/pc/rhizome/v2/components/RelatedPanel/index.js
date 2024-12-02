@@ -4,7 +4,7 @@ import TypewriterText from "../TypewriterText";
 import TextScramble from "@/foundations/pc/utils/TextScramble";
 import * as S from "./styles";
 
-export default function RelatedPanel({ currentModel, relatedModels, hue }) {
+export default function RelatedPanel({ currentModel, relatedModels }) {
   const listRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
 
@@ -52,8 +52,8 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
 
   return (
     <>
-      <S.LeftLine $hue={hue} />
-      <S.RelatedPanel $hue={hue}>
+      <S.LeftLine />
+      <S.RelatedPanel>
         <S.PanelTitle>
           <TextScramble text={`Connected to ${currentModel}`} />
         </S.PanelTitle>

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ANIMATION } from "../../constants";
 import TypewriterText from "../TypewriterText";
-import TextScramble from "@/foundations/pc/utils/TextScramble";
 import * as S from "./styles";
 
-export default function RelatedPanel({ currentModel, relatedModels, hue }) {
+export default function RelatedPanel({ currentModel, relatedModels }) {
   const listRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
 
@@ -52,10 +51,10 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
 
   return (
     <>
-      <S.LeftLine $hue={hue} />
-      <S.RelatedPanel $hue={hue}>
+      <S.LeftLine />
+      <S.RelatedPanel>
         <S.PanelTitle>
-          <TextScramble text={`Connected to ${currentModel}`} />
+          <TypewriterText text={`Connected to ${currentModel}`} speed={30} />
         </S.PanelTitle>
         <S.RelatedList ref={listRef}>
           {relatedModels.map(
@@ -64,14 +63,14 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
                 <S.RelatedItem key={index} $strength={model.value / 10}>
                   <S.ModelHeader>
                     <S.ModelName>
-                      <TextScramble text={model.name} />
+                      <TypewriterText text={model.name} speed={20} />
                     </S.ModelName>
                     <S.ModelVersion>
-                      <TextScramble text={model.version} />
+                      <TypewriterText text={model.version} speed={20} />
                     </S.ModelVersion>
                   </S.ModelHeader>
                   <S.RelationText>
-                    <TextScramble text={model.relation} />
+                    <TypewriterText text={model.relation} speed={15} />
                   </S.RelationText>
                   {/* <S.ConnectionStrength $value={model.value / 10} /> */}
                 </S.RelatedItem>

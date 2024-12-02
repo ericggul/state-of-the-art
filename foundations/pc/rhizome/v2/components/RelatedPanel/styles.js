@@ -12,12 +12,12 @@ export const LeftLine = styled.div`
   left: ${LEFT}vw;
   background: linear-gradient(
     90deg,
-    hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
-    hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
-    hsla(${(props) => props.$hue}, 100%, 75%, 0.2)
+    hsla(${KEY_HUE}, 100%, 75%, 0.2),
+    hsla(${KEY_HUE}, 100%, 75%, 0.5),
+    hsla(${KEY_HUE}, 100%, 75%, 0.2)
   );
-  box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
-    0 0 3vw hsla(${(props) => props.$hue}, 100%, 50%, 0.2);
+  box-shadow: 0 0 1vw hsla(${KEY_HUE}, 100%, 75%, 0.4),
+    0 0 3vw hsla(${KEY_HUE}, 100%, 50%, 0.2);
 `;
 
 export const RelatedPanel = styled.div`
@@ -26,7 +26,7 @@ export const RelatedPanel = styled.div`
   height: 30vh;
   bottom: ${100 - HEIGHT - 3}vh;
   left: ${LEFT * 2}vw;
-  border: ${LINEWIDTH}vw solid hsla(${(props) => props.$hue}, 100%, 75%, 0.5);
+  border: ${LINEWIDTH}vw solid hsla(${KEY_HUE}, 100%, 75%, 0.5);
   padding: 1vw;
   border-radius: 0 0 3vw 0;
 
@@ -63,7 +63,7 @@ export const PanelTitle = styled.div`
   top: -4vh;
   left: 0;
   width: 100%;
-  color: hsla(${(props) => props.$hue}, 30%, 95%, 0.95);
+  color: hsla(${KEY_HUE}, 30%, 95%, 0.95);
   font-size: 0.8vw;
   flex-shrink: 0;
 `;

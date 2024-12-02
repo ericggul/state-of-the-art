@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
+import * as Tone from "tone";
 import { useSimulation } from "./useSimulation";
 import { useRelatedModels } from "./hooks/useRelatedModels";
 import RelatedPanel from "./components/RelatedPanel";
@@ -14,7 +15,6 @@ import {
 } from "./constants";
 import { DATA_NODES_LINKS } from "@/components/controller/constant/rhizome";
 import useScreenStore from "@/components/screen/store";
-import useDebounce from "@/utils/hooks/useDebounce";
 import * as S from "./styles";
 
 import Frame from "@/foundations/pc/frame/full";
@@ -23,9 +23,6 @@ export default function Rhizome() {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
-  const targetHue = currentArchitectures?.[0]?.hue ?? 230; // Default to 230 if no hue specified
-  const debouncedHue = useDebounce(targetHue, 100);
-
   const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const synthRef = useRef(null);
@@ -37,7 +34,7 @@ export default function Rhizome() {
       nodes: DATA_NODES_LINKS.nodes.map((node) => ({
         ...node,
         id: node.name,
-        text: node.name, // Apply the sanitizer here
+        text: node.name,
         majorVersion: getMajorVersion(node.version),
         color: getVersionColor(getMajorVersion(node.version)),
       })),
@@ -55,9 +52,19 @@ export default function Rhizome() {
   const { simulationRef, nodesRef, linksRef, boundaryRef } = useSimulation(
     svgRef,
     dimensions,
-    data,
-    debouncedHue
+    data
   );
+
+  // Initialize Tone.js synth
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      synthRef.current = new Tone.MembraneSynth().toDestination();
+      synthRef.current.volume.value = -5;
+    }
+    return () => {
+      if (synthRef.current) synthRef.current.dispose();
+    };
+  }, []);
 
   // Play sound on architecture change
   useEffect(() => {
@@ -94,7 +101,7 @@ export default function Rhizome() {
     const { width: boundaryWidth, height: boundaryHeight } =
       boundaryRef.current;
 
-    // Reset all nodes to default state first (text at bottom)
+    // Reset all nodes to default state first
     nodesRef.current
       .selectAll("circle")
       .transition()
@@ -113,11 +120,10 @@ export default function Rhizome() {
       .selectAll("text")
       .transition()
       .duration(DURATION)
-      .attr("x", 0)
-      .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS + window.innerHeight * 0.015)
-      .attr("text-anchor", "middle")
+      .attr("x", (d) => VISUAL.NODE.DEFAULT.RADIUS + 6)
+      .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS / 2)
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
-      .attr("fill", `hsla(${debouncedHue}, 10%, 50%, 0.2)`);
+      .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.2)`);
 
     // Reset all links to default state
     linksRef.current
@@ -142,7 +148,7 @@ export default function Rhizome() {
             connectedNodes.add(link.source.text);
         });
 
-        // Highlight main node (text at top - keep as is)
+        // Highlight main node
         nodeToHighlight
           .select("circle")
           .transition()
@@ -160,15 +166,15 @@ export default function Rhizome() {
           .attr("x", 0)
           .attr(
             "y",
-            (d) => -VISUAL.NODE.HIGHLIGHTED.RADIUS - window.innerHeight * 0.03
+            (d) => VISUAL.NODE.HIGHLIGHTED.RADIUS + window.innerHeight * 0.03
           )
           .attr("text-anchor", "middle")
           .attr("font-size", VISUAL.NODE.HIGHLIGHTED.FONT_SIZE)
-          .attr("fill", `hsla(${debouncedHue}, 10%, 90%, 0.95)`)
+          .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.95)`)
           .attr("opacity", 1)
           .style("text-shadow", "0 0 8px rgba(255, 255, 255, 0.5)");
 
-        // Highlight connected nodes (text at bottom)
+        // Highlight connected nodes
         nodesRef.current.each(function (d) {
           if (connectedNodes.has(d.text)) {
             d3.select(this)
@@ -183,15 +189,10 @@ export default function Rhizome() {
               .select("text")
               .transition()
               .duration(DURATION)
-              .attr("x", 0)
-              .attr(
-                "y",
-                (d) =>
-                  VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS + window.innerHeight * 0.02
-              )
-              .attr("text-anchor", "middle")
+              .attr("x", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS + 10)
+              .attr("y", (d) => VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS / 2)
               .attr("font-size", VISUAL.NODE.SUB_HIGHLIGHTED.FONT_SIZE)
-              .attr("fill", `hsla(${debouncedHue}, 10%, 90%, 0.8)`)
+              .attr("fill", `hsla(${KEY_HUE}, 100%, 50%, 0.8)`)
               .attr("opacity", 1);
           }
         });
@@ -285,7 +286,7 @@ export default function Rhizome() {
         .alphaTarget(ANIMATION.ALPHA.IDLE)
         .restart();
     }
-  }, [currentArchitectures, dimensions, data, debouncedHue]);
+  }, [currentArchitectures, dimensions, data]);
 
   // Clear positions on selection change
   useEffect(() => {
@@ -301,7 +302,6 @@ export default function Rhizome() {
         <RelatedPanel
           currentModel={currentArchitectures[0].name}
           relatedModels={relatedModels}
-          hue={debouncedHue}
         />
       )}
       <Frame />

@@ -11,7 +11,7 @@ import {
   KEY_HUE,
 } from "./constants";
 
-export const useSimulation = (svgRef, dimensions, data, hue) => {
+export const useSimulation = (svgRef, dimensions, data) => {
   const simulationRef = useRef(null);
   const nodesRef = useRef(null);
   const linksRef = useRef(null);
@@ -80,10 +80,8 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
         const sourceNode = data.nodes.find((n) => n.name === d.source.name);
         const targetNode = data.nodes.find((n) => n.name === d.target.name);
         return sourceNode.majorVersion === targetNode.majorVersion
-          ? d3
-              .color(getVersionColor(sourceNode.majorVersion, hue))
-              .brighter(0.2)
-          : `hsla(${hue}, 100%, 50%, 0.4)`;
+          ? d3.color(getVersionColor(sourceNode.majorVersion)).brighter(0.2)
+          : `hsla(${KEY_HUE}, 100%, 50%, 0.4)`;
       })
       .attr("stroke-width", 1)
       .attr("opacity", 0.4)
@@ -102,7 +100,7 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
       .append("circle")
       .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
       .attr("id", (d) => `circle-${d.id}`)
-      .attr("fill", (d) => getVersionColor(d.majorVersion, hue))
+      .attr("fill", (d) => getVersionColor(d.majorVersion))
       .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
       .attr("stroke", "#fff")
       .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH)
@@ -117,7 +115,7 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
       .attr("text-shadow", "0 0 3px rgba(0,0,0,0.5)")
-      .attr("fill", `hsla(${hue}, 15%, 95%, ${VISUAL.TEXT.OPACITY})`)
+      .attr("fill", `hsla(${KEY_HUE}, 15%, 95%, ${VISUAL.TEXT.OPACITY})`)
       .attr("opacity", 0.8);
 
     // Optimized tick function
@@ -147,7 +145,7 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
     linksRef.current = links;
 
     return () => simulation.stop();
-  }, [dimensions, data, hue]);
+  }, [dimensions, data]);
 
   return { simulationRef, nodesRef, linksRef, boundaryRef };
 };
