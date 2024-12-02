@@ -20,7 +20,9 @@ import * as S from "./styles";
 import Frame from "@/foundations/pc/frame/full";
 
 export default function Rhizome() {
-  const { currentArchitectures } = useScreenStore();
+  const currentArchitectures = useScreenStore(
+    (state) => state.currentArchitectures
+  );
   const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const synthRef = useRef(null);

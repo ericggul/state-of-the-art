@@ -13,8 +13,7 @@ import * as S from "./styles";
 
 import FrameSimple from "@/foundations/pc/frame/simple";
 import Architecture3D from "@/foundations/frontend/3d";
-
-const KEY_HUE = 230;
+import { HueContext, HueProvider } from "./components/HueProvider";
 
 const LayerText = React.memo(
   ({ layer, depth = 0, showGrid = false, startDelay = 0, hue = KEY_HUE }) => {
@@ -113,10 +112,23 @@ const LayerText = React.memo(
 );
 
 export default function TextComponent() {
-  const { currentArchitectures } = useScreenStore();
+  const currentArchitectures = useScreenStore(
+    (state) => state.currentArchitectures
+  );
+  const targetHue = currentArchitectures?.[0]?.hue ?? 230;
+
+  return (
+    <HueProvider targetHue={targetHue}>
+      <TextContent currentArchitectures={currentArchitectures} />
+    </HueProvider>
+  );
+}
+
+function TextContent({ currentArchitectures }) {
+  const { hue } = React.useContext(HueContext);
   const {
     visualization: { structure },
-  } = useModelStructure(currentArchitectures, KEY_HUE);
+  } = useModelStructure(currentArchitectures, hue);
   const containerRef = useRef(null);
   const scrollPosRef = useRef(0);
   const rafRef = useRef(null);
@@ -187,7 +199,7 @@ export default function TextComponent() {
 
   return (
     <S.Container>
-      <S.Canvas $hue={KEY_HUE}>
+      <S.Canvas $hue={hue}>
         <Suspense fallback={null}>
           <Architecture3D />
         </Suspense>
@@ -195,11 +207,7 @@ export default function TextComponent() {
 
       <S.LeftBlur />
 
-      <S.StructureText
-        ref={containerRef}
-        $needsScroll={needsScroll}
-        $hue={KEY_HUE}
-      >
+      <S.StructureText ref={containerRef} $needsScroll={needsScroll} $hue={hue}>
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
           {structure.map((layer, idx) => (
             <LayerText
@@ -207,7 +215,7 @@ export default function TextComponent() {
               layer={layer}
               showGrid={true}
               startDelay={idx * 600 + 50}
-              hue={KEY_HUE}
+              hue={hue}
             />
           ))}
           <div

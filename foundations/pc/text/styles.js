@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { animated } from "react-spring";
 
 export const Container = styled.div`
   ${WholeContainer}
@@ -9,7 +10,7 @@ export const Container = styled.div`
   transform: translateZ(0);
 `;
 
-export const Canvas = styled.div`
+export const Canvas = styled(animated.div)`
   ${WholeContainer}
   width: 120vw;
   left: 0vw;
@@ -33,6 +34,7 @@ export const Canvas = styled.div`
     )`};
     mix-blend-mode: overlay;
     pointer-events: none;
+    transition: background 0.3s ease;
   }
 
   canvas {
@@ -69,10 +71,7 @@ const generateDepthColors = (hue) => ({
   4: getDepthColor(4, hue),
 });
 
-export const StructureText = styled.pre.withConfig({
-  shouldComponentUpdate: true,
-  shouldComponentUpdateForProp: (prop) => prop !== "$needsScroll",
-})`
+export const StructureText = styled(animated.pre)`
   color: #00ffff;
   font-size: 14px;
   line-height: 1.5;
@@ -113,6 +112,7 @@ export const StructureText = styled.pre.withConfig({
     user-select: none;
     transform: translateZ(0);
     letter-spacing: 0.05em;
+    transition: color 0.3s ease;
 
     .branch-char {
       color: ${(props) => `hsla(${props.$hue}, 15%, 60%, 0.5)`};
