@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import TextScramble from "./TextScramble";
+import TextScramble from "../../utils/TextScramble";
 
 const KEY_HUE = 300;
 
@@ -136,13 +136,13 @@ export default function Frame({ middle = false }) {
           ))}
 
           <S.VerticalName $hue={KEY_HUE} $left={5} $top={40}>
-            <TextScramble text={name} isAnimating={isAnimating} />
+            <TextScramble text={name} />
           </S.VerticalName>
           <S.VerticalName $hue={KEY_HUE} $left={7} $top={20}>
-            <TextScramble text={name} isAnimating={isAnimating} />
+            <TextScramble text={name} />
           </S.VerticalName>
           <S.VerticalName $hue={KEY_HUE} $left={9} $top={55}>
-            <TextScramble text={version} isAnimating={isAnimating} />
+            <TextScramble text={version} />
           </S.VerticalName>
         </>
       )}
@@ -154,10 +154,10 @@ export default function Frame({ middle = false }) {
         $bottom={bottom}
       >
         <S.Ver ref={verRef}>
-          <TextScramble text={version} isAnimating={isAnimating} />
+          <TextScramble text={version} />
         </S.Ver>
         <S.Title>
-          <TextScramble text={name} isAnimating={isAnimating} />
+          <TextScramble text={name} />
         </S.Title>
       </S.ModelTitle>
     </S.Container>

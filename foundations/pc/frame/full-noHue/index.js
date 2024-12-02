@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
-import TextScramble from "../simple/TextScramble";
+import TextScramble from "../../utils/TextScramble";
 
 const KEY_HUE = 200;
 

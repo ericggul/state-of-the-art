@@ -8,44 +8,39 @@ const TypewriterContainer = styled.span`
   min-height: 1.2em;
 `;
 
-export default function TypewriterText({ text, speed = 50 }) {
+export default React.memo(function TypewriterText({
+  text,
+  speed = 50,
+  depth = 0,
+  enableSound = true,
+  startDelay = 0,
+}) {
   const [displayText, setDisplayText] = useState("");
-  const previousText = useRef("");
-  const timeoutRef = useRef(null);
   const typingSynthRef = useRef(null);
-  const erasingSynthRef = useRef(null);
+  const lastPlayedTime = useRef(0);
+  const timeoutRef = useRef(null);
+
+  // Memoize sound setup
+  const setupSound = React.useCallback(() => {
+    if (typeof window !== "undefined" && enableSound) {
+      typingSynthRef.current = new Tone.MembraneSynth().toDestination();
+      typingSynthRef.current.volume.value = -20 - depth * 2;
+    }
+  }, [enableSound, depth]);
 
   useEffect(() => {
-    // Initialize Tone.js and create synths only on client-side
-    if (typeof window !== "undefined") {
-      typingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      typingSynthRef.current.volume.value = -10;
-
-      erasingSynthRef.current = new Tone.MembraneSynth().toDestination();
-      erasingSynthRef.current.volume.value = -12;
-    }
-
-    return () => {
-      if (typingSynthRef.current) typingSynthRef.current.dispose();
-      if (erasingSynthRef.current) erasingSynthRef.current.dispose();
-    };
-  }, []);
+    setupSound();
+    return () => typingSynthRef.current?.dispose();
+  }, [setupSound]);
 
   const playTypingSound = () => {
-    if (typingSynthRef.current) {
-      try {
-        // typingSynthRef.current.triggerAttackRelease("C2", "16n");
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+    if (typingSynthRef.current && enableSound) {
+      const now = Date.now();
+      if (now - lastPlayedTime.current < 30) return;
 
-  const playErasingSound = () => {
-    if (erasingSynthRef.current) {
       try {
-        // erasingSynthRef.current.triggerAttackRelease("A1", "16n");
-        typingSynthRef.current.triggerAttackRelease("C2", "16n");
+        typingSynthRef.current.triggerAttackRelease(`C${3 + depth}`, "32n");
+        lastPlayedTime.current = now;
       } catch (e) {
         console.log(e);
       }
@@ -53,45 +48,30 @@ export default function TypewriterText({ text, speed = 50 }) {
   };
 
   useEffect(() => {
-    if (text === previousText.current) return;
+    let isActive = true;
 
     const typeWriter = (fullText, index = 0) => {
+      if (!isActive) return;
+
       if (index <= fullText.length) {
         setDisplayText(fullText.substring(0, index));
-        // if (index > previousText.current.length) {
-        //   playTypingSound();
-        // }
+        if (index > 0 && index % 2 === 0) {
+          playTypingSound();
+        }
         timeoutRef.current = setTimeout(
           () => typeWriter(fullText, index + 1),
           speed
         );
-      } else {
-        previousText.current = fullText;
       }
     };
 
-    if (previousText.current.length > 0) {
-      const eraseWriter = (index = previousText.current.length) => {
-        if (index > 0) {
-          setDisplayText(previousText.current.substring(0, index));
-          // playErasingSound();
-          timeoutRef.current = setTimeout(
-            () => eraseWriter(index - 1),
-            speed / 2
-          );
-        } else {
-          typeWriter(text);
-        }
-      };
-      eraseWriter();
-    } else {
-      typeWriter(text);
-    }
+    timeoutRef.current = setTimeout(() => typeWriter(text), startDelay);
 
     return () => {
+      isActive = false;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [text, speed]);
+  }, [text, speed, startDelay]);
 
   return <TypewriterContainer>{displayText || "\u00A0"}</TypewriterContainer>;
-}
+});

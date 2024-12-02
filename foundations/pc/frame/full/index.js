@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
-import TextScramble from "../simple/TextScramble";
+import TextScramble from "../../utils/TextScramble";
 
 const KEY_HUE = 300;
 
@@ -52,10 +52,7 @@ export default function Frame() {
       {currentArchitectures && currentArchitectures.length > 0 && (
         <S.ModelTitle $hue={KEY_HUE}>
           <S.Title>
-            <TextScramble
-              text={currentArchitectures[0].name}
-              isAnimating={isAnimating}
-            />
+            <TextScramble text={currentArchitectures[0].name} />
           </S.Title>
         </S.ModelTitle>
       )}

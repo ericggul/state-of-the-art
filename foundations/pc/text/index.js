@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useModelStructure } from "@/components/frontend/utils";
-import TypewriterLayerText from "./TypewriterLayerText";
+import TypewriterLayerText from "../utils/TypewriterLayerText";
 import * as S from "./styles";
 
 import FrameSimple from "@/foundations/pc/frame/simple";
