@@ -60,7 +60,7 @@ export default function useConversation({
       const formattedConversations = [
         ...INITIAL_CONVERSATION,
         ...conversations.map((el) => el.message),
-      ].slice(-10);
+      ].slice(-5);
 
       setGetNewText(false);
 

@@ -41,6 +41,7 @@ export default React.memo(function Mobile() {
   const handleUsernameSubmit = useCallback(
     (username) => {
       setShowThreeScene(true);
+      console.log(username);
       setUsername(username);
     },
     [setUsername]

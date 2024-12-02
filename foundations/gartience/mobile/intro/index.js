@@ -4,6 +4,8 @@ import useAccelerometer from "@/utils/hooks/orientation/useAccelerometer-gartien
 import { useNameInput } from "./utils/useNameInput";
 import AnimatedTitle from "./components/AnimatedTitle";
 
+import useMobileStore from "@/foundations/gartience/mobile/store";
+
 // Move outside component
 const isIOSDevice =
   typeof navigator !== "undefined" &&
