@@ -3,8 +3,6 @@ import useStore from "@/components/screen/store";
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import TextScramble from "./TextScramble";
 
-const KEY_HUE = 300;
-
 export default function Frame({ middle = false }) {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
   const titleRef = useRef(null);
@@ -114,8 +112,8 @@ export default function Frame({ middle = false }) {
 
   return (
     <S.Container>
-      <S.HorizontalLine $hue={KEY_HUE} $width={dimensions} $bottom={bottom} />
-      <S.HorizontalLine2 $hue={KEY_HUE} $width={dimensions} $bottom={bottom} />
+      <S.HorizontalLine $width={dimensions} $bottom={bottom} />
+      <S.HorizontalLine2 $width={dimensions} $bottom={bottom} />
       {middle && (
         <>
           {[
@@ -126,7 +124,6 @@ export default function Frame({ middle = false }) {
           ].map(({ top, left, height, index }) => (
             <S.VerticalLine
               key={`line-${index}-${lineKey}`}
-              $hue={KEY_HUE}
               $top={top}
               $left={left}
               $height={height}
@@ -135,24 +132,19 @@ export default function Frame({ middle = false }) {
             />
           ))}
 
-          <S.VerticalName $hue={KEY_HUE} $left={5} $top={40}>
+          <S.VerticalName $left={5} $top={40}>
             <TextScramble text={name} isAnimating={isAnimating} />
           </S.VerticalName>
-          <S.VerticalName $hue={KEY_HUE} $left={7} $top={20}>
+          <S.VerticalName $left={7} $top={20}>
             <TextScramble text={name} isAnimating={isAnimating} />
           </S.VerticalName>
-          <S.VerticalName $hue={KEY_HUE} $left={9} $top={55}>
+          <S.VerticalName $left={9} $top={55}>
             <TextScramble text={version} isAnimating={isAnimating} />
           </S.VerticalName>
         </>
       )}
 
-      <S.ModelTitle
-        $hue={KEY_HUE}
-        ref={titleRef}
-        $width={dimensions}
-        $bottom={bottom}
-      >
+      <S.ModelTitle ref={titleRef} $width={dimensions} $bottom={bottom}>
         <S.Ver ref={verRef}>
           <TextScramble text={version} isAnimating={isAnimating} />
         </S.Ver>

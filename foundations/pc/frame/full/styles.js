@@ -61,18 +61,18 @@ export const HorizontalLine2 = styled.div`
   box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
     0 0 3vw hsla(${(props) => props.$hue}, 100%, 50%, 0.2);
 
-  &::before {
-    content: "";
-    position: absolute;
-    width: 1vw;
-    height: 1vw;
-    border-radius: 50%;
-    background: hsla(${(props) => props.$hue}, 100%, 75%, 0.8);
-    box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.6);
-    top: 0;
-    left: -0.5vw;
-    transform: translateY(-50%);
-  }
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   width: 1vw;
+  //   height: 1vw;
+  //   border-radius: 50%;
+  //   background: hsla(${(props) => props.$hue}, 100%, 75%, 0.8);
+  //   box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.6);
+  //   top: 0;
+  //   left: -0.5vw;
+  //   transform: translateY(-50%);
+  // }
 `;
 
 export const ModelTitle = styled.div`

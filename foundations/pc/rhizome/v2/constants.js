@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 // Animation and Transition Constants
-export const KEY_HUE = 200;
+export const KEY_HUE = 300;
 
 export const DURATION = 200;
 export const ANIMATION = {
