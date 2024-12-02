@@ -3,7 +3,7 @@ import useStore from "@/components/screen/store";
 import { useState, useEffect, useRef } from "react";
 import TextScramble from "../simple/TextScramble";
 
-const KEY_HUE = 200;
+const KEY_HUE = 300;
 
 export default function Frame() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);

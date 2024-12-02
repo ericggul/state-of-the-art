@@ -11,7 +11,7 @@ import PerformanceChart from "./components/2_PerformanceChart";
 import RelatedPapers from "./components/4_RelatedPapers";
 import ModelFeatures from "./components/3_ModelFeatures";
 
-import Frame from "@/foundations/pc/frame/full-noHue";
+import Frame from "@/foundations/pc/frame/full";
 import Lines from "./components/Lines";
 
 const LAYOUT = [

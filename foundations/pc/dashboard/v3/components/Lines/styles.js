@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { WholeContainer } from "@/styles";
 
-export const LINEWIDTH = 0.1;
+const KEY_HUE = 300;
+
+export const LINEWIDTH = 0.15;
 export const LEFT = 3;
 export const TOP = 4;
 export const HEIGHT = 92;
@@ -19,7 +21,14 @@ export const DiagonalLine = styled.div`
   height: ${LINEWIDTH}vw;
   top: 60vh;
   left: 23vw;
-  background: #fff;
+  background: linear-gradient(
+    90deg,
+    hsla(${KEY_HUE}, 100%, 75%, 0.4),
+    hsla(${KEY_HUE}, 100%, 75%, 0.8),
+    hsla(${KEY_HUE}, 100%, 75%, 0.4)
+  );
+  box-shadow: 0 0 1vw hsla(${KEY_HUE}, 100%, 75%, 0.6),
+    0 0 3vw hsla(${KEY_HUE}, 100%, 50%, 0.4);
   transform: translate(-50%, -50%) rotate(-50deg);
 `;
 
@@ -29,7 +38,14 @@ export const HorizontalLine = styled.div`
   height: ${LINEWIDTH}vw;
   bottom: 24vh;
   left: 20vw;
-  background: #fff;
+  background: linear-gradient(
+    90deg,
+    hsla(${KEY_HUE}, 100%, 75%, 0.4),
+    hsla(${KEY_HUE}, 100%, 75%, 0.8),
+    hsla(${KEY_HUE}, 100%, 75%, 0.4)
+  );
+  box-shadow: 0 0 1vw hsla(${KEY_HUE}, 100%, 75%, 0.6),
+    0 0 3vw hsla(${KEY_HUE}, 100%, 50%, 0.4);
 `;
 
 export const HorizontalLine2 = styled.div`
@@ -38,5 +54,12 @@ export const HorizontalLine2 = styled.div`
   height: ${LINEWIDTH}vw;
   top: 38vh;
   left: ${LEFT}vw;
-  background: #fff;
+  background: linear-gradient(
+    90deg,
+    hsla(${KEY_HUE}, 100%, 75%, 0.4),
+    hsla(${KEY_HUE}, 100%, 75%, 0.8),
+    hsla(${KEY_HUE}, 100%, 75%, 0.4)
+  );
+  box-shadow: 0 0 1vw hsla(${KEY_HUE}, 100%, 75%, 0.6),
+    0 0 3vw hsla(${KEY_HUE}, 100%, 50%, 0.4);
 `;

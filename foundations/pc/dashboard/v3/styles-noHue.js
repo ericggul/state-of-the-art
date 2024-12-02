@@ -8,11 +8,9 @@ import {
   HEIGHT,
 } from "@/foundations/pc/frame/full/styles";
 
-const KEY_HUE = 300;
-
 export const Container = styled.div`
   ${WholeContainer}
-  background: hsl(${KEY_HUE}, 5%, 5%);
+  background: #000;
   padding: 4vw;
   padding-top: 6vw;
 `;
@@ -43,13 +41,11 @@ export const Row = styled.div`
 export const Card = styled.div`
   position: relative;
   height: 100%;
-  background: hsla(${KEY_HUE}, 100%, 3%, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: ${LINEWIDTH * 1.5}vw solid hsla(${KEY_HUE}, 30%, 85%, 0.5);
-  box-shadow: 0 0 2vw hsla(${KEY_HUE}, 80%, 50%, 0.1),
-    0 0 4vw hsla(${KEY_HUE}, 50%, 50%, 0.05),
-    inset 0 0 2vw hsla(${KEY_HUE}, 30%, 50%, 0.05);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+
+  border: ${LINEWIDTH * 1.5}vw solid white;
 `;
 
 export const CardTitle = styled.h3`
@@ -59,7 +55,6 @@ export const CardTitle = styled.h3`
   top: -3vw;
   margin: 0;
   padding: 0;
-  color: hsla(${KEY_HUE}, 15%, 95%, 0.95);
-  text-shadow: 0 0 1vw hsla(${KEY_HUE}, 80%, 50%, 0.3);
+  color: #fff;
   z-index: 2;
 `;
