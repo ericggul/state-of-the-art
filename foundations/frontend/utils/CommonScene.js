@@ -38,6 +38,13 @@ export default function CommonScene({ children, style }) {
       {style.lighting.pointLight2 && (
         <pointLight {...style.lighting.pointLight2} />
       )}
+      {style.lighting.pointLight3 && (
+        <pointLight {...style.lighting.pointLight3} />
+      )}
+      {style.lighting.pointLight4 && (
+        <pointLight {...style.lighting.pointLight4} />
+      )}
+
       {style.lighting.directionalLight && (
         <directionalLight {...style.lighting.directionalLight} />
       )}

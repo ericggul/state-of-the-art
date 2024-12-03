@@ -64,34 +64,6 @@ export const TYPE_STYLES = {
       metalness: 0.75,
     },
   },
-  // boltzmann: {
-  //   ...BASE_STYLE,
-  //   name: "Boltzmann Machine",
-  //   colors: {
-  //     outer: "#ff00ff",
-  //     inner: "hsl(30, 70%, 80%)",
-  //     highlight: "#ffff00",
-  //   },
-  //   material: {
-  //     metalness: 1.0,
-  //     roughness: 0.2,
-  //   },
-  //   shadows: true,
-  //   emissive: true, // Important for neon effect
-  //   lighting: {
-  //     environment: "night",
-  //     envIntensity: 1,
-  //     pointLight: { position: [0, 50, 0], intensity: 2 },
-  //     ambientLight: { intensity: 0.1 },
-  //   },
-  //   postprocessing: {
-  //     bloom: {
-  //       intensity: 10,
-  //       luminanceThreshold: 0.4,
-  //       luminanceSmoothing: 0.9,
-  //     },
-  //   },
-  // },
   boltzmann: {
     ...BASE_STYLE,
     name: "Boltzmann Machine",
@@ -179,12 +151,12 @@ export const TYPE_STYLES = {
     name: "Convolutional Network",
     colors: {
       outer: "hsl(180, 70%, 45%)",
-      inner: "hsl(30, 100%, 50%)",
+      inner: "hsl(30, 100%, 45%)",
       conv: "hsl(180, 80%, 55%)",
     },
     material: {
       metalness: 1,
-      roughness: 0,
+      roughness: 0.15,
     },
     lighting: {
       environment: "sunset",
@@ -192,12 +164,12 @@ export const TYPE_STYLES = {
       pointLight: {
         position: [0, 200, 0],
         intensity: 5,
-        color: "hsl(250, 100%, 50%)",
+        color: "hsl(50, 100%, 50%)",
       },
       directionalLight: {
         position: [0, 150, 100],
-        intensity: 8,
-        color: "hsl(280, 100%, 50%)",
+        intensity: 3,
+        color: "hsl(40, 100%, 50%)",
       },
       directionalLight2: {
         position: [50, 0, -100],
@@ -260,15 +232,13 @@ export const TYPE_STYLES = {
 
   transformer: {
     ...BASE_STYLE,
-
     colors: {
       outer: "#7d7d7d",
-      //255
-      inner: "hsl(245, 100%, 67%)",
+      inner: "hsl(252, 100%, 60%)",
       highlight: "#333333",
     },
     material: {
-      metalness: 0.95,
+      metalness: 1.0,
       roughness: 0.2,
       transparent: false,
     },
@@ -278,32 +248,43 @@ export const TYPE_STYLES = {
       environment: "sunset",
       pointLight: {
         position: [0, 200, 0],
-        intensity: 5,
-        color: "hsl(0, 100%, 80%)",
+        intensity: 3,
+        color: "hsl(150, 100%, 80%)",
       },
       pointLight2: {
         position: [0, -200, -100],
-        intensity: 5,
-        color: "hsl(250, 100%, 80%)",
+        intensity: 3,
+        color: "hsl(220, 100%, 80%)",
       },
+      pointLight3: {
+        position: [-200, -100, 100],
+        intensity: 3,
+        color: "hsl(80, 100%, 80%)",
+      },
+      pointLight4: {
+        position: [200, 100, -100],
+        intensity: 3,
+        color: "hsl(0, 100%, 80%)",
+      },
+
       directionalLight: {
         position: [0, 150, 100],
-        intensity: 5,
-        color: "hsl(150, 100%, 80%)",
+        intensity: 0.5,
+        color: "hsl(270, 100%, 80%)",
       },
-      directionalLight2: {
-        position: [50, 0, -100],
-        intensity: 5,
-        color: "hsl(250, 100%, 80%)",
-      },
-      ambientLight: { intensity: 3 },
+      // directionalLight2: {
+      //   position: [50, 0, -100],
+      //   intensity: 3,
+      //   color: "hsl(250, 100%, 80%)",
+      // },
+      ambientLight: { intensity: 2 },
     },
 
     postprocessing: {
       bloom: {
-        intensity: 0.1,
-        luminanceThreshold: 0.4,
-        luminanceSmoothing: 0.9,
+        intensity: 0.05,
+        luminanceThreshold: 1.0,
+        luminanceSmoothing: 13,
       },
     },
   },
