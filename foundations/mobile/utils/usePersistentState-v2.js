@@ -16,24 +16,24 @@ export function usePersistentState() {
       try {
         const response = await fetch("/api/user-state");
         const data = await response.json();
-
-        // Handle mobileId
         const existingMobileId =
           data?.mobileId || localStorage.getItem("mobileId");
-        const finalMobileId =
-          existingMobileId || (IS_DEPLOYMENT ? uuidv4() : "dummy");
 
-        if (!existingMobileId) {
-          localStorage.setItem("mobileId", finalMobileId);
+        if (existingMobileId) {
+          setState((prev) => ({
+            ...prev,
+            mobileId: existingMobileId,
+            isLoading: false,
+          }));
+        } else {
+          const newMobileId = IS_DEPLOYMENT ? uuidv4() : "dummy";
+          localStorage.setItem("mobileId", newMobileId);
+          setState((prev) => ({
+            ...prev,
+            mobileId: newMobileId,
+            isLoading: false,
+          }));
         }
-
-        // Set complete state including persisted data
-        setState((prev) => ({
-          ...prev,
-          ...(data || {}), // Spread all existing cookie data
-          mobileId: finalMobileId, // Ensure mobileId is set
-          isLoading: false,
-        }));
       } catch (error) {
         console.error("Error loading state:", error);
         const fallbackMobileId =
@@ -51,11 +51,12 @@ export function usePersistentState() {
     loadState();
   }, []);
 
+  // Save state when it changes, but never modify mobileId
   const updateState = async (newState) => {
     try {
       const updatedState = {
         ...newState,
-        mobileId: state.mobileId,
+        mobileId: state.mobileId, // Always keep existing mobileId
       };
 
       await fetch("/api/user-state", {
