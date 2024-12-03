@@ -71,7 +71,9 @@ const useScreenStore = create((set) => ({
       };
 
       if (state.targetMobileId !== data.mobileId) {
+        console.log("updating targetMobileId");
         updates.targetMobileId = data.mobileId;
+        console.log(updates.targetMobileId);
       }
 
       if (state.stage !== "Frontend") {
@@ -84,6 +86,10 @@ const useScreenStore = create((set) => ({
 
   handleNewMobileIntro: (data) => {
     set((state) => {
+      if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
+        return state;
+      }
+
       const updates = {
         lastInteractionTime: Date.now(),
       };

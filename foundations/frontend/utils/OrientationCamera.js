@@ -7,8 +7,6 @@ import useScreenStore from "@/components/screen/store";
 import { useOrientationAudio } from "./useOrientationAudio";
 
 const lerp = (start, end, t) => start + (end - start) * t;
-// const LERPING_FACTOR = 0.03;
-// const ZOOM_LERPING_FACTOR = 0.03;
 
 const LERPING_FACTOR = 0.02;
 const ZOOM_LERPING_FACTOR = 0.03;
@@ -27,6 +25,14 @@ export const OrientationCamera = memo(
     const { camera } = useThree();
     const externalZoomFactor = useScreenStore((state) => state.zoomFactor);
     const setZoomFactor = useScreenStore((state) => state.setZoomFactor);
+    const targetMobileId = useScreenStore((state) => state.targetMobileId);
+    const targetMobileIdRef = useRef(targetMobileId);
+    useEffect(() => {
+      console.log("103");
+      console.log(targetMobileId);
+      targetMobileIdRef.current = targetMobileId;
+    }, [targetMobileId]);
+
     const isAccelerometerActive = useScreenStore(
       (state) => state.isAccelerometerActive
     );
@@ -95,6 +101,20 @@ export const OrientationCamera = memo(
 
     useSocketScreenOrientation({
       handleNewMobileOrientation: (data) => {
+        console.log("102");
+        console.log(data.mobileId);
+        console.log(targetMobileIdRef.current);
+        console.log(
+          "new mobile orientation",
+          // data,
+          data.mobileId,
+          targetMobileId,
+          data.mobileId !== targetMobileId,
+          data.mobileId != targetMobileId
+        );
+
+        if (data.mobileId != targetMobileId) return;
+        console.log("setting sensor data");
         sensorDataRef.current = data;
         lastDataTimestampRef.current = Date.now(); // Update timestamp
 
@@ -105,7 +125,7 @@ export const OrientationCamera = memo(
         }
       },
       handleNewMobileOrientationSpike: (data) => {
-        console.log("new mobile orientation spike", data);
+        if (data.mobileId !== targetMobileId) return;
         lastDataTimestampRef.current = Date.now(); // Update timestamp for spikes too
       },
     });

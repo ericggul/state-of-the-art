@@ -14,6 +14,7 @@ export default function Intro({
   onUsernameSubmit,
   initialUsername,
   introState,
+  mobileId = "",
 }) {
   const { supportsDeviceOrientation, permission, requestAccess } =
     useAccelerometer();
@@ -30,6 +31,7 @@ export default function Intro({
     socket,
     onSuccess: handleSuccess,
     initialUsername,
+    mobileId,
   });
 
   const handleAccelerometerActivation = useCallback(async () => {
@@ -53,6 +55,7 @@ export default function Intro({
     socket.current.emit("mobile-new-intro", {
       type: "accelerometer_activation",
       activated: result.granted,
+      mobileId,
     });
   }
 

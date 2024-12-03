@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 export function usePersistentState() {
   const [state, setState] = useState({
     username: "",
     isAccelerometerActive: undefined,
     isLoading: true,
-    mobileId: "",
   });
 
   // Load state on mount
@@ -18,25 +16,16 @@ export function usePersistentState() {
 
         if (data) {
           setState({
-            username: data.username || "",
+            username: data.username,
             isAccelerometerActive: data.isAccelerometerActive,
-            mobileId: data.mobileId || uuidv4(),
             isLoading: false,
           });
         } else {
-          setState((prev) => ({
-            ...prev,
-            mobileId: uuidv4(),
-            isLoading: false,
-          }));
+          setState((prev) => ({ ...prev, isLoading: false }));
         }
       } catch (error) {
         console.error("Error loading state:", error);
-        setState((prev) => ({
-          ...prev,
-          mobileId: uuidv4(),
-          isLoading: false,
-        }));
+        setState((prev) => ({ ...prev, isLoading: false }));
       }
     }
 
@@ -49,15 +38,11 @@ export function usePersistentState() {
       await fetch("/api/user-state", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newState,
-          mobileId: state.mobileId, // Preserve existing mobileId
-        }),
+        body: JSON.stringify(newState),
       });
 
       setState({
         ...newState,
-        mobileId: state.mobileId, // Preserve existing mobileId
         isLoading: false,
       });
     } catch (error) {

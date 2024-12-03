@@ -11,7 +11,7 @@ import Loading from "@/foundations/mobile/loading";
 
 export default function Mobile() {
   const [state, setState] = usePersistentState();
-  const mobileId = useMemo(() => "DUMMY", []);
+
   const [isIntro, setIsIntro] = useState(true);
   const [introState, setIntroState] = useState(state.username ? 1 : 0);
 
@@ -19,8 +19,11 @@ export default function Mobile() {
     console.log("New response from controller:", data);
   }, []);
 
-  const socket = useSocketMobile({ mobileId, handleNewResponse });
-  useMobileVisibility({ socket, mobileId });
+  const socket = useSocketMobile({
+    mobileId: state.mobileId,
+    handleNewResponse,
+  });
+  useMobileVisibility({ socket, mobileId: state.mobileId });
 
   if (state.isLoading) {
     return <Loading customText="Initialising State" />;
@@ -34,6 +37,7 @@ export default function Mobile() {
       socket.current.emit("mobile-new-intro", {
         type: "state_change",
         introState: 1,
+        mobileId: state.mobileId,
       });
     } catch (error) {
       console.error("Error emitting intro state:", error);
@@ -52,11 +56,15 @@ export default function Mobile() {
         setIntroState={setIntroState}
       />
       {!isIntro && (
-        <UI socket={socket} mobileId={mobileId} username={state.username} />
+        <UI
+          socket={socket}
+          mobileId={state.mobileId}
+          username={state.username}
+        />
       )}
       <AccelerometerHandler
         socket={socket}
-        mobileId={mobileId}
+        mobileId={state.mobileId}
         isAccelerometerActive={state.isAccelerometerActive}
         handleError={handleAccelerometerError}
       />
@@ -78,6 +86,7 @@ function IntroWrapper({
       socket.current.emit("mobile-new-intro", {
         type: "state_change",
         introState,
+        mobileId: state.mobileId,
       });
     } catch (error) {
       console.error("Error emitting intro state:", error);
@@ -126,6 +135,7 @@ function IntroWrapper({
       onAccelerometerActivate={handleAccelerometerActivate}
       onUsernameSubmit={handleUsernameSubmit}
       initialUsername={state.username}
+      mobileId={state.mobileId}
       introState={introState}
     />
   );

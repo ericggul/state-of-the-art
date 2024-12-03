@@ -23,7 +23,6 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
     socket.current = io();
 
     socket.current.on("connect", () => {
-      console.log("23", mobileId);
       socket.current.emit("mobile-init", { mobileId });
       socket.current.on("new-conductor-response", handleNewResponse);
     });

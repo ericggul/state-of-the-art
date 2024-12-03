@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { useNameValidator } from "./useNameValidator";
 
-export function useNameInput({ socket, onSuccess }) {
+export function useNameInput({ socket, onSuccess, mobileId }) {
   const [state, setState] = useState({
     username: "",
     error: "",
@@ -39,6 +39,7 @@ export function useNameInput({ socket, onSuccess }) {
           socket.current.emit("mobile-new-intro", {
             type: "username_submit",
             username: trimmedUsername,
+            mobileId,
           });
         }
         onSuccess(trimmedUsername);
@@ -75,10 +76,11 @@ export function useNameInput({ socket, onSuccess }) {
         socket.current.emit("mobile-new-intro", {
           type: "username_update",
           username: newValue.trim(),
+          mobileId,
         });
       }
     },
-    [validateUsername, socket]
+    [validateUsername, socket, mobileId]
   );
 
   const handleUsernameSubmit = useCallback(
