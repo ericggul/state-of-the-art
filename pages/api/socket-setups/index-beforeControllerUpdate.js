@@ -5,13 +5,8 @@ export default function socketSetup({ socket, io }) {
   ///////////
   //INIT/////
   ///////////
-  socket.on("screen-init", () => {
+  socket.on("screen-init", (data) => {
     socket.join("screen");
-  });
-
-  socket.on("controller-init", () => {
-    socket.join("screen");
-    socket.join("controller");
   });
 
   socket.on("mobile-init", ({ mobileId }) => {
@@ -31,6 +26,11 @@ export default function socketSetup({ socket, io }) {
       mobileId,
       origin: "init",
     });
+  });
+
+  socket.on("controller-init", () => {
+    socket.join("screen");
+    socket.join("controller");
   });
 
   //////VISIBILITY
@@ -62,6 +62,7 @@ export default function socketSetup({ socket, io }) {
 
   socket.on("mobile-new-intro", (data) => {
     socket.to("screen").emit("new-mobile-intro", data);
+    socket.to("controller").emit("new-mobile-intro", data);
   });
 
   //BACKEND: inter-screen conversation
@@ -101,6 +102,11 @@ export default function socketSetup({ socket, io }) {
       console.log("date now", Date.now());
       console.log(`🔌 Mobile disconnected: ${activeMobile.mobileId}`);
 
+      io.to("controller").emit("new-mobile-visibility-change", {
+        mobileId: activeMobile.mobileId,
+        isVisible: false,
+        origin: "socket_disconnect",
+      });
       io.to("screen").emit("new-mobile-visibility-change", {
         mobileId: activeMobile.mobileId,
         isVisible: false,

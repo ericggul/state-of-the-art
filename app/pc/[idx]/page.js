@@ -84,7 +84,6 @@ function RelationPageContent({ idx, test }) {
   }, [idx]);
 
   const socket = useSocketScreen({
-    layerIdx: idx,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,

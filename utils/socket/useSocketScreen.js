@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
 export default function useSocketScreen({
-  layerIdx = 0,
+  isController = false,
 
   handleNewMobile = () => {},
   handleNewMobileVisibility = () => {},
@@ -46,7 +46,7 @@ export default function useSocketScreen({
         }
       };
     }
-  }, [layerIdx]);
+  }, [isController]);
 
   const socketInitializer = async () => {
     await fetch("/api/socket");
@@ -54,7 +54,14 @@ export default function useSocketScreen({
 
     socket.current.on("connect", () => {
       console.log("Screen socket connected");
-      socket.current.emit("screen-init", { layerIdx });
+
+      if (isController) {
+        console.log("Screen socket emitting controller-init");
+        socket.current.emit("controller-init");
+      } else {
+        console.log("Screen socket emitting screen-init");
+        socket.current.emit("screen-init");
+      }
 
       //MOBILE -> SCREEN
       socket.current.on("new-mobile-init", handleNewMobile);

@@ -1,44 +1,29 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Suspense, useEffect, useRef, useState, useMemo } from "react";
-import useScreenStore from "@/components/screen/store";
-import useSocketScreen from "@/utils/socket/useSocketScreen";
-import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
-import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
+import { useEffect, useRef, useState, useMemo } from "react";
+import useSocketController from "@/utils/socket/useSocketController";
+import useControllerStore from "./store";
+import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
 import * as S from "./styles";
 import useAutoReset from "./utils/useAutoReset";
 
-const Ending = dynamic(() => import("@/components/screen/ending"));
-
-// Main content component
 export default function Controller() {
   const {
-    handleNewMobileArchitecture,
-    handleNewMobileVisibility,
-    handleNewMobile,
-    handleNewMobileIntro,
-    handleNewControllerInit,
-    handleNewControllerArchitectures,
-    handleNewControllerVisibility,
-    handleNewControllerStageAndReset,
-    handleNewScreenConversation,
-
-    // States needed for UI
-    targetMobileId: activeMobileId,
+    activeMobileId,
     mobileVisibility,
-    currentArchitectures,
+    currentArchitecture,
+    handleNewMobileInit: handleNewMobileInitStore,
+    handleNewMobileVisibility: handleNewMobileVisibilityStore,
+    handleNewMobileArchitecture,
     stage,
+    isReset,
+    reset,
+  } = useControllerStore();
 
-    isEnding,
-
-    setIsProjector,
-    setDeviceIndex,
-  } = useScreenStore();
-
-  // Session ID management (kept from original controller)
+  // Add state for sessionId
   const [sessionId, setSessionId] = useState(null);
 
+  // Generate and emit session ID on mount
   useEffect(() => {
     const newSessionId = Date.now().toString();
     setSessionId(newSessionId);
@@ -46,6 +31,7 @@ export default function Controller() {
     emitSocketEvent("controller-new-sessionId", { sessionId: newSessionId });
   }, []);
 
+  // Format the timestamp
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
     const date = new Date(parseInt(sessionId));
@@ -60,22 +46,20 @@ export default function Controller() {
     });
   }, [sessionId]);
 
-  useEffect(() => {
-    setIsProjector(true);
-    setDeviceIndex(4);
-  }, []);
-
-  const socket = useSocketScreen({
-    isController: true,
+  // Socket setup with handlers
+  const socket = useSocketController({
+    handleNewMobileInit: (data) => {
+      emitSocketEvent("controller-new-init", data);
+      handleNewMobileInitStore(data);
+    },
+    handleNewMobileVisibility: (data) => {
+      handleNewMobileVisibilityStore(data);
+      // emitSocketEvent("controller-new-visibility-change", {
+      //   ...data,
+      //   origin: "controller-" + (data.origin || ""),
+      // });
+    },
     handleNewMobileArchitecture,
-    handleNewMobileVisibility,
-    handleNewMobile,
-    handleNewMobileIntro,
-    handleNewControllerInit,
-    handleNewControllerArchitectures,
-    handleNewControllerVisibility,
-    handleNewControllerStageAndReset,
-    handleNewScreenConversation,
   });
 
   // Helper function for socket emissions
@@ -89,6 +73,24 @@ export default function Controller() {
     }
   };
 
+  // Effects
+  useControllerVisibility();
+
+  // useEffect(() => {
+  //   if (isReset) {
+  //     emitSocketEvent("controller-new-stage-and-reset", {
+  //       isReset,
+  //       type: "reset",
+  //     });
+  //     const timeout = setTimeout(reset, 5000);
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [isReset]);
+
+  useEffect(() => {
+    // emitSocketEvent("controller-new-stage-and-reset", { stage, type: "stage" });
+  }, [stage]);
+
   const timeoutRef = useRef(null);
   const handleForceReset = () => {
     emitSocketEvent("controller-new-stage-and-reset", {
@@ -96,18 +98,20 @@ export default function Controller() {
       type: "reset",
       force: true,
     });
-    timeoutRef.current = setTimeout(() => window.location.reload(), 2000);
+    timeoutRef.current = setTimeout(reset, 2000);
   };
 
   useEffect(() => {
     return () => clearTimeout(timeoutRef.current);
   }, []);
 
-  useScreenVisibility();
-  useInactivityCheck();
-  useAutoReset({ stage, handleForceReset });
+  // Add auto reset hook
+  useAutoReset({
+    stage,
+    handleForceReset,
+  });
 
-  // Status indicator helper (kept from original)
+  // Status indicator helper
   const StatusItem = ({ active, label, value }) => (
     <S.StatusItem>
       <S.StatusIndicator $active={active} />
@@ -135,7 +139,11 @@ export default function Controller() {
           value={mobileVisibility ? "Active" : "Inactive"}
         />
         <StatusItem active={stage === "Frontend"} label="Stage" value={stage} />
-
+        <StatusItem
+          active={!isReset}
+          label="Reset Status"
+          value={isReset ? "Reset" : "Active"}
+        />
         <S.ResetButton onClick={handleForceReset}>
           Force Reset All Screens
         </S.ResetButton>
@@ -144,10 +152,9 @@ export default function Controller() {
       <S.Content>
         <S.Title>Current Architecture</S.Title>
         <S.StatusItem>
-          {currentArchitectures?.[0]?.name || "None selected"}
+          {currentArchitecture?.name || "None selected"}
         </S.StatusItem>
       </S.Content>
-      {isEnding && <Ending />}
     </S.Container>
   );
 }

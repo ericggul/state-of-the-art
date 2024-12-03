@@ -64,7 +64,6 @@ function ScreenContent({ test }) {
   }, []);
 
   const socket = useSocketScreen({
-    layerIdx: 0,
     handleNewMobileArchitecture,
     handleNewMobileVisibility,
     handleNewMobile,
