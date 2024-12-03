@@ -7,6 +7,16 @@ import { CONSTANTS } from "./constants";
 
 const SCROLL_THROTTLE_MS = 16; // Approximately 60fps
 
+// Detect platform
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isAndroid = /Android/.test(navigator.userAgent);
+
+const MOMENTUM_CONFIG = {
+  friction: isIOS ? 0.95 : 0.94, // Further increased friction for Android
+  multiplier: isIOS ? 0.8 : 0.3, // Further reduced multiplier for Android
+  minVelocity: isIOS ? 0.1 : 0.03, // Lower minimum velocity for Android for smoother stop
+};
+
 export function useModelListLogic({ initialModels, socket, mobileId }) {
   // States
   const [models, setModels] = useState(initialModels);
@@ -88,47 +98,119 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     return () => clearTimeout(timeout);
   }, []);
 
-  // Optimize scroll handling
+  // Add these refs for momentum scrolling
+  const velocityRef = useRef(0);
+  const lastTouchYRef = useRef(0);
+  const lastScrollTopRef = useRef(0);
+  const animationFrameRef = useRef(null);
+
+  // Scroll handling effect
   useEffect(() => {
     const listElement = listRef.current;
     if (!listElement) return;
 
-    let lastScrollTime = Date.now();
-    let lastScrollTop = listElement.scrollTop;
-    let rafId = null;
+    if (isAndroid) {
+      // Android: Use v2 speed-limiting scroll logic
+      let lastScrollTime = Date.now();
+      let lastScrollTop = listElement.scrollTop;
+      let rafId = null;
 
-    const handleScroll = () => {
-      if (rafId) return;
+      const handleScroll = () => {
+        if (rafId) return;
 
-      rafId = requestAnimationFrame(() => {
-        const currentTime = Date.now();
-        const currentScrollTop = listElement.scrollTop;
+        rafId = requestAnimationFrame(() => {
+          const currentTime = Date.now();
+          const currentScrollTop = listElement.scrollTop;
 
-        if (currentTime - lastScrollTime >= SCROLL_THROTTLE_MS) {
-          const timeDelta = currentTime - lastScrollTime;
-          const scrollSpeed =
-            Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
-          const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED;
+          if (currentTime - lastScrollTime >= SCROLL_THROTTLE_MS) {
+            const timeDelta = currentTime - lastScrollTime;
+            const scrollSpeed =
+              Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
+            const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED;
 
-          if (scrollSpeed > maxSpeed) {
-            const maxScrollDelta = maxSpeed * timeDelta;
-            const direction = currentScrollTop > lastScrollTop ? 1 : -1;
-            listElement.scrollTop = lastScrollTop + maxScrollDelta * direction;
+            if (scrollSpeed > maxSpeed) {
+              const maxScrollDelta = maxSpeed * timeDelta;
+              const direction = currentScrollTop > lastScrollTop ? 1 : -1;
+              listElement.scrollTop =
+                lastScrollTop + maxScrollDelta * direction;
+            }
+
+            lastScrollTime = currentTime;
+            lastScrollTop = listElement.scrollTop;
+          }
+          rafId = null;
+        });
+      };
+
+      listElement.addEventListener("scroll", handleScroll, { passive: true });
+      return () => {
+        listElement.removeEventListener("scroll", handleScroll);
+        if (rafId) cancelAnimationFrame(rafId);
+      };
+    } else {
+      // iOS: Keep current momentum scrolling logic
+      let isScrolling = false;
+
+      function updateScroll() {
+        if (Math.abs(velocityRef.current) > MOMENTUM_CONFIG.minVelocity) {
+          velocityRef.current *= MOMENTUM_CONFIG.friction;
+          listElement.scrollTop += velocityRef.current;
+
+          if (
+            listElement.scrollTop <= 0 ||
+            listElement.scrollTop >=
+              listElement.scrollHeight - listElement.clientHeight
+          ) {
+            velocityRef.current = 0;
           }
 
-          lastScrollTime = currentTime;
-          lastScrollTop = listElement.scrollTop;
+          animationFrameRef.current = requestAnimationFrame(updateScroll);
+        } else {
+          isScrolling = false;
         }
+      }
 
-        rafId = null;
+      function handleTouchStart(e) {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+        velocityRef.current = 0;
+        lastTouchYRef.current = e.touches[0].clientY;
+      }
+
+      function handleTouchMove(e) {
+        const deltaY = lastTouchYRef.current - e.touches[0].clientY;
+        lastTouchYRef.current = e.touches[0].clientY;
+        velocityRef.current = deltaY * MOMENTUM_CONFIG.multiplier;
+        listElement.scrollTop += deltaY;
+      }
+
+      function handleTouchEnd() {
+        if (Math.abs(velocityRef.current) > MOMENTUM_CONFIG.minVelocity) {
+          isScrolling = true;
+          animationFrameRef.current = requestAnimationFrame(updateScroll);
+        }
+      }
+
+      listElement.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
       });
-    };
+      listElement.addEventListener("touchmove", handleTouchMove, {
+        passive: true,
+      });
+      listElement.addEventListener("touchend", handleTouchEnd, {
+        passive: true,
+      });
 
-    listElement.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      listElement.removeEventListener("scroll", handleScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+      return () => {
+        listElement.removeEventListener("touchstart", handleTouchStart);
+        listElement.removeEventListener("touchmove", handleTouchMove);
+        listElement.removeEventListener("touchend", handleTouchEnd);
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+      };
+    }
   }, []);
 
   return {

@@ -36,7 +36,7 @@ export const Canvas = styled(animated.div)`
     background: ${(props) => `linear-gradient(
       45deg,
       transparent 0%,
-      hsla(${props.$hue}, 59%, 50%, 0.5) 50%,
+      hsla(${props.$hue}, 79%, 50%, 0.8) 50%,
       transparent 100%
     )`};
     mix-blend-mode: overlay;

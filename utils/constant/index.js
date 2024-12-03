@@ -27,8 +27,8 @@ export const TIMEOUTS = {
 
 //transition: delay between devices
 //screen > transition
-export const BASE_DELAY = 700;
-export const DEVICE_DELAY_MULTIPLIER = 350;
+export const BASE_DELAY = 900;
+export const DEVICE_DELAY_MULTIPLIER = 450;
 
 //conversation: black and white time
 //backend > useConversation
