@@ -1,50 +1,23 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, useRef, useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
-import useSocketScreen from "@/utils/socket/useSocketScreen";
-import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
-import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 import * as S from "./styles";
 import useAutoReset from "./utils/useAutoReset";
 
 const Ending = dynamic(() => import("@/components/screen/ending"));
 
-// Main content component
-export default function Controller() {
+export default function Controller({ socket }) {
   const {
-    handleNewMobileArchitecture,
-    handleNewMobileVisibility,
-    handleNewMobile,
-    handleNewMobileIntro,
-    handleNewControllerInit,
-    handleNewControllerArchitectures,
-    handleNewControllerVisibility,
-    handleNewControllerStageAndReset,
-    handleNewScreenConversation,
-
-    // States needed for UI
     targetMobileId: activeMobileId,
     mobileVisibility,
     currentArchitectures,
     stage,
-
     isEnding,
-
-    setIsProjector,
-    setDeviceIndex,
   } = useScreenStore();
 
-  // Session ID management (kept from original controller)
-  const [sessionId, setSessionId] = useState(null);
-
-  useEffect(() => {
-    const newSessionId = Date.now().toString();
-    setSessionId(newSessionId);
-    console.log("Generated new session ID:", newSessionId);
-    emitSocketEvent("controller-new-sessionId", { sessionId: newSessionId });
-  }, []);
+  const [sessionId, setSessionId] = useState(Date.now().toString());
 
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
@@ -60,54 +33,19 @@ export default function Controller() {
     });
   }, [sessionId]);
 
-  useEffect(() => {
-    setIsProjector(true);
-    setDeviceIndex(4);
-  }, []);
-
-  const socket = useSocketScreen({
-    isController: true,
-    handleNewMobileArchitecture,
-    handleNewMobileVisibility,
-    handleNewMobile,
-    handleNewMobileIntro,
-    handleNewControllerInit,
-    handleNewControllerArchitectures,
-    handleNewControllerVisibility,
-    handleNewControllerStageAndReset,
-    handleNewScreenConversation,
-  });
-
-  // Helper function for socket emissions
-  const emitSocketEvent = async (event, data) => {
-    try {
-      if (socket.current) {
-        await socket.current.emit(event, data);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const timeoutRef = useRef(null);
   const handleForceReset = () => {
-    emitSocketEvent("controller-new-stage-and-reset", {
+    socket.current?.emit("controller-new-stage-and-reset", {
       isReset: true,
       type: "reset",
       force: true,
     });
-    timeoutRef.current = setTimeout(() => window.location.reload(), 2000);
+    setTimeout(() => window.location.reload(), 2000);
   };
 
-  useEffect(() => {
-    return () => clearTimeout(timeoutRef.current);
-  }, []);
-
-  useScreenVisibility();
-  useInactivityCheck();
+  // Use the auto-reset hook
   useAutoReset({ stage, handleForceReset });
 
-  // Status indicator helper (kept from original)
+  // Status indicator helper
   const StatusItem = ({ active, label, value }) => (
     <S.StatusItem>
       <S.StatusIndicator $active={active} />
