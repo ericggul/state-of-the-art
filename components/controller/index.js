@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import useSocketController from "@/utils/socket/useSocketController";
 import useControllerStore from "./store";
 import useControllerVisibility from "@/utils/hooks/useControllerVisibility";
 import * as S from "./styles";
+import useAutoReset from "./utils/useAutoReset";
 
 export default function Controller() {
   const {
@@ -18,6 +19,32 @@ export default function Controller() {
     isReset,
     reset,
   } = useControllerStore();
+
+  // Add state for sessionId
+  const [sessionId, setSessionId] = useState(null);
+
+  // Generate and emit session ID on mount
+  useEffect(() => {
+    const newSessionId = Date.now().toString();
+    setSessionId(newSessionId);
+    console.log("Generated new session ID:", newSessionId);
+    emitSocketEvent("controller-new-sessionId", { sessionId: newSessionId });
+  }, []);
+
+  // Format the timestamp
+  const formattedSessionTime = useMemo(() => {
+    if (!sessionId) return "";
+    const date = new Date(parseInt(sessionId));
+    return date.toLocaleString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }, [sessionId]);
 
   // Socket setup with handlers
   const socket = useSocketController({
@@ -78,6 +105,12 @@ export default function Controller() {
     return () => clearTimeout(timeoutRef.current);
   }, []);
 
+  // Add auto reset hook
+  useAutoReset({
+    stage,
+    handleForceReset,
+  });
+
   // Status indicator helper
   const StatusItem = ({ active, label, value }) => (
     <S.StatusItem>
@@ -90,6 +123,11 @@ export default function Controller() {
     <S.Container>
       <S.Header>
         <S.Title>Controller Status</S.Title>
+        <StatusItem
+          active={true}
+          label="Session ID"
+          value={`${sessionId || "Not generated"} (${formattedSessionTime})`}
+        />
         <StatusItem
           active={activeMobileId !== null}
           label="Mobile ID"

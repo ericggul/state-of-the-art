@@ -6,6 +6,7 @@ const DEFAULT_STATE = {
   activeMobileId: null,
   mobileVisibility: false,
   currentArchitecture: null,
+  introState: 0,
 
   stage: "Idle",
   iteration: 0,
@@ -25,6 +26,7 @@ const useControllerStore = create((set) => ({
   setStage: (stage) => set({ stage }),
   setIteration: (iteration) => set({ iteration }),
   setIsReset: (isReset) => set({ isReset }),
+  setIntroState: (introState) => set({ introState }),
 
   // Socket event handlers
   handleNewMobileInit: (data) => {
@@ -63,6 +65,10 @@ const useControllerStore = create((set) => ({
     });
   },
 
+  handleNewMobileIntroStore: (data) => {
+    set({ introState: data.introState });
+  },
+
   handleNewMobileArchitecture: (data) => {
     console.log("New mobile architecture:", data);
     set((state) => {
@@ -77,6 +83,8 @@ const useControllerStore = create((set) => ({
 
   // Reset state
   reset: () => {
+    console.log("reset");
+    window.location.reload();
     set((state) => {
       // If we're already at default state, no need to update
       if (

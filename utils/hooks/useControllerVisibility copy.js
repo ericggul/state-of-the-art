@@ -4,7 +4,6 @@ import {
   iterationSpeedMultiplier,
   TIMEOUTS,
   INACTIVITY_TIMEOUT,
-  FRONTEND_INACTIVITY_TIMEOUT,
 } from "@/utils/constant";
 
 export default function useControllerVisibility() {
@@ -20,17 +19,8 @@ export default function useControllerVisibility() {
   const timeouts = useRef({});
   const isStageIdle = useMemo(() => stage === "Idle", [stage]);
   const visibilityRef = useRef(mobileVisibility);
-  const iterationRef = useRef(iteration);
-
-  useEffect(() => {
-    iterationRef.current = iteration;
-  }, [iteration]);
 
   const clearTimeouts = () => {
-    console.log(
-      "🧹 Clearing controller timeouts:",
-      Object.keys(timeouts.current)
-    );
     Object.values(timeouts.current).forEach((timeout) => {
       if (timeout) clearTimeout(timeout);
     });
@@ -38,37 +28,20 @@ export default function useControllerVisibility() {
   };
 
   const scheduleStateChanges = () => {
-    if (iterationRef.current === 0) return;
+    if (iteration == 0) return;
 
     clearTimeouts();
-    const multiplier = iterationSpeedMultiplier(iterationRef.current);
 
-    console.log("📅 Scheduling controller state changes:", {
-      iteration: iterationRef.current,
-      multiplier,
-    });
-
-    timeouts.current.transition = setTimeout(() => {
-      if (!visibilityRef.current) {
-        console.log("🔄 Controller transition ended");
-      }
-    }, TIMEOUTS.TRANSITION * multiplier);
+    const multiplier = iterationSpeedMultiplier(iteration);
 
     timeouts.current.backend = setTimeout(() => {
       if (!visibilityRef.current) {
-        console.log("🔙 Setting controller stage to Backend");
         setStage("Backend");
       }
     }, TIMEOUTS.BACKEND * multiplier);
 
     const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
     const resetDelay = endingDelay + TIMEOUTS.RESET;
-
-    console.log("⏱️ Controller Delays:", {
-      ending: endingDelay,
-      reset: resetDelay,
-    });
-
     timeouts.current.reset = setTimeout(() => {
       if (!visibilityRef.current) {
         setIsReset(true);
@@ -77,22 +50,20 @@ export default function useControllerVisibility() {
   };
 
   const setFrontendState = () => {
-    console.log("🎭 Setting Controller Frontend state");
     clearTimeouts();
     setStage("Frontend");
   };
 
+  // Main visibility effect
   useEffect(() => {
-    console.log("👁️ Controller Visibility effect:", {
-      isStageIdle,
-      mobileVisibility,
-      currentStage: stage,
-    });
+    console.log("isStageIdle", isStageIdle);
+    console.log("iteration", iteration);
 
-    if (isStageIdle || iterationRef.current === 0) return;
+    if (isStageIdle || iteration == 0) return;
 
     visibilityRef.current = mobileVisibility;
 
+    console.log("mobileVisibility", mobileVisibility);
     if (mobileVisibility) {
       setFrontendState();
     } else {
@@ -106,11 +77,9 @@ export default function useControllerVisibility() {
   useEffect(() => {
     if (stage !== "Frontend") return;
 
-    const timeout = FRONTEND_INACTIVITY_TIMEOUT;
-
     const checkInactivity = () => {
       const now = Date.now();
-      if (now - lastInteractionTime > timeout) {
+      if (now - lastInteractionTime > INACTIVITY_TIMEOUT) {
         setIsReset(true);
       }
     };

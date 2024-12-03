@@ -1,7 +1,7 @@
 // Track single active mobile
 let activeMobile = null;
 
-export default function mobileSetup({ socket, io }) {
+export default function socketSetup({ socket, io }) {
   ///////////
   //INIT/////
   ///////////
@@ -62,6 +62,7 @@ export default function mobileSetup({ socket, io }) {
 
   socket.on("mobile-new-intro", (data) => {
     socket.to("screen").emit("new-mobile-intro", data);
+    socket.to("controller").emit("new-mobile-intro", data);
   });
 
   //BACKEND: inter-screen conversation
@@ -83,6 +84,12 @@ export default function mobileSetup({ socket, io }) {
     socket.to("screen").emit("new-controller-stage-and-reset", data);
   });
 
+  //////SESSION ID LOGIC/////
+  socket.on("controller-new-sessionId", (data) => {
+    socket.to("screen").emit("new-controller-sessionId", data);
+  });
+
+  //DISCONNECT LOGIC//
   socket.on("disconnect", () => {
     console.log(
       "socket disconnect",
