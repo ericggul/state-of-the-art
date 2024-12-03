@@ -12,7 +12,7 @@ export const Container = styled.div`
 
 export const ImageWrapper = styled.div`
   position: relative;
-  width: 22vw;
+  width: 19vw;
   height: 100%;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
@@ -30,7 +30,8 @@ export const Image = styled.img`
 
 export const Description = styled.div`
   font-size: 0.7vw;
-  width: 12vw;
+  width: 10vw;
+  margin-right: -0.5vw;
   display: flex;
   align-items: center;
   color: rgba(255, 255, 255, 0.7);

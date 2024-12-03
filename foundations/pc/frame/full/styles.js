@@ -77,8 +77,8 @@ export const HorizontalLine2 = styled.div`
 
 export const ModelTitle = styled.div`
   position: absolute;
-  color: hsla(${(props) => props.$hue}, 30%, 95%, 0.95);
-  left: ${LEFT + 1.5}vw;
+  color: hsla(${(props) => props.$hue}, 30%, 90%, 0.95);
+  left: ${LEFT + 2}vw;
   top: ${TOP}vw;
   padding: 0.3vw 1vw;
   transform: translateY(-50%);

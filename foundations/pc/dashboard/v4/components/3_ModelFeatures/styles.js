@@ -25,7 +25,8 @@ export const Section = styled.div`
 export const Title = styled.h4`
   font-size: 1.2vw;
   margin: 0 0 1.5vw 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.9);
+  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2);
 `;
 
 export const List = styled.ul`
@@ -40,13 +41,22 @@ export const Item = styled.li`
   gap: 0.5vw;
   margin-bottom: 0.5vw;
   font-size: 0.8vw;
-  color: rgba(255, 255, 255, 0.7);
+  color: hsla(${(props) => props.$hue}, 15%, 98%, 0.7);
 `;
 
 export const Bullet = styled.span`
-  color: ${(props) =>
-    props.$isHighlight ? "rgba(0, 255, 0, 0.8)" : "rgba(255, 0, 0, 0.8)"};
+  color: ${
+    (props) =>
+      props.$isHighlight
+        ? `hsla(${props.$hue}, 100%, 75%, 0.8)` // Positive highlight color
+        : `hsla(${props.$hue - 180}, 100%, 75%, 0.8)` // Negative highlight color (opposite hue)
+  };
   font-weight: bold;
+  text-shadow: 0 0 0.8vw
+    ${(props) =>
+      props.$isHighlight
+        ? `hsla(${props.$hue}, 100%, 50%, 0.4)`
+        : `hsla(${props.$hue - 180}, 100%, 50%, 0.4)`};
 `;
 
 export const TextWrapper = styled.div`

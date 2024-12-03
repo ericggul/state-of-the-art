@@ -18,11 +18,11 @@ import Lines from "./components/Lines";
 const LAYOUT = [
   [
     {
-      width: "38vw",
-      marginRight: "1.5vw",
+      width: "35vw",
+      marginRight: "3vw",
       height: "34vh",
     },
-    { width: "17vw", marginRight: "1.5vw", height: "34vh" },
+    { width: "15vw", marginRight: "3vw", height: "34vh" },
     { width: "35vw", height: "34vh" },
   ],
   [
@@ -81,7 +81,7 @@ export default function Dashboard() {
           </Card>
 
           <Card title="Architecture" layout={LAYOUT[0][1]} hue={debouncedHue}>
-            <ModelDiagram model={currentModel} />
+            <ModelDiagram model={currentModel} hue={debouncedHue} />
           </Card>
 
           <Card title="Performance" layout={LAYOUT[0][2]} hue={debouncedHue}>
@@ -108,15 +108,23 @@ export default function Dashboard() {
 
         <S.Row>
           <Card title="Features" layout={LAYOUT[1][0]} hue={debouncedHue}>
-            <ModelFeatures model={currentModel} isHighlight={true} />
+            <ModelFeatures
+              model={currentModel}
+              isHighlight={true}
+              hue={debouncedHue}
+            />
           </Card>
 
           <Card title="" layout={LAYOUT[1][1]} hue={debouncedHue}>
-            <ModelFeatures model={currentModel} isHighlight={false} />
+            <ModelFeatures
+              model={currentModel}
+              isHighlight={false}
+              hue={debouncedHue}
+            />
           </Card>
 
           <Card title="Related Papers" layout={LAYOUT[1][2]} hue={debouncedHue}>
-            <RelatedPapers model={currentModel} />
+            <RelatedPapers model={currentModel} hue={debouncedHue} />
           </Card>
         </S.Row>
       </S.Wrapper>

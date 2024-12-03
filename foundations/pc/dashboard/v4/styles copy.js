@@ -8,9 +8,11 @@ import {
   HEIGHT,
 } from "@/foundations/pc/frame/full/styles";
 
+const KEY_HUE = 230;
+
 export const Container = styled.div`
   ${WholeContainer}
-  background: #000;
+  background: hsl(${(props) => props.$hue}, 5%, 2%);
   padding: 4vw;
   padding-top: 6vw;
 `;
@@ -41,11 +43,14 @@ export const Row = styled.div`
 export const Card = styled.div`
   position: relative;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-
-  border: ${LINEWIDTH * 1.5}vw solid white;
+  background: hsla(${(props) => props.$hue}, 100%, 3%, 0.85);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: ${LINEWIDTH * 1.5}vw solid
+    hsla(${(props) => props.$hue}, 30%, 85%, 0.5);
+  box-shadow: 0 0 2vw hsla(${(props) => props.$hue}, 80%, 50%, 0.1),
+    0 0 4vw hsla(${(props) => props.$hue}, 50%, 50%, 0.05),
+    inset 0 0 2vw hsla(${(props) => props.$hue}, 30%, 50%, 0.05);
 `;
 
 export const CardTitle = styled.h3`
@@ -55,6 +60,7 @@ export const CardTitle = styled.h3`
   top: -3vw;
   margin: 0;
   padding: 0;
-  color: #fff;
+  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.95);
+  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
   z-index: 2;
 `;
