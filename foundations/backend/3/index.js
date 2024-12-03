@@ -132,7 +132,8 @@ function SingleRandom({ range, visible, timeUnit }) {
     <S.Container
       $isblack={isblack ? "true" : undefined}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={stage !== "Backend"}
+      // $isTransparent={stage !== "Backend"}
+      $isTransparent={false}
     >
       <div
         style={{

@@ -83,7 +83,8 @@ function LevelOne({ visible }) {
     <S.Container
       $isblack={isblack}
       style={{ opacity: visible ? 1 : 0 }}
-      $isTransparent={stage !== "Backend"}
+      // $isTransparent={stage !== "Backend"}
+      $isTransparent={false}
     >
       {tokenComponents}
       <S.Pic $animInterval={ANIM_INTERVAL} $isAnimating={isAnimating}>
