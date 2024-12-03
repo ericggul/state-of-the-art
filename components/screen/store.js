@@ -71,7 +71,7 @@ const useScreenStore = create((set) => ({
       };
 
       if (state.targetMobileId !== data.mobileId) {
-        console.log("updating targetMobileId");
+        console.log("updating targetMobileId", data, data.mobileId);
         updates.targetMobileId = data.mobileId;
         console.log(updates.targetMobileId);
       }
@@ -86,6 +86,7 @@ const useScreenStore = create((set) => ({
 
   handleNewMobileIntro: (data) => {
     set((state) => {
+      console.log("handleNewMobileIntro", data);
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
       }

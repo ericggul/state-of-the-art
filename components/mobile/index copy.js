@@ -19,11 +19,22 @@ export default function Mobile() {
     console.log("New response from controller:", data);
   }, []);
 
+  const handleMobileIdGenerated = useCallback(
+    (newMobileId) => {
+      setState((prev) => ({
+        ...prev,
+        mobileId: newMobileId,
+      }));
+    },
+    [setState]
+  );
+
   console.log("state.mobileId", state.mobileId);
 
-  const { socket } = useSocketMobile({
+  const { socket, mobileId } = useSocketMobile({
     mobileId: state.mobileId,
     handleNewResponse,
+    onMobileIdGenerated: handleMobileIdGenerated,
   });
   useMobileVisibility({ socket, mobileId: state.mobileId });
 

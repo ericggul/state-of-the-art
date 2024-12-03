@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function useSocketMobile({ mobileId, handleNewResponse }) {
+export default function useSocketMobile({ mobileId }) {
   const socket = useRef(null);
   const initialized = useRef(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !initialized.current && mobileId) {
+    if (typeof window !== "undefined" && !initialized.current) {
       socketInitializer();
       initialized.current = true;
 
@@ -21,6 +21,7 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
             socket.current.off("connect");
             socket.current.off("disconnect");
             socket.current.disconnect();
+            console.log("Socket disconnected and cleaned up");
           } catch (e) {
             console.error("Cleanup failed:", e);
           }
@@ -46,5 +47,5 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
     });
   };
 
-  return { socket, mobileId };
+  return socket;
 }

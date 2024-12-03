@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { IS_DEPLOYMENT } from "@/utils/constant";
 
 export function usePersistentState() {
   const [state, setState] = useState({
@@ -15,26 +16,33 @@ export function usePersistentState() {
       try {
         const response = await fetch("/api/user-state");
         const data = await response.json();
+        const existingMobileId =
+          data?.mobileId || localStorage.getItem("mobileId");
 
-        if (data) {
-          setState({
-            username: data.username || "",
-            isAccelerometerActive: data.isAccelerometerActive,
-            mobileId: data.mobileId || uuidv4(),
-            isLoading: false,
-          });
-        } else {
+        if (existingMobileId) {
           setState((prev) => ({
             ...prev,
-            mobileId: uuidv4(),
+            mobileId: existingMobileId,
+            isLoading: false,
+          }));
+        } else {
+          const newMobileId = IS_DEPLOYMENT ? uuidv4() : "dummy";
+          localStorage.setItem("mobileId", newMobileId);
+          setState((prev) => ({
+            ...prev,
+            mobileId: newMobileId,
             isLoading: false,
           }));
         }
       } catch (error) {
         console.error("Error loading state:", error);
+        const fallbackMobileId =
+          localStorage.getItem("mobileId") ||
+          (IS_DEPLOYMENT ? uuidv4() : "dummy");
+        localStorage.setItem("mobileId", fallbackMobileId);
         setState((prev) => ({
           ...prev,
-          mobileId: uuidv4(),
+          mobileId: fallbackMobileId,
           isLoading: false,
         }));
       }
@@ -43,23 +51,21 @@ export function usePersistentState() {
     loadState();
   }, []);
 
-  // Save state when it changes
+  // Save state when it changes, but never modify mobileId
   const updateState = async (newState) => {
     try {
+      const updatedState = {
+        ...newState,
+        mobileId: state.mobileId, // Always keep existing mobileId
+      };
+
       await fetch("/api/user-state", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newState,
-          mobileId: state.mobileId, // Preserve existing mobileId
-        }),
+        body: JSON.stringify(updatedState),
       });
 
-      setState({
-        ...newState,
-        mobileId: state.mobileId, // Preserve existing mobileId
-        isLoading: false,
-      });
+      setState(updatedState);
     } catch (error) {
       console.error("Error saving state:", error);
     }

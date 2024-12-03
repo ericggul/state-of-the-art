@@ -101,20 +101,20 @@ export const OrientationCamera = memo(
 
     useSocketScreenOrientation({
       handleNewMobileOrientation: (data) => {
-        console.log("102");
-        console.log(data.mobileId);
-        console.log(targetMobileIdRef.current);
-        console.log(
-          "new mobile orientation",
-          // data,
-          data.mobileId,
-          targetMobileId,
-          data.mobileId !== targetMobileId,
-          data.mobileId != targetMobileId
-        );
+        // console.log("102");
+        // console.log(data.mobileId);
+        // console.log(targetMobileIdRef.current);
+        // console.log(
+        //   "new mobile orientation",
+        //   // data,
+        //   data.mobileId,
+        //   targetMobileId,
+        //   data.mobileId !== targetMobileId,
+        //   data.mobileId != targetMobileId
+        // );
 
         if (data.mobileId != targetMobileId) return;
-        console.log("setting sensor data");
+        // console.log("setting sensor data");
         sensorDataRef.current = data;
         lastDataTimestampRef.current = Date.now(); // Update timestamp
 
