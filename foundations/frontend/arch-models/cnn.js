@@ -327,9 +327,9 @@ export const DENSENET = [
       name: `Dense Block ${blockIndex + 1}`,
       type: "dense_block",
       dimensions: [
-        56 / 2 ** blockIndex,
-        56 / 2 ** blockIndex,
-        64 + numLayers * 32,
+        Math.round(56 / Math.pow(2, blockIndex)), // Ensure integer
+        Math.round(56 / Math.pow(2, blockIndex)), // Ensure integer
+        Math.round(64 + numLayers * 32), // Ensure integer
       ],
       zSpan: [16, 16],
     },
@@ -338,9 +338,9 @@ export const DENSENET = [
           name: `Transition Layer ${blockIndex + 1}`,
           type: "transition",
           dimensions: [
-            28 / 2 ** blockIndex,
-            28 / 2 ** blockIndex,
-            (64 + numLayers * 32) / 2,
+            Math.round(28 / Math.pow(2, blockIndex)), // Ensure integer
+            Math.round(28 / Math.pow(2, blockIndex)), // Ensure integer
+            Math.round((64 + numLayers * 32) / 2), // Ensure integer
           ],
           zSpan: [8, 8],
         }
@@ -354,7 +354,6 @@ export const DENSENET = [
   },
   { name: "Output", type: "output", dimensions: [1000, 1, 1], zSpan: [1, 1] },
 ];
-
 // Improve YOLO (YOLOv3 implementation)
 const YOLO_LAYERS = [
   // [out_channels, kernel_size, stride]

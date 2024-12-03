@@ -12,9 +12,9 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isAndroid = /Android/.test(navigator.userAgent);
 
 const MOMENTUM_CONFIG = {
-  friction: isIOS ? 0.95 : 0.94, // Further increased friction for Android
-  multiplier: isIOS ? 0.8 : 0.3, // Further reduced multiplier for Android
-  minVelocity: isIOS ? 0.1 : 0.03, // Lower minimum velocity for Android for smoother stop
+  friction: isIOS ? 0.9 : 0.94, // Increased friction for iOS (was 0.95)
+  multiplier: isIOS ? 0.5 : 0.3, // Reduced multiplier for iOS (was 0.8)
+  minVelocity: isIOS ? 0.08 : 0.03, // Adjusted minimum velocity for iOS (was 0.1)
 };
 
 export function useModelListLogic({ initialModels, socket, mobileId }) {

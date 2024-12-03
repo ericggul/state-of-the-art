@@ -12,7 +12,7 @@ export async function POST(request) {
   const cookieStore = cookies();
 
   cookieStore.set("user-state", JSON.stringify(data), {
-    maxAge: 60 * 10, // 10 minutes
+    maxAge: 60 * 60, // 60 minutes
     path: "/",
   });
 

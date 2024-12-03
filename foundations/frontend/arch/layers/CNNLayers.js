@@ -27,10 +27,14 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
     // For composite layers, take the maximum height among sublayers
     if (layer.sublayers) {
       const sublayerHeights = layer.sublayers.map(
-        (sublayer) => sublayer.dimensions[1]
+        (sublayer) => sublayer?.dimensions?.[1] ?? 10
       );
       return Math.max(...sublayerHeights);
     } else {
+      if (!layer?.dimensions?.[1]) {
+        console.error("Invalid layer dimensions:", layer);
+        return 10; // Return default height
+      }
       return layer.dimensions[1];
     }
   });
