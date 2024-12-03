@@ -35,7 +35,14 @@ export default function mobileSetup({ socket, io }) {
 
   //////VISIBILITY
   socket.on("mobile-new-visibility-change", (data) => {
+    console.log(
+      "mobile new visibility change data",
+      data,
+      "activeMobile",
+      activeMobile
+    );
     if (activeMobile?.mobileId === data.mobileId) {
+      console.log("date now", Date.now());
       console.log(`👁️ Visibility change for ${data.mobileId}:`, {
         isVisible: data.isVisible,
         origin: data.origin,
@@ -77,7 +84,15 @@ export default function mobileSetup({ socket, io }) {
   });
 
   socket.on("disconnect", () => {
+    console.log(
+      "socket disconnect",
+      "activeMobile",
+      activeMobile,
+      "socket.id",
+      socket.id
+    );
     if (activeMobile?.socketId === socket.id) {
+      console.log("date now", Date.now());
       console.log(`🔌 Mobile disconnected: ${activeMobile.mobileId}`);
 
       io.to("controller").emit("new-mobile-visibility-change", {
