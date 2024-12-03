@@ -18,7 +18,7 @@ export default function ModelImage({ model }) {
         />
       </S.ImageWrapper>
       <S.Description>
-        <TextScramble text={model?.explanation || ""} />
+        <TextScramble text={model?.explanation || ""} speed={2.5} />
       </S.Description>
     </S.Container>
   );

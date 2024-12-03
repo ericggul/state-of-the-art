@@ -15,23 +15,6 @@ import ModelFeatures from "./components/3_ModelFeatures";
 import Frame from "@/foundations/pc/frame/full";
 import Lines from "./components/Lines";
 
-// const LAYOUT = [
-//   [
-//     {
-//       width: "38vw",
-//       marginRight: "1.5vw",
-//       height: "34vh",
-//     },
-//     { width: "17vw", marginRight: "1.5vw", height: "34vh" },
-//     { width: "35vw", height: "34vh" },
-//   ],
-//   [
-//     { width: "25vw", marginRight: "3vw" },
-//     { width: "25vw", marginRight: "3vw" },
-//     { width: "35vw" },
-//   ],
-// ];
-
 const LAYOUT = [
   [
     {
@@ -42,7 +25,11 @@ const LAYOUT = [
     { width: "17vw", marginRight: "1.5vw", height: "34vh" },
     { width: "35vw", height: "34vh" },
   ],
-  [{ marginRight: "3vw" }, { marginRight: "3vw" }, {}],
+  [
+    { width: "25vw", marginRight: "3vw" },
+    { width: "25vw", marginRight: "3vw" },
+    { width: "35vw" },
+  ],
 ];
 
 // Card Component

@@ -453,7 +453,7 @@ export const TYPE_STYLES = {
     name: "Reinforcement Learning",
     colors: {
       outer: "hsl(60, 100%, 45%)",
-      inner: "hsl(60, 100%, 35%)",
+      inner: "hsl(50, 100%, 40%)",
       policy: "hsl(60, 100%, 55%)",
     },
     material: {
@@ -461,13 +461,13 @@ export const TYPE_STYLES = {
       metalness: 0.9,
     },
     lighting: {
-      ambientLight: { intensity: 10.0, color: "hsl(200, 100%, 50%)" },
+      ambientLight: { intensity: 10.0, color: "hsl(30, 100%, 50%)" },
       environment: "sunset",
       envIntensity: 0,
       directionalLight: {
         position: [10, 20, 10],
         intensity: 5.0,
-        color: "hsl(0, 100%, 50%)",
+        color: "hsl(30, 100%, 50%)",
       },
       // directionalLight2: {
       //   position: [-10, -20, 10],
@@ -477,7 +477,7 @@ export const TYPE_STYLES = {
       pointLight: {
         position: [0, 20, 0],
         intensity: 5.0,
-        color: "hsl(100, 100%, 50%)",
+        color: "hsl(30, 100%, 50%)",
       },
     },
     postprocessing: {

@@ -44,8 +44,8 @@ export const Card = styled.div`
   position: relative;
   height: 100%;
   background: hsla(${(props) => props.$hue}, 100%, 3%, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border: ${LINEWIDTH * 1.5}vw solid
     hsla(${(props) => props.$hue}, 30%, 85%, 0.5);
   box-shadow: 0 0 2vw hsla(${(props) => props.$hue}, 80%, 50%, 0.1),

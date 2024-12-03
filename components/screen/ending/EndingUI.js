@@ -21,7 +21,8 @@ export default function EndingUI({ isVisible, isFadingOut }) {
             Department of Industrial Design, KAIST
           </S.InstitutionDepartment>
           <S.Credit>
-            Concept Design, Software Developer | <strong>Jeanyoon Choi</strong>
+            Concept Design, Visualisation, Software Developer |{" "}
+            <strong>Jeanyoon Choi</strong>
           </S.Credit>
           <S.Spacer />
           <S.Credit>
@@ -31,7 +32,7 @@ export default function EndingUI({ isVisible, isFadingOut }) {
             Avatar Design | <strong>Sejoon Park</strong>
           </S.Credit>
           <S.Credit>
-            UI/UX Design | <strong>Minhyeok Seo</strong>
+            UI Design | <strong>Minhyeok Seo</strong>
           </S.Credit>
           <S.Spacer />
           <S.Credit>

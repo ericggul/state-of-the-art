@@ -22,7 +22,7 @@ export default function RelatedPapers({ model }) {
               )}
               speed={20}
             /> */}
-            <TextScramble text={mainPaper} />
+            <TextScramble text={mainPaper} speed={2} />
           </S.PaperItem>
         </S.PaperList>
       </S.Section>
@@ -38,7 +38,7 @@ export default function RelatedPapers({ model }) {
                 )}
                 speed={20}
               /> */}
-              <TextScramble text={citation} />
+              <TextScramble text={citation} speed={2} />
             </S.PaperItem>
           ))}
         </S.PaperList>

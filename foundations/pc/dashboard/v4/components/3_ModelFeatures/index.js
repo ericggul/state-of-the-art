@@ -18,7 +18,7 @@ export default function ModelFeatures({ model, isHighlight = true }) {
               <S.Item key={index}>
                 <S.Bullet $isHighlight>+</S.Bullet>
                 <S.TextWrapper>
-                  <TextScramble text={highlight} />
+                  <TextScramble text={highlight} speed={1.5} />
                 </S.TextWrapper>
               </S.Item>
             ))}
@@ -34,7 +34,7 @@ export default function ModelFeatures({ model, isHighlight = true }) {
               <S.Item key={index}>
                 <S.Bullet $isHighlight={false}>-</S.Bullet>
                 <S.TextWrapper>
-                  <TextScramble text={limitation} />
+                  <TextScramble text={limitation} speed={1.5} />
                 </S.TextWrapper>
               </S.Item>
             ))}

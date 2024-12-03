@@ -12,7 +12,6 @@ export const Container = styled.div`
 
 export const Section = styled.div`
   position: relative;
-  background: rgba(255, 255, 255, 0.02);
   clip-path: polygon(
     0 0,
     calc(100% - 1vw) 0,
@@ -39,8 +38,8 @@ export const Item = styled.li`
   display: flex;
   align-items: baseline;
   gap: 0.5vw;
-  margin-bottom: 1vw;
-  font-size: 0.9vw;
+  margin-bottom: 0.5vw;
+  font-size: 0.8vw;
   color: rgba(255, 255, 255, 0.7);
 `;
 

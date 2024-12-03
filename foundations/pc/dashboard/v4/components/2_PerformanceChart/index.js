@@ -73,7 +73,7 @@ export default function PerformanceChart({ performance, hue }) {
         pointHoverBackgroundColor: colors.hover,
         pointHoverBorderColor: colors.primary,
         borderWidth: 2,
-        tension: 0.4, // Smooth lines for more modern look
+        tension: 0.1,
       },
     ],
   };

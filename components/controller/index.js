@@ -27,10 +27,10 @@ export default function Controller() {
     },
     handleNewMobileVisibility: (data) => {
       handleNewMobileVisibilityStore(data);
-      emitSocketEvent("controller-new-visibility-change", {
-        ...data,
-        origin: "controller-" + (data.origin || ""),
-      });
+      // emitSocketEvent("controller-new-visibility-change", {
+      //   ...data,
+      //   origin: "controller-" + (data.origin || ""),
+      // });
     },
     handleNewMobileArchitecture,
   });

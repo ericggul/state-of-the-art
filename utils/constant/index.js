@@ -1,3 +1,8 @@
+export const IS_DEPLOYMENT =
+  process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+
+export const IS_LOCAL_TESTING = true;
+
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
 
@@ -40,7 +45,7 @@ export const API_TIMEOUT = 15 * 1000;
 //heartbeat: mobile
 export const HEARTBEAT_INTERVAL = 2000;
 export const HEARTBEAT_TIMEOUT = 8000;
-export const PING_INTERVAL = 2000;
+export const PING_INTERVAL = 1000;
 export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend

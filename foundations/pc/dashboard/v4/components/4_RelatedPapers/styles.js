@@ -33,8 +33,10 @@ export const PaperItem = styled.li`
   font-size: 0.7vw;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 0.5vw;
-  padding: 0.5vw;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5vw 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
   white-space: normal;
   word-wrap: break-word;
   word-break: break-word;

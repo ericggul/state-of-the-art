@@ -4,7 +4,9 @@ import useStore from "@/components/screen/store";
 const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!<>-_\\/[]{}—=+*^?#";
 
-export default function TextScramble({ text }) {
+const DEFAULT_INTERVAL = 30;
+
+export default function TextScramble({ text, speed = 1 }) {
   const [displayText, setDisplayText] = useState(text);
   const timerRef = useRef(null);
   const iterationsRef = useRef(0);
@@ -20,7 +22,7 @@ export default function TextScramble({ text }) {
     isAnimatingRef.current = true;
 
     const maxIterations = text.length;
-    const interval = 30;
+    const interval = DEFAULT_INTERVAL / speed;
 
     timerRef.current = setInterval(() => {
       if (!isAnimatingRef.current) {
@@ -41,7 +43,7 @@ export default function TextScramble({ text }) {
           .join("")
       );
 
-      iterationsRef.current += 1;
+      iterationsRef.current += Math.max(1, Math.floor(speed));
 
       if (iterationsRef.current >= maxIterations) {
         clearInterval(timerRef.current);
@@ -50,7 +52,7 @@ export default function TextScramble({ text }) {
         isAnimatingRef.current = false;
       }
     }, interval);
-  }, [text]);
+  }, [text, speed]);
 
   useEffect(() => {
     scramble();
