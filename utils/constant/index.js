@@ -1,5 +1,7 @@
 export const IS_DEPLOYMENT =
-  process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+  process.env.NODE_ENV === "production" ||
+  process.env.RENDER === "true" ||
+  true;
 
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
@@ -67,3 +69,5 @@ export const IDLE_TEXTS = [
 ];
 
 export const VERIFY_NAME_TIMEOUT = 3500;
+
+export const SESSION_VALIDITY_TIMEOUT = 60 * 1000; // 1 minute in milliseconds

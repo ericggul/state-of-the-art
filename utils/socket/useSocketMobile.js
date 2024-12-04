@@ -12,7 +12,12 @@ export default function useSocketMobile({
   console.log("sessionId", sessionId);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !initialized.current && mobileId) {
+    if (
+      typeof window !== "undefined" &&
+      !initialized.current &&
+      mobileId &&
+      sessionId
+    ) {
       socketInitializer();
       initialized.current = true;
 
@@ -33,14 +38,14 @@ export default function useSocketMobile({
         }
       };
     }
-  }, [mobileId]);
+  }, [mobileId, sessionId]);
 
   const socketInitializer = async () => {
     await fetch("/api/socket");
     socket.current = io();
 
     socket.current.on("connect", () => {
-      socket.current.emit("mobile-init", { mobileId });
+      socket.current.emit("mobile-init", { mobileId, sessionId });
 
       socket.current.on("disconnect", () => {
         socket.current.emit("mobile-new-visibility-change", {

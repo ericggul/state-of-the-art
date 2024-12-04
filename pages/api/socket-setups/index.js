@@ -14,8 +14,8 @@ export default function socketSetup({ socket, io }) {
     socket.join("controller");
   });
 
-  socket.on("mobile-init", ({ mobileId }) => {
-    console.log(`📱 Mobile init: ${mobileId}`);
+  socket.on("mobile-init", ({ mobileId, sessionId }) => {
+    console.log(`📱 Mobile init: ${mobileId} ${sessionId}`);
     activeMobile = {
       mobileId,
       socketId: socket.id,
@@ -31,6 +31,8 @@ export default function socketSetup({ socket, io }) {
       mobileId,
       origin: "init",
     });
+
+    socket.to("controller").emit("new-mobile-sessionId-check", { sessionId });
   });
 
   //////VISIBILITY

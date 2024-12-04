@@ -14,7 +14,7 @@ export default function useSocketScreen({
   handleNewControllerArchitectures = () => {},
   handleNewControllerStageAndReset = () => {},
   handleNewControllerSessionId = () => {},
-
+  handleNewMobileSessionIdCheck = () => {},
   handleNewScreenConversation = () => {},
 }) {
   const socket = useRef(null);
@@ -38,6 +38,8 @@ export default function useSocketScreen({
           socket.current.off("new-controller-architectures");
           socket.current.off("new-controller-sessionId");
           socket.current.off("new-screen-conversation");
+
+          socket.current.off("new-mobile-sessionId-check");
 
           socket.current.off("connect");
 
@@ -90,6 +92,12 @@ export default function useSocketScreen({
       socket.current.on(
         "new-controller-sessionId",
         handleNewControllerSessionId
+      );
+
+      //Mobile -> COntroller
+      socket.current.on(
+        "new-mobile-sessionId-check",
+        handleNewMobileSessionIdCheck
       );
 
       ////SCREEN -> SCREEN
