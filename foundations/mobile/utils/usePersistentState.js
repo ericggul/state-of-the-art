@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IS_DEPLOYMENT } from "@/utils/constant";
 
 export function usePersistentState() {
   const [state, setState] = useState({
@@ -9,9 +8,6 @@ export function usePersistentState() {
     isLoading: true,
     mobileId: "",
   });
-
-  console.log("is deployment", IS_DEPLOYMENT);
-  console.log("state", state);
 
   // Load state on mount
   useEffect(() => {

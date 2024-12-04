@@ -5,13 +5,15 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Loading from "@/foundations/mobile/loading";
 
+import { IS_DEPLOYMENT } from "@/utils/constant";
+
 const Mobile = dynamic(() => import("@/components/mobile"));
 
 function MobileSelector() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("sessionId");
 
-  return <Mobile sessionId={sessionId} />;
+  return <Mobile sessionId={IS_DEPLOYMENT ? sessionId : "9999"} />;
 }
 
 export default function MobileWrapper() {

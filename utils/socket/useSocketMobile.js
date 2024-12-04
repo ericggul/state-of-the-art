@@ -1,9 +1,15 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
 
-export default function useSocketMobile({ mobileId, handleNewResponse }) {
+export default function useSocketMobile({
+  mobileId,
+  sessionId,
+  handleNewResponse,
+}) {
   const socket = useRef(null);
   const initialized = useRef(false);
+
+  console.log("sessionId", sessionId);
 
   useEffect(() => {
     if (typeof window !== "undefined" && !initialized.current && mobileId) {
