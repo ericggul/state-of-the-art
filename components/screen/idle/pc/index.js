@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef, useState, useCallback, useEffect } from "react";
+import { memo, useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import * as S from "./styles";
 import useResize from "@/utils/hooks/useResize";
@@ -20,11 +20,16 @@ import {
 const Idle = memo(function Idle() {
   const [windowWidth] = useResize();
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
+  const sessionId = useScreenStore((state) => state.sessionId || "");
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const videoRef = useRef(null);
   const [oscillatingOpacity, setOscillatingOpacity] = useState(1);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
+
+  const qrLinkWithSessionId = useMemo(() => {
+    return `${IDLE_QR_LINK}?sessionId=${sessionId}`;
+  }, [sessionId]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -90,7 +95,7 @@ const Idle = memo(function Idle() {
       </S.Background>
       <S.QRCodeWrapper>
         <QRCodeSVG
-          value={IDLE_QR_LINK}
+          value={qrLinkWithSessionId}
           size={windowWidth * 0.15}
           fgColor="white"
           bgColor="transparent"

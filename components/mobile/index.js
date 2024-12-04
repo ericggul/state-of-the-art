@@ -9,7 +9,7 @@ import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
 import { usePersistentState } from "@/foundations/mobile/utils/usePersistentState";
 import Loading from "@/foundations/mobile/loading";
 
-export default function Mobile() {
+export default function Mobile({ sessionId }) {
   const [state, setState] = usePersistentState();
 
   const [isIntro, setIsIntro] = useState(true);
@@ -23,6 +23,7 @@ export default function Mobile() {
 
   const { socket } = useSocketMobile({
     mobileId: state.mobileId,
+    sessionId,
     handleNewResponse,
   });
   useMobileVisibility({ socket, mobileId: state.mobileId });

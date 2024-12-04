@@ -13,6 +13,7 @@ export default function useSocketScreen({
   handleNewControllerVisibility = () => {},
   handleNewControllerArchitectures = () => {},
   handleNewControllerStageAndReset = () => {},
+  handleNewControllerSessionId = () => {},
 
   handleNewScreenConversation = () => {},
 }) {
@@ -35,7 +36,7 @@ export default function useSocketScreen({
 
           socket.current.off("new-controller-visibility-change");
           socket.current.off("new-controller-architectures");
-
+          socket.current.off("new-controller-sessionId");
           socket.current.off("new-screen-conversation");
 
           socket.current.off("connect");
@@ -85,6 +86,10 @@ export default function useSocketScreen({
       socket.current.on(
         "new-controller-stage-and-reset",
         handleNewControllerStageAndReset
+      );
+      socket.current.on(
+        "new-controller-sessionId",
+        handleNewControllerSessionId
       );
 
       ////SCREEN -> SCREEN

@@ -21,6 +21,8 @@ const DEFAULT_STATE = {
   isEnding: false,
   lastInteractionTime: Date.now(),
   isAccelerometerActive: false,
+
+  sessionId: Date.now().toString(),
 };
 
 // Reset state (excluding device-specific settings)
@@ -37,6 +39,8 @@ const RESET_STATE = {
   zoomFactor: 1,
   lastInteractionTime: Date.now(),
   isAccelerometerActive: false,
+
+  sessionId: Date.now().toString(),
 };
 
 const useScreenStore = create((set) => ({
@@ -274,6 +278,8 @@ const useScreenStore = create((set) => ({
       return Object.keys(updates).length ? updates : state;
     });
   },
+
+  handleNewControllerSessionId: ({ sessionId }) => set({ sessionId }),
 
   handleReset: () => {
     set((state) => {

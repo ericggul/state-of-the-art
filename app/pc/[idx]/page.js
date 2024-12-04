@@ -66,6 +66,7 @@ function RelationPageContent({ idx, test }) {
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
+    handleNewControllerSessionId,
 
     handleNewScreenConversation,
 
@@ -92,6 +93,7 @@ function RelationPageContent({ idx, test }) {
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
+    handleNewControllerSessionId,
     handleNewScreenConversation,
   });
 

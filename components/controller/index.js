@@ -21,6 +21,13 @@ export default function Controller({ socket }) {
 
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
+
+    try {
+      socket.current.emit("controller-new-session-id", { sessionId });
+    } catch (e) {
+      console.log(e);
+    }
+
     const date = new Date(parseInt(sessionId));
     return date.toLocaleString("en-GB", {
       hour: "2-digit",
