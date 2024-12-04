@@ -5,7 +5,7 @@ import TextScramble from "../../utils/TextScramble";
 import useDebounce from "@/utils/hooks/useDebounce";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
 
-export default function Frame() {
+export default function Frame({ isCondensed = false }) {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
   const targetHue = currentArchitectures?.[0]?.hue ?? 230;
   const debouncedHue = useDebounce(targetHue, 100);
@@ -57,15 +57,21 @@ export default function Frame() {
     <S.Container>
       <S.VerticalLine $hue={debouncedHue} />
       <S.HorizontalLine $hue={debouncedHue} $width={dimensions} />
-      <S.HorizontalLine2 $hue={debouncedHue} />
+      {!isCondensed && <S.HorizontalLine2 $hue={debouncedHue} />}
 
-      <S.ModelTitle $hue={debouncedHue} ref={titleRef}>
+      <S.ModelTitle
+        $hue={debouncedHue}
+        ref={titleRef}
+        $isCondensed={isCondensed}
+      >
         <S.Title>
           <TextScramble text={name} />
         </S.Title>
-        <S.ModelType $hue={debouncedHue}>
-          <TextScramble text={modelType} />
-        </S.ModelType>
+        {!isCondensed && (
+          <S.ModelType $hue={debouncedHue}>
+            <TextScramble text={modelType} />
+          </S.ModelType>
+        )}
       </S.ModelTitle>
     </S.Container>
   );

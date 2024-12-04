@@ -74,10 +74,15 @@ export const ModelTitle = styled.div`
   color: hsla(${(props) => props.$hue}, 30%, 95%, 0.95);
   left: ${LEFT + 2}vw;
   top: ${TOP}vw;
-  width: calc(100% - ${LEFT + 2}vw);
   padding: 0.3vw 1vw;
   transform: translateY(-50%);
   text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
+  ${(props) =>
+    !props.$isCondensed &&
+    `
+    width: calc(100% - ${LEFT + 2}vw);
+    padding: 0.3vw 1vw;
+  `}
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   border-radius: 2vw;

@@ -56,7 +56,7 @@ export const VISUAL = {
   LINK: {
     CURVE_FACTOR: 0.3,
     STROKE_WIDTH: 0.8,
-    OPACITY: 0.5,
+    OPACITY: 0.35,
     HIGHLIGHTED: {
       OPACITY: 1.0,
       STROKE_WIDTH: 2,

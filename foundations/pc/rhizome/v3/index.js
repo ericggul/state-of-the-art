@@ -99,15 +99,11 @@ export default function Rhizome() {
       .selectAll("circle")
       .transition()
       .duration(DURATION)
-      .attr("fill", (d) => getVersionColor(d.majorVersion))
+      .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
       .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
       .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
-      .attr("stroke", (d) =>
-        d.majorVersion
-          ? d3.color(getVersionColor(d.majorVersion, debouncedHue)).darker(0.5)
-          : "none"
-      )
-      .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH);
+      .attr("stroke-width", 0);
+    // .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH);
 
     nodesRef.current
       .selectAll("text")
@@ -150,8 +146,12 @@ export default function Rhizome() {
           .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
           .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
           .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
-          .attr("stroke", "rgba(255, 255, 255, 0.9)")
-          .attr("stroke-width", VISUAL.NODE.HIGHLIGHTED.STROKE_WIDTH);
+          .attr("filter", "url(#glow)")
+          .style(
+            "filter",
+            `drop-shadow(0 0 .3vw hsla(${debouncedHue}, 100%, 75%, 1))`
+          )
+          .attr("stroke-width", 0);
 
         nodeToHighlight
           .select("text")
@@ -177,7 +177,12 @@ export default function Rhizome() {
               .duration(DURATION)
               .attr("r", VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS)
               .attr("opacity", VISUAL.NODE.SUB_HIGHLIGHTED.OPACITY)
-              .attr("stroke-width", VISUAL.NODE.SUB_HIGHLIGHTED.STROKE_WIDTH);
+              .attr("filter", "url(#glow)")
+              .style(
+                "filter",
+                `drop-shadow(0 0 .3vw hsla(${debouncedHue}, 100%, 75%, 1))`
+              )
+              .attr("stroke-width", 0);
 
             d3.select(this)
               .select("text")
@@ -304,7 +309,7 @@ export default function Rhizome() {
           hue={debouncedHue}
         />
       )}
-      <Frame />
+      <Frame isCondensed={true} />
     </S.Container>
   );
 }
