@@ -8,14 +8,11 @@ export default function useInactivityCheck() {
     useScreenStore();
 
   useEffect(() => {
-    console.log("stage", stage);
     if (stage !== "Frontend") return;
     const timeout =
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT
         : CONST.FRONTEND_INACTIVITY_TIMEOUT;
-
-    console.log(timeout, introState);
 
     const checkInactivity = () => {
       const now = Date.now();
