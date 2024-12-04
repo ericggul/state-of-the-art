@@ -10,7 +10,7 @@ import useConversation from "../../utils/useConversation";
 import {
   INPUT_EMBEDDINGS,
   OUTPUT_EMBEDDINGS,
-} from "@/foundations/test/1-relation/utils/constant-conversation";
+} from "@/foundations/backend/shared/constants/conversation";
 
 export default React.memo(function Wrapper() {
   const [isblack, setIsblack] = useState(true);

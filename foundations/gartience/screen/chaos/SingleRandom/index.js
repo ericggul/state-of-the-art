@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import * as S from "./styles";
 import useResize from "@/utils/hooks/useResize";
 import usePosCalc from "./usePosCalc";
-import { useComputeCrossSimlarity } from "@/foundations/test/1-relation/utils/useComputeSimilarity";
+import { useComputeCrossSimlarity } from "./useComputeSimilarity";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
 
 const BEZIER_DEFAULT = {
