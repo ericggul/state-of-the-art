@@ -120,7 +120,6 @@ export const CardTitle = styled.h3`
   text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
     0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
   z-index: 2;
-  letter-spacing: 0.05em;
   transition: color 0.3s ease;
 
   ${Card}:hover & {

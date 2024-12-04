@@ -22,7 +22,7 @@ export const VerticalLine = styled.div`
   height: ${HEIGHT}vh;
   top: 0;
   left: ${LEFT}vw;
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   background: linear-gradient(
     180deg,
     hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
@@ -40,7 +40,7 @@ export const HorizontalLine = styled.div`
     props.$width?.titleWidth + HORIZONTAL_LINE_MARGIN + 30 || 45}vw;
   top: ${TOP}vw;
   left: 0;
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   background: linear-gradient(
     90deg,
     hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
@@ -57,9 +57,9 @@ export const HorizontalLine2 = styled.div`
   width: 25vw;
   top: ${TOP}vw;
   right: ${MARGIN}vw;
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   background: linear-gradient(
-    270deg,
+    90deg,
     hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
     hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
     hsla(${(props) => props.$hue}, 100%, 75%, 0.2)
@@ -70,7 +70,7 @@ export const HorizontalLine2 = styled.div`
 
 export const ModelTitle = styled.div`
   position: absolute;
-  transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   color: hsla(${(props) => props.$hue}, 30%, 90%, 0.95);
   left: ${LEFT + 2}vw;
   top: ${TOP}vw;
@@ -97,6 +97,6 @@ export const ModelType = styled.h2`
   text-align: right;
   top: 50%;
   transform: translateY(-50%);
-  transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   color: hsla(${(props) => props.$hue}, 30%, 95%, 0.7);
 `;

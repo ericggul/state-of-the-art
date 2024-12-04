@@ -42,7 +42,6 @@ const Card = ({ title, children, layout, hue }) => (
 
 export default function Dashboard() {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
-  const isTransition = useStore((state) => state.isTransition);
   const targetHue = currentArchitectures?.[0]?.hue ?? 230; // Default to 230 if no hue specified
   const debouncedHue = useDebounce(targetHue, 100);
   const [prevModel, setPrevModel] = useState(null);

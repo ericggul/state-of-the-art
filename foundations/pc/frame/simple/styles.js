@@ -2,7 +2,7 @@ import styled, { css, keyframes } from "styled-components";
 import { WholeContainer } from "@/styles";
 
 export const LINEWIDTH = 0.15;
-export const MARGIN = 5;
+export const MARGIN = 13;
 
 const commonPositionStyles = css`
   position: absolute;
@@ -128,6 +128,17 @@ export const Ver = styled.h2`
   top: 0;
   transform: translateY(-100%);
   padding-bottom: 0.2vw;
+`;
+
+export const ModelType = styled.h2`
+  font-size: 0.5vw;
+  position: absolute;
+  min-width: 12vw;
+
+  top: 0;
+  left: ${(props) => props.$width?.verWidth + 1}vw;
+  transform: translateY(-100%);
+  padding-bottom: 0.35vw;
 `;
 
 export const HorizontalCube = styled.div`

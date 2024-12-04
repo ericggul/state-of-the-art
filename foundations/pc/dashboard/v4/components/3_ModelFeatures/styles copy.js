@@ -40,25 +40,8 @@ export const Item = styled.li`
   align-items: baseline;
   gap: 0.5vw;
   margin-bottom: 0.5vw;
-  font-size: 0.7vw;
+  font-size: 0.8vw;
   color: hsla(${(props) => props.$hue}, 15%, 98%, 0.7);
-  background: linear-gradient(
-    135deg,
-    hsla(${(props) => props.$hue}, 15%, 10%, 0.3) 0%,
-    hsla(${(props) => props.$hue}, 20%, 5%, 0.3) 100%
-  );
-  border-left: 2px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
-  box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1);
-  transition: all 0.3s ease-in-out;
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      hsla(${(props) => props.$hue}, 15%, 12%, 0.4) 0%,
-      hsla(${(props) => props.$hue}, 20%, 7%, 0.4) 100%
-    );
-    border-left-color: hsla(${(props) => props.$hue}, 100%, 75%, 0.4);
-  }
 `;
 
 export const Bullet = styled.span`

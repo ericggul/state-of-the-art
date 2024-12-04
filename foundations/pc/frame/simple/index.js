@@ -3,6 +3,7 @@ import useStore from "@/components/screen/store";
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import TextScramble from "../../utils/TextScramble";
 import useDebounce from "@/utils/hooks/useDebounce";
+import { getModelTypeName } from "@/utils/constant/modelTypes";
 
 export default function Frame({ middle = false }) {
   const currentArchitectures = useStore((state) => state.currentArchitectures);
@@ -51,7 +52,7 @@ export default function Frame({ middle = false }) {
           whiteSpace: "nowrap",
         });
 
-        const { name, version } = currentArchitectures[0];
+        const { name, version, type } = currentArchitectures[0];
         tempTitle.textContent = name;
         tempVer.textContent = version;
 
@@ -112,7 +113,8 @@ export default function Frame({ middle = false }) {
 
   if (!currentArchitectures?.length || !shouldRender) return null;
 
-  const { name, version } = currentArchitectures[0];
+  const { name, version, category } = currentArchitectures[0];
+  const modelType = getModelTypeName(category);
 
   return (
     <S.Container>
@@ -166,6 +168,9 @@ export default function Frame({ middle = false }) {
         <S.Ver ref={verRef}>
           <TextScramble text={version} />
         </S.Ver>
+        <S.ModelType $width={dimensions}>
+          <TextScramble text={modelType} />
+        </S.ModelType>
         <S.Title>
           <TextScramble text={name} />
         </S.Title>

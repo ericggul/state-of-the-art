@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import useStore from "@/components/screen/store";
-import { useState, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import TextScramble from "../../utils/TextScramble";
 import useDebounce from "@/utils/hooks/useDebounce";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
@@ -14,6 +14,9 @@ export default function Frame() {
   const [dimensions, setDimensions] = useState({
     titleWidth: 45,
   });
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationTimeoutRef = useRef(null);
+  const lastUpdateRef = useRef(Date.now());
 
   useLayoutEffect(() => {
     const updateDimensions = () => {
@@ -49,6 +52,38 @@ export default function Frame() {
     updateDimensions();
   }, [currentArchitectures]);
 
+  useEffect(() => {
+    const now = Date.now();
+    const timeSinceLastUpdate = now - lastUpdateRef.current;
+
+    // Clear any existing timeout
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current);
+      animationTimeoutRef.current = null;
+    }
+
+    // If transitions are too rapid, skip animation
+    if (timeSinceLastUpdate < 100) {
+      setIsAnimating(false);
+      return;
+    }
+
+    lastUpdateRef.current = now;
+    setIsAnimating(true);
+
+    animationTimeoutRef.current = setTimeout(() => {
+      setIsAnimating(false);
+      animationTimeoutRef.current = null;
+    }, 600);
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+      }
+    };
+  }, [currentArchitectures]);
+
   if (!currentArchitectures?.length) return null;
   const { name, category } = currentArchitectures[0];
   const modelType = getModelTypeName(category);
@@ -57,13 +92,13 @@ export default function Frame() {
     <S.Container>
       <S.VerticalLine $hue={debouncedHue} />
       <S.HorizontalLine $hue={debouncedHue} $width={dimensions} />
-      <S.HorizontalLine2 $hue={debouncedHue} />
+      <S.HorizontalLine2 $hue={debouncedHue} $width={dimensions} />
 
       <S.ModelTitle $hue={debouncedHue} ref={titleRef}>
         <S.Title>
           <TextScramble text={name} />
         </S.Title>
-        <S.ModelType $hue={debouncedHue}>
+        <S.ModelType $hue={debouncedHue} $width={dimensions}>
           <TextScramble text={modelType} />
         </S.ModelType>
       </S.ModelTitle>
