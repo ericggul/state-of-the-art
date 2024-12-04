@@ -10,6 +10,9 @@ export function usePersistentState() {
     mobileId: "",
   });
 
+  console.log("is deployment", IS_DEPLOYMENT);
+  console.log("state", state);
+
   // Load state on mount
   useEffect(() => {
     async function loadState() {
@@ -20,8 +23,7 @@ export function usePersistentState() {
         // Handle mobileId
         const existingMobileId =
           data?.mobileId || localStorage.getItem("mobileId");
-        const finalMobileId =
-          existingMobileId || (IS_DEPLOYMENT ? uuidv4() : "dummy");
+        const finalMobileId = existingMobileId || (true ? uuidv4() : "dummy");
 
         if (!existingMobileId) {
           localStorage.setItem("mobileId", finalMobileId);
@@ -37,8 +39,8 @@ export function usePersistentState() {
       } catch (error) {
         console.error("Error loading state:", error);
         const fallbackMobileId =
-          localStorage.getItem("mobileId") ||
-          (IS_DEPLOYMENT ? uuidv4() : "dummy");
+          localStorage.getItem("mobileId") || (true ? uuidv4() : "dummy");
+        console.log("fallbackMobileId", fallbackMobileId);
         localStorage.setItem("mobileId", fallbackMobileId);
         setState((prev) => ({
           ...prev,

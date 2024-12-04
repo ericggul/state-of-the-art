@@ -8,6 +8,7 @@ import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
 import { usePersistentState } from "@/foundations/mobile/utils/usePersistentState";
 import Loading from "@/foundations/mobile/loading";
+import Decline from "@/foundations/mobile/decline";
 
 export default function Mobile({ sessionId }) {
   const [state, setState] = usePersistentState();
@@ -19,9 +20,7 @@ export default function Mobile({ sessionId }) {
     console.log("New response from controller:", data);
   }, []);
 
-  console.log("state.mobileId", state.mobileId);
-
-  const { socket } = useSocketMobile({
+  const socket = useSocketMobile({
     mobileId: state.mobileId,
     sessionId,
     handleNewResponse,
@@ -35,7 +34,6 @@ export default function Mobile({ sessionId }) {
   function handleAccelerometerError() {
     setIsIntro(true);
     setIntroState(1);
-    console.log("32");
     try {
       socket.current.emit("mobile-new-intro", {
         type: "state_change",

@@ -46,5 +46,5 @@ export default function useSocketMobile({ mobileId, handleNewResponse }) {
     });
   };
 
-  return { socket, mobileId };
+  return socket;
 }

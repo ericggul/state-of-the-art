@@ -59,9 +59,12 @@ export default function socketSetup({ socket, io }) {
   socket.on("mobile-new-architecture", (data) => {
     socket.to("screen").emit("new-mobile-architecture", data);
   });
-
   socket.on("mobile-new-intro", (data) => {
     socket.to("screen").emit("new-mobile-intro", data);
+  });
+  //mobile --> controlle
+  socket.on("mobile-new-sessionId-check", (data) => {
+    socket.to("controller").emit("new-mobile-sessionId-check", data);
   });
 
   //BACKEND: inter-screen conversation
@@ -86,6 +89,9 @@ export default function socketSetup({ socket, io }) {
   //////SESSION ID LOGIC/////
   socket.on("controller-new-sessionId", (data) => {
     socket.to("screen").emit("new-controller-sessionId", data);
+  });
+  socket.on("controller-new-sessionId-decline", (data) => {
+    socket.to("mobile").emit("new-controller-sessionId-decline", data);
   });
 
   //DISCONNECT LOGIC//

@@ -26,7 +26,7 @@ export function usePersistentState() {
             isLoading: false,
           }));
         } else {
-          const newMobileId = IS_DEPLOYMENT ? uuidv4() : "dummy";
+          const newMobileId = true ? uuidv4() : "dummy";
           localStorage.setItem("mobileId", newMobileId);
           setState((prev) => ({
             ...prev,
@@ -37,8 +37,7 @@ export function usePersistentState() {
       } catch (error) {
         console.error("Error loading state:", error);
         const fallbackMobileId =
-          localStorage.getItem("mobileId") ||
-          (IS_DEPLOYMENT ? uuidv4() : "dummy");
+          localStorage.getItem("mobileId") || (true ? uuidv4() : "dummy");
         localStorage.setItem("mobileId", fallbackMobileId);
         setState((prev) => ({
           ...prev,
