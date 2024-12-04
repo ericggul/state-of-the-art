@@ -20,15 +20,19 @@ export default function Controller({ socket }) {
 
   const sessionId = useMemo(() => Date.now().toString(), []);
 
+  useEffect(() => {
+    if (sessionId) {
+      setSessionId(sessionId);
+      try {
+        socket.current.emit("controller-new-session-id", { sessionId });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [sessionId, setSessionId]);
+
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
-    setSessionId(sessionId);
-
-    try {
-      socket.current.emit("controller-new-session-id", { sessionId });
-    } catch (e) {
-      console.log(e);
-    }
 
     const date = new Date(parseInt(sessionId));
     return date.toLocaleString("en-GB", {

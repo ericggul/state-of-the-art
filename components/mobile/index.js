@@ -16,19 +16,31 @@ export default function Mobile({ sessionId }) {
   const [isIntro, setIsIntro] = useState(true);
   const [introState, setIntroState] = useState(state.username ? 1 : 0);
 
-  const handleNewResponse = useCallback((data) => {
-    console.log("New response from controller:", data);
+  const [isDeclined, setIsDeclined] = useState({ status: false, error: null });
+
+  const handleNewControllerSessionIdDecline = useCallback((data) => {
+    console.log("New decline from controller:", data);
+    if (data.decline) {
+      setIsDeclined({
+        status: true,
+        error: data.error,
+      });
+    }
   }, []);
 
   const socket = useSocketMobile({
     mobileId: state.mobileId,
     sessionId,
-    handleNewResponse,
+    handleNewControllerSessionIdDecline,
   });
   useMobileVisibility({ socket, mobileId: state.mobileId });
 
   if (state.isLoading) {
     return <Loading customText="Initialising State" />;
+  }
+
+  if (isDeclined.status) {
+    return <Decline error={isDeclined.error} sessionId={sessionId} />;
   }
 
   function handleAccelerometerError() {

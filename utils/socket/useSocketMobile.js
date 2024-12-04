@@ -4,7 +4,7 @@ import io from "socket.io-client";
 export default function useSocketMobile({
   mobileId,
   sessionId,
-  handleNewResponse,
+  handleNewControllerSessionIdDecline = () => {},
 }) {
   const socket = useRef(null);
   const initialized = useRef(false);
@@ -29,8 +29,10 @@ export default function useSocketMobile({
               isVisible: false,
               origin: "cleanup",
             });
+
             socket.current.off("connect");
             socket.current.off("disconnect");
+            socket.current.off("new-controller-sessionId-decline");
             socket.current.disconnect();
           } catch (e) {
             console.error("Cleanup failed:", e);
@@ -46,6 +48,11 @@ export default function useSocketMobile({
 
     socket.current.on("connect", () => {
       socket.current.emit("mobile-init", { mobileId, sessionId });
+
+      socket.current.on(
+        "new-controller-sessionId-decline",
+        handleNewControllerSessionIdDecline
+      );
 
       socket.current.on("disconnect", () => {
         socket.current.emit("mobile-new-visibility-change", {
