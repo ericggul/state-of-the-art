@@ -71,7 +71,7 @@ export const HorizontalLine2 = styled.div`
 export const ModelTitle = styled.div`
   position: absolute;
   transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
-  color: hsla(${(props) => props.$hue}, 30%, 90%, 0.95);
+  color: hsla(${(props) => props.$hue}, 30%, 95%, 0.95);
   left: ${LEFT + 2}vw;
   top: ${TOP}vw;
   width: calc(100% - ${LEFT + 2}vw);

@@ -60,36 +60,20 @@ export const Card = styled.div`
   border: ${LINEWIDTH}vw solid hsla(${(props) => props.$hue}, 100%, 75%, 0.4);
   transition: all 0.3s ease-in-out;
 
-  border-color: hsla(${(props) => props.$hue}, 80%, 75%, 0.6);
+  border-color: hsla(${(props) => props.$hue}, 80%, 75%, 0.45);
   // border-radius: 3px;
   box-shadow: 
       /* Increased ambient light */ 0 0.8vw 2.5vw
-      hsla(${(props) => props.$hue}, 20%, 2%, 0.25),
+      hsla(${(props) => props.$hue}, 20%, 2%, 0.12),
     /* Enhanced glowing border */ 0 0 1.5vw
-      hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
-    0 0 4vw hsla(${(props) => props.$hue}, 100%, 50%, 0.3),
+      hsla(${(props) => props.$hue}, 60%, 75%, 0.17),
+    0 0 4vw hsla(${(props) => props.$hue}, 60%, 50%, 0.18),
     /* Enhanced bottom edge highlight */ 0 0.3vw 0.7vw
       hsla(${(props) => props.$hue}, 30%, 50%, 0.08),
     /* Enhanced inner glow */ inset 0 0 4vw
       hsla(${(props) => props.$hue}, 30%, 50%, 0.05),
     /* Enhanced top inner shadow */ inset 0 0.3vw 0.7vw
       hsla(${(props) => props.$hue}, 20%, 0%, 0.12);
-
-  &:hover {
-    border-color: hsla(${(props) => props.$hue}, 100%, 75%, 0.6);
-    box-shadow: 
-      /* Increased ambient light */ 0 0.8vw 2.5vw
-        hsla(${(props) => props.$hue}, 20%, 2%, 0.25),
-      /* Enhanced glowing border */ 0 0 1.5vw
-        hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
-      0 0 4vw hsla(${(props) => props.$hue}, 100%, 50%, 0.3),
-      /* Enhanced bottom edge highlight */ 0 0.3vw 0.7vw
-        hsla(${(props) => props.$hue}, 30%, 50%, 0.08),
-      /* Enhanced inner glow */ inset 0 0 4vw
-        hsla(${(props) => props.$hue}, 30%, 50%, 0.05),
-      /* Enhanced top inner shadow */ inset 0 0.3vw 0.7vw
-        hsla(${(props) => props.$hue}, 20%, 0%, 0.12);
-  }
 
   &::before {
     content: "";

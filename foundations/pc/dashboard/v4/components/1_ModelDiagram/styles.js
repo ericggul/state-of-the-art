@@ -61,7 +61,7 @@ export const Layer = styled.div`
   box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1),
     inset 0 0 3vw hsla(${(props) => props.$hue}, 30%, 50%, 0.08);
   transition: all 0.3s ease-in-out;
-  animation: ${fadeInScale} 0.3s ease-out;
+  // animation: ${fadeInScale} 0.3s ease-out;
   will-change: transform, opacity;
 `;
 
@@ -73,6 +73,6 @@ export const Arrow = styled.div`
   border-top: 0.8vw solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
   filter: drop-shadow(0 0 0.8vw hsla(${(props) => props.$hue}, 100%, 75%, 0.2));
   transition: all 0.3s ease-in-out;
-  animation: ${fadeInSlide} 0.3s ease-out;
+  // animation: ${fadeInSlide} 0.3s ease-out;
   will-change: transform, opacity;
 `;

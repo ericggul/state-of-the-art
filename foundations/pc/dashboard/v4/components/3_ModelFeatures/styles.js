@@ -50,15 +50,6 @@ export const Item = styled.li`
   border-left: 2px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
   box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1);
   transition: all 0.3s ease-in-out;
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      hsla(${(props) => props.$hue}, 15%, 12%, 0.4) 0%,
-      hsla(${(props) => props.$hue}, 20%, 7%, 0.4) 100%
-    );
-    border-left-color: hsla(${(props) => props.$hue}, 100%, 75%, 0.4);
-  }
 `;
 
 export const Bullet = styled.span`
