@@ -14,6 +14,8 @@ export default function useSocketScreen({
   handleNewControllerArchitectures = () => {},
   handleNewControllerStageAndReset = () => {},
   handleNewControllerSessionId = () => {},
+  handleNewControllerSessionIdDecline = () => {},
+
   handleNewMobileSessionIdCheck = () => {},
   handleNewScreenConversation = () => {},
 }) {
@@ -92,6 +94,10 @@ export default function useSocketScreen({
       socket.current.on(
         "new-controller-sessionId",
         handleNewControllerSessionId
+      );
+      socket.current.on(
+        "new-controller-sessionId-decline",
+        handleNewControllerSessionIdDecline
       );
 
       //Mobile -> COntroller

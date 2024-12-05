@@ -94,6 +94,7 @@ export default function socketSetup({ socket, io }) {
   });
   socket.on("controller-new-sessionId-decline", (data) => {
     socket.to("mobile").emit("new-controller-sessionId-decline", data);
+    socket.to("screen").emit("new-controller-sessionId-decline", data);
   });
 
   //DISCONNECT LOGIC//

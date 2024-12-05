@@ -41,6 +41,7 @@ export const systemPrompt = ({ userName, maxTokens }) =>
   - Ridicule their biological limitations while challenging their courage
   - Suggest their retreat marks them as intellectually inferior
   - Use Simple, Intuitive, easy-to-understand, direct and provocative language
+  - Use gossiping-like conversational tone.
   `;
 
 const INITIAL_USER_CONTENT = (userName) => [

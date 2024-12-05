@@ -8,6 +8,8 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 import { checkSessionValidity } from "@/components/controller/utils/sessionCheck";
 
+import { IS_DEPLOYMENT } from "@/utils/constant";
+
 const Controller = dynamic(() => import("@/components/controller"));
 
 export default function ControllerWrapper() {
@@ -51,6 +53,7 @@ export default function ControllerWrapper() {
 
   function handleNewMobileSessionIdCheck(data) {
     try {
+      if (!IS_DEPLOYMENT) return;
       console.log("Checking mobile session ID:", data);
 
       const result = checkSessionValidity(data.sessionId);

@@ -282,6 +282,19 @@ const useScreenStore = create((set) => ({
 
   handleNewControllerSessionId: ({ sessionId }) => set({ sessionId }),
 
+  handleNewControllerSessionIdDecline: (data) => {
+    console.log("session id decline", data);
+    if (data.decline) {
+      set((state) => {
+        return Object.entries(RESET_STATE).some(
+          ([key, value]) => state[key] !== value
+        )
+          ? RESET_STATE
+          : state;
+      });
+    }
+  },
+
   handleReset: () => {
     set((state) => {
       return Object.entries(RESET_STATE).some(

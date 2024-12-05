@@ -48,6 +48,7 @@ function ScreenContent({ test }) {
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
+    handleNewControllerSessionIdDecline,
 
     handleNewScreenConversation,
     setIsProjector,
@@ -73,6 +74,7 @@ function ScreenContent({ test }) {
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
+    handleNewControllerSessionIdDecline,
 
     handleNewScreenConversation,
   });
