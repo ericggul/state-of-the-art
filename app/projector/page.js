@@ -49,7 +49,6 @@ function ScreenContent({ test }) {
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
     handleNewControllerSessionIdDecline,
-
     handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
