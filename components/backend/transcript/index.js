@@ -20,13 +20,19 @@ function TranscriptComponent() {
         const newMessage =
           targetConversation?.[targetConversation.length - 1]?.message
             ?.content ?? "";
-        setDisplayMessage(newMessage);
+
+        // Include date in the timestamp
+        const timeStamp = new Date().toLocaleString();
+
+        setDisplayMessage(
+          `[Device #${deviceIndex} | Timestamp ${timeStamp}] ${newMessage}`
+        );
       } catch (error) {
         console.error("Error parsing conversation:", error);
         setDisplayMessage("");
       }
     }
-  }, [isblack]);
+  }, [isblack, deviceIndex]);
 
   return (
     <S.Text

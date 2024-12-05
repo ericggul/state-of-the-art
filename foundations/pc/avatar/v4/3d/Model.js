@@ -27,59 +27,11 @@ export default function Model({
 
   const { actions, mixer } = useAnimations(animations, group);
 
-  console.log(animations);
-  console.log("ㅁㅊ샤ㅐㅜㄴ", actions);
-
   const [animation, setAnimation] = useState("");
   const isInitializedRef = useRef(false);
 
   const { visemeMessage } = useViseme();
   const { blink } = useBlink();
-
-  // Helper function to randomly select animation
-  const getRandomAnimation = (type) => {
-    const animations = {
-      talking: ["Armature|mixamo.com|Layer0"],
-      // idle: ["Idle", "Idle2"],
-    };
-    const options = animations[type];
-    return options[Math.floor(Math.random() * options.length)];
-  };
-
-  // Animation control
-  useEffect(() => {
-    if (!isInitializedRef.current) {
-      isInitializedRef.current = true;
-      return;
-    }
-
-    const handleAnimationChange = async () => {
-      // if (!visemeMessage || visemeMessage?.audioPlayer?.paused) {
-      //   if (!animation.startsWith("Idle")) {
-      //     setAnimation(getRandomAnimation("idle"));
-      //   }
-      //   return;
-      // }
-      // if (visemeMessage?.audioPlayer?.paused === false) {
-      //   if (!animation.startsWith("Talk")) {
-      //     setAnimation(getRandomAnimation("talking"));
-      //   }
-      // }
-    };
-
-    handleAnimationChange();
-  }, [visemeMessage?.audioPlayer?.paused, visemeMessage]);
-
-  // Play animations
-  // useEffect(() => {
-  //   actions["Armature|mixamo.com|Layer0"]
-  //     ?.reset()
-  //     .fadeIn(mixer.time > 0 ? ANIMATION_FADE_TIME : 0)
-  //     .play();
-  //   return () => {
-  //     actions[animation]?.fadeOut(ANIMATION_FADE_TIME);
-  //   };
-  // }, [animation, actions, mixer.time]);
 
   useEffect(() => {
     actions["Armature|mixamo.com|Layer0"].play();
