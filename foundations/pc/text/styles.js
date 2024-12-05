@@ -14,7 +14,7 @@ export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
   background-color: #000000;
-  padding: 2rem;
+  padding: 2.133vw;
   transform: translateZ(0);
 `;
 
@@ -81,7 +81,7 @@ const generateDepthColors = (hue) => ({
 
 export const StructureText = styled(animated.pre)`
   color: #00ffff;
-  font-size: 14px;
+  font-size: 0.933vw;
   line-height: 1.5;
   text-align: left;
   position: absolute;
@@ -121,12 +121,12 @@ export const StructureText = styled(animated.pre)`
     transform: translateZ(0);
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
-    text-shadow: 0 0 15px hsla(${(props) => props.$hue}, 70%, 50%, 0.2);
+    text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 70%, 50%, 0.2);
 
     .branch-char {
       color: hsla(${(props) => props.$hue}, 85%, 75%, 0.9);
       font-weight: 500;
-      text-shadow: 0 0 20px hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
+      text-shadow: 0 0 1.333vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
     }
   }
 
@@ -140,35 +140,35 @@ export const StructureText = styled(animated.pre)`
 
   .dims {
     color: hsla(${(props) => cycleHue(props.$hue + 60)}, 70%, 75%, 0.85);
-    margin-left: 8px;
+    margin-left: 0.533vw;
     font-weight: 400;
-    text-shadow: 0 0 10px
+    text-shadow: 0 0 0.667vw
       hsla(${(props) => cycleHue(props.$hue + 60)}, 70%, 50%, 0.25);
   }
 
   .type {
     color: hsla(${(props) => cycleHue(props.$hue - 30)}, 60%, 75%, 0.8);
-    margin-left: 8px;
+    margin-left: 0.533vw;
     font-weight: 400;
-    text-shadow: 0 0 10px
+    text-shadow: 0 0 0.667vw
       hsla(${(props) => cycleHue(props.$hue - 30)}, 60%, 50%, 0.2);
   }
 
   .params {
     color: hsla(${(props) => cycleHue(props.$hue - 60)}, 70%, 75%, 0.8);
-    margin-left: 8px;
-    font-size: 12px;
+    margin-left: 0.533vw;
+    font-size: 0.8vw;
     font-weight: 400;
-    text-shadow: 0 0 10px
+    text-shadow: 0 0 0.667vw
       hsla(${(props) => cycleHue(props.$hue - 60)}, 70%, 50%, 0.2);
   }
 
   .grid {
     color: hsla(${(props) => cycleHue(props.$hue + 30)}, 70%, 75%, 0.8);
-    margin-left: 8px;
-    font-size: 12px;
+    margin-left: 0.533vw;
+    font-size: 0.8vw;
     font-weight: 400;
-    text-shadow: 0 0 10px
+    text-shadow: 0 0 0.667vw
       hsla(${(props) => cycleHue(props.$hue + 30)}, 70%, 50%, 0.2);
   }
 
@@ -184,7 +184,7 @@ export const StructureText = styled(animated.pre)`
             ${0.9 - depth * 0.1}
           );
           transform: translateZ(0);
-          text-shadow: 0 0 20px
+          text-shadow: 0 0 1.333vw
             hsla(
               ${cycleHue($hue)},
               ${30 - depth * 2}%,
@@ -201,7 +201,7 @@ export const StructureText = styled(animated.pre)`
             ${85 - depth * 5}%,
             ${0.95 - depth * 0.1}
           );
-          text-shadow: 0 0 15px
+          text-shadow: 0 0 1vw
             hsla(${cycleHue($hue)}, 70%, 50%, ${0.3 - depth * 0.04});
         }
       `
@@ -211,8 +211,8 @@ export const StructureText = styled(animated.pre)`
   .model-structure {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
-    gap: 0.2rem;
+    padding: 1.067vw;
+    gap: 0.213vw;
     position: absolute;
     width: 100%;
 
@@ -240,13 +240,13 @@ export const StructureText = styled(animated.pre)`
     }
 
     filter: drop-shadow(
-      0 0 20px hsla(${(props) => props.$hue}, 20%, 50%, 0.05)
+      0 0 1.333vw hsla(${(props) => props.$hue}, 20%, 50%, 0.05)
     );
   }
 
   .disclaimer {
     color: hsla(${(props) => props.$hue}, 15%, 75%, 0.4);
-    text-shadow: 0 0 10px hsla(${(props) => props.$hue}, 70%, 50%, 0.1);
+    text-shadow: 0 0 0.667vw hsla(${(props) => props.$hue}, 70%, 50%, 0.1);
     transition: color 0.3s ease;
   }
 `;
