@@ -113,12 +113,12 @@ export const ModelItem = styled.div`
   width: 85%;
   margin-left: auto;
   padding: 1.5rem;
-  background: ${({ $isCurrent, $distance, $hue = 0 }) => {
+  background: ${({ $isCurrent, $distance }) => {
     const absDistance = Math.abs($distance);
-    if ($isCurrent) return `hsla(${$hue}, 20%, 15%, 0.9)`;
-    if (absDistance === 1) return `hsla(${$hue}, 25%, 12%, 0.8)`;
-    if (absDistance === 2) return `hsla(${$hue}, 30%, 8%, 0.7)`;
-    return `hsla(${$hue}, 40%, 6%, 0.6)`;
+    if ($isCurrent) return "rgba(40, 40, 40, 0.9)";
+    if (absDistance === 1) return "rgba(30, 30, 30, 0.8)";
+    if (absDistance === 2) return "rgba(20, 20, 20, 0.7)";
+    return "rgba(15, 15, 15, 0.6)";
   }};
   border-radius: 16px 0 0 16px;
   height: ${({ $isCurrent }) => ($isCurrent ? "auto" : "4rem")};
@@ -131,9 +131,8 @@ export const ModelItem = styled.div`
     return 0.4;
   }};
   border: 1px solid
-    ${({ $isCurrent, $hue = 0 }) =>
-      `hsla(${$hue}, 30%, 95%, ${$isCurrent ? "0.1" : "0.05"})`};
-  box-shadow: 0 2px 8px ${({ $hue = 0 }) => `hsla(${$hue}, 50%, 20%, 0.7)`};
+    rgba(255, 255, 255, ${({ $isCurrent }) => ($isCurrent ? "0.1" : "0.05")});
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
   /* Smoother bidirectional transform */
   transform: translateX(
@@ -148,15 +147,14 @@ export const ModelItem = styled.div`
 
   /* Add delay to transform animation to act as throttle */
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
-    opacity 0.3s ease-out, height 0.2s ease-out, border-color 0.3s ease,
-    background 0.3s ease;
+    opacity 0.3s ease-out, height 0.2s ease-out;
   will-change: transform, opacity;
 
   &:hover {
-    border-color: hsla(
-      ${(props) => props.$hue || 0},
-      30%,
-      95%,
+    border-color: rgba(
+      255,
+      255,
+      255,
       ${({ $isCurrent }) => ($isCurrent ? "0.12" : "0.06")}
     );
   }

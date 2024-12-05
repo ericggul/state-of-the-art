@@ -60,22 +60,12 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
             </S.ModelName>
             {isCurrentItem(index) && (
               <S.ModelDetails>
-                {model.category && (
-                  <p
-                    style={{
-                      color: `hsla(${model.hue}, 100%, 80%, 1)`,
-                      //before styling
-                    }}
-                  >
-                    {getModelTypeName(model.category)}
-                  </p>
-                )}
                 {model.explanation && <p>{model.explanation}</p>}
-
+                {model.category && <p>{getModelTypeName(model.category)}</p>}
                 {model.year && <p>Year: {model.year}</p>}
+                {model.place && <p>Place: {model.place}</p>}
                 {model.citation && <p>Citations: {model.citation}</p>}
-                {model.place && <p>{model.place}</p>}
-                {model.version && <p>{model.version}</p>}
+                {model.version && <p>Version: {model.version}</p>}
               </S.ModelDetails>
             )}
           </S.ModelItem>
