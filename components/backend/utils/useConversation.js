@@ -211,7 +211,7 @@ export default function useConversation({ socket = null }) {
 
       // Add timeout to GPT fetch
       const response = await withTimeout(
-        axios.post("/api/openai/gpt-4o", {
+        axios.post("/api/openai/gpt-4o-mini", {
           conversations: formattedConversations,
           params: { temperature, userName },
           maxTokens,
