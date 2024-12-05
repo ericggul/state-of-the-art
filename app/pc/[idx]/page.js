@@ -13,7 +13,7 @@ import * as CONST from "@/utils/constant";
 
 // Keep all dynamic imports together
 const COMPONENTS = {
-  0: dynamic(() => import("@/foundations/pc/avatar/v3")),
+  0: dynamic(() => import("@/foundations/pc/avatar/v4")),
   "0-v1": dynamic(() => import("@/foundations/pc/avatar/v1")),
   "0-v2": dynamic(() => import("@/foundations/pc/avatar/v2")),
   "0-v3": dynamic(() => import("@/foundations/pc/avatar/v3")),

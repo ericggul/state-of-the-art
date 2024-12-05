@@ -32,8 +32,8 @@ export const TIMEOUTS = {
 
 //transition: delay between devices
 //screen > transition
-export const BASE_DELAY = 900;
-export const DEVICE_DELAY_MULTIPLIER = 450;
+export const BASE_DELAY = 700;
+export const DEVICE_DELAY_MULTIPLIER = 430;
 
 //conversation: black and white time
 //backend > useConversation
@@ -49,8 +49,7 @@ export const PING_INTERVAL = 1000;
 export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
-export const FRONTEND_INACTIVITY_TIMEOUT =
-  (IS_DEPLOYMENT ? 2.5 : 5) * 60 * 1000; // 3 minutes
+export const FRONTEND_INACTIVITY_TIMEOUT = (IS_DEPLOYMENT ? 4 : 8) * 60 * 1000; // 3 minutes
 export const INTRO_INACTIVITY_TIMEOUT = 60 * 1000; // 1 minute
 
 //IDLE
@@ -68,4 +67,4 @@ export const IDLE_TEXTS = [
 
 export const VERIFY_NAME_TIMEOUT = 3500;
 
-export const SESSION_VALIDITY_TIMEOUT = 60 * 1000; // 1 minute in milliseconds
+export const SESSION_VALIDITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
