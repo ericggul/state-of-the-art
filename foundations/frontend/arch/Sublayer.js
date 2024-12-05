@@ -3,8 +3,8 @@ import { useSpring, animated } from "@react-spring/three";
 import InstancedNodes from "./InstancedNodes";
 import { GRID_CONFIGS } from "../arch-models";
 import useScreenStore from "@/components/screen/store";
+import { Text } from "@react-three/drei";
 
-//todo: interlayer margin 2.5 for multi modal
 export const INTERLAYER_MARGIN_X = 2.0;
 export const INTERLAYER_MARGIN_Y = 3.0;
 
@@ -44,6 +44,18 @@ const Sublayer = memo(function Sublayer({
     ? gridConfig[sublayer.type] || DEFAULT_GRID
     : DEFAULT_GRID;
 
+  const calculateFontSize = () => {
+    try {
+      const [width, height, depth] = size;
+      const layerSize = Math.sqrt(width ** 2 + height ** 2 + depth ** 2);
+      console.log(size, width, height, layerSize);
+      return Math.max(layerSize * 0.03, 2);
+    } catch (e) {
+      console.log(e);
+      return 2;
+    }
+  };
+
   return (
     <group position={position} rotation={rotation}>
       <animated.group scale={scale}>
@@ -67,6 +79,21 @@ const Sublayer = memo(function Sublayer({
           sublayer={sublayer}
           isProjector={isProjector}
         />
+        {!isProjector && (
+          <Text
+            // position={[0, 0, size[2] / 2 + size[2] * 0.25]}
+            position={[0, 0, 0]}
+            fontSize={calculateFontSize()}
+            color={style.colors[sublayer.type] || style.colors.inner}
+            anchorX="center"
+            anchorY="middle"
+            rotation={[-Math.PI / 2, 0, 0]}
+            renderOrder={1}
+            depthTest={false}
+          >
+            {sublayer.name}
+          </Text>
+        )}
       </animated.group>
     </group>
   );

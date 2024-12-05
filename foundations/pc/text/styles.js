@@ -82,7 +82,7 @@ const generateDepthColors = (hue) => ({
 export const StructureText = styled(animated.pre)`
   color: #00ffff;
   font-size: 0.933vw;
-  line-height: 1.5;
+  line-height: 1.2;
   text-align: left;
   position: absolute;
   left: 0.5vw;

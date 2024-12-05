@@ -212,16 +212,29 @@ function TextContent({ currentArchitectures, hue }) {
 
       <S.StructureText ref={containerRef} $needsScroll={needsScroll} $hue={hue}>
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
-          <div
-            style={{
-              marginBottom: "2rem",
-              fontStyle: "italic",
-              maxWidth: "30vw",
-              whiteSpace: "normal",
-            }}
-          >
-            {architectureName} Architecture
-          </div>
+          {architectureName && (
+            <div
+              style={{
+                marginBottom: "2rem",
+                fontStyle: "italic",
+                maxWidth: "30vw",
+                whiteSpace: "normal",
+              }}
+            >
+              <div
+                style={{
+                  color: "rgba(255, 255, 255, 0.4)",
+                  fontSize: ".8vw",
+                  fontStyle: "italic",
+                  maxWidth: "30vw",
+                  whiteSpace: "normal",
+                }}
+              >
+                You're currently looking at:
+              </div>
+              {architectureName} Architecture
+            </div>
+          )}
           {structure.map((layer, idx) => (
             <LayerText
               key={`${layer.name}-${idx}-${currentArchitectures}`}

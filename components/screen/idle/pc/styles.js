@@ -55,11 +55,11 @@ export const QRCodeWrapper = styled.div`
 `;
 
 export const AnimatedText = styled.p`
-  font-size: 1.5vw;
+  font-size: 1.75vw;
   font-weight: lighter;
   margin-top: 3vw;
   text-align: center;
-  max-width: 60vw;
+  max-width: 70vw;
   color: white;
   opacity: ${({ $oscillatingOpacity, $isVisible }) =>
     $isVisible ? 1 - $oscillatingOpacity : 0};
