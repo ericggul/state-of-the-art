@@ -104,16 +104,18 @@ export const TYPE_STYLES = {
     },
     material: {
       metalness: 1.0,
-      roughness: 0.05,
-      envMapIntensity: 1.5,
+      roughness: 0.02,
+      envMapIntensity: 2.5,
     },
     shadows: true,
     emissive: true,
     lighting: {
       environment: "night",
-      envIntensity: 1.0,
-      pointLight: { position: [0, 50, 0], intensity: 2.5 },
-      pointLight2: { position: [-50, 0, 0], intensity: 2.5 },
+      envIntensity: 1.5,
+      pointLight: { position: [0, 50, 0], intensity: 5 },
+      pointLight2: { position: [-50, 0, 0], intensity: 5 },
+      pointLight3: { position: [10, 50, 30], intensity: 5 },
+      pointLight4: { position: [-20, -50, -40], intensity: 5 },
       directionalLight: { position: [0, 100, -100], intensity: 2.5 },
       directionalLight2: { position: [50, 0, 0], intensity: 2.5 },
       directionalLight3: { position: [-50, 50, 50], intensity: 2.0 },
@@ -121,7 +123,7 @@ export const TYPE_STYLES = {
     },
     postprocessing: {
       bloom: {
-        intensity: 3.0,
+        intensity: 10.0,
         luminanceThreshold: 0.3,
         luminanceSmoothing: 0.9,
       },
@@ -294,10 +296,10 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "GAN",
     colors: {
-      outer: "#ff00ff",
-      inner: "#00ffff",
-      highlight: "#ffff00",
-      connection: `hsl(180, 100%, 50%)`,
+      outer: "hsl(300, 70%, 45%)", // Refined magenta
+      inner: "hsl(180, 100%, 30%)",
+      highlight: "hsl(270, 100%, 65%)", // Bright purple highlight
+      connection: "hsl(180, 100%, 60%)",
     },
     material: {
       metalness: 0.9,
@@ -307,13 +309,14 @@ export const TYPE_STYLES = {
     emissive: true, // Important for neon effect
     lighting: {
       environment: "night",
-      envIntensity: 0.1,
+      envIntensity: 1,
       pointLight: { position: [0, 50, 0], intensity: 2 },
-      ambientLight: { intensity: 0.1 },
+      pointLight2: { position: [0, -50, 0], intensity: 2 },
+      ambientLight: { intensity: 0.1, color: `hsl(100, 100%, 50%)` },
     },
     postprocessing: {
       bloom: {
-        intensity: 0.3,
+        intensity: 3,
         luminanceThreshold: 0.4,
         luminanceSmoothing: 0.9,
       },

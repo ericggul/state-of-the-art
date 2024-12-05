@@ -1,13 +1,13 @@
 import React, { useMemo, memo } from "react";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
-import { flattenModels, filterModels } from "@/components/frontend/utils";
 import useFeedback from "./utils/useFeedback";
 import { useModelListLogic } from "./utils/modelListLogic/useLogic";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
+import { generateInitialModelArray } from "./utils/initialModelGeneration";
 
 const Mobile = memo(function Mobile({ socket, mobileId }) {
-  const modelsArray = useMemo(() => filterModels(flattenModels(MODELS)), []);
+  const modelsArray = useMemo(() => generateInitialModelArray(MODELS), []);
 
   return (
     <S.Container>

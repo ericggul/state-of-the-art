@@ -57,7 +57,7 @@ const Ring = styled.div`
 
 const ArchitectureText = styled.p`
   position: absolute;
-  font-size: 0.6vw;
+  font-size: 0.8vw;
   font-weight: 400;
   letter-spacing: 0.05em;
   white-space: nowrap;

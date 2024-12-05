@@ -12,9 +12,11 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isAndroid = /Android/.test(navigator.userAgent);
 
 const MOMENTUM_CONFIG = {
-  friction: isIOS ? 0.9 : 0.94, // Increased friction for iOS (was 0.95)
-  multiplier: isIOS ? 0.5 : 0.3, // Reduced multiplier for iOS (was 0.8)
-  minVelocity: isIOS ? 0.08 : 0.03, // Adjusted minimum velocity for iOS (was 0.1)
+  friction: isIOS ? 0.92 : 0.94, // Slightly reduced friction for smoother decay
+  multiplier: isIOS ? 0.35 : 0.3, // Adjusted multiplier for more natural feel
+  minVelocity: isIOS ? 0.05 : 0.03, // Lower threshold for smoother stop
+  smoothingFactor: 0.2, // New parameter for velocity smoothing
+  maxVelocity: 50, // New parameter to prevent excessive speed
 };
 
 export function useModelListLogic({ initialModels, socket, mobileId }) {
@@ -104,6 +106,9 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   const lastScrollTopRef = useRef(0);
   const animationFrameRef = useRef(null);
 
+  // Add new ref for smoothed velocity
+  const smoothedVelocityRef = useRef(0);
+
   // Scroll handling effect
   useEffect(() => {
     const listElement = listRef.current;
@@ -148,25 +153,39 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
         if (rafId) cancelAnimationFrame(rafId);
       };
     } else {
-      // iOS: Keep current momentum scrolling logic
+      // iOS: Enhanced momentum scrolling logic
       let isScrolling = false;
+      let lastTime = null;
 
-      function updateScroll() {
-        if (Math.abs(velocityRef.current) > MOMENTUM_CONFIG.minVelocity) {
-          velocityRef.current *= MOMENTUM_CONFIG.friction;
-          listElement.scrollTop += velocityRef.current;
+      function updateScroll(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const deltaTime = timestamp - lastTime;
+        lastTime = timestamp;
 
+        if (
+          Math.abs(smoothedVelocityRef.current) > MOMENTUM_CONFIG.minVelocity
+        ) {
+          // Apply smoothing to the velocity
+          smoothedVelocityRef.current =
+            smoothedVelocityRef.current * MOMENTUM_CONFIG.friction;
+
+          // Apply the smoothed velocity to scroll position
+          listElement.scrollTop += smoothedVelocityRef.current;
+
+          // Check bounds
           if (
             listElement.scrollTop <= 0 ||
             listElement.scrollTop >=
               listElement.scrollHeight - listElement.clientHeight
           ) {
+            smoothedVelocityRef.current = 0;
             velocityRef.current = 0;
           }
 
           animationFrameRef.current = requestAnimationFrame(updateScroll);
         } else {
           isScrolling = false;
+          lastTime = null;
         }
       }
 
@@ -175,19 +194,37 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
           cancelAnimationFrame(animationFrameRef.current);
         }
         velocityRef.current = 0;
+        smoothedVelocityRef.current = 0;
         lastTouchYRef.current = e.touches[0].clientY;
+        lastTime = null;
       }
 
       function handleTouchMove(e) {
         const deltaY = lastTouchYRef.current - e.touches[0].clientY;
         lastTouchYRef.current = e.touches[0].clientY;
-        velocityRef.current = deltaY * MOMENTUM_CONFIG.multiplier;
+
+        // Calculate new velocity with smoothing
+        const rawVelocity = deltaY * MOMENTUM_CONFIG.multiplier;
+        const clampedVelocity = Math.max(
+          -MOMENTUM_CONFIG.maxVelocity,
+          Math.min(MOMENTUM_CONFIG.maxVelocity, rawVelocity)
+        );
+
+        // Smooth the velocity transition
+        velocityRef.current = clampedVelocity;
+        smoothedVelocityRef.current =
+          smoothedVelocityRef.current * (1 - MOMENTUM_CONFIG.smoothingFactor) +
+          velocityRef.current * MOMENTUM_CONFIG.smoothingFactor;
+
         listElement.scrollTop += deltaY;
       }
 
       function handleTouchEnd() {
-        if (Math.abs(velocityRef.current) > MOMENTUM_CONFIG.minVelocity) {
+        if (
+          Math.abs(smoothedVelocityRef.current) > MOMENTUM_CONFIG.minVelocity
+        ) {
           isScrolling = true;
+          lastTime = null;
           animationFrameRef.current = requestAnimationFrame(updateScroll);
         }
       }
