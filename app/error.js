@@ -15,8 +15,8 @@ export default function Error({ error, reset }) {
 
     // Force redirect to the current page after a short delay
     const timeout = setTimeout(() => {
-      router.refresh();
-      router.push(window.location.pathname);
+      // router.refresh();
+      // router.push(window.location.pathname);
     }, 3000);
 
     return () => clearTimeout(timeout);
