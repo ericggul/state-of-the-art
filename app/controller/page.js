@@ -73,7 +73,6 @@ export default function ControllerWrapper() {
         mobileId: data.mobileId,
         error: "HANDLER_ERROR",
       });
-      return false;
     }
   }
 

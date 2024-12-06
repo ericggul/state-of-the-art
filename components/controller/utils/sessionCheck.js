@@ -21,6 +21,9 @@ export function checkSessionValidity(mobileSessionId) {
     const mobileSid = Number(mobileSessionId);
     const controllerSid = Number(controllerSessionId);
 
+    console.log(mobileSid, "mobileSid");
+    console.log(controllerSid, "controllerSid");
+
     if (isNaN(mobileSid) || isNaN(controllerSid)) {
       console.error("Invalid session ID format");
       return { isValid: false, error: "INVALID_FORMAT" };
@@ -29,6 +32,9 @@ export function checkSessionValidity(mobileSessionId) {
     // Calculate time difference
     const difference = Math.abs(controllerSid - mobileSid);
     const isValid = difference < SESSION_VALIDITY_TIMEOUT;
+
+    console.log(difference, "difference");
+    console.log(isValid, "isValid");
 
     return {
       isValid,
