@@ -65,6 +65,8 @@ export default function ControllerWrapper() {
         error: result.error,
       });
 
+      setTimeout(() => window.location.reload(), 2000);
+
       return result.isValid;
     } catch (error) {
       console.error("Session check handler error:", error);

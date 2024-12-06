@@ -44,6 +44,7 @@ export default function Mobile({ sessionId }) {
   }
 
   if (isDeclined.status) {
+    console.log(isDeclined);
     return <Loading customText="Timeout. Please scan the QR code again" />;
   }
 

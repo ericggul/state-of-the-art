@@ -23,7 +23,7 @@ export default function Error({ error, reset }) {
   }, [error, reset, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center jusytify-center min-h-screen bg-gray-100">
       <div className="text-center">
         <h1 className="text-xl font-bold mb-4">Something went wrong!</h1>
         <p>Redirecting you back...</p>
