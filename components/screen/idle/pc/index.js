@@ -28,6 +28,8 @@ const Idle = memo(function Idle() {
   const isVisible = useVideoFade(videoRef);
 
   const qrLinkWithSessionId = useMemo(() => {
+    console.log(sessionId, "sessionId");
+
     return `${IDLE_QR_LINK}?sessionId=${sessionId}`;
   }, [sessionId]);
 
@@ -99,6 +101,7 @@ const Idle = memo(function Idle() {
           size={windowWidth * 0.15}
           fgColor="white"
           bgColor="transparent"
+          // key={qrLinkWithSessionId}
         />
         <S.AnimatedText
           $oscillatingOpacity={oscillatingOpacity}
