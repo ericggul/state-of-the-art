@@ -24,17 +24,28 @@ export default function Controller({ socket }) {
     if (sessionId) {
       setSessionId(sessionId);
       try {
-        const timeoutId = setTimeout(() => {
+        // Initial delay of 5 seconds
+        const initialTimeoutId = setTimeout(() => {
           socket.current.emit("controller-new-sessionId", { sessionId });
         }, 5000);
 
-        // Clean up timeout on unmount or when sessionId changes
-        return () => clearTimeout(timeoutId);
+        // Set up 60-second interval after initial delay
+        const intervalId = setInterval(() => {
+          if (stage === "Idle") {
+            socket.current.emit("controller-new-sessionId", { sessionId });
+          }
+        }, 60000);
+
+        // Clean up both timers
+        return () => {
+          clearTimeout(initialTimeoutId);
+          clearInterval(intervalId);
+        };
       } catch (e) {
         console.log(e);
       }
     }
-  }, [sessionId, setSessionId]);
+  }, [sessionId, setSessionId, stage]);
 
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
