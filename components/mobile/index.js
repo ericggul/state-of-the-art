@@ -52,6 +52,7 @@ export default function Mobile({ sessionId }) {
     setIsIntro(true);
     setIntroState(1);
     try {
+      if (!socket.current) return;
       socket.current.emit("mobile-new-intro", {
         type: "state_change",
         introState: 1,
@@ -101,6 +102,7 @@ function IntroWrapper({
 }) {
   useEffect(() => {
     try {
+      if (!socket.current) return;
       socket.current.emit("mobile-new-intro", {
         type: "state_change",
         introState,

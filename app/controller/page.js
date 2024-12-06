@@ -22,6 +22,7 @@ export default function ControllerWrapper() {
     handleNewControllerArchitectures,
     handleNewControllerVisibility,
     handleNewControllerStageAndReset,
+    handleNewControllerSessionIdDecline,
     handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
@@ -46,6 +47,7 @@ export default function ControllerWrapper() {
     handleNewControllerStageAndReset,
     handleNewScreenConversation,
     handleNewMobileSessionIdCheck,
+    handleNewControllerSessionIdDecline,
   });
 
   useScreenVisibility();
@@ -53,7 +55,8 @@ export default function ControllerWrapper() {
 
   function handleNewMobileSessionIdCheck(data) {
     try {
-      if (!IS_DEPLOYMENT) return;
+      console.log("58", data);
+      // if (!IS_DEPLOYMENT) return;
       console.log("Checking mobile session ID:", data);
 
       const result = checkSessionValidity(data.sessionId);
@@ -65,7 +68,9 @@ export default function ControllerWrapper() {
         error: result.error,
       });
 
-      setTimeout(() => window.location.reload(), 2000);
+      // if (!result.isValid) {
+      //   setTimeout(() => window.location.reload(), 2000);
+      // }
 
       return result.isValid;
     } catch (error) {

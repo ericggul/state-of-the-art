@@ -53,7 +53,11 @@ export const FRONTEND_INACTIVITY_TIMEOUT = (IS_DEPLOYMENT ? 4 : 8) * 60 * 1000; 
 export const INTRO_INACTIVITY_TIMEOUT = 60 * 1000; // 1 minute
 
 //IDLE
-export const IDLE_QR_LINK = "https://sota-xdlab.net/mobile";
+export const IDLE_QR_LINK = IS_DEPLOYMENT
+  ? "https://sota-xdlab.net/mobile"
+  : typeof window !== "undefined"
+  ? `${window.location.protocol}//${window.location.host}/mobile`
+  : "http://localhost:3000/mobile";
 export const IDLE_MIN_INTERVAL = 7 * 1000;
 export const IDLE_MAX_INTERVAL = 20 * 1000;
 

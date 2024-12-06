@@ -44,12 +44,13 @@ export default function Intro({
       }
     } catch (error) {
       console.error("Error activating accelerometer:", error);
-      alert(error.message);
+      console.log(error.message);
       onAccelerometerActivate(false);
     }
   }, [onAccelerometerActivate, requestAccess]);
 
   function emitAccelerometerActivation(result) {
+    if (!socket.current) return;
     socket.current.emit("mobile-new-intro", {
       type: "accelerometer_activation",
       activated: result.granted,
