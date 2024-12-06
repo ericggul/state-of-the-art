@@ -15,6 +15,8 @@ export const Container = styled.div`
   background: transparent;
   z-index: 999;
   pointer-events: none;
+  transform: scale(1.2);
+  transform-origin: bottom right;
 `;
 
 const lineAppear = keyframes`

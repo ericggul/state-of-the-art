@@ -22,7 +22,7 @@ export default function Frame({ middle = false }) {
   const [lineKey, setLineKey] = useState(0);
   const [shouldRender, setShouldRender] = useState(true);
 
-  const bottom = middle ? 20 : 3;
+  const bottom = middle ? 20 : 2;
 
   useLayoutEffect(() => {
     const updateDimensions = () => {

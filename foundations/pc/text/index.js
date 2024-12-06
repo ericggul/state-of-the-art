@@ -165,7 +165,7 @@ function TextContent({ currentArchitectures, hue }) {
   useEffect(() => {
     if (!containerRef.current || !needsScroll) return;
     const container = containerRef.current;
-    const scrollSpeed = 2;
+    const scrollSpeed = 1.5;
     let lastTimestamp = 0;
 
     const scroll = (timestamp) => {
@@ -228,9 +228,10 @@ function TextContent({ currentArchitectures, hue }) {
                   fontStyle: "italic",
                   maxWidth: "30vw",
                   whiteSpace: "normal",
+                  marginBottom: ".5rem",
                 }}
               >
-                You're currently looking at:
+                You're currently looking at the 3D visualisation of:
               </div>
               {architectureName} Architecture
             </div>

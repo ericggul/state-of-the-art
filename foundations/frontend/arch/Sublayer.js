@@ -80,7 +80,6 @@ const Sublayer = memo(function Sublayer({
         />
         {!isProjector && (
           <Text
-            // position={[0, 0, size[2] / 2 + size[2] * 0.25]}
             position={[0, 0, 0]}
             fontSize={calculateFontSize()}
             color={style.colors[sublayer.type] || style.colors.inner}

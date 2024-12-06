@@ -4,6 +4,7 @@ import Node from "../Node";
 import InstancedNodes from "../InstancedNodes";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 import useScreenStore from "@/components/screen/store";
+import { Text } from "@react-three/drei";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
   // Add spring animation for initial scale
@@ -128,6 +129,18 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
       config: { mass: 1, tension: 120, friction: 13 },
     });
 
+    // Calculate font size based on layer dimensions
+    const calculateFontSize = () => {
+      try {
+        const [width, height, depth] = layer.dimensions;
+        const layerSize = Math.sqrt(width ** 2 + height ** 2 + depth ** 2);
+        return Math.max(layerSize * 0.05, 2);
+      } catch (e) {
+        console.log(e);
+        return 2;
+      }
+    };
+
     useEffect(() => {
       const toggleExpanded = () => {
         setExpanded((prev) => !prev);
@@ -191,6 +204,20 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
             style={style}
             isProjector={isProjector}
           />
+          {!isProjector && (
+            <Text
+              position={[0, 0, 0]}
+              fontSize={calculateFontSize()}
+              color={color}
+              anchorX="center"
+              anchorY="middle"
+              rotation={[-Math.PI / 2, 0, 0]}
+              renderOrder={1}
+              depthTest={false}
+            >
+              {layer.name || layer.type}
+            </Text>
+          )}
         </animated.group>
         <animated.group
           scale-x={smoothedExpanded.to((v) => 1 - v)}
@@ -203,6 +230,20 @@ const CNNLayer = React.memo(({ position, layer, style, model }) => {
             style={style}
             isProjector={isProjector}
           />
+          {!isProjector && (
+            <Text
+              position={[0, 0, 0]}
+              fontSize={calculateFontSize()}
+              color={color}
+              anchorX="center"
+              anchorY="middle"
+              rotation={[-Math.PI / 2, 0, 0]}
+              renderOrder={1}
+              depthTest={false}
+            >
+              {layer.name || layer.type}
+            </Text>
+          )}
         </animated.group>
       </group>
     );
