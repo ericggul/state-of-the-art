@@ -153,7 +153,7 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewMobileVisibility: (data) => {
-    console.log("New visibility received:", data);
+    // console.log("New visibility received:", data);
     set((state) => {
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;

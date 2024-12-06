@@ -16,11 +16,14 @@ export default function socketSetup({ socket, io }) {
 
   socket.on("mobile-init", ({ mobileId, sessionId }) => {
     console.log(`📱 Mobile init: ${mobileId} ${sessionId}`);
-    activeMobile = {
-      mobileId,
-      socketId: socket.id,
-      status: "active",
-    };
+    console.log("current active mobile", activeMobile);
+    if (!activeMobile) {
+      activeMobile = {
+        mobileId,
+        socketId: socket.id,
+        status: "active",
+      };
+    }
 
     socket.join("mobile");
     socket.emit("mobile-init", { mobileId });
@@ -96,13 +99,14 @@ export default function socketSetup({ socket, io }) {
   });
 
   //DISCONNECT LOGIC//
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (data) => {
     console.log(
       "socket disconnect",
       "activeMobile",
       activeMobile,
       "socket.id",
-      socket.id
+      socket.id,
+      data
     );
     if (activeMobile?.socketId === socket.id) {
       console.log("date now", Date.now());

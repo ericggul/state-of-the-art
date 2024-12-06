@@ -14,7 +14,7 @@ function MobileSelector() {
   const sessionId = searchParams.get("sessionId");
 
   // return <Mobile sessionId={IS_DEPLOYMENT ? sessionId || "10" : "9999"} />;
-  return <Mobile sessionId={sessionId} />;
+  return <Mobile sessionId={sessionId || "10"} />;
 }
 
 export default function MobileWrapper() {
