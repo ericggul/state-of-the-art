@@ -24,8 +24,12 @@ export default function Controller({ socket }) {
     if (sessionId) {
       setSessionId(sessionId);
       try {
-        console.log("sending over sessionId", sessionId);
-        socket.current.emit("controller-new-sessionId", { sessionId });
+        const timeoutId = setTimeout(() => {
+          socket.current.emit("controller-new-sessionId", { sessionId });
+        }, 5000);
+
+        // Clean up timeout on unmount or when sessionId changes
+        return () => clearTimeout(timeoutId);
       } catch (e) {
         console.log(e);
       }
