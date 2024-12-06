@@ -126,29 +126,36 @@ const useScreenStore = create((set) => ({
   },
 
   handleNewMobileArchitecture: (data) => {
-    set((state) => {
-      if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
-        return state;
-      }
+    try {
+      console.log("handleNewMobileArchitecture", data);
+      set((state) => {
+        console.log(state.targetMobileId, "handlenewmobilearch state.targetMobileId");
+        console.log(data.mobileId, "handlenewmobilearch data.mobileId");
+        if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
+          return state;
+        }
 
-      const updates = {
-        lastInteractionTime: Date.now(),
-      };
+        const updates = {
+          lastInteractionTime: Date.now(),
+        };
 
-      if (!state.mobileVisibility) {
-        updates.mobileVisibility = true;
-      }
+        if (!state.mobileVisibility) {
+          updates.mobileVisibility = true;
+        }
 
-      if (data.currentArchitectures?.length) {
-        updates.currentArchitectures = data.currentArchitectures;
-      }
+        if (data.currentArchitectures?.length) {
+          updates.currentArchitectures = data.currentArchitectures;
+        }
 
-      if (state.introState <= 2) {
-        updates.introState = 3;
-      }
+        if (state.introState <= 2) {
+          updates.introState = 3;
+        }
 
-      return Object.keys(updates).length ? updates : state;
-    });
+        return Object.keys(updates).length ? updates : state;
+      });
+    } catch (e) {
+      console.log("handleNewMobileArchitecture error", e);
+    }
   },
 
   handleNewMobileVisibility: (data) => {

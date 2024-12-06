@@ -68,11 +68,11 @@ export default function ControllerWrapper() {
       return result.isValid;
     } catch (error) {
       console.error("Session check handler error:", error);
-      socket.current?.emit("controller-new-sessionId-decline", {
-        decline: true,
-        mobileId: data.mobileId,
-        error: "HANDLER_ERROR",
-      });
+      // socket.current?.emit("controller-new-sessionId-decline", {
+      //   decline: true,
+      //   mobileId: data.mobileId,
+      //   error: "HANDLER_ERROR",
+      // });
     }
   }
 

@@ -88,7 +88,6 @@ export default function socketSetup({ socket, io }) {
 
   //////SESSION ID LOGIC/////
   socket.on("controller-new-sessionId", (data) => {
-    console.log("controller-new-sessionId", data);
     socket.to("screen").emit("new-controller-sessionId", data);
   });
   socket.on("controller-new-sessionId-decline", (data) => {

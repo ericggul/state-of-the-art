@@ -112,6 +112,8 @@ const LoadingText = styled.div`
   margin-bottom: 2rem;
   position: relative;
   z-index: 1;
+  max-width: 80%;
+  text-align: center;
 `;
 
 const ProgressContainer = styled.div`
@@ -150,7 +152,7 @@ export default function Loading({ customText = "Initialising Interface" }) {
     <LoadingContainer>
       <TopVerticalLine />
       <BottomVerticalLine />
-      <Scanline />
+      {/* <Scanline /> */}
       <LoadingText>{customText}</LoadingText>
       <ProgressContainer>
         <ProgressBar />

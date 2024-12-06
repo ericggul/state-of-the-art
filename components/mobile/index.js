@@ -8,7 +8,6 @@ import useSocketMobile from "@/utils/socket/useSocketMobile";
 import useMobileVisibility from "@/utils/hooks/useMobileVisibility";
 import { usePersistentState } from "@/foundations/mobile/utils/usePersistentState";
 import Loading from "@/foundations/mobile/loading";
-import Decline from "@/foundations/mobile/decline";
 
 export default function Mobile({ sessionId }) {
   const [state, setState] = usePersistentState();
@@ -18,15 +17,20 @@ export default function Mobile({ sessionId }) {
 
   const [isDeclined, setIsDeclined] = useState({ status: false, error: null });
 
-  const handleNewControllerSessionIdDecline = useCallback((data) => {
-    console.log("New decline from controller:", data);
-    if (data.decline) {
-      setIsDeclined({
-        status: true,
-        error: data.error,
-      });
-    }
-  }, []);
+  const handleNewControllerSessionIdDecline = useCallback(
+    (data) => {
+      console.log("New decline from controller:", data);
+      console.log(data.mobileId, state.mobileId, "mobileId");
+
+      if (data.decline && data.mobileId == state.mobileId) {
+        setIsDeclined({
+          status: true,
+          error: data.error,
+        });
+      }
+    },
+    [state.mobileId]
+  );
 
   const socket = useSocketMobile({
     mobileId: state.mobileId,
@@ -40,7 +44,7 @@ export default function Mobile({ sessionId }) {
   }
 
   if (isDeclined.status) {
-    return <Loading customText="Please scan the QR code again" />;
+    return <Loading customText="Timeout. Please scan the QR code again" />;
   }
 
   function handleAccelerometerError() {
