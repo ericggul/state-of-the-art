@@ -24,6 +24,7 @@ export default function Controller({ socket }) {
     if (sessionId) {
       setSessionId(sessionId);
       try {
+        console.log("sending over sessionId", sessionId);
         socket.current.emit("controller-new-sessionId", { sessionId });
       } catch (e) {
         console.log(e);
