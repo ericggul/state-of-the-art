@@ -40,7 +40,7 @@ export default function Mobile({ sessionId }) {
   }
 
   if (isDeclined.status) {
-    return <Decline error={isDeclined.error} sessionId={sessionId} />;
+    return <Loading customText="Please scan the QR code again" />;
   }
 
   function handleAccelerometerError() {
