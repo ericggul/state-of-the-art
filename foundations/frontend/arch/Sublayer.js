@@ -48,7 +48,6 @@ const Sublayer = memo(function Sublayer({
     try {
       const [width, height, depth] = size;
       const layerSize = Math.sqrt(width ** 2 + height ** 2 + depth ** 2);
-      console.log(size, width, height, layerSize);
       return Math.max(layerSize * 0.03, 2);
     } catch (e) {
       console.log(e);

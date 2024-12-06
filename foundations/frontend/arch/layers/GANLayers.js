@@ -7,12 +7,18 @@ import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 const MAX_DIMENSION = 20000;
 
 function scaleDimensions(dimensions) {
-  const maxDim = Math.max(...dimensions);
-  if (maxDim > MAX_DIMENSION) {
-    const scale = MAX_DIMENSION / maxDim;
-    return dimensions.map((dim) => Math.round(dim * scale));
+  try {
+    const maxDim = Math.max(...dimensions);
+    console.log(dimensions, maxDim);
+    if (maxDim > MAX_DIMENSION) {
+      const scale = MAX_DIMENSION / maxDim;
+      return dimensions.map((dim) => Math.round(dim * scale));
+    }
+    return dimensions;
+  } catch (e) {
+    console.log("gan layer scale dimension", e);
+    return dimensions;
   }
-  return dimensions;
 }
 
 export default function GANLayers({ structure, style, model }) {
@@ -22,6 +28,7 @@ export default function GANLayers({ structure, style, model }) {
 
   const layers = useMemo(() => {
     // Scale down dimensions if they exceed the threshold
+    console.log(structure);
     const scaledStructure = structure.map((layer) => ({
       ...layer,
       dimensions: scaleDimensions(layer.dimensions),

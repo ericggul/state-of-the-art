@@ -1,12 +1,16 @@
 import { filterModels, flattenModels } from "@/components/frontend/utils";
 
 const FEATURED_MODELS = [
+  ////PROBLEMATIC MODELS: FOR DEBUGGING PURPOSES
+  // "StyleGAN2",
+  // "DenseNet",
+
   "McCulloch-Pitts Neuron",
   "Hopfield Network",
   "Boltzmann Machine",
   "Basic Autoencoder",
   "SimCLR",
-  "LeNet-1",
+  "AlexNet",
   "RNN (Recurrent Neural Network)",
   "Transformer Architecture",
   "GPT",
