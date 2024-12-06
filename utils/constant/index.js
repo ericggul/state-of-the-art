@@ -4,7 +4,7 @@ export const IS_DEPLOYMENT =
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
 
-export const CONTROLLER_AUTO_RESET_INTERVAL = 60 * 10 * 1000; // 10 minutes in milliseconds
+export const CONTROLLER_AUTO_RESET_INTERVAL = 5 * 60 * 1000; // 10 minutes in milliseconds
 
 export function iterationSpeedMultiplier(iteration) {
   return 1 / iteration;
@@ -50,7 +50,7 @@ export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
 export const FRONTEND_INACTIVITY_TIMEOUT = (IS_DEPLOYMENT ? 4 : 8) * 60 * 1000; // 3 minutes
-export const INTRO_INACTIVITY_TIMEOUT = 60 * 1000; // 1 minute
+export const INTRO_INACTIVITY_TIMEOUT = 30 * 1000; // 30 seconds
 
 //IDLE
 export const IDLE_QR_LINK = IS_DEPLOYMENT
@@ -72,4 +72,4 @@ export const IDLE_TEXTS = [
 export const VERIFY_NAME_TIMEOUT = 3500;
 
 // export const SESSION_VALIDITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
-export const SESSION_VALIDITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+export const SESSION_VALIDITY_TIMEOUT = 5 * 60 * 1000; // 3 minutes in milliseconds

@@ -45,7 +45,9 @@ export default function Mobile({ sessionId }) {
 
   if (isDeclined.status) {
     console.log(isDeclined);
-    return <Loading customText="Timeout. Please scan the QR code again" />;
+    return (
+      <Loading customText="Session expired. Please scan QR code again to reconnect" />
+    );
   }
 
   function handleAccelerometerError() {
