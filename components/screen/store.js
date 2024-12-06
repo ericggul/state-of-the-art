@@ -284,13 +284,20 @@ const useScreenStore = create((set) => ({
 
   handleNewControllerSessionIdDecline: (data) => {
     console.log("session id decline", data);
+    console.log(data.mobileId, "mobileId");
+
     if (data.decline) {
       set((state) => {
-        return Object.entries(RESET_STATE).some(
-          ([key, value]) => state[key] !== value
-        )
-          ? RESET_STATE
-          : state;
+        console.log(state);
+        console.log(state.targetMobileId, "targetMobileId");
+        console.log(data.mobileId, "data.mobileId");
+        if (state.targetMobileId === data.mobileId) {
+          return Object.entries(RESET_STATE).some(
+            ([key, value]) => state[key] !== value
+          )
+            ? RESET_STATE
+            : state;
+        }
       });
     }
   },

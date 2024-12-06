@@ -32,7 +32,9 @@ export default function socketSetup({ socket, io }) {
       origin: "init",
     });
 
-    socket.to("controller").emit("new-mobile-sessionId-check", { sessionId });
+    socket
+      .to("controller")
+      .emit("new-mobile-sessionId-check", { sessionId, mobileId });
   });
 
   //////VISIBILITY
@@ -63,10 +65,6 @@ export default function socketSetup({ socket, io }) {
   });
   socket.on("mobile-new-intro", (data) => {
     socket.to("screen").emit("new-mobile-intro", data);
-  });
-  //mobile --> controlle
-  socket.on("mobile-new-sessionId-check", (data) => {
-    socket.to("controller").emit("new-mobile-sessionId-check", data);
   });
 
   //BACKEND: inter-screen conversation
