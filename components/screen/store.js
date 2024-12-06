@@ -65,7 +65,6 @@ const useScreenStore = create((set) => ({
   setSessionId: (sessionId) => set({ sessionId }),
 
   handleNewMobile: (data) => {
-    console.log("New join received:", data);
     set((state) => {
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
@@ -91,7 +90,6 @@ const useScreenStore = create((set) => ({
 
   handleNewMobileIntro: (data) => {
     set((state) => {
-      console.log("handleNewMobileIntro", data);
       if (state.targetMobileId && state.targetMobileId !== data.mobileId) {
         return state;
       }
@@ -99,7 +97,6 @@ const useScreenStore = create((set) => ({
       const updates = {
         lastInteractionTime: Date.now(),
       };
-      console.log("data", data);
 
       switch (data.type) {
         case "accelerometer_activation":

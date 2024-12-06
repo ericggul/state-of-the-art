@@ -26,9 +26,15 @@ export default function ControllerWrapper() {
     handleNewScreenConversation,
     setIsProjector,
     setDeviceIndex,
+    targetMobileId,
     stage,
     sessionId,
   } = useScreenStore();
+
+  const targetMobileIdRef = useRef(null);
+  useEffect(() => {
+    targetMobileIdRef.current = targetMobileId;
+  }, [targetMobileId]);
 
   useEffect(() => {
     setIsProjector(true);
@@ -68,9 +74,12 @@ export default function ControllerWrapper() {
         error: result.error,
       });
 
-      // if (!result.isValid) {
-      //   setTimeout(() => window.location.reload(), 2000);
-      // }
+      if (!result.isValid) {
+        console.log(targetMobileIdRef.current, data.mobileId);
+        if (targetMobileIdRef && targetMobileIdRef.current == data.mobileId) {
+          setTimeout(() => window.location.reload(), 2000);
+        }
+      }
 
       return result.isValid;
     } catch (error) {
