@@ -7,6 +7,7 @@ import Model from "./3d/Model";
 import { Stage } from "./3d/Stage";
 
 import Frame from "@/foundations/pc/frame/simple";
+import { AvatarOrientationCamera } from "./utils/AvatarOrientationCamera";
 
 export default function Wrapper() {
   return (
@@ -22,12 +23,13 @@ export default function Wrapper() {
           <Stage />
           <Model />
 
-          <OrbitControls
+          {/* <OrbitControls
             minPolarAngle={Math.PI / 4}
             maxPolarAngle={Math.PI / 2}
             enableZoom={true}
             enablePan={false}
-          />
+          /> */}
+          <AvatarOrientationCamera cameraDistance={3} />
         </Canvas>
       </Suspense>
       <Frame middle={true} />
