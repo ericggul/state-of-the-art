@@ -20,10 +20,11 @@ export default function Wrapper() {
         >
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
+
+          {/* Set background color */}
           <Environment files={`/3d/environment/sky.hdr`} />
           <Stage />
           <Model />
-
           {/* <OrbitControls
             minPolarAngle={Math.PI / 4}
             maxPolarAngle={Math.PI / 2}

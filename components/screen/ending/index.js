@@ -29,12 +29,7 @@ function Ending() {
   }, []);
 
   function reset() {
-    // handleReset();
-    // handleBackendReset();
-
     window.location.reload(true);
-    // Use App Router refresh
-    // router.refresh();
   }
 
   return <EndingUI isVisible={isVisible} isFadingOut={isFadingOut} />;
