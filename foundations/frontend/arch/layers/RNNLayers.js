@@ -73,7 +73,7 @@ const RNNLayers = React.memo(({ structure, style, model }) => {
 const RNNLayer = React.memo(({ layer, style, model, onExpand }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const { isProjector } = useScreenStore();
+  const isProjector = useScreenStore((state) => state.isProjector);
 
   const { smoothedExpanded } = useSpring({
     smoothedExpanded: expanded ? 1 : 0,

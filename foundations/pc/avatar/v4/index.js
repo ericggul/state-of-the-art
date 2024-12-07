@@ -9,7 +9,6 @@ import Frame from "@/foundations/pc/frame/simple";
 import { AvatarOrientationCamera } from "./utils/AvatarOrientationCamera";
 
 import Model from "./3d/Model";
-import ModelNoAnim from "./3d/Model-noAnim";
 
 export default function Wrapper() {
   return (

@@ -89,7 +89,7 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
 
 const CNNLayer = React.memo(({ position, layer, style, model }) => {
   const [expanded, setExpanded] = useState(false);
-  const { isProjector } = useScreenStore();
+  const isProjector = useScreenStore((state) => state.isProjector);
   const [error, setError] = useState(null);
 
   try {

@@ -2,7 +2,7 @@ import styled, { css, keyframes } from "styled-components";
 import { WholeContainer } from "@/styles";
 
 export const LINEWIDTH = 0.15;
-export const MARGIN = 8;
+export const MARGIN = 6;
 
 const commonPositionStyles = css`
   position: absolute;

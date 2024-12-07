@@ -4,11 +4,13 @@ import axios from "axios";
 import useScreenStore from "@/components/screen/store";
 import useDebounce from "@/utils/hooks/useDebounce";
 
-import { MODELS } from "@/components/controller/constant/models";
 import { AudioEffectProcessor } from "./audioEffects";
 
 export default function useViseme() {
-  const { currentArchitectures, stage } = useScreenStore();
+  const currentArchitectures = useScreenStore(
+    (state) => state.currentArchitectures
+  );
+  const stage = useScreenStore((state) => state.stage);
 
   const currentArchitectureRef = useRef("");
 

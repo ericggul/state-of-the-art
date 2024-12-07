@@ -99,7 +99,7 @@ function useModelLogic() {
 }
 
 // Presentation Component
-function ModelPresentation({ group, nodes, materials, scaleArray }) {
+function ModelEl({ group, nodes, materials, scaleArray }) {
   return (
     <group
       ref={group}
@@ -149,7 +149,12 @@ function ModelPresentation({ group, nodes, materials, scaleArray }) {
 // Main Component
 export default function Model() {
   const modelLogic = useModelLogic();
-  return <ModelPresentation {...modelLogic} />;
+
+  return (
+    <>
+      <ModelEl {...modelLogic} />
+    </>
+  );
 }
 
 useGLTF.preload(PATH);

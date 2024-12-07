@@ -11,12 +11,13 @@ export default function Error({ error, reset }) {
     console.error("Error occurred:", error);
 
     // Attempt to reset first
-    reset();
+    // reset();
 
     // Force redirect to the current page after a short delay
     const timeout = setTimeout(() => {
-      // router.refresh();
-      // router.push(window.location.pathname);
+      // reset();
+      router.refresh();
+      router.push(window.location.pathname);
     }, 3000);
 
     return () => clearTimeout(timeout);
