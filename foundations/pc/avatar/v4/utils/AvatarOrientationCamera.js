@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useSocketScreenOrientation from "@/utils/socket/orientation/useSocketScreen";
+import useScreenStore from "@/components/screen/store";
 
 const LERPING_FACTOR = 0.02;
 const ZOOM_LERPING_FACTOR = 0.03;
@@ -14,6 +15,7 @@ const ZOOM_LIMITS = {
 
 export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const { camera } = useThree();
+  const targetMobileId = useScreenStore((state) => state.targetMobileId);
 
   const sensorDataRef = useRef({
     orientation: { alpha: 0, beta: 0, gamma: 0 },
@@ -28,6 +30,8 @@ export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const lastAccelRef = useRef(new THREE.Vector3());
 
   const handleNewMobileOrientation = (data) => {
+    if (data.mobileId != targetMobileId) return;
+
     sensorDataRef.current = data;
   };
 
