@@ -16,7 +16,7 @@ export default function EndingUI({ isVisible, isFadingOut }) {
         </S.Section>
 
         <S.Section>
-          <S.Institution>XD Lab (Experience Design Lab),</S.Institution>
+          <S.Institution>XD Lab (Experience Design Lab)</S.Institution>
           <S.InstitutionDepartment>
             Department of Industrial Design, KAIST
           </S.InstitutionDepartment>

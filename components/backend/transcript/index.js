@@ -25,7 +25,7 @@ function TranscriptComponent() {
         const timeStamp = new Date().toLocaleString();
 
         setDisplayMessage(
-          `[Device #${deviceIndex} | Timestamp ${timeStamp}] ${newMessage}`
+          `[Device #${deviceIndex} | ${timeStamp}] ${newMessage}`
         );
       } catch (error) {
         console.error("Error parsing conversation:", error);

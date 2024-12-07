@@ -5,13 +5,10 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import Model from "./3d/Model";
 import { Stage } from "./3d/Stage";
-import { useSceneControls } from "./controls/SceneControls";
 
 import Frame from "@/foundations/pc/frame/simple";
 
 export default function Wrapper() {
-  const modelControls = useSceneControls();
-
   return (
     <S.Container>
       <Suspense fallback={null}>
@@ -21,20 +18,9 @@ export default function Wrapper() {
         >
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
-
-          {/* <Environment preset="city" background={false} /> */}
           <Environment files={`/3d/environment/sky.hdr`} />
-
           <Stage />
-
-          <Model
-            position={modelControls.position}
-            scale={[
-              modelControls.scale,
-              modelControls.scale,
-              modelControls.scale,
-            ]}
-          />
+          <Model />
 
           <OrbitControls
             minPolarAngle={Math.PI / 4}

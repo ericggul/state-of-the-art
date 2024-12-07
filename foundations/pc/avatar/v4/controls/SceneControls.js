@@ -4,7 +4,7 @@ import { useControls } from "leva";
 export function useSceneControls() {
   const modelControls = useControls("Model Adjustment", {
     position: {
-      value: [0, -2, 0],
+      value: [0, -2.1, 0],
       step: 0.1,
       label: "Position [x,y,z]",
     },

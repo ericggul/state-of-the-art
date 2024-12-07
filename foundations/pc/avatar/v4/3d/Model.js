@@ -15,12 +15,16 @@ import useBlink from "../utils/useBlink";
 import useViseme from "../utils/useViseme";
 import { VISME_TO_MORPHTARGET_MAP } from "../utils/constant";
 
-export default function Model({
-  position = [0, 0, 0],
-  scale = [1, 1, 1],
-  rotation = [0, 0, 0],
-  ...props
-}) {
+const DEFAULT_MODEL_CONTROLS = {
+  position: [0, -2.1, 0],
+  scale: 2,
+};
+
+export default function Model({ controls = DEFAULT_MODEL_CONTROLS, ...props }) {
+  const position = controls?.position || DEFAULT_MODEL_CONTROLS.position;
+  const scale = controls?.scale || DEFAULT_MODEL_CONTROLS.scale;
+  const scaleArray = Array.isArray(scale) ? scale : [scale, scale, scale];
+
   const group = useRef();
   const { nodes, materials } = useGLTF(PATH);
   const { animations } = useGLTF(ANIMATIONS_URL);
@@ -93,8 +97,8 @@ export default function Model({
     <group
       ref={group}
       position={position}
-      scale={scale}
-      rotation={rotation}
+      scale={scaleArray}
+      rotation={[0, 0, 0]}
       {...props}
       dispose={null}
     >

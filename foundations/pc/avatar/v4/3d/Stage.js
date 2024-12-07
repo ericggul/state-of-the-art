@@ -1,14 +1,22 @@
 import * as THREE from "three";
 
-export function Stage({ controls }) {
-  console.log("Stage controls:", controls);
+const DEFAULT_FLOOR = {
+  floorColor: "#303030",
+  floorMetalness: 0.2,
+  floorRoughness: 0.8,
+  floorOpacity: 1,
+  floorReflectivity: 0.5,
+  floorClearcoat: 0.1,
+};
 
-  if (!controls) {
-    console.warn("No stage controls provided");
-    return null;
-  }
+const DEFAULT_PLATFORM = {
+  platformColor: "#1a1a1a",
+  platformMetalness: 0.5,
+  platformRoughness: 0.5,
+};
 
-  const { floor = {}, platform = {} } = controls;
+export function Stage({ controls = {} }) {
+  const { floor = DEFAULT_FLOOR, platform = DEFAULT_PLATFORM } = controls;
 
   return (
     <>
@@ -17,25 +25,25 @@ export function Stage({ controls }) {
         position={[0, -2.6, 0]}
         receiveShadow
       >
-        <planeGeometry args={[100, 100]} />
+        <planeGeometry args={[1000, 1000]} />
         <meshPhysicalMaterial
-          color={floor.floorColor || "#303030"}
-          metalness={floor.floorMetalness || 0.2}
-          roughness={floor.floorRoughness || 0.8}
-          opacity={floor.floorOpacity || 1}
+          color={floor.floorColor}
+          metalness={floor.floorMetalness}
+          roughness={floor.floorRoughness}
+          opacity={floor.floorOpacity}
           transparent
-          reflectivity={floor.floorReflectivity || 0.5}
-          clearcoat={floor.floorClearcoat || 0.1}
+          reflectivity={floor.floorReflectivity}
+          clearcoat={floor.floorClearcoat}
         />
       </mesh>
-      <mesh position={[0, -2.5, 0]} receiveShadow castShadow>
+      {/* <mesh position={[0, -2.5, 0]} receiveShadow castShadow>
         <cylinderGeometry args={[1.5, 1.5, 0.2, 32]} />
         <meshPhysicalMaterial
-          color={platform.platformColor || "#1a1a1a"}
-          metalness={platform.platformMetalness || 0.5}
-          roughness={platform.platformRoughness || 0.5}
+          color={platform.platformColor}
+          metalness={platform.platformMetalness}
+          roughness={platform.platformRoughness}
         />
-      </mesh>
+      </mesh> */}
     </>
   );
 }
