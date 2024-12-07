@@ -24,6 +24,12 @@ export default function socketSetup({ socket, io }) {
         status: "active",
       };
     }
+    if (!activeMobile.socketId) {
+      activeMobile.socketId = socket.id;
+    }
+    if (activeMobile.status === "inactive") {
+      activeMobile.status = "active";
+    }
 
     socket.join("mobile");
     socket.emit("mobile-init", { mobileId });
