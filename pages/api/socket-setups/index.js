@@ -105,10 +105,14 @@ export default function socketSetup({ socket, io }) {
     socket.to("screen").emit("new-controller-sessionId", data);
   });
   socket.on("controller-new-sessionId-decline", (data) => {
-    console.log(data, data.mobileId);
+    console.log(data, data.mobileId, "decline");
+    console.log("activeMobile", activeMobile);
+    console.log("new controller new sessino dcline event");
 
     if (data.decline) {
+      console.log("decline");
       if (activeMobile?.mobileId === data.mobileId) {
+        console.log("setting activeMobile to null", activeMobile, data);
         activeMobile = null;
       }
     }
