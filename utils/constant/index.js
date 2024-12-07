@@ -72,4 +72,4 @@ export const IDLE_TEXTS = [
 export const VERIFY_NAME_TIMEOUT = 3500;
 
 // export const SESSION_VALIDITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
-export const SESSION_VALIDITY_TIMEOUT = 4 * 60 * 1000; // 3 minutes in milliseconds
+export const SESSION_VALIDITY_TIMEOUT = 288 * 1000; // 3 minutes in milliseconds

@@ -4,11 +4,9 @@ import { SESSION_VALIDITY_TIMEOUT } from "@/utils/constant";
 export function checkSessionValidity(mobileSessionId) {
   try {
     const controllerSessionId = useScreenStore.getState().sessionId;
-    const currentTime = Date.now();
 
     console.log(controllerSessionId, "controllerSessionId");
     console.log(mobileSessionId, "mobileSessionId");
-    console.log(currentTime, "currentTime");
 
     // Check if sessionIds exist
     if (
@@ -31,23 +29,16 @@ export function checkSessionValidity(mobileSessionId) {
       return { isValid: false, error: "INVALID_FORMAT" };
     }
 
-    // Calculate time differences
-    const sidDifference = Math.abs(controllerSid - mobileSid);
-    const timeSinceSession = Math.abs(currentTime - mobileSid);
+    // Calculate time difference
+    const difference = Math.abs(controllerSid - mobileSid);
+    const isValid = difference < SESSION_VALIDITY_TIMEOUT;
 
-    // Session is valid if either condition is met
-    const isValid =
-      sidDifference < SESSION_VALIDITY_TIMEOUT ||
-      timeSinceSession < SESSION_VALIDITY_TIMEOUT;
-
-    console.log(sidDifference, "sidDifference");
-    console.log(timeSinceSession, "timeSinceSession");
+    console.log(difference, "difference");
     console.log(isValid, "isValid");
 
     return {
       isValid,
-      difference: sidDifference,
-      timeSinceSession,
+      difference,
       error: null,
     };
   } catch (error) {

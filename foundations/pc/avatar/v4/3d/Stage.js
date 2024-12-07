@@ -1,6 +1,8 @@
 import * as THREE from "three";
+import { useFrame } from "@react-three/fiber";
 import useScreenStore from "@/components/screen/store";
 import useDebounce from "@/utils/hooks/useDebounce";
+import { useRef } from "react";
 
 const DEFAULT_FLOOR = {
   floorColor: "#303030",
@@ -25,9 +27,22 @@ export function Stage({ controls = {} }) {
   const targetHue = currentArchitectures?.[0]?.hue ?? 230;
   const debouncedHue = useDebounce(targetHue, 100);
 
-  // Convert HSL to hex color
-  const floorColor = new THREE.Color();
-  floorColor.setHSL(debouncedHue / 360, 0.5, 0.1); // Increased lightness from 0.0 to 0.15
+  // Create refs for current hue and material
+  const currentHueRef = useRef(debouncedHue);
+  const materialRef = useRef();
+
+  // Smooth interpolation in animation frame
+  useFrame(() => {
+    if (!materialRef.current) return;
+
+    // Smoothly interpolate current hue towards target hue
+    currentHueRef.current += (debouncedHue - currentHueRef.current) * 0.05;
+
+    // Update material color
+    const color = new THREE.Color();
+    color.setHSL(currentHueRef.current / 360, 0.5, 0.1);
+    materialRef.current.color = color;
+  });
 
   return (
     <>
@@ -38,7 +53,7 @@ export function Stage({ controls = {} }) {
       >
         <planeGeometry args={[1000, 1000]} />
         <meshPhysicalMaterial
-          color={floorColor}
+          ref={materialRef}
           metalness={floor.floorMetalness}
           roughness={floor.floorRoughness}
           opacity={floor.floorOpacity}
