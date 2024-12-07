@@ -105,6 +105,14 @@ export default function socketSetup({ socket, io }) {
     socket.to("screen").emit("new-controller-sessionId", data);
   });
   socket.on("controller-new-sessionId-decline", (data) => {
+    console.log(data, data.mobileId);
+
+    if (data.decline) {
+      if (activeMobile?.mobileId === data.mobileId) {
+        activeMobile = null;
+      }
+    }
+
     socket.to("mobile").emit("new-controller-sessionId-decline", data);
     socket.to("screen").emit("new-controller-sessionId-decline", data);
   });
