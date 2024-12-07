@@ -22,8 +22,7 @@ import useBlink from "../utils/useBlink";
 import useViseme from "../utils/useViseme";
 import { VISME_TO_MORPHTARGET_MAP } from "../utils/constant";
 
-// Logic Hook
-function useModelLogic() {
+export default function Model() {
   const group = useRef();
   const { nodes, materials } = useGLTF(PATH);
   const { animations } = useGLTF(ANIMATIONS_URL);
@@ -90,16 +89,6 @@ function useModelLogic() {
     });
   });
 
-  return {
-    group,
-    nodes,
-    materials,
-    scaleArray,
-  };
-}
-
-// Presentation Component
-function ModelPresentation({ group, nodes, materials, scaleArray }) {
   return (
     <group
       ref={group}
@@ -144,12 +133,6 @@ function ModelPresentation({ group, nodes, materials, scaleArray }) {
       </group>
     </group>
   );
-}
-
-// Main Component
-export default function Model() {
-  const modelLogic = useModelLogic();
-  return <ModelPresentation {...modelLogic} />;
 }
 
 useGLTF.preload(PATH);

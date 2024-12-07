@@ -23,7 +23,6 @@ export function AvatarOrientationCamera({ cameraDistance = 3 }) {
   const quaternionRef = useRef(new THREE.Quaternion());
   const targetPositionRef = useRef(new THREE.Vector3());
   const currentDistanceRef = useRef(cameraDistance);
-  const targetDistanceRef = useRef(cameraDistance);
   const zoomFactorRef = useRef(1);
   const internalZoomRef = useRef(1);
   const lastAccelRef = useRef(new THREE.Vector3());
