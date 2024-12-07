@@ -118,7 +118,8 @@ export default function socketSetup({ socket, io }) {
         origin: "socket_disconnect",
       });
 
-      activeMobile = null;
+      activeMobile.socketId = null;
+      activeMobile.status = "inactive";
     }
   });
 }
