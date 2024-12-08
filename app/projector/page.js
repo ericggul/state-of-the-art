@@ -104,7 +104,7 @@ function ScreenContent({ test }) {
       )}
       {isTransition && <Transition />}
       {stage === "Backend" && <Backend socket={socket} />}
-      {isEnding && <Ending />}
+      {isEnding && <Ending socket={socket} />}
     </Suspense>
   );
 }

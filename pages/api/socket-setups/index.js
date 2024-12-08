@@ -145,4 +145,27 @@ export default function socketSetup({ socket, io }) {
       activeMobile.status = "inactive";
     }
   });
+
+  // Add this new socket handler
+  socket.on("controller-force-reset-active-mobile", () => {
+    console.log("🔄 Force resetting active mobile");
+    if (activeMobile) {
+      // Notify screens about mobile disconnection before resetting
+      io.to("screen").emit("new-mobile-visibility-change", {
+        mobileId: activeMobile.mobileId,
+        isVisible: false,
+        origin: "force_reset",
+      });
+
+      // Reset the active mobile
+      activeMobile = null;
+    }
+  });
+
+  socket.on("screen-force-reset-active-mobile", () => {
+    console.log("🔄 Force resetting active mobile");
+    if (activeMobile) {
+      activeMobile = null;
+    }
+  });
 }

@@ -68,6 +68,12 @@ export default function Controller({ socket }) {
       type: "reset",
       force: true,
     });
+    try {
+      socket.current?.emit("controller-force-reset-active-mobile");
+    } catch (e) {
+      console.log(e);
+    }
+
     setTimeout(() => window.location.reload(), 2000);
   };
 
