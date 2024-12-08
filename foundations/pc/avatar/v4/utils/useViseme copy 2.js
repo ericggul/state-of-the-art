@@ -10,6 +10,7 @@ export default function useViseme() {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
+
   const stage = useScreenStore((state) => state.stage);
 
   const currentArchitectureRef = useRef("");
@@ -167,8 +168,8 @@ export default function useViseme() {
       }
       setNextSpeech(null);
 
-      // Start fresh with the new topic
-      setConversationHistory([{ content: debouncedSpeech }]);
+      // Append to conversation history instead of resetting
+      setConversationHistory((prev) => [...prev, { content: debouncedSpeech }]);
       getViseme({ text: debouncedSpeech });
     }
   }, [debouncedSpeech]);
@@ -271,6 +272,40 @@ export default function useViseme() {
       cleanupAudio();
     };
   }, []);
+
+  //////INTRO LOGIC//////
+  // Add effect for welcome message
+
+  const introState = useScreenStore((state) => state.introState);
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
+  const iteration = useScreenStore((state) => state.iteration);
+  const userName = useScreenStore((state) => state.userName);
+
+  useEffect(() => {
+    if (introState === 0 && stage === "Frontend" && !isPlayingRef.current) {
+      const welcomeMessage = `Welcome to the State of the Art neural network gallery. Please enter your name, dear ambitious explorer.`;
+      setConversationHistory((prev) => [...prev, { content: welcomeMessage }]);
+      getViseme({ text: welcomeMessage });
+    }
+    if (introState === 1 && stage === "Frontend" && !isPlayingRef.current) {
+      const accelerometerMessage = `Hi ${userName}, please activate the motion sensor.`;
+      setConversationHistory((prev) => [
+        ...prev,
+        { content: accelerometerMessage },
+      ]);
+      getViseme({ text: accelerometerMessage });
+    }
+    if (introState === 2 && stage === "Frontend" && !isPlayingRef.current) {
+      const mobileMessage = `Please scroll down to explore state of the art, ${userName}`;
+      setConversationHistory((prev) => [...prev, { content: mobileMessage }]);
+      getViseme({ text: mobileMessage });
+    }
+    if (introState >= 2 && mobileVisibility && iteration >= 2) {
+      const welcomeMessage = `Welcome back, ${userName}, are you ready to explore the rest of the state of the art?`;
+      setConversationHistory((prev) => [...prev, { content: welcomeMessage }]);
+      getViseme({ text: welcomeMessage });
+    }
+  }, [introState, stage, mobileVisibility]);
 
   return { visemeMessage, conversationHistory };
 }

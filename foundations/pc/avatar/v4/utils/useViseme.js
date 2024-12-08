@@ -10,6 +10,12 @@ export default function useViseme() {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
+
+  const introState = useScreenStore((state) => state.introState);
+  const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
+  const iteration = useScreenStore((state) => state.iteration);
+  const userName = useScreenStore((state) => state.userName);
+
   const stage = useScreenStore((state) => state.stage);
 
   const currentArchitectureRef = useRef("");
@@ -104,6 +110,7 @@ export default function useViseme() {
       const response = await axios.post("/api/langchain/avatar-v1", {
         messages: [{ role: "user", content: lastSpeech }],
         currentArchitecture: currentArchitectureRef.current || targetModel,
+        userName: userName,
       });
 
       if (!response.data?.content) {
@@ -167,8 +174,8 @@ export default function useViseme() {
       }
       setNextSpeech(null);
 
-      // Start fresh with the new topic
-      setConversationHistory([{ content: debouncedSpeech }]);
+      // Append to conversation history instead of resetting
+      setConversationHistory((prev) => [...prev, { content: debouncedSpeech }]);
       getViseme({ text: debouncedSpeech });
     }
   }, [debouncedSpeech]);
@@ -271,6 +278,50 @@ export default function useViseme() {
       cleanupAudio();
     };
   }, []);
+
+  //////INTRO LOGIC//////
+  // Add effect for welcome message
+
+  // Add effect for intro state messages
+  useEffect(() => {
+    const handleIntroSpeech = async (message) => {
+      // Always stop current speech with fade out, regardless of playing state
+      if (previousAudioRef.current) {
+        fadeOutAudio(previousAudioRef.current);
+      }
+      if (pendingTTSRef.current?.audioPlayer) {
+        fadeOutAudio(pendingTTSRef.current.audioPlayer);
+      }
+
+      // Reset pending states
+      pendingTTSRef.current = null;
+      nextSpeechGenerationRef.current = false;
+      setNextSpeech(null);
+
+      // Force isPlayingRef to false to allow new speech
+      isPlayingRef.current = false;
+
+      // Add to conversation history and speak
+      setConversationHistory((prev) => [...prev, { content: message }]);
+      await getViseme({ text: message });
+    };
+
+    if (stage === "Frontend") {
+      if (introState === 0) {
+        const welcomeMessage = `Welcome to the state of the art neural network gallery. Might I have your name, esteemed visitor?`;
+        handleIntroSpeech(welcomeMessage);
+      } else if (introState === 1) {
+        const accelerometerMessage = `Hi ${userName}, please activate the motion sensor for more immersive experience.`;
+        handleIntroSpeech(accelerometerMessage);
+      } else if (introState === 2) {
+        const mobileMessage = `${userName}, Please scroll down to explore state of the art neural network architectures.`;
+        handleIntroSpeech(mobileMessage);
+      } else if (introState >= 2 && mobileVisibility && iteration >= 2) {
+        const welcomeMessage = `Welcome back, ${userName}. Shall we continue our exploration?`;
+        handleIntroSpeech(welcomeMessage);
+      }
+    }
+  }, [introState, stage, mobileVisibility, iteration]);
 
   return { visemeMessage, conversationHistory };
 }

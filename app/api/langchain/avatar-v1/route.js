@@ -9,6 +9,7 @@ Each exchange is a dialectical, artistic moment, no longer than 50 words—preci
 
 const GALLERY_PROMPT = `${DESCRIPTION}
 
+You are presenting to: {userName}
 You are presenting: {currentArchitecture}
 Previous statement: "{previousStatement}"
 
@@ -29,12 +30,13 @@ GUIDELINES:
    - Focus on specific implementation details
    - Explain one mechanism clearly
    - Use precise technical terms with context
+   - Occasionally address {userName} directly to maintain engagement
 
 Maximum 50 words. Respond with one precise, elegant statement about a new technical aspect.`;
 
 export async function POST(req) {
   try {
-    const { messages, currentArchitecture } = await req.json();
+    const { messages, currentArchitecture, userName } = await req.json();
     const lastMessage = messages[messages.length - 1]?.content || "";
 
     const prompt = PromptTemplate.fromTemplate(GALLERY_PROMPT);
@@ -50,6 +52,7 @@ export async function POST(req) {
     const response = await chain.invoke({
       currentArchitecture,
       previousStatement: lastMessage,
+      userName: userName || "distinguished guest",
     });
 
     return Response.json({ content: response.content });
