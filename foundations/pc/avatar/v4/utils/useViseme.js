@@ -65,8 +65,49 @@ export default function useViseme() {
   }, [currentArchitectures]);
   const debouncedSpeech = useDebounce(latestSpeech, 1000);
 
+  const isActiveStageRef = useRef(stage === "Frontend");
+
+  // Combine all cleanup logic into one function
+  const cleanupAudio = () => {
+    if (previousAudioRef.current) {
+      previousAudioRef.current.pause();
+      previousAudioRef.current.currentTime = 0;
+      previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
+      if (previousAudioRef.current.src) {
+        URL.revokeObjectURL(previousAudioRef.current.src);
+      }
+    }
+
+    if (pendingTTSRef.current?.audioPlayer) {
+      pendingTTSRef.current.audioPlayer.pause();
+      pendingTTSRef.current.audioPlayer.currentTime = 0;
+      pendingTTSRef.current.audioPlayer.removeEventListener(
+        "ended",
+        handleAudioEnd
+      );
+      if (pendingTTSRef.current.audioPlayer.src) {
+        URL.revokeObjectURL(pendingTTSRef.current.audioPlayer.src);
+      }
+    }
+
+    // Reset all state
+    pendingTTSRef.current = null;
+    nextSpeechGenerationRef.current = false;
+    isPlayingRef.current = false;
+    setVisemeMessage({});
+    setConversationHistory([]);
+    audioProcessorRef.current?.cleanup();
+  };
+
+  // Replace immediateStopAudio with cleanupAudio
+  const immediateStopAudio = cleanupAudio;
+
   // Handle audio end and trigger next speech
   const handleAudioEnd = async () => {
+    if (!isActiveStageRef.current) {
+      immediateStopAudio();
+      return;
+    }
     isPlayingRef.current = false;
 
     // Add random delay between 2-3 seconds
@@ -97,7 +138,7 @@ export default function useViseme() {
 
   // Generate next speech using Langchain Avatar
   const generateNextSpeech = async () => {
-    if (nextSpeechGenerationRef.current || !isActiveStageRef.current) {
+    if (!isActiveStageRef.current || nextSpeechGenerationRef.current) {
       return;
     }
     nextSpeechGenerationRef.current = true;
@@ -180,10 +221,20 @@ export default function useViseme() {
     }
   }, [debouncedSpeech]);
 
-  // Modified getViseme to start next generation earlier
+  // Add stage check before starting any new audio
   async function getViseme({ text, preGeneratedTTS = null }) {
-    if (!isActiveStageRef.current) return;
+    if (!isActiveStageRef.current) {
+      immediateStopAudio();
+      return;
+    }
+
     try {
+      // Double check stage before proceeding with audio generation
+      if (!isActiveStageRef.current) {
+        immediateStopAudio();
+        return;
+      }
+
       let message;
       if (preGeneratedTTS) {
         message = preGeneratedTTS;
@@ -194,14 +245,24 @@ export default function useViseme() {
           { responseType: "blob" }
         );
 
-        console.log("🚀 ~ getViseme ~ audioRes:", audioRes);
+        // Check stage again after API call
+        if (!isActiveStageRef.current) {
+          immediateStopAudio();
+          return;
+        }
+
         const audio = audioRes.data;
         const visemes = JSON.parse(audioRes.headers.visemes);
         const audioUrl = URL.createObjectURL(audio);
         const audioPlayer = new Audio(audioUrl);
         audioPlayer.addEventListener("ended", handleAudioEnd);
-
         message = { visemes, audioPlayer };
+      }
+
+      // Final stage check before playing
+      if (!isActiveStageRef.current) {
+        immediateStopAudio();
+        return;
       }
 
       if (previousAudioRef.current) {
@@ -227,52 +288,17 @@ export default function useViseme() {
     }
   }
 
-  // Add cleanup function
-  const cleanupAudio = () => {
-    if (previousAudioRef.current) {
-      fadeOutAudio(previousAudioRef.current);
-      previousAudioRef.current.removeEventListener("ended", handleAudioEnd);
-      if (previousAudioRef.current.src) {
-        URL.revokeObjectURL(previousAudioRef.current.src);
-      }
-    }
-
-    if (pendingTTSRef.current?.audioPlayer) {
-      fadeOutAudio(pendingTTSRef.current.audioPlayer);
-      pendingTTSRef.current.audioPlayer.removeEventListener(
-        "ended",
-        handleAudioEnd
-      );
-      if (pendingTTSRef.current.audioPlayer.src) {
-        URL.revokeObjectURL(pendingTTSRef.current.audioPlayer.src);
-      }
-    }
-
-    // Reset all refs and state
-    pendingTTSRef.current = null;
-    nextSpeechGenerationRef.current = false;
-    isPlayingRef.current = false;
-    setVisemeMessage({});
-    setConversationHistory([]);
-
-    audioProcessorRef.current?.cleanup();
-  };
-
-  // Add isActiveStageRef to track Frontend stage
-  const isActiveStageRef = useRef(stage === "Frontend");
-
-  // Update stage ref and cleanup when needed
+  // Stage effect
   useEffect(() => {
     const wasActive = isActiveStageRef.current;
     isActiveStageRef.current = stage === "Frontend";
 
-    // Only cleanup if we're transitioning away from Frontend
-    if (wasActive && !isActiveStageRef.current) {
+    if (!isActiveStageRef.current) {
       cleanupAudio();
     }
   }, [stage]);
 
-  // Update cleanup in the unmount effect
+  // Unmount effect
   useEffect(() => {
     return () => {
       cleanupAudio();
