@@ -4,7 +4,7 @@ export const IS_DEPLOYMENT =
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
 
-export const CONTROLLER_AUTO_RESET_INTERVAL = 288 * 1000; // 10 minutes in milliseconds
+export const CONTROLLER_AUTO_RESET_INTERVAL = 192 * 1000; // 10 minutes in milliseconds
 
 export function iterationSpeedMultiplier(iteration) {
   return 1 / iteration;
@@ -72,4 +72,4 @@ export const IDLE_TEXTS = [
 export const VERIFY_NAME_TIMEOUT = 3500;
 
 // export const SESSION_VALIDITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
-export const SESSION_VALIDITY_TIMEOUT = 288 * 1000; // 3 minutes in milliseconds
+export const SESSION_VALIDITY_TIMEOUT = 192 * 1000; // 3 minutes in milliseconds

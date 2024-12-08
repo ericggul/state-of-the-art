@@ -4,7 +4,7 @@ import { PositionalAudio as DreiPositionalAudio } from "@react-three/drei";
 import useScreenStore from "@/components/screen/store";
 import * as THREE from "three";
 
-const AUDIO_FILE = "/audio/Nutcracker.mp3";
+const AUDIO_FILE = "/audio/idle/idle1126.wav";
 
 export default function PositionalAudio({
   url = AUDIO_FILE,
