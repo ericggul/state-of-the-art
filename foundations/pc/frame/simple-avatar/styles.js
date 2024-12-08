@@ -11,11 +11,11 @@ const commonPositionStyles = css`
 `;
 
 const commonColorStyles = css`
-  background: hsla(${(props) => props.$hue}, 100%, 95%, 0.35);
+  background: hsla(${(props) => props.$hue}, 100%, 75%, 0.35);
 `;
 
 const commonGlowStyles = css`
-  box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 95%, 0.4),
+  box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
     0 0 3vw hsla(${(props) => props.$hue}, 100%, 50%, 0.2);
 `;
 

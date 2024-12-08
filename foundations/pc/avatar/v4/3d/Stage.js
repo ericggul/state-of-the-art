@@ -48,7 +48,7 @@ export function Stage({ controls = {} }) {
     <>
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -2.0, 0]}
+        position={[0, -2.1, 0]}
         receiveShadow
       >
         <planeGeometry args={[1000, 1000]} />
@@ -60,6 +60,7 @@ export function Stage({ controls = {} }) {
           transparent
           reflectivity={floor.floorReflectivity}
           clearcoat={floor.floorClearcoat}
+          side={THREE.DoubleSide}
         />
       </mesh>
     </>

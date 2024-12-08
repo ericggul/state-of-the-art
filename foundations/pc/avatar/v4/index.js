@@ -17,9 +17,20 @@ export default function Wrapper() {
         <Canvas
           camera={{ position: [0, 0, 3], fov: 80 }}
           gl={{ alpha: true, antialias: true }}
+          shadows
         >
           <ambientLight intensity={0.5} />
-          <directionalLight position={[5, 5, 5]} intensity={0.8} castShadow />
+          <directionalLight
+            position={[5, 5, 5]}
+            intensity={0.8}
+            castShadow
+            shadow-mapSize={[1024, 1024]}
+            shadow-camera-far={20}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
+          />
 
           {/* Set background color */}
           <Environment files={`/3d/environment/sky.hdr`} />

@@ -113,11 +113,13 @@ function ModelEl({ group, nodes, materials, scaleArray }) {
           geometry={nodes.Alpha_Joints.geometry}
           material={materials.Alpha_Joints_MAT}
           skeleton={nodes.Alpha_Joints.skeleton}
+          castShadow
         />
         <skinnedMesh
           geometry={nodes.Alpha_Surface.geometry}
           material={materials.Alpha_Body_MAT}
           skeleton={nodes.Alpha_Surface.skeleton}
+          castShadow
         />
         {["EyeLeft001", "EyeRight001", "Wolf3D_Head001", "Wolf3D_Teeth001"].map(
           (name) => (
@@ -137,6 +139,7 @@ function ModelEl({ group, nodes, materials, scaleArray }) {
               skeleton={nodes[name].skeleton}
               morphTargetDictionary={nodes[name].morphTargetDictionary}
               morphTargetInfluences={nodes[name].morphTargetInfluences}
+              castShadow
             />
           )
         )}
