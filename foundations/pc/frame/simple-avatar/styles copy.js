@@ -31,7 +31,7 @@ const lineAppear = keyframes`
 
 export const VerticalLine = styled.div`
   ${commonPositionStyles}
-  width: 0.03vw;
+  width: ${LINEWIDTH}vw;
   top: ${(props) => props.$top}vh;
   left: ${(props) => props.$left}vw;
   height: ${(props) => props.$height || 100}vh;
@@ -68,6 +68,22 @@ export const VerticalName = styled.div`
   display: flex;
   justify-content: center;
   text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
+`;
+
+export const GeneralHorizontalLine = styled.div`
+  ${commonPositionStyles}
+  height: ${LINEWIDTH}vw;
+  width: ${(props) => props.$width}vw;
+  bottom: ${(props) => props.$bottom}vw;
+  right: ${(props) => props.$right}vw;
+  background: linear-gradient(
+    90deg,
+    hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
+    hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
+    hsla(${(props) => props.$hue}, 100%, 75%, 0.2)
+  );
+  box-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 100%, 75%, 0.4),
+    0 0 3vw hsla(${(props) => props.$hue}, 100%, 50%, 0.2);
 `;
 
 export const HorizontalLine = styled.div`

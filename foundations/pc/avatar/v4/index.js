@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { Stage } from "./3d/Stage";
 
-import Frame from "@/foundations/pc/frame/simple";
+import Frame from "@/foundations/pc/frame/simple-avatar";
 import { AvatarOrientationCamera } from "./utils/AvatarOrientationCamera";
 
 import Model from "./3d/Model";

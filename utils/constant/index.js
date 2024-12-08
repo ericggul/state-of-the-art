@@ -37,8 +37,8 @@ export const DEVICE_DELAY_MULTIPLIER = 430;
 
 //conversation: black and white time
 //backend > useConversation
-export const EXTRA_BLACK_TIME = [2500, 5000, 3000, 4000, 1000, 0, 0];
-export const WHITE_TIME = [4000, 4000, 4000, 3000, 3000, 1500, 1500];
+export const EXTRA_BLACK_TIME = [0, 5000, 3000, 4000, 1000, 0, 0];
+export const WHITE_TIME = [6000, 4000, 4000, 3000, 3000, 1500, 1500];
 
 export const API_TIMEOUT = 15 * 1000;
 
@@ -50,7 +50,7 @@ export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
 export const FRONTEND_INACTIVITY_TIMEOUT = (IS_DEPLOYMENT ? 3 : 8) * 60 * 1000; // 3 minutes
-export const INTRO_INACTIVITY_TIMEOUT = 30 * 1000; // 30 seconds
+export const INTRO_INACTIVITY_TIMEOUT = 45 * 1000; // 45 seconds
 
 //IDLE
 export const IDLE_QR_LINK = IS_DEPLOYMENT
