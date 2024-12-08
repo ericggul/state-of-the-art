@@ -3,7 +3,7 @@ import { memo } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useAudio } from "@/utils/hooks/audio/useAudio";
 
-const SOUND_URL = "/audio/intro/intro1126.wav";
+const SOUND_URL = "/audio/intro/intro1208.wav";
 
 const Intro0 = memo(function Intro0() {
   const userName = useScreenStore((state) => state.userName);
