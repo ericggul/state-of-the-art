@@ -1,34 +1,19 @@
 import useScreenStore from "@/components/screen/store";
 import { useAudio } from "@/utils/hooks/audio/useAudio";
-import { useRef, useEffect, useState } from "react";
-
+import { useRef, useEffect } from "react";
 const SOUND_URL = "/audio/main/main1208.wav";
 const INTRO_SOUND_URL = "/audio/main/maininit1208.wav";
-const DELAY_MS = 2500;
+
 const THRESHOLD_STATE = 3;
 
 export default function Audio() {
   const introState = useScreenStore((state) => state.introState);
   const isProjector = useScreenStore((state) => state.isProjector);
-  const [delayedPlaying, setDelayedPlaying] = useState(false);
+  const isPlaying = introState >= THRESHOLD_STATE;
 
-  // Handle the 2s delay for main audio
-  useEffect(() => {
-    const shouldPlay = introState >= THRESHOLD_STATE;
-    if (shouldPlay) {
-      const timer = setTimeout(() => {
-        setDelayedPlaying(true);
-      }, DELAY_MS);
-      return () => clearTimeout(timer);
-    } else {
-      setDelayedPlaying(false);
-    }
-  }, [introState]);
-
-  const { audioRef } = useAudio({ isPlaying: delayedPlaying, isProjector });
+  const { audioRef } = useAudio({ isPlaying, isProjector });
   const audioRefIntro = useRef(null);
 
-  // Play intro sound immediately when threshold is reached
   useEffect(() => {
     if (introState >= THRESHOLD_STATE) {
       audioRefIntro.current.play();
