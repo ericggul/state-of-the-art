@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
+  cursor: none;
 
   canvas {
     width: 100%;

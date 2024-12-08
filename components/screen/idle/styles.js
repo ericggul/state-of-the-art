@@ -13,6 +13,7 @@ const fadeOut = keyframes`
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
+  cursor: none;
   z-index: 100;
   ${(props) =>
     props.$isFrontend &&

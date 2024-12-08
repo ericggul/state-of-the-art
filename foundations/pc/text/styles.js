@@ -16,6 +16,7 @@ export const Container = styled.div`
   background-color: #000000;
   padding: 2.133vw;
   transform: translateZ(0);
+  cursor: none;
 `;
 
 export const Canvas = styled(animated.div)`

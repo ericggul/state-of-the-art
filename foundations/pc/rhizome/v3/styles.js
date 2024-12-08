@@ -7,6 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   background: #000;
   transition: all 0.5s;
+  cursor: none;
 
   img {
     width: 100%;

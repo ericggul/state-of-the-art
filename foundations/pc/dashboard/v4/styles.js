@@ -19,6 +19,7 @@ export const Container = styled.div`
     hsl(${(props) => props.$hue}, 12%, 2%) 100%
   );
   padding: 4vw;
+  cursor: none;
   padding-top: 6vw;
 `;
 

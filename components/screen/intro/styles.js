@@ -8,6 +8,7 @@ export const Wrapper = styled.div`
   background: black;
   pointer-events: none !important;
   transition: background 2s ease-in-out;
+  cursor: none;
 `;
 
 export const Container = styled.div`

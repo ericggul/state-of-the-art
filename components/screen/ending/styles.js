@@ -17,6 +17,7 @@ export const Container = styled.div`
   ${FlexCenterStyle}
   flex-direction: column;
   z-index: 1;
+  cursor: none;
 
   &::before {
     content: "";
