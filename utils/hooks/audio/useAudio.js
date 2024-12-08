@@ -52,6 +52,7 @@ export const useAudio = ({ isPlaying, isProjector }) => {
 
   useEffect(() => {
     if (audioRef.current && !isInitializedRef.current) {
+      audioRef.current.loop = true;
       if (!isPlaying) {
         audioRef.current.volume = 0;
         audioRef.current.pause();
@@ -80,6 +81,5 @@ export const useAudio = ({ isPlaying, isProjector }) => {
 
   return {
     audioRef,
-    SOUND_URL: "/audio/intro/intro1126.wav",
   };
 };

@@ -7,7 +7,7 @@ import { useVideoFade } from "../utils/useVideoFade";
 import { useAudioFade } from "../utils/useAudioFade";
 import { VIDEOS } from "../utils/constants";
 
-const AUDIO_URL = "/audio/idle/idle1126.wav";
+const AUDIO_URL = "/audio/idle/idle1208.wav";
 const FADE_OUT_THRESHOLD = 3;
 const FADE_OUT_DURATION = 2500;
 

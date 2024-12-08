@@ -192,7 +192,7 @@ export const OrientationCamera = memo(
             ZOOM_LIMITS.MIN,
             ZOOM_LIMITS.MAX
           );
-          playShakeSound(accelMagnitude);
+          // playShakeSound(accelMagnitude);
         }
       }
 

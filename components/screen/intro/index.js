@@ -3,6 +3,8 @@ import { memo } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useAudio } from "@/utils/hooks/audio/useAudio";
 
+const SOUND_URL = "/audio/intro/intro1126.wav";
+
 const Intro0 = memo(function Intro0() {
   const userName = useScreenStore((state) => state.userName);
   return <S.Container>Welcome {userName}</S.Container>;
@@ -26,7 +28,7 @@ function Intro() {
   const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
 
   const isPlaying = introState < 2;
-  const { audioRef, SOUND_URL } = useAudio({ isPlaying, isProjector });
+  const { audioRef } = useAudio({ isPlaying, isProjector });
 
   return (
     <S.Wrapper
