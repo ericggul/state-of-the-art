@@ -59,15 +59,28 @@ export default function ControllerWrapper() {
   useScreenVisibility();
   useInactivityCheck();
 
+  const validityChecked = useRef(false);
+
   function handleNewMobileSessionIdCheck(data) {
     try {
       console.log("58", data);
       // if (!IS_DEPLOYMENT) return;
       console.log("Checking mobile session ID:", data);
+      console.log(targetMobileIdRef.current, "targetMobileIdRef.current");
+      console.log(validityChecked.current, "validityChecked.current");
+
+      if (
+        data.mobileId == targetMobileIdRef.current &&
+        validityChecked.current
+      ) {
+        console.log("already checked");
+        return;
+      }
 
       const result = checkSessionValidity(data.sessionId);
       console.log("session validity", result);
 
+      validityChecked.current = true;
       socket.current?.emit("controller-new-sessionId-decline", {
         decline: !result.isValid,
         mobileId: data.mobileId,
