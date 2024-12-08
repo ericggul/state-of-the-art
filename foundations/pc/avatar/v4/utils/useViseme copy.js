@@ -64,7 +64,7 @@ export default function useViseme() {
     isPlayingRef.current = false;
 
     // Add random delay between 2-3 seconds
-    const delay = Math.random() * 2000 + 1500;
+    const delay = Math.random() * 2000 + 2000;
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -91,7 +91,7 @@ export default function useViseme() {
 
   // Generate next speech using Langchain Avatar
   const generateNextSpeech = async () => {
-    if (nextSpeechGenerationRef.current || !isActiveStageRef.current) {
+    if (nextSpeechGenerationRef.current) {
       return;
     }
     nextSpeechGenerationRef.current = true;
@@ -175,7 +175,6 @@ export default function useViseme() {
 
   // Modified getViseme to start next generation earlier
   async function getViseme({ text, preGeneratedTTS = null }) {
-    if (!isActiveStageRef.current) return;
     try {
       let message;
       if (preGeneratedTTS) {
@@ -251,16 +250,9 @@ export default function useViseme() {
     audioProcessorRef.current?.cleanup();
   };
 
-  // Add isActiveStageRef to track Frontend stage
-  const isActiveStageRef = useRef(stage === "Frontend");
-
-  // Update stage ref and cleanup when needed
+  // Watch for stage changes
   useEffect(() => {
-    const wasActive = isActiveStageRef.current;
-    isActiveStageRef.current = stage === "Frontend";
-
-    // Only cleanup if we're transitioning away from Frontend
-    if (wasActive && !isActiveStageRef.current) {
+    if (stage !== "Frontend") {
       cleanupAudio();
     }
   }, [stage]);
