@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { WholeContainer } from "@/styles";
 
 export const LINEWIDTH = 0.15;
@@ -6,12 +6,17 @@ export const LEFT = 3;
 export const TOP = 4;
 export const HEIGHT = 92;
 
+const lineFloat = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-0.5vw); }
+  100% { transform: translateY(0); }
+`;
+
 export const Container = styled.div`
   ${WholeContainer}
   position: fixed;
   background: transparent;
   pointer-events: none;
-  // z-index: 1;
 `;
 
 const commonLineStyles = css`
@@ -38,7 +43,20 @@ export const DiagonalLine = styled.div`
   width: 10vw;
   top: 60vh;
   left: 23vw;
-  transform: translate(-50%, -50%) rotate(-50deg);
+`;
+
+export const DiagonalLine2 = styled.div`
+  ${commonLineStyles}
+  width: 15vw;
+  top: 60vh;
+  left: 50vw;
+`;
+
+export const DiagonalLine3 = styled.div`
+  ${commonLineStyles}
+  width: 12vw;
+  top: 60vh;
+  right: 25vw;
 `;
 
 export const HorizontalLine = styled.div`

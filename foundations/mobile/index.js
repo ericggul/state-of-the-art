@@ -1,16 +1,22 @@
 import React, { useMemo, memo } from "react";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
-import useFeedback from "./utils/useFeedback";
 import { useModelListLogic } from "./utils/modelListLogic/useLogic";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
 import { generateInitialModelArray } from "./utils/initialModelGeneration";
+import useScreenStore from "@/components/screen/store";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 const Mobile = memo(function Mobile({ socket, mobileId }) {
+  const currentArchitectures = useScreenStore(
+    (state) => state.currentArchitectures
+  );
+  const targetHue = currentArchitectures?.[0]?.hue ?? 230;
+  const debouncedHue = useDebounce(targetHue, 100);
   const modelsArray = useMemo(() => generateInitialModelArray(MODELS), []);
 
   return (
-    <S.Container>
+    <S.Container $hue={debouncedHue}>
       <ModelList
         initialModels={modelsArray}
         socket={socket}

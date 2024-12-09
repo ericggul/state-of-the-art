@@ -9,7 +9,23 @@ export default function Lines() {
 
   return (
     <S.Container>
-      <S.DiagonalLine $hue={debouncedHue} />
+      <S.DiagonalLine
+        $hue={debouncedHue}
+        style={{
+          transform: `translate(-50%, -50%) rotate(${
+            -50 - debouncedHue / 6
+          }deg)`,
+        }}
+      />
+      <S.DiagonalLine2
+        $hue={debouncedHue}
+        style={{
+          transform: `translate(-50%, -50%) rotate(${
+            -110 + debouncedHue / 5
+          }deg)`,
+        }}
+      />
+
       <S.HorizontalLine $hue={debouncedHue} />
       <S.HorizontalLine2 $hue={debouncedHue} />
     </S.Container>

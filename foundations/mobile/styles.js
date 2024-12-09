@@ -15,28 +15,25 @@ const fadeInOut = keyframes`
   100% { opacity: 0; }
 `;
 
+const scanline = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+`;
+
 export const Container = styled.div`
   ${WholeContainer}
-  background-color: #000;
+  background: linear-gradient(
+    135deg,
+    hsl(${(props) => props.$hue || 230}, 8%, 4%) 0%,
+    hsl(${(props) => props.$hue || 230}, 12%, 2%) 100%
+  );
   color: #fff;
   position: relative;
   overflow-x: hidden;
   padding-left: 48px;
   touch-action: pan-y pinch-zoom;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-
-  /* Prevent iOS Safari zoom */
-  touch-action: manipulation;
-  -ms-touch-action: manipulation;
-
-  /* Additional iOS specific rules */
-  -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 `;
 
 export const VerticalLine = styled.div`
@@ -113,29 +110,36 @@ export const ModelItem = styled.div`
   width: 85%;
   margin-left: auto;
   padding: 1.5rem;
-  background: ${({ $isCurrent, $distance, $hue = 0 }) => {
-    const absDistance = Math.abs($distance);
-    if ($isCurrent) return `hsla(${$hue}, 20%, 15%, 0.9)`;
-    if (absDistance === 1) return `hsla(${$hue}, 25%, 12%, 0.8)`;
-    if (absDistance === 2) return `hsla(${$hue}, 30%, 8%, 0.7)`;
-    return `hsla(${$hue}, 40%, 6%, 0.6)`;
-  }};
-  border-radius: 16px 0 0 16px;
+  background: linear-gradient(
+    135deg,
+    hsla(${(props) => props.$hue}, 15%, 10%, 0.5) 0%,
+    hsla(${(props) => props.$hue}, 20%, 5%, 0.5) 100%
+  );
+  border-radius: 0.5rem;
   height: ${({ $isCurrent }) => ($isCurrent ? "auto" : "4rem")};
   margin-bottom: 1rem;
   opacity: ${({ $distance }) => {
     const absDistance = Math.abs($distance);
-    if (absDistance === 0) return 1;
-    if (absDistance === 1) return 0.8;
-    if (absDistance === 2) return 0.6;
-    return 0.4;
+    return Math.max(0.4, 1 - absDistance * 0.2);
   }};
-  border: 1px solid
-    ${({ $isCurrent, $hue = 0 }) =>
-      `hsla(${$hue}, 30%, 95%, ${$isCurrent ? "0.1" : "0.05"})`};
-  box-shadow: 0 2px 8px ${({ $hue = 0 }) => `hsla(${$hue}, 50%, 20%, 0.7)`};
 
-  /* Smoother bidirectional transform */
+  border: 1px solid
+    hsla(
+      ${(props) => props.$hue},
+      100%,
+      75%,
+      ${(props) => (props.$isCurrent ? "0.3" : "0.1")}
+    );
+  backdrop-filter: blur(0.6vw);
+  -webkit-backdrop-filter: blur(0.6vw);
+
+  box-shadow: ${(props) =>
+    props.$isCurrent
+      ? `0 0 2vw hsla(${props.$hue}, 100%, 75%, 0.2),
+     inset 0 0 3vw hsla(${props.$hue}, 100%, 75%, 0.1)`
+      : `0 0 1.5vw hsla(${props.$hue}, 100%, 75%, 0.1),
+     inset 0 0 2vw hsla(${props.$hue}, 100%, 75%, 0.05)`};
+
   transform: translateX(
     ${({ $distance }) => {
       const absDistance = Math.abs($distance);
@@ -146,40 +150,33 @@ export const ModelItem = styled.div`
     }}
   );
 
-  /* Add delay to transform animation to act as throttle */
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
-    opacity 0.3s ease-out, height 0.2s ease-out, border-color 0.3s ease,
-    background 0.3s ease;
-  will-change: transform, opacity;
+  transition: all 0.3s ease-in-out;
 
-  &:hover {
-    border-color: hsla(
-      ${(props) => props.$hue || 0},
-      30%,
-      95%,
-      ${({ $isCurrent }) => ($isCurrent ? "0.12" : "0.06")}
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
+      transparent
     );
+    animation: ${scanline} 2s linear infinite;
+    opacity: ${(props) => (props.$isCurrent ? 0.5 : 0.2)};
   }
 `;
 
 export const ModelName = styled.h2`
-  font-size: ${({ $isCurrent, $distance }) => {
-    if ($isCurrent) return "1.5rem";
-    const absDistance = Math.abs($distance);
-    if (absDistance === 1) return "1.2rem";
-    if (absDistance === 2) return "1rem";
-    return "0.9rem";
-  }};
+  font-size: ${({ $isCurrent }) => ($isCurrent ? "1.5rem" : "1.2rem")};
   margin: 0;
   transition: all 0.3s ease;
-  opacity: ${({ $distance }) => {
-    const absDistance = Math.abs($distance);
-    if (absDistance === 0) return 1;
-    if (absDistance === 1) return 0.8;
-    if (absDistance === 2) return 0.6;
-    return 0.4;
-  }};
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.9);
+  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
+    0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
   letter-spacing: 0.02em;
   font-family: var(--font-geist-mono), monospace;
 `;
@@ -228,18 +225,25 @@ export const ScrollHint = styled.div`
   bottom: 24px;
   right: 24px;
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+  background: linear-gradient(
+    135deg,
+    hsla(${(props) => props.$hue || 230}, 15%, 10%, 0.5) 0%,
+    hsla(${(props) => props.$hue || 230}, 20%, 5%, 0.5) 100%
+  );
+  border: 1px solid hsla(${(props) => props.$hue || 230}, 100%, 75%, 0.3);
+  backdrop-filter: blur(0.6vw);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 0.5vw) 0,
+    100% 0.5vw,
+    100% 100%,
+    0.5vw 100%,
+    0 calc(100% - 0.5vw)
+  );
   font-size: 14px;
-  pointer-events: none;
   z-index: 100;
-  backdrop-filter: blur(10px);
-  white-space: nowrap;
-  max-width: 90%;
   animation: ${fadeInOut} 7s ease-out forwards;
-  animation-delay: 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue || 230}, 100%, 75%, 0.1);
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.05em;
   opacity: 0;
