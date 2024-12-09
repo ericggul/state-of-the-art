@@ -23,6 +23,8 @@ const Sublayer = memo(function Sublayer({
   idx = 0,
   useGivenInterval = false,
   rotation = [0, 0, 0],
+  interlayerMarginX = INTERLAYER_MARGIN_X,
+  interlayerMarginY = INTERLAYER_MARGIN_Y,
 }) {
   const { scale } = useSpring({
     from: { scale: 0 },
@@ -64,12 +66,12 @@ const Sublayer = memo(function Sublayer({
           xInterval={
             useGivenInterval
               ? grid.xInterval
-              : (size[0] / grid.xCount) * INTERLAYER_MARGIN_X
+              : (size[0] / grid.xCount) * interlayerMarginX
           }
           yInterval={
             useGivenInterval
               ? grid.yInterval
-              : (size[1] / grid.yCount) * INTERLAYER_MARGIN_Y
+              : (size[1] / grid.yCount) * interlayerMarginY
           }
           nodeSize={[size[0] / grid.xCount, size[1] / grid.yCount, size[2]]}
           style={style}

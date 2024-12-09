@@ -3,6 +3,8 @@ import Sublayer from "../Sublayer";
 import { LAYER_CONFIGS, GRID_CONFIGS } from "../../arch-models";
 
 const ANIM_SPEED = 0.33;
+const INTERLAYER_MARGIN_X = 2.5;
+const INTERLAYER_MARGIN_Y = 4.0;
 
 export default function MultiModalLayers({ structure, style, model }) {
   const modelConfig = LAYER_CONFIGS[model] || {};
@@ -174,6 +176,8 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={i * ANIM_SPEED}
+            interlayerMarginX={INTERLAYER_MARGIN_X}
+            interlayerMarginY={INTERLAYER_MARGIN_Y}
             rotation={
               layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]
@@ -196,6 +200,8 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={i * ANIM_SPEED}
+            interlayerMarginX={INTERLAYER_MARGIN_X}
+            interlayerMarginY={INTERLAYER_MARGIN_Y}
             rotation={
               layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]
@@ -218,6 +224,8 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={(i + 1 / 3) * ANIM_SPEED}
+            interlayerMarginX={INTERLAYER_MARGIN_X}
+            interlayerMarginY={INTERLAYER_MARGIN_Y}
             rotation={
               layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]
@@ -240,6 +248,8 @@ export default function MultiModalLayers({ structure, style, model }) {
             model={model}
             useGivenInterval={true}
             idx={(i + 2 / 3) * ANIM_SPEED}
+            interlayerMarginX={INTERLAYER_MARGIN_X}
+            interlayerMarginY={INTERLAYER_MARGIN_Y}
             rotation={
               layer.type === "mlp" || layer.type.includes("mlp")
                 ? [Math.PI / 2, 0, 0]

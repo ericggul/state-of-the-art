@@ -70,55 +70,28 @@ export const HorizontalLine2 = styled.div`
 
 export const ModelTitle = styled.div`
   position: absolute;
-  transition: all 0.3s ease-in-out;
-  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.9);
+  transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  color: hsla(${(props) => props.$hue}, 30%, 95%, 0.95);
   left: ${LEFT + 2}vw;
   top: ${TOP}vw;
   padding: 0.3vw 1vw;
   transform: translateY(-50%);
-  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
-    0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
+  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
   ${(props) =>
     !props.$isCondensed &&
     `
     width: calc(100% - ${LEFT + 2}vw);
     padding: 0.3vw 1vw;
   `}
-  backdrop-filter: blur(0.6vw);
-  -webkit-backdrop-filter: blur(0.6vw);
-  border-radius: 0;
-  border: 1px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
-  background: linear-gradient(
-    135deg,
-    hsla(${(props) => props.$hue}, 15%, 10%, 0.5) 0%,
-    hsla(${(props) => props.$hue}, 20%, 5%, 0.5) 100%
-  );
-  box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1),
-    inset 0 0 2vw hsla(${(props) => props.$hue}, 100%, 75%, 0.05);
-
-  clip-path: polygon(
-    0 0,
-    calc(100% - 1vw) 0,
-    100% 1vw,
-    100% 100%,
-    1vw 100%,
-    0 calc(100% - 1vw)
-  );
-
-  &:hover {
-    border-color: hsla(${(props) => props.$hue}, 100%, 75%, 0.4);
-    box-shadow: 0 0 2vw hsla(${(props) => props.$hue}, 100%, 75%, 0.2),
-      inset 0 0 3vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1);
-  }
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 2vw;
 `;
 
 export const Title = styled.div`
   font-size: 3vw;
   position: relative;
   font-weight: bold;
-  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.9);
-  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
-    0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
 `;
 
 export const ModelType = styled.h2`
@@ -129,8 +102,6 @@ export const ModelType = styled.h2`
   text-align: right;
   top: 50%;
   transform: translateY(-50%);
-  transition: color 0.3s ease-in-out;
-  color: hsla(${(props) => props.$hue}, 15%, 95%, 0.7);
-  text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
-    0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
+  transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  color: hsla(${(props) => props.$hue}, 30%, 95%, 0.7);
 `;
