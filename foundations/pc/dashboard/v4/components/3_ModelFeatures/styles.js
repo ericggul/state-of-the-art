@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { animated } from "@react-spring/web";
 
 const scanline = keyframes`
   0% { transform: translateY(-100%); }
@@ -132,4 +133,9 @@ export const TextWrapper = styled.div`
   line-height: 1.4;
   flex: 1;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+`;
+
+export const AnimatedItem = styled(animated(Item))`
+  transform-origin: left center;
+  will-change: transform, opacity, filter;
 `;

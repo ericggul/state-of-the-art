@@ -174,6 +174,7 @@ export const ModelName = styled.h2`
   font-size: ${({ $isCurrent }) => ($isCurrent ? "1.5rem" : "1.2rem")};
   margin: 0;
   transition: all 0.3s ease;
+  max-width: 80%;
   color: hsla(${(props) => props.$hue}, 15%, 95%, 0.9);
   text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 80%, 50%, 0.2),
     0 0.1vw 0.2vw hsla(0, 0%, 0%, 0.3);
@@ -185,10 +186,10 @@ export const ModelDetails = styled.div`
   margin-top: 1rem;
   font-size: 0.9rem;
   line-height: 1.5;
+  max-width: 80%;
   opacity: 0.8;
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.02em;
-  max-width: 100%;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
