@@ -1,6 +1,11 @@
-import styled, { css } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
 import { animated } from "react-spring";
+
+const scanline = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+`;
 
 // Add this at the top with other utility functions
 const cycleHue = (hue) => {
@@ -81,175 +86,53 @@ const generateDepthColors = (hue) => ({
 });
 
 export const StructureText = styled(animated.pre)`
-  color: #00ffff;
+  color: hsla(${(props) => props.$hue}, 20%, 95%, 0.8);
   font-size: 0.933vw;
   line-height: 1.2;
   text-align: left;
   position: absolute;
   left: 0.5vw;
+  padding: 1.067vw;
+  max-width: 25vw;
+  white-space: pre-wrap;
 
-  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    hsla(${(props) => props.$hue}, 15%, 10%, 0.1) 0%,
+    hsla(${(props) => props.$hue}, 20%, 5%, 0.1) 100%
+  );
+  border: 1px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 
-  width: 100%;
-  height: 100%;
-  overflow: ${(props) => (props.$needsScroll ? "hidden" : "visible")};
-  white-space: pre;
-  ${scrollbarHide}
-  z-index: 100;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 1vw) 0,
+    100% 1vw,
+    100% 100%,
+    1vw 100%,
+    0 calc(100% - 1vw)
+  );
 
-  // Optimize text rendering
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-
-  // GPU acceleration
-  transform: translate3d(0, 0, 0);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: transform;
-
-  // Prevent subpixel rendering issues
-  * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transform: translateZ(0);
-  }
-
-  .tree-line {
-    color: hsla(${(props) => props.$hue}, 15%, 65%, 0.7);
-    user-select: none;
-    transform: translateZ(0);
-    letter-spacing: 0.05em;
-    transition: color 0.3s ease;
-    text-shadow: 0 0 1vw hsla(${(props) => props.$hue}, 70%, 50%, 0.2);
-
-    .branch-char {
-      color: hsla(${(props) => props.$hue}, 85%, 75%, 0.9);
-      font-weight: 500;
-      text-shadow: 0 0 1.333vw hsla(${(props) => props.$hue}, 80%, 50%, 0.3);
-    }
-  }
-
-  .tree-content {
-    display: inline-flex;
-    align-items: center;
-    min-height: 1.5em;
-    transform: translateZ(0);
-    letter-spacing: 0.02em;
-  }
-
-  .dims {
-    color: hsla(${(props) => cycleHue(props.$hue + 60)}, 70%, 75%, 0.85);
-    margin-left: 0.533vw;
-    font-weight: 400;
-    text-shadow: 0 0 0.667vw
-      hsla(${(props) => cycleHue(props.$hue + 60)}, 70%, 50%, 0.25);
-  }
-
-  .type {
-    color: hsla(${(props) => cycleHue(props.$hue - 30)}, 60%, 75%, 0.8);
-    margin-left: 0.533vw;
-    font-weight: 400;
-    text-shadow: 0 0 0.667vw
-      hsla(${(props) => cycleHue(props.$hue - 30)}, 60%, 50%, 0.2);
-  }
-
-  .params {
-    color: hsla(${(props) => cycleHue(props.$hue - 60)}, 70%, 75%, 0.8);
-    margin-left: 0.533vw;
-    font-size: 0.8vw;
-    font-weight: 400;
-    text-shadow: 0 0 0.667vw
-      hsla(${(props) => cycleHue(props.$hue - 60)}, 70%, 50%, 0.2);
-  }
-
-  .grid {
-    color: hsla(${(props) => cycleHue(props.$hue + 30)}, 70%, 75%, 0.8);
-    margin-left: 0.533vw;
-    font-size: 0.8vw;
-    font-weight: 400;
-    text-shadow: 0 0 0.667vw
-      hsla(${(props) => cycleHue(props.$hue + 30)}, 70%, 50%, 0.2);
-  }
-
-  ${({ $hue }) => {
-    const depthColors = generateDepthColors($hue);
-    return Object.entries(depthColors).map(
-      ([depth, color]) => css`
-        .depth-${depth} {
-          color: hsla(
-            ${cycleHue($hue)},
-            ${20 - depth * 2}%,
-            ${85 - depth * 5}%,
-            ${0.9 - depth * 0.1}
-          );
-          transform: translateZ(0);
-          text-shadow: 0 0 1.333vw
-            hsla(
-              ${cycleHue($hue)},
-              ${30 - depth * 2}%,
-              50%,
-              ${0.2 - depth * 0.03}
-            );
-          transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .depth-${depth} .name {
-          color: hsla(
-            ${cycleHue($hue)},
-            ${70 - depth * 5}%,
-            ${85 - depth * 5}%,
-            ${0.95 - depth * 0.1}
-          );
-          text-shadow: 0 0 1vw
-            hsla(${cycleHue($hue)}, 70%, 50%, ${0.3 - depth * 0.04});
-        }
-      `
-    );
-  }}
-
-  .model-structure {
-    display: flex;
-    flex-direction: column;
-    padding: 1.067vw;
-    gap: 0.213vw;
+  &::before {
+    content: "";
     position: absolute;
-    width: 100%;
-
-    // Center both vertically and horizontally when not scrolling
-    top: 50%;
-    left: 50%;
-    transform: ${
-      (props) =>
-        props.$needsScroll
-          ? "translateX(-50%)" // Only center horizontally when scrolling
-          : "translate(-50%, -50%)" // Center both ways when not scrolling
-    };
-
-    // Optimize for animation
-    will-change: transform;
-    backface-visibility: hidden;
-
-    &.scrolling {
-      position: relative;
-      top: auto;
-      left: auto;
-      transform: none;
-      padding-top: 15vh;
-      padding-bottom: 100vh;
-    }
-
-    filter: drop-shadow(
-      0 0 1.333vw hsla(${(props) => props.$hue}, 20%, 50%, 0.05)
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
+      transparent
     );
+    animation: ${scanline} 2s linear infinite;
+    opacity: 0.5;
   }
 
-  .disclaimer {
-    color: hsla(${(props) => props.$hue}, 15%, 75%, 0.4);
-    text-shadow: 0 0 0.667vw hsla(${(props) => props.$hue}, 70%, 50%, 0.1);
-    transition: color 0.3s ease;
-  }
+  box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1),
+    inset 0 0 2vw hsla(${(props) => props.$hue}, 100%, 75%, 0.05);
 `;
 
 export const LeftBlur = styled.div`
