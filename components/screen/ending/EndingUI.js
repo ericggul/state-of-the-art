@@ -11,7 +11,8 @@ export default function EndingUI({ isVisible, isFadingOut }) {
           <S.Text>Multi-Device Web Artwork</S.Text>
           <S.Text>4 displays, 2 Projections, 4 channel-sound</S.Text>
           <S.TechStack>
-            Next.js, Three.js, Socket.io, OpenAI API, TouchDesigner
+            Next.js, Three.js, Socket.io, OpenAI API, Claude 3.5, Langchain,
+            TouchDesigner, Viseme, D3.js
           </S.TechStack>
         </S.Section>
 

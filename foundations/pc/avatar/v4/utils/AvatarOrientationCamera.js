@@ -8,7 +8,7 @@ const LERPING_FACTOR = 0.02;
 const ZOOM_LERPING_FACTOR = 0.03;
 
 const ZOOM_LIMITS = {
-  MIN: 0.6,
+  MIN: 0.9,
   MAX: 2,
   DEFAULT: 1,
 };

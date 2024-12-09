@@ -13,12 +13,14 @@ import * as CONST from "@/utils/constant";
 
 // Keep all dynamic imports together
 const COMPONENTS = {
-  0: dynamic(() => import("@/foundations/pc/avatar/v4")),
+  // 0: dynamic(() => import("@/foundations/pc/avatar/v4")),
+  0: dynamic(() => import("@/foundations/pc/dashboard/v4")),
   "0-v1": dynamic(() => import("@/foundations/pc/avatar/v1")),
   "0-v2": dynamic(() => import("@/foundations/pc/avatar/v2")),
   "0-v3": dynamic(() => import("@/foundations/pc/avatar/v3")),
 
-  1: dynamic(() => import("@/foundations/pc/dashboard/v4")),
+  // 1: dynamic(() => import("@/foundations/pc/dashboard/v4")),
+  1: dynamic(() => import("@/foundations/pc/avatar/v4")),
   "1-v1": dynamic(() => import("@/foundations/pc/dashboard/v1")),
   "1-v2": dynamic(() => import("@/foundations/pc/dashboard/v2")),
   "1-v3": dynamic(() => import("@/foundations/pc/dashboard/v3")),
