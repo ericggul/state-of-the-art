@@ -27,13 +27,15 @@ export const TIMEOUTS = {
 
 //transition: delay between devices
 //screen > transition
-export const BASE_DELAY = 700;
-export const DEVICE_DELAY_MULTIPLIER = 430;
+// export const BASE_DELAY = 700;
+// export const DEVICE_DELAY_MULTIPLIER = 430;
+export const BASE_DELAY = 800;
+export const DEVICE_DELAY_MULTIPLIER = 450;
 
 //conversation: black and white time
 //backend > useConversation
 export const EXTRA_BLACK_TIME = [0, 5000, 3000, 4000, 1000, 0, 0];
-export const WHITE_TIME = [6000, 4000, 4000, 3000, 3000, 1500, 1500];
+export const WHITE_TIME = [5000, 4000, 4000, 3000, 3000, 1500, 1500];
 
 export const API_TIMEOUT = 15 * 1000;
 

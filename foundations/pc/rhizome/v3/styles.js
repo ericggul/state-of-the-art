@@ -7,7 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   background: #000;
   transition: all 0.5s;
-  cursor: none;
+  cursor: none !important;
 
   img {
     width: 100%;
@@ -16,7 +16,6 @@ export const Container = styled.div`
 
   svg {
     z-index: 0;
-    cursor: pointer;
     position: absolute;
     top: 3vh;
     left: 10vw;
