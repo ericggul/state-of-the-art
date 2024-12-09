@@ -9,6 +9,7 @@ export const useRelatedModels = (currentArchitectures) => {
     const nodeMap = new Map(
       DATA_NODES_LINKS.nodes.map((node) => [node.id, node])
     );
+    console.log(nodeMap);
 
     return DATA_NODES_LINKS.links
       .filter((link) => {
@@ -25,12 +26,14 @@ export const useRelatedModels = (currentArchitectures) => {
         const targetNode = nodeMap.get(link.target);
         const connectedNode =
           sourceNode?.name === currentModel ? targetNode : sourceNode;
+        console.log(connectedNode);
 
         return {
           name: connectedNode?.name || "",
           relation: link.relation,
           value: link.value,
           version: connectedNode?.version,
+          category: connectedNode?.category,
         };
       })
       .filter((model) => model.name)

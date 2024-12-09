@@ -50,30 +50,38 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
 
   if (!currentModel || !relatedModels.length) return null;
 
+  console.log(relatedModels);
+
   return (
     <>
       <S.LeftLine $hue={hue} />
       <S.RelatedPanel $hue={hue}>
         <S.PanelTitle>
-          <TextScramble text={`Connected to ${currentModel}`} />
+          <TextScramble
+            text={`State-of-the-Art Neural Networks similar to ${currentModel}`}
+          />
         </S.PanelTitle>
         <S.RelatedList ref={listRef}>
           {relatedModels.map(
             (model, index) =>
               visibleItems.includes(index) && (
-                <S.RelatedItem key={index} $strength={model.value / 10}>
+                <S.RelatedItem
+                  key={index}
+                  $strength={model.value / 10}
+                  $hue={hue}
+                >
                   <S.ModelHeader>
-                    <S.ModelName>
+                    <S.ModelName $hue={hue}>
                       <TextScramble text={model.name} />
                     </S.ModelName>
-                    <S.ModelVersion>
-                      <TextScramble text={model.version} />
+                    <S.ModelVersion $hue={hue}>
+                      <TextScramble text={model.category} />
                     </S.ModelVersion>
                   </S.ModelHeader>
-                  <S.RelationText>
+                  <S.RelationText $hue={hue}>
                     <TextScramble text={model.relation} />
                   </S.RelationText>
-                  {/* <S.ConnectionStrength $value={model.value / 10} /> */}
+                  <S.ConnectionStrength $value={model.value / 10} $hue={hue} />
                 </S.RelatedItem>
               )
           )}

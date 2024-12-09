@@ -1,37 +1,17 @@
-import { OBJECT_ARRAY, MODELS } from "./models";
+import { OBJECT_ARRAY } from "./models";
 
 export const DATA_NODES_LINKS = {
-  nodes: OBJECT_ARRAY.map((model, index) => {
-    const findModelByName = (obj, targetName) => {
-      for (const key in obj) {
-        const current = obj[key];
-
-        if (current?.name === targetName && current?.category) {
-          return current;
-        }
-
-        if (typeof current === "object") {
-          const result = findModelByName(current, targetName);
-          if (result) return result;
-        }
-      }
-      return null;
-    };
-
-    const modelInfo = findModelByName(MODELS, model.name);
-
-    return {
-      id: index + 1,
-      name: model.name,
-      version: model.version,
-      majorVersion: model.version
-        ? parseInt(model.version.match(/v(\d+)/)[1])
-        : null,
-      category: modelInfo?.category || "unknown",
-    };
-  }),
+  // Update nodes to include version information
+  nodes: OBJECT_ARRAY.map((model, index) => ({
+    id: index + 1,
+    name: model.name,
+    version: model.version,
+    majorVersion: model.version
+      ? parseInt(model.version.match(/v(\d+)/)[1])
+      : null,
+    category: model.category,
+  })),
   links: [
-    // Update nodes to include version information
     {
       id: 1,
       source: 1,
