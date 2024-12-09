@@ -18,8 +18,8 @@ export const Container = styled.div`
     z-index: 0;
     position: absolute;
     top: 3vh;
-    left: 0vw;
-    width: 100vw;
+    left: 10vw;
+    width: 90vw;
     height: 100vh;
   }
 

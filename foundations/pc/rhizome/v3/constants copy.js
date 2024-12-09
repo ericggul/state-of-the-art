@@ -21,7 +21,7 @@ export const ANIMATION = {
 // Force Simulation Constants
 export const FORCE = {
   LINK: {
-    DISTANCE: 50,
+    DISTANCE: 30,
     STRENGTH: 0.3,
   },
   CHARGE: {
@@ -89,14 +89,14 @@ export const LAYOUT = {
       Y_SPREAD: 1.0,
     },
     UNCONNECTED: {
-      X_FACTOR: -0.45,
-      Y_SPREAD: 1.2,
+      X_FACTOR: -0.4,
+      Y_SPREAD: 1.0,
     },
     FORCE: {
       STRENGTH: 0.9,
       VERTICAL_FACTOR: 0.4,
       CONNECTED_FACTOR: 0.8,
-      UNCONNECTED_FACTOR: 0.08,
+      UNCONNECTED_FACTOR: 0.4,
     },
   },
   VERTICAL_SPREAD_FACTOR: 1.5,

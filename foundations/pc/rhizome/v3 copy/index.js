@@ -113,7 +113,7 @@ export default function Rhizome() {
       .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS + window.innerHeight * 0.015)
       .attr("text-anchor", "middle")
       .attr("font-size", VISUAL.NODE.DEFAULT.FONT_SIZE)
-      .attr("fill", `hsla(${debouncedHue}, 10%, 50%, 1)`);
+      .attr("fill", `hsla(${debouncedHue}, 10%, 50%, 0.2)`);
 
     // Reset all links to default state
     linksRef.current
@@ -145,7 +145,12 @@ export default function Rhizome() {
           .duration(DURATION)
           .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
           .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
-          .attr("r", 3)
+          .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
+          .attr("filter", "url(#glow)")
+          .style(
+            "filter",
+            `drop-shadow(0 0 .3vw hsla(${debouncedHue}, 100%, 75%, 1))`
+          )
           .attr("stroke-width", 0);
 
         nodeToHighlight
@@ -166,12 +171,18 @@ export default function Rhizome() {
         // Highlight connected nodes (text at bottom)
         nodesRef.current.each(function (d) {
           if (connectedNodes.has(d.text)) {
-            // d3.select(this)
-            //   .select("circle")
-            //   .transition()
-            //   .duration(DURATION)
-            //   .attr("r", 3)
-            //   .attr("stroke-width", 0);
+            d3.select(this)
+              .select("circle")
+              .transition()
+              .duration(DURATION)
+              .attr("r", VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS)
+              .attr("opacity", VISUAL.NODE.SUB_HIGHLIGHTED.OPACITY)
+              .attr("filter", "url(#glow)")
+              .style(
+                "filter",
+                `drop-shadow(0 0 .3vw hsla(${debouncedHue}, 100%, 75%, 1))`
+              )
+              .attr("stroke-width", 0);
 
             d3.select(this)
               .select("text")
@@ -290,7 +301,7 @@ export default function Rhizome() {
 
   return (
     <S.Container>
-      <svg ref={svgRef} width="100vw" height="100vh" />
+      <svg ref={svgRef} width="90vw" height="100vh" />
       {currentArchitectures?.length > 0 && (
         <RelatedPanel
           currentModel={currentArchitectures[0].name}

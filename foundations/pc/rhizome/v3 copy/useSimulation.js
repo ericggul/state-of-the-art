@@ -80,11 +80,13 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
         const sourceNode = data.nodes.find((n) => n.name === d.source.name);
         const targetNode = data.nodes.find((n) => n.name === d.target.name);
         return sourceNode.majorVersion === targetNode.majorVersion
-          ? `hsla(${hue}, 100%, 75%, 0.8)`
-          : `hsla(${hue}, 100%, 75%, 0.6)`;
+          ? d3
+              .color(getVersionColor(sourceNode.majorVersion, hue))
+              .brighter(0.2)
+          : `hsla(${hue}, 100%, 50%, 0.4)`;
       })
-      .attr("stroke-width", 0.8)
-      .attr("opacity", 0.6)
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.4)
       .attr("fill", "none");
 
     // Simplified, performance-focused nodes
@@ -98,12 +100,12 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
 
     nodes
       .append("circle")
+      .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
       .attr("id", (d) => `circle-${d.id}`)
-      .attr("fill", (d) => `hsla(${hue}, 15%, 10%, 0.5)`)
+      .attr("fill", (d) => getVersionColor(d.majorVersion, hue))
       .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
       .attr("stroke", "#fff")
       .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH)
-      .attr("r", 3)
       .call(drag(simulation));
 
     // Simplified text
@@ -114,9 +116,8 @@ export const useSimulation = (svgRef, dimensions, data, hue) => {
       .attr("y", (d) => VISUAL.NODE.DEFAULT.RADIUS / 2)
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
-      .attr("font-size", "0.75vw")
-      .attr("fill", `hsla(${hue}, 30%, 95%, 0.7)`)
-      .attr("text-shadow", `0 0 1vw hsla(${hue}, 80%, 50%, 0.2)`)
+      .attr("text-shadow", "0 0 3px rgba(0,0,0,0.5)")
+      .attr("fill", `hsla(${hue}, 15%, 95%, ${VISUAL.TEXT.OPACITY})`)
       .attr("opacity", 0.8);
 
     // Optimized tick function

@@ -41,13 +41,13 @@ export const VISUAL = {
       FONT_SIZE: "0.75vw",
     },
     HIGHLIGHTED: {
-      RADIUS: 6,
+      RADIUS: 12,
       OPACITY: 1,
       STROKE_WIDTH: 4,
       FONT_SIZE: "1.5vw",
     },
     SUB_HIGHLIGHTED: {
-      RADIUS: 4,
+      RADIUS: 6,
       OPACITY: 0.95,
       STROKE_WIDTH: 2,
       FONT_SIZE: "1.2vw",
@@ -89,14 +89,14 @@ export const LAYOUT = {
       Y_SPREAD: 1.0,
     },
     UNCONNECTED: {
-      X_FACTOR: -0.45,
-      Y_SPREAD: 1.2,
+      X_FACTOR: -0.4,
+      Y_SPREAD: 1.0,
     },
     FORCE: {
       STRENGTH: 0.9,
       VERTICAL_FACTOR: 0.4,
       CONNECTED_FACTOR: 0.8,
-      UNCONNECTED_FACTOR: 0.08,
+      UNCONNECTED_FACTOR: 0.4,
     },
   },
   VERTICAL_SPREAD_FACTOR: 1.5,

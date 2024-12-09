@@ -67,11 +67,7 @@ export function useNameInput({ socket, onSuccess, mobileId }) {
       }));
 
       // Prevent unnecessary socket emissions
-      if (
-        !basicError &&
-        socket?.current &&
-        newValue.trim() !== lastEmittedName.current
-      ) {
+      if (socket?.current && newValue.trim() !== lastEmittedName.current) {
         lastEmittedName.current = newValue.trim();
         socket.current.emit("mobile-new-intro", {
           type: "username_update",

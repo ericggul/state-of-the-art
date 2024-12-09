@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ANIMATION } from "../../constants";
 import TypewriterText from "../TypewriterText";
-import TextScramble from "@/foundations/pc/utils/TextScramble";
 import * as S from "./styles";
 
-export default function RelatedPanel({ currentModel, relatedModels, hue }) {
+export default function RelatedPanel({ currentModel, relatedModels }) {
   const listRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState([]);
 
@@ -50,38 +49,30 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
 
   if (!currentModel || !relatedModels.length) return null;
 
-  console.log(relatedModels);
-
   return (
     <>
-      <S.LeftLine $hue={hue} />
-      <S.PanelTitle>
-        <TextScramble
-          text={`State-of-the-Art Neural Networks similar to ${currentModel}`}
-        />
-      </S.PanelTitle>
-      <S.RelatedPanel $hue={hue}>
+      <S.LeftLine />
+      <S.RelatedPanel>
+        <S.PanelTitle>
+          <TypewriterText text={`Connected to ${currentModel}`} speed={30} />
+        </S.PanelTitle>
         <S.RelatedList ref={listRef}>
           {relatedModels.map(
             (model, index) =>
               visibleItems.includes(index) && (
-                <S.RelatedItem
-                  key={index}
-                  $strength={model.value / 10}
-                  $hue={hue}
-                >
+                <S.RelatedItem key={index} $strength={model.value / 10}>
                   <S.ModelHeader>
-                    <S.ModelName $hue={hue}>
-                      <TextScramble text={model.name} />
+                    <S.ModelName>
+                      <TypewriterText text={model.name} speed={20} />
                     </S.ModelName>
-                    <S.ModelVersion $hue={hue}>
-                      <TextScramble text={model.category} />
+                    <S.ModelVersion>
+                      <TypewriterText text={model.version} speed={20} />
                     </S.ModelVersion>
                   </S.ModelHeader>
-                  <S.RelationText $hue={hue}>
-                    <TextScramble text={model.relation} />
+                  <S.RelationText>
+                    <TypewriterText text={model.relation} speed={15} />
                   </S.RelationText>
-                  <S.ConnectionStrength $value={model.value / 10} $hue={hue} />
+                  {/* <S.ConnectionStrength $value={model.value / 10} /> */}
                 </S.RelatedItem>
               )
           )}
