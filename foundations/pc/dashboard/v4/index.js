@@ -33,11 +33,12 @@ const LAYOUT = [
 ];
 
 // Card Component
+// Card Component
 const Card = ({ title, children, layout, hue }) => (
-  <S.Card style={layout} $hue={hue}>
+  <S.CardWrapper style={layout}>
     <S.CardTitle $hue={hue}>{title}</S.CardTitle>
-    {children}
-  </S.Card>
+    <S.Card $hue={hue}>{children}</S.Card>
+  </S.CardWrapper>
 );
 
 export default function Dashboard() {

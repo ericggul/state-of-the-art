@@ -2,8 +2,8 @@ import useScreenStore from "@/components/screen/store";
 import { useAudio } from "@/utils/hooks/audio/useAudio";
 import { useRef, useEffect, useState } from "react";
 
-const SOUND_URL = "/audio/main/main1208.wav";
-const INTRO_SOUND_URL = "/audio/main/maininit1208.wav";
+const SOUND_URL = "/audio/main/main1209.wav";
+const INTRO_SOUND_URL = "/audio/main/maininit1209.wav";
 const DELAY_MS = 2500;
 const THRESHOLD_STATE = 3;
 

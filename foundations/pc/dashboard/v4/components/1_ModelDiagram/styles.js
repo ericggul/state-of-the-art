@@ -1,26 +1,15 @@
 import styled, { keyframes } from "styled-components";
-import { FlexCenterStyle } from "@/styles";
+import { animated } from "@react-spring/web";
 
-const fadeInScale = keyframes`
-  from {
-    opacity: 1;
-    transform: scale(0.1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+const pulseGlow = keyframes`
+  0% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0.3; }
 `;
 
-const fadeInSlide = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(-1vw);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+const scanline = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 `;
 
 export const Container = styled.div`
@@ -28,15 +17,15 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   position: relative;
   width: calc(100% - 2.4vw);
   height: calc(100% - 2.4vw);
-
   padding: 1.2vw;
+  gap: 0.8vw;
 `;
 
-export const Layer = styled.div`
+export const AnimatedLayer = styled(animated.div)`
+  position: relative;
   width: 12vw;
   height: 3vw;
   background: linear-gradient(
@@ -45,11 +34,7 @@ export const Layer = styled.div`
     hsla(${(props) => props.$hue}, 20%, 5%, 0.5) 100%
   );
   border: 1px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1vw;
-  color: hsla(${(props) => props.$hue}, 15%, 98%, 1);
+  overflow: hidden;
   clip-path: polygon(
     0 0,
     calc(100% - 1vw) 0,
@@ -58,21 +43,75 @@ export const Layer = styled.div`
     1vw 100%,
     0 calc(100% - 1vw)
   );
-  box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue}, 100%, 75%, 0.1),
-    inset 0 0 3vw hsla(${(props) => props.$hue}, 30%, 50%, 0.08);
-  transition: all 0.3s ease-in-out;
-  // animation: ${fadeInScale} 0.3s ease-out;
-  will-change: transform, opacity;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
+      transparent
+    );
+    animation: ${scanline} 2s linear infinite;
+    opacity: 0.5;
+  }
 `;
 
-export const Arrow = styled.div`
+export const LayerContent = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1vw;
+  color: hsla(${(props) => props.$hue}, 15%, 98%, 1);
+  text-shadow: 0 0 5px hsla(${(props) => props.$hue}, 100%, 75%, 0.5);
+  z-index: 2;
+`;
+
+export const LayerGlow = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    hsla(${(props) => props.$hue}, 100%, 75%, 0.15) 0%,
+    transparent 70%
+  );
+  animation: ${pulseGlow} 2s ease-in-out infinite;
+  pointer-events: none;
+`;
+
+export const AnimatedArrow = styled(animated.div)`
   width: 0;
   height: 0;
   border-left: 0.5vw solid transparent;
   border-right: 0.5vw solid transparent;
   border-top: 0.8vw solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
   filter: drop-shadow(0 0 0.8vw hsla(${(props) => props.$hue}, 100%, 75%, 0.2));
-  transition: all 0.3s ease-in-out;
-  // animation: ${fadeInSlide} 0.3s ease-out;
-  will-change: transform, opacity;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -0.8vw;
+    left: -0.5vw;
+    width: 1vw;
+    height: 0.8vw;
+    background: linear-gradient(
+      to bottom,
+      hsla(${(props) => props.$hue}, 100%, 75%, 0.1),
+      transparent
+    );
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+    animation-delay: ${(props) => props.$index * 0.2}s;
+  }
 `;

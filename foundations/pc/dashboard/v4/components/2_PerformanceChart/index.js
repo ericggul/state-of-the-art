@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -38,15 +38,18 @@ const formatValue = (value, format) => {
 
 // Helper function to generate colors based on KEY_HUE
 const generateColors = (hue) => ({
-  primary: `hsl(${hue}, 100%, 50%)`,
-  secondary: `hsl(${hue}, 80%, 70%)`,
+  primary: `hsla(${hue}, 100%, 50%, 0.8)`,
+  secondary: `hsla(${hue}, 80%, 70%, 0.2)`,
+  gradient: [`hsla(${hue}, 100%, 50%, 0.8)`, `hsla(${hue}, 100%, 50%, 0.1)`],
   grid: `hsla(${hue}, 60%, 50%, 0.1)`,
   text: `hsl(${hue}, 15%, 85%)`,
-  point: `hsl(${hue}, 100%, 70%)`,
+  point: `hsla(${hue}, 100%, 70%, 0.9)`,
   hover: `hsl(${hue}, 100%, 90%)`,
+  glow: `hsla(${hue}, 100%, 50%, 0.5)`,
 });
 
 export default function PerformanceChart({ performance, hue }) {
+  const chartRef = useRef(null);
   const {
     metric,
     yAxisLabel,
@@ -67,13 +70,34 @@ export default function PerformanceChart({ performance, hue }) {
         label: `${metric} Score`,
         data: benchmarks?.data || data,
         borderColor: colors.primary,
-        backgroundColor: colors.secondary,
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return colors.secondary;
+
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.bottom,
+            0,
+            chartArea.top
+          );
+          gradient.addColorStop(0, colors.gradient[1]);
+          gradient.addColorStop(1, colors.gradient[0]);
+          return gradient;
+        },
         pointBackgroundColor: colors.point,
-        pointBorderColor: colors.primary,
+        pointBorderColor: "transparent",
         pointHoverBackgroundColor: colors.hover,
         pointHoverBorderColor: colors.primary,
-        borderWidth: 2,
-        tension: 0.1,
+        borderWidth: 3,
+        tension: 0.4,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointStyle: "circle",
+        pointBorderWidth: 2,
+        shadowBlur: 10,
+        shadowColor: colors.glow,
       },
     ],
   };
@@ -124,7 +148,7 @@ export default function PerformanceChart({ performance, hue }) {
         },
       },
       tooltip: {
-        backgroundColor: `hsla(${KEY_HUE}, 20%, 15%, 0.8)`,
+        backgroundColor: `hsla(${hue}, 20%, 15%, 0.9)`,
         titleColor: colors.text,
         bodyColor: colors.text,
         padding: 8,
@@ -146,6 +170,14 @@ export default function PerformanceChart({ performance, hue }) {
             "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif",
           size: 10,
         },
+        boxPadding: 6,
+        boxWidth: 6,
+        boxHeight: 6,
+        usePointStyle: true,
+        bodySpacing: 4,
+        titleSpacing: 4,
+        borderColor: colors.primary,
+        borderWidth: 1,
       },
     },
     scales: {
@@ -165,6 +197,8 @@ export default function PerformanceChart({ performance, hue }) {
         grid: {
           color: colors.grid,
           drawBorder: false,
+          borderDash: [5, 5],
+          lineWidth: 0.5,
         },
         ticks: {
           color: colors.text,
@@ -195,6 +229,8 @@ export default function PerformanceChart({ performance, hue }) {
         grid: {
           color: colors.grid,
           drawBorder: false,
+          borderDash: [5, 5],
+          lineWidth: 0.5,
         },
         ticks: {
           color: colors.text,
@@ -213,12 +249,46 @@ export default function PerformanceChart({ performance, hue }) {
       intersect: false,
       mode: "index",
     },
+    animation: {
+      duration: 400,
+      easing: "easeOutQuart",
+    },
+    transitions: {
+      show: {
+        animations: {
+          x: {
+            from: 0,
+          },
+          y: {
+            from: 0,
+          },
+        },
+      },
+    },
   };
+
+  // Add glow effect to the line
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (!chart) return;
+
+    const ctx = chart.ctx;
+    const originalStroke = ctx.stroke;
+    ctx.stroke = function () {
+      ctx.save();
+      ctx.shadowColor = colors.glow;
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      originalStroke.apply(this, arguments);
+      ctx.restore();
+    };
+  }, [colors.glow]);
 
   return (
     <S.Container>
       <S.ChartWrapper>
-        <Line options={options} data={chartData} />
+        <Line ref={chartRef} options={options} data={chartData} />
       </S.ChartWrapper>
     </S.Container>
   );
