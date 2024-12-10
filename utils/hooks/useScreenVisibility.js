@@ -58,7 +58,6 @@ export default function useScreenVisibility() {
     timeouts.current.backend = setTimeout(() => {
       const { mobileVisibility } = useScreenStore.getState();
       if (!mobileVisibility) {
-        console.log("🔙 Setting stage to Backend");
         setStage("Backend");
       }
     }, TIMEOUTS.BACKEND * multiplier);
@@ -76,13 +75,6 @@ export default function useScreenVisibility() {
 
     const endingDelay = TIMEOUTS.ENDING_BASE + multiplier * TIMEOUTS.ENDING;
     const resetDelay = endingDelay + TIMEOUTS.RESET;
-
-    console.log("⏱️ Delays:", {
-      unmountFrontend: unmountFrontendDelay,
-      ending: endingDelay,
-      reset: resetDelay,
-      isProjector,
-    });
 
     timeouts.current.ending = setTimeout(() => {
       const { mobileVisibility } = useScreenStore.getState();

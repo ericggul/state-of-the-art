@@ -22,7 +22,7 @@ export const TIMEOUTS = {
   ////RESET LOGIC
   ENDING: 150 * 1000,
   ENDING_BASE: 45 * 1000,
-  RESET: 20 * 1000,
+  RESET: 18 * 1000,
 };
 
 //transition: delay between devices
@@ -47,7 +47,7 @@ export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
 export const FRONTEND_INACTIVITY_TIMEOUT =
-  (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
+  (IS_DEPLOYMENT ? 1.25 : 8) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 45 * 1000; // 45 seconds
 
 //IDLE

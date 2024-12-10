@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 
 import * as CONST from "@/utils/constant";
@@ -7,8 +7,18 @@ export default function useInactivityCheck() {
   const { stage, lastInteractionTime, setIsEnding, introState, userName } =
     useScreenStore();
 
+  const stageRef = useRef(stage);
+  const intervalRef = useRef(null);
+
   useEffect(() => {
+    // Clear any existing interval when stage changes
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (stage !== "Frontend") return;
+
     const timeout =
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT
@@ -21,8 +31,13 @@ export default function useInactivityCheck() {
       }
     };
 
-    const interval = setInterval(checkInactivity, 10 * 1000); // Check every 10 seconds
+    intervalRef.current = setInterval(checkInactivity, 10 * 1000); // Check every 10 seconds
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [stage, introState, userName, lastInteractionTime]);
 }

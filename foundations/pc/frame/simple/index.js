@@ -22,7 +22,7 @@ export default function Frame() {
   const [lineKey, setLineKey] = useState(0);
   const [shouldRender, setShouldRender] = useState(true);
 
-  const bottom = 3;
+  const bottom = 6;
 
   useLayoutEffect(() => {
     const updateDimensions = () => {

@@ -17,8 +17,6 @@ const Backend = dynamic(() => import("@/components/backend"));
 const Transition = dynamic(() => import("@/components/screen/transition"));
 const Ending = dynamic(() => import("@/components/screen/ending"));
 
-import * as CONST from "@/utils/constant";
-
 // SearchParams wrapper component
 function SearchParamsWrapper({ children }) {
   const searchParams = useSearchParams();
