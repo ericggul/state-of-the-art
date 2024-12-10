@@ -288,7 +288,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
         const remaining = 30 - Math.floor((Date.now() - startTime) / 1000);
         if (remaining <= 0) {
           clearInterval(countdownInterval);
-          window.location.reload();
         } else {
           setCountdownSeconds(remaining);
         }

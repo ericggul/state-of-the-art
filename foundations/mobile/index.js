@@ -7,6 +7,8 @@ import { generateInitialModelArray } from "./utils/initialModelGeneration";
 import useScreenStore from "@/components/screen/store";
 import useDebounce from "@/utils/hooks/useDebounce";
 
+import Loading from "@/foundations/mobile/loading";
+
 const Mobile = memo(function Mobile({ socket, mobileId }) {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
@@ -40,6 +42,12 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     showResetCountdown,
     countdownSeconds,
   } = useModelListLogic({ initialModels, socket, mobileId });
+
+  if (countdownSeconds <= 0) {
+    return (
+      <Loading customText="Session expired. Please scan QR code again to reconnect" />
+    );
+  }
 
   return (
     <>
