@@ -6,6 +6,7 @@ export const Container = styled.div`
   padding: 2rem;
   min-height: 100vh;
   background: #f5f5f5;
+  cursor: pointer;
 `;
 
 export const Header = styled.div`

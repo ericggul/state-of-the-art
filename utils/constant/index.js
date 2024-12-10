@@ -46,7 +46,8 @@ export const PING_INTERVAL = 1000;
 export const PING_TIMEOUT = 8000;
 
 ///inactivity from frontend
-export const FRONTEND_INACTIVITY_TIMEOUT = (IS_DEPLOYMENT ? 3 : 8) * 60 * 1000; // 3 minutes
+export const FRONTEND_INACTIVITY_TIMEOUT =
+  (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 45 * 1000; // 45 seconds
 
 //IDLE

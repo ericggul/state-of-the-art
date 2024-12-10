@@ -192,13 +192,7 @@ function SingleRandom({ range, visible, timeUnit }) {
   ]);
 
   return (
-    <S.Container
-      $isblack={isblack ? "true" : undefined}
-      // $isTransparent={
-      //   (deviceIndex == 3 && level >= CONST.MIX_BACKEND_LEVEL) ||
-      //   stage === "Frontend"
-      // }
-    >
+    <S.Container $isblack={isblack ? "true" : undefined}>
       <div style={{ opacity: tokensOpacity }}>
         <TokensRenderer
           inputTokens={inputTokens}

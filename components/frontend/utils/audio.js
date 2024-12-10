@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 
 const SOUND_URL = "/audio/main/main1209.wav";
 const INTRO_SOUND_URL = "/audio/main/maininit1209.wav";
-const DELAY_MS = 2500;
+const DELAY_MS = 2100;
 const THRESHOLD_STATE = 3;
 
 export default function Audio() {
