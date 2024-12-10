@@ -174,11 +174,14 @@ function TextContent({ currentArchitectures, hue }) {
       const deltaTime = lastTimestamp ? (timestamp - lastTimestamp) / 16.67 : 1;
       lastTimestamp = timestamp;
 
-      const maxScroll = container.scrollHeight - container.clientHeight;
+      const contentElement = container.querySelector(".model-structure");
+      const maxScroll = contentElement.scrollHeight - container.clientHeight;
+
       scrollPosRef.current += scrollSpeed * deltaTime;
 
-      if (scrollPosRef.current >= maxScroll) {
-        scrollPosRef.current = 0;
+      // Smooth loop back to top
+      if (scrollPosRef.current >= maxScroll - container.clientHeight) {
+        scrollPosRef.current = container.clientHeight; // Reset to just past the top padding
       }
 
       container.scrollTop = Math.round(scrollPosRef.current);
@@ -208,7 +211,7 @@ function TextContent({ currentArchitectures, hue }) {
         </Suspense>
       </S.Canvas>
 
-      <S.LeftBlur />
+      {/* <S.LeftBlur /> */}
 
       <S.StructureText ref={containerRef} $needsScroll={needsScroll} $hue={hue}>
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
