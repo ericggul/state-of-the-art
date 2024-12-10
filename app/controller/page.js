@@ -8,8 +8,6 @@ import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 import { checkSessionValidity } from "@/components/controller/utils/sessionCheck";
 
-import { IS_DEPLOYMENT } from "@/utils/constant";
-
 const Controller = dynamic(() => import("@/components/controller"));
 
 export default function ControllerWrapper() {
@@ -98,11 +96,6 @@ export default function ControllerWrapper() {
       return result.isValid;
     } catch (error) {
       console.error("Session check handler error:", error);
-      // socket.current?.emit("controller-new-sessionId-decline", {
-      //   decline: true,
-      //   mobileId: data.mobileId,
-      //   error: "HANDLER_ERROR",
-      // });
     }
   }
 

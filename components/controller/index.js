@@ -120,7 +120,7 @@ export default function Controller({ socket }) {
           {currentArchitectures?.[0]?.name || "None selected"}
         </S.StatusItem>
       </S.Content>
-      {isEnding && <Ending />}
+      {isEnding && <Ending socket={socket} isController={true} />}
     </S.Container>
   );
 }

@@ -2,7 +2,7 @@ import { memo, useState, useEffect } from "react";
 import * as CONST from "@/utils/constant";
 import EndingUI from "./EndingUI";
 
-function Ending({ socket }) {
+function Ending({ socket, isController }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
@@ -31,6 +31,12 @@ function Ending({ socket }) {
   function reset() {
     try {
       socket.current?.emit("screen-force-reset-active-mobile");
+
+      socket.current?.emit("controller-new-stage-and-reset", {
+        isReset: true,
+        type: "reset",
+        force: true,
+      });
     } catch (e) {
       console.log(e);
     }

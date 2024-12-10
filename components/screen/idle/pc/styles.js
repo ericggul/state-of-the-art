@@ -46,7 +46,8 @@ export const QRCodeWrapper = styled.div`
     }
   }
 
-  animation: fadeIn 1.5s ease;
+  animation: fadeIn 5s ease both;
+  animation-delay: 3s;
 
   svg {
     width: 15vw;
