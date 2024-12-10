@@ -28,8 +28,6 @@ const Idle = memo(function Idle() {
   const isVisible = useVideoFade(videoRef);
 
   const qrLinkWithSessionId = useMemo(() => {
-    console.log(sessionId, "sessionId");
-
     return `${IDLE_QR_LINK}?sessionId=${sessionId}`;
   }, [sessionId]);
 

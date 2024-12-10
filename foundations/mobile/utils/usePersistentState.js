@@ -36,7 +36,7 @@ export function usePersistentState() {
         console.error("Error loading state:", error);
         const fallbackMobileId =
           localStorage.getItem("mobileId") || (true ? uuidv4() : "dummy");
-        console.log("fallbackMobileId", fallbackMobileId);
+
         localStorage.setItem("mobileId", fallbackMobileId);
         setState((prev) => ({
           ...prev,

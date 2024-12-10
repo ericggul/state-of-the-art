@@ -38,10 +38,6 @@ const Backend = memo(function Backend({ socket }) {
   useConversation({ socket });
   useAudio();
 
-  useEffect(() => {
-    console.log(`Loop: ${loop}, Level: ${level}`);
-  }, [loop, level]);
-
   // Memoize the current Backend component based on level
   const CurrentBackend = useMemo(() => {
     if (TESTING) {

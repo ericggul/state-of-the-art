@@ -26,7 +26,6 @@ const PostProcessing = memo(function PostProcessing() {
 const Wrapper = memo(function Wrapper() {
   const mobileVisibility = useScreenStore((state) => state.mobileVisibility);
   const isTransition = useScreenStore((state) => state.isTransition);
-  console.log("28 post processing", mobileVisibility, isTransition);
 
   return <>{isTransition && <PostProcessing />}</>;
 });

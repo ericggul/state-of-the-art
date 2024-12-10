@@ -105,8 +105,6 @@ export default React.memo(function FC3D({ enableDeviceControls = true }) {
     [architectures]
   );
 
-  console.log(raisePhone, architectures);
-
   // Match the same component selection logic as ModelContainer
   const { ModelComponent, style } = useMemo(() => {
     const modelConfig = LAYER_CONFIGS[modelName];

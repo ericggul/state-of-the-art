@@ -24,7 +24,6 @@ export default React.memo(function Mobile() {
     handleNewChaos: () => setChaos(true),
     handleNewArchitectures: setArchitectures,
   });
-  console.log(state);
 
   const [isAccelerometerActive, setIsAccelerometerActive] = useState(false);
   const [isIntroActive, setIsIntroActive] = useState(true);
@@ -41,13 +40,10 @@ export default React.memo(function Mobile() {
   const handleUsernameSubmit = useCallback(
     (username) => {
       setShowThreeScene(true);
-      console.log(username);
       setUsername(username);
     },
     [setUsername]
   );
-
-  console.log(showThreeScene);
 
   return (
     <S.Container>

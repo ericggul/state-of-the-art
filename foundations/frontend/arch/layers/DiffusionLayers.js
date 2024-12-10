@@ -64,8 +64,6 @@ export default function DiffusionLayers({ structure, style, model }) {
     }));
   }, [structure, model, layerGap, sublayerGap]);
 
-  console.log(layers);
-
   const renderLayer = (layer, i, parentKey = "", idxSum = 0) => {
     const key = parentKey ? `${parentKey}-${i}` : `${model}-${layer.name}-${i}`;
 

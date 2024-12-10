@@ -9,7 +9,6 @@ const MAX_DIMENSION = 20000;
 function scaleDimensions(dimensions) {
   try {
     const maxDim = Math.max(...dimensions);
-    console.log(dimensions, maxDim);
     if (maxDim > MAX_DIMENSION) {
       const scale = MAX_DIMENSION / maxDim;
       return dimensions.map((dim) => Math.round(dim * scale));
@@ -28,7 +27,6 @@ export default function GANLayers({ structure, style, model }) {
 
   const layers = useMemo(() => {
     // Scale down dimensions if they exceed the threshold
-    console.log(structure);
     const scaledStructure = structure.map((layer) => ({
       ...layer,
       dimensions: scaleDimensions(layer.dimensions),

@@ -28,8 +28,6 @@ export const OrientationCamera = memo(
     const targetMobileId = useScreenStore((state) => state.targetMobileId);
     const targetMobileIdRef = useRef(targetMobileId);
     useEffect(() => {
-      console.log("103");
-      console.log(targetMobileId);
       targetMobileIdRef.current = targetMobileId;
     }, [targetMobileId]);
 
@@ -76,10 +74,9 @@ export const OrientationCamera = memo(
     // Check for data timeout when stage is frontend
     useEffect(() => {
       const checkDataTimeout = () => {
-        console.log("checkDataTimeout", stage, hasActivatedRef.current);
         if (stage === "frontend" && hasActivatedRef.current) {
           const timeSinceLastData = Date.now() - lastDataTimestampRef.current;
-          console.log("timeSinceLastData", timeSinceLastData);
+
           if (timeSinceLastData > 5000) {
             // 5 seconds
             hasActivatedRef.current = false;

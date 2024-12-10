@@ -142,10 +142,6 @@ export async function getModelData(currentArchitecture) {
       throw new Error("No CSV data available");
     }
 
-    console.log(
-      `Looking for model: ${currentArchitecture.name} (${currentArchitecture.version})`
-    );
-
     const matchingRow = csvData.find(
       (row) =>
         row.name === currentArchitecture.name &&

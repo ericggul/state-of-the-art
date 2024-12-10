@@ -69,10 +69,6 @@ export default function useConversation({ socket = null }) {
   }, [socket?.current]);
 
   useEffect(() => {
-    console.log("conversations", conversations);
-  }, [conversations]);
-
-  useEffect(() => {
     if (getNewText && !hasFetchedText.current) {
       hasFetchedText.current = true;
       fetchText(conversations);

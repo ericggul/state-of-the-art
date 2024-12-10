@@ -50,8 +50,6 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
 
   if (!currentModel || !relatedModels.length) return null;
 
-  console.log(relatedModels);
-
   return (
     <>
       <S.LeftLine $hue={hue} />

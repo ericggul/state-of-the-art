@@ -44,7 +44,7 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     countdownSeconds,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
-  if (countdownSeconds <= 0) {
+  if (countdownSeconds <= 1) {
     return (
       <Loading customText="Session expired. Please scan QR code again to reconnect" />
     );
@@ -103,7 +103,7 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
           $urgent={showResetCountdown}
         >
           {showResetCountdown
-            ? countdownSeconds % 2 === 0
+            ? countdownSeconds % 4 === 0
               ? "Keep on Scrolling"
               : "Session expires in " + countdownSeconds + "s"
             : "Scroll to explore the gallery"}

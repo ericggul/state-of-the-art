@@ -87,7 +87,5 @@ export function useComputeMultiCrossSimlarity({ newMultiEmbeddings }) {
     return result;
   }, [embeddingsArr, tokensArr]);
 
-  console.log(multiSimilarityMatrix);
-
   return multiSimilarityMatrix;
 }

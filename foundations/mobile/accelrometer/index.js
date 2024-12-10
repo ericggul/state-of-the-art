@@ -48,8 +48,6 @@ const AccelerometerHandler = memo(function AccelerometerHandler({
 
     const handlePermissionError = async () => {
       try {
-        console.log("51");
-
         hasRequestedPermission.current = true;
 
         // Check if we need to request permissions (iOS)

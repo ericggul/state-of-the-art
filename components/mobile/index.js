@@ -19,9 +19,6 @@ export default function Mobile({ sessionId }) {
 
   const handleNewControllerSessionIdDecline = useCallback(
     (data) => {
-      console.log("New decline from controller:", data);
-      console.log(data.mobileId, state.mobileId, "mobileId");
-
       if (data.decline && data.mobileId == state.mobileId) {
         setIsDeclined({
           status: true,
@@ -44,7 +41,6 @@ export default function Mobile({ sessionId }) {
   }
 
   if (isDeclined.status) {
-    console.log(isDeclined);
     return (
       <Loading customText="Session expired. Please scan QR code again to reconnect" />
     );
@@ -114,10 +110,6 @@ function IntroWrapper({
       console.error("Error emitting intro state:", error);
     }
   }, [introState]);
-
-  useEffect(() => {
-    console.log("isIntro", isIntro);
-  }, [isIntro]);
 
   const handleAccelerometerActivate = useCallback(
     (value) => {

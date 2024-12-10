@@ -79,10 +79,6 @@ function ScreenContent({ test }) {
   useScreenVisibility();
   useInactivityCheck();
 
-  useEffect(() => {
-    console.log("Stage:", stage);
-  }, [stage]);
-
   // Simple render for test mode
   if (test) {
     return (

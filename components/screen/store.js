@@ -293,7 +293,6 @@ const useScreenStore = create((set) => ({
         console.log(state.targetMobileId, "targetMobileId");
         console.log(data.mobileId, "data.mobileId");
         if (state.targetMobileId === data.mobileId) {
-          console.log("299");
           return Object.entries(RESET_STATE).some(
             ([key, value]) => state[key] !== value
           )
