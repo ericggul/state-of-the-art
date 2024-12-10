@@ -26,7 +26,7 @@ export const MainContainer = styled.div`
 
 export const Header = styled.div`
   width: 100%;
-  text-align: center;
+  text-align: left;
   margin-bottom: 2rem;
 
   @media (max-width: 768px) {
@@ -69,6 +69,7 @@ export const TechStack = styled(InfoText)`
 
 export const CreditsSection = styled.div`
   margin: 2rem 0;
+  text-align: left;
 `;
 
 export const Institution = styled(InfoText)`
@@ -88,6 +89,7 @@ export const InstitutionDepartment = styled(InfoText)`
 export const Credit = styled(InfoText)`
   font-size: clamp(0.7rem, 2.5vw, 0.8rem);
   margin: 0.2rem 0;
+  text-align: left;
 
   strong {
     font-weight: 500;

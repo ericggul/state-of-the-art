@@ -10,7 +10,7 @@ function Explanation() {
           <S.Subtitle>State-of-the-Art</S.Subtitle>
 
           <S.InfoSection>
-            <S.InfoText>Multi-Device Web Artwork</S.InfoText>
+            <S.InfoText>Multi-Device Web Artwork, 2024</S.InfoText>
             <S.InfoText>4 displays, 2 Projections, 4 channel-sound</S.InfoText>
             <S.TechStack>
               Next.js, Three.js, Socket.io, OpenAI API, Claude 3.5, Langchain,
