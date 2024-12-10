@@ -92,13 +92,24 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   }, [handleUserInteraction]);
 
   // Scroll hint timer
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowScrollHint(false);
-    }, CONSTANTS.SCROLL_HINT_DURATION);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setShowScrollHint(false);
+  //   }, CONSTANTS.SCROLL_HINT_DURATION);
 
-    return () => clearTimeout(timeout);
-  }, []);
+  //   return () => clearTimeout(timeout);
+  // }, []);
+
+  useEffect(() => {
+    if (currentIndex >= 4) {
+      setShowScrollHint(false);
+      const interval = setInterval(() => {
+        setShowScrollHint(true);
+      }, 5 * 1000); // Check every second
+
+      return () => clearInterval(interval);
+    }
+  }, [currentIndex]);
 
   // Add these refs for momentum scrolling
   const velocityRef = useRef(0);

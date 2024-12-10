@@ -53,7 +53,7 @@ export const VerticalLine = styled.div`
 `;
 
 export const VerticalText = styled.div`
-  font-size: 12px;
+  font-size: 0.7rem;
   position: fixed;
   left: 24px;
   text-align: center;
@@ -171,7 +171,7 @@ export const ModelItem = styled.div`
 `;
 
 export const ModelName = styled.h2`
-  font-size: ${({ $isCurrent }) => ($isCurrent ? "1.5rem" : "1.2rem")};
+  font-size: ${({ $isCurrent }) => ($isCurrent ? "1.2rem" : "1.2rem")};
   margin: 0;
   transition: all 0.3s ease;
   max-width: 80%;
@@ -184,7 +184,7 @@ export const ModelName = styled.h2`
 
 export const ModelDetails = styled.div`
   margin-top: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.5;
   max-width: 80%;
   opacity: 0.8;
@@ -224,28 +224,25 @@ export const ModelDetails = styled.div`
 export const ScrollHint = styled.div`
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 15%;
   padding: 12px 24px;
   background: linear-gradient(
     135deg,
-    hsla(${(props) => props.$hue || 230}, 15%, 10%, 0.5) 0%,
-    hsla(${(props) => props.$hue || 230}, 20%, 5%, 0.5) 100%
+    hsla(${(props) => props.$hue || 230}, 5%, 10%, 0.3) 0%,
+    hsla(${(props) => props.$hue || 230}, 10%, 5%, 0.3) 100%
   );
-  border: 1px solid hsla(${(props) => props.$hue || 230}, 100%, 75%, 0.3);
-  backdrop-filter: blur(0.6vw);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 0.5vw) 0,
-    100% 0.5vw,
-    100% 100%,
-    0.5vw 100%,
-    0 calc(100% - 0.5vw)
-  );
-  font-size: 14px;
+  border: 1px solid hsla(${(props) => props.$hue || 230}, 0%, 95%, 0.3);
+  backdrop-filter: blur(1vw);
+  -webkit-backdrop-filter: blur(1vw);
+
+  font-size: 0.85rem;
   z-index: 100;
-  animation: ${fadeInOut} 7s ease-out forwards;
+
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
+  transition: opacity 1s ease-out;
+
   box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue || 230}, 100%, 75%, 0.1);
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.05em;
-  opacity: 0;
+  border-radius: 0.2rem;
 `;
