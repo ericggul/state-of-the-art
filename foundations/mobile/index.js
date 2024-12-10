@@ -1,7 +1,7 @@
 import React, { useMemo, memo } from "react";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
-import { useModelListLogic } from "./utils/modelListLogic-v6/useLogic";
+import { useModelListLogic } from "./utils/modelListLogic-v7/useLogic";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
 import { generateInitialModelArray } from "./utils/initialModelGeneration";
 import useScreenStore from "@/components/screen/store";
@@ -42,10 +42,9 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     showScrollHint,
     showResetCountdown,
     countdownSeconds,
-    showLoading,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
-  if (countdownSeconds <= 1) {
+  if (countdownSeconds <= 0) {
     return (
       <Loading customText="Session expired. Please scan QR code again to reconnect" />
     );
@@ -64,16 +63,23 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
             ref={(el) => (itemRefs.current[index] = el)}
             data-index={index}
             $isCurrent={isCurrentItem(index)}
+            $distance={index - (activeIndex ?? 0)}
             onClick={() => handleItemClick(index)}
             $hue={model.hue || 0}
           >
-            <S.ModelName>{model.name}</S.ModelName>
+            <S.ModelName
+              $isCurrent={isCurrentItem(index)}
+              $distance={index - (activeIndex ?? 0)}
+            >
+              {model.name}
+            </S.ModelName>
             {isCurrentItem(index) && (
               <S.ModelDetails>
                 {model.category && (
                   <p
                     style={{
                       color: `hsla(${model.hue}, 100%, 80%, 1)`,
+                      //before styling
                     }}
                   >
                     {getModelTypeName(model.category)}
@@ -97,7 +103,7 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
           $urgent={showResetCountdown}
         >
           {showResetCountdown
-            ? countdownSeconds % 4 === 0
+            ? countdownSeconds % 2 === 0
               ? "Keep on Scrolling"
               : "Session expires in " + countdownSeconds + "s"
             : "Scroll to explore the gallery"}

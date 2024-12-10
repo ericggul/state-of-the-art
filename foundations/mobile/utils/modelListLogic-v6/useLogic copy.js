@@ -96,15 +96,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       );
   }, [handleUserInteraction]);
 
-  // Scroll hint timer
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setShowScrollHint(false);
-  //   }, CONSTANTS.SCROLL_HINT_DURATION);
-
-  //   return () => clearTimeout(timeout);
-  // }, []);
-
   useEffect(() => {
     if (currentIndex >= 4) {
       setShowScrollHint(false);

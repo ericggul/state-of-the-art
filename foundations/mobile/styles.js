@@ -22,7 +22,11 @@ const scanline = keyframes`
 
 export const Container = styled.div`
   ${WholeContainer}
-
+  background: linear-gradient(
+    135deg,
+    hsl(${(props) => props.$hue || 230}, 8%, 4%) 0%,
+    hsl(${(props) => props.$hue || 230}, 12%, 2%) 100%
+  );
   color: #fff;
   position: relative;
   overflow-x: hidden;
@@ -65,7 +69,7 @@ export const ActiveDot = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
+  width: 8px;
   height: ${({ $position }) => `${$position.height}%`};
   background: #fff;
   border-radius: 4px;
@@ -114,9 +118,18 @@ export const ModelItem = styled.div`
   border-radius: 0.5rem;
   height: ${({ $isCurrent }) => ($isCurrent ? "auto" : "4rem")};
   margin-bottom: 1rem;
-  opacity: ${({ $isCurrent }) => ($isCurrent ? 1 : 0.6)};
+  opacity: ${({ $distance }) => {
+    const absDistance = Math.abs($distance);
+    return Math.max(0.4, 1 - absDistance * 0.2);
+  }};
 
-  border: 1px solid hsla(${(props) => props.$hue}, 100%, 75%, 0.3);
+  border: 1px solid
+    hsla(
+      ${(props) => props.$hue},
+      100%,
+      75%,
+      ${(props) => (props.$isCurrent ? "0.3" : "0.1")}
+    );
   backdrop-filter: blur(0.6vw);
   -webkit-backdrop-filter: blur(0.6vw);
 
@@ -131,16 +144,34 @@ export const ModelItem = styled.div`
     ${({ $distance }) => {
       const absDistance = Math.abs($distance);
       if (absDistance === 0) return "0%";
-      if (absDistance === 1) return "10%";
-      return "20%";
+      if (absDistance === 1) return "8%";
+      if (absDistance === 2) return "16%";
+      return "24%";
     }}
   );
 
   transition: all 0.3s ease-in-out;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(${(props) => props.$hue}, 100%, 75%, 0.5),
+      transparent
+    );
+    animation: ${scanline} 2s linear infinite;
+    opacity: ${(props) => (props.$isCurrent ? 0.5 : 0.2)};
+  }
 `;
 
 export const ModelName = styled.h2`
-  font-size: 1.2rem;
+  font-size: ${({ $isCurrent }) => ($isCurrent ? "1.2rem" : "1.2rem")};
   margin: 0;
   transition: all 0.3s ease;
   max-width: 80%;

@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { useModelObservers } from "./useModelObservers";
 import { useModelInteractions } from "./useModelInteractions";
+import { useInitialScroll } from "./useInitialScroll";
 import { useSocketCommunication } from "./useSocketCommunication";
 import { CONSTANTS } from "./constants";
 
