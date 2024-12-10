@@ -2,7 +2,7 @@ import React, { useMemo, memo, useCallback, useRef } from "react";
 import { VariableSizeList as List } from "react-window";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
-import { useModelListLogic } from "./utils/modelListLogic/useLogic";
+import { useModelListLogic } from "./utils/modelListLogic-v5/useLogic";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
 import { generateInitialModelArray } from "./utils/initialModelGeneration";
 import useScreenStore from "@/components/screen/store";

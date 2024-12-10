@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { CONSTANTS } from "./constants";
 
 export function useModelObservers({
@@ -13,7 +13,6 @@ export function useModelObservers({
   lastInteractionTimeRef,
   setIsUserInteraction,
   setDotPosition,
-  setShowLoading,
 }) {
   const observerRef = useRef(null);
   const currentItemObserverRef = useRef(null);
@@ -34,23 +33,14 @@ export function useModelObservers({
     if (isAddingModelsRef.current) return;
     isAddingModelsRef.current = true;
 
-    // Show loading UI
-    setShowLoading(true);
-
-    setTimeout(() => {
-      setModels((prevModels) => {
-        const newModels = [...Array(CONSTANTS.NEW_MODELS_COUNT)].map(
-          () => initialModels[Math.floor(Math.random() * initialModels.length)]
-        );
-        const updatedModels = [...prevModels, ...newModels];
-        isAddingModelsRef.current = false;
-
-        // Hide loading UI
-        setShowLoading(false);
-
-        return updatedModels;
-      });
-    }, 1000);
+    setModels((prevModels) => {
+      const newModels = [...Array(CONSTANTS.NEW_MODELS_COUNT)].map(
+        () => initialModels[Math.floor(Math.random() * initialModels.length)]
+      );
+      const updatedModels = [...prevModels, ...newModels];
+      isAddingModelsRef.current = false;
+      return updatedModels;
+    });
   }, [initialModels]);
 
   const addModelsToBottom = useCallback(() => addMoreModels(), [addMoreModels]);

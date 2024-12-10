@@ -1,7 +1,7 @@
 import React, { useMemo, memo } from "react";
 import * as S from "./styles";
 import { MODELS } from "@/components/controller/constant/models";
-import { useModelListLogic } from "./utils/modelListLogic/useLogic";
+import { useModelListLogic } from "./utils/modelListLogic-v6/useLogic";
 import { getModelTypeName } from "@/utils/constant/modelTypes";
 import { generateInitialModelArray } from "./utils/initialModelGeneration";
 import useScreenStore from "@/components/screen/store";
@@ -64,23 +64,16 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
             ref={(el) => (itemRefs.current[index] = el)}
             data-index={index}
             $isCurrent={isCurrentItem(index)}
-            $distance={index - (activeIndex ?? 0)}
             onClick={() => handleItemClick(index)}
             $hue={model.hue || 0}
           >
-            <S.ModelName
-              $isCurrent={isCurrentItem(index)}
-              $distance={index - (activeIndex ?? 0)}
-            >
-              {model.name}
-            </S.ModelName>
+            <S.ModelName>{model.name}</S.ModelName>
             {isCurrentItem(index) && (
               <S.ModelDetails>
                 {model.category && (
                   <p
                     style={{
                       color: `hsla(${model.hue}, 100%, 80%, 1)`,
-                      //before styling
                     }}
                   >
                     {getModelTypeName(model.category)}
