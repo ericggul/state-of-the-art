@@ -27,12 +27,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   const [dotPosition, setDotPosition] = useState({ top: 0, height: 0 });
   const [isUserInteraction, setIsUserInteraction] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(true);
-  const [showResetCountdown, setShowResetCountdown] = useState(false);
-  const [countdownSeconds, setCountdownSeconds] = useState(30);
-
-  // Single timer ref for countdown
-  const countdownTimerRef = useRef(null);
-  const lastIndexChangeTimeRef = useRef(Date.now());
 
   // Refs
   const listRef = useRef(null);
@@ -267,43 +261,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     }
   }, []);
 
-  // Track index changes for inactivity
-  useEffect(() => {
-    lastIndexChangeTimeRef.current = Date.now();
-
-    // Clear any existing countdown
-    if (countdownTimerRef.current) {
-      clearTimeout(countdownTimerRef.current);
-      setShowResetCountdown(false);
-      setCountdownSeconds(30);
-    }
-
-    // Set new inactivity timer
-    countdownTimerRef.current = setTimeout(() => {
-      setShowResetCountdown(true);
-
-      // Simple countdown
-      const startTime = Date.now();
-      const countdownInterval = setInterval(() => {
-        const remaining = 30 - Math.floor((Date.now() - startTime) / 1000);
-        if (remaining <= 0) {
-          clearInterval(countdownInterval);
-          window.location.reload();
-        } else {
-          setCountdownSeconds(remaining);
-        }
-      }, 1000);
-
-      countdownTimerRef.current = countdownInterval;
-    }, 60000); // 60 seconds of no index changes
-
-    return () => {
-      if (countdownTimerRef.current) {
-        clearTimeout(countdownTimerRef.current);
-      }
-    };
-  }, [currentIndex, manuallySelectedIndex]); // Only track actual index changes
-
   return {
     models,
     activeIndex,
@@ -313,8 +270,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     handleItemClick,
     isCurrentItem,
     showScrollHint,
-    showResetCountdown,
-    countdownSeconds,
   };
 }
 

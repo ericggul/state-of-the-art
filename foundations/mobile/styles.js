@@ -222,16 +222,35 @@ export const ModelDetails = styled.div`
 `;
 
 export const ScrollHint = styled.div`
+  pointer-events: none;
   position: fixed;
   bottom: 24px;
   left: 15%;
   padding: 12px 24px;
   background: linear-gradient(
     135deg,
-    hsla(${(props) => props.$hue || 230}, 5%, 10%, 0.3) 0%,
-    hsla(${(props) => props.$hue || 230}, 10%, 5%, 0.3) 100%
+    hsla(
+        ${(props) => (props.$urgent ? "0" : props.$hue || 230)},
+        ${(props) => (props.$urgent ? "80%" : "5%")},
+        ${(props) => (props.$urgent ? "20%" : "10%")},
+        0.3
+      )
+      0%,
+    hsla(
+        ${(props) => (props.$urgent ? "0" : props.$hue || 230)},
+        ${(props) => (props.$urgent ? "85%" : "10%")},
+        ${(props) => (props.$urgent ? "15%" : "5%")},
+        0.3
+      )
+      100%
   );
-  border: 1px solid hsla(${(props) => props.$hue || 230}, 0%, 95%, 0.3);
+  border: 1px solid
+    hsla(
+      ${(props) => (props.$urgent ? "0" : props.$hue || 230)},
+      ${(props) => (props.$urgent ? "100%" : "0%")},
+      ${(props) => (props.$urgent ? "75%" : "95%")},
+      0.3
+    );
   backdrop-filter: blur(1vw);
   -webkit-backdrop-filter: blur(1vw);
 
@@ -239,9 +258,15 @@ export const ScrollHint = styled.div`
   z-index: 100;
 
   opacity: ${(props) => (props.$visible ? 1 : 0)};
-  transition: opacity 1s ease-out;
+  transition: all 2s ease-out;
 
-  box-shadow: 0 0 1.5vw hsla(${(props) => props.$hue || 230}, 100%, 75%, 0.1);
+  box-shadow: 0 0 1.5vw
+    hsla(
+      ${(props) => (props.$urgent ? "0" : props.$hue || 230)},
+      ${(props) => (props.$urgent ? "100%" : "100%")},
+      ${(props) => (props.$urgent ? "75%" : "75%")},
+      0.1
+    );
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.05em;
   border-radius: 0.2rem;

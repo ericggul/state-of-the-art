@@ -37,6 +37,8 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     isCurrentItem,
     isInitialScrollComplete,
     showScrollHint,
+    showResetCountdown,
+    countdownSeconds,
   } = useModelListLogic({ initialModels, socket, mobileId });
 
   return (
@@ -85,9 +87,18 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
           </S.ModelItem>
         ))}
       </S.ModelList>
-      <S.ScrollHint $visible={showScrollHint}>
-        Scroll to explore the gallery
-      </S.ScrollHint>
+      {
+        <S.ScrollHint
+          $visible={showScrollHint || showResetCountdown}
+          $urgent={showResetCountdown}
+        >
+          {showResetCountdown
+            ? countdownSeconds % 2 === 0
+              ? "Keep on Scrolling"
+              : "Session expires in " + countdownSeconds + "s"
+            : "Scroll to explore the gallery"}
+        </S.ScrollHint>
+      }
     </>
   );
 });
