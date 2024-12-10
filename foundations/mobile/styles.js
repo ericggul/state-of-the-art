@@ -69,7 +69,7 @@ export const ActiveDot = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px;
+  width: 4px;
   height: ${({ $position }) => `${$position.height}%`};
   background: #fff;
   border-radius: 4px;

@@ -30,8 +30,6 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
   const [showResetCountdown, setShowResetCountdown] = useState(false);
   const [countdownSeconds, setCountdownSeconds] = useState(30);
 
-  const [showLoading, setShowLoading] = useState(false);
-
   // Single timer ref for countdown
   const countdownTimerRef = useRef(null);
   const lastIndexChangeTimeRef = useRef(Date.now());
@@ -60,10 +58,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       lastInteractionTimeRef,
       setIsUserInteraction,
       setDotPosition,
-      setShowLoading,
     });
-
-  console.log("showLoading", showLoading);
 
   const { handleUserInteraction, handleItemClick, isCurrentItem } =
     useModelInteractions({
@@ -136,33 +131,140 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
     const listElement = listRef.current;
     if (!listElement) return;
 
-    let lastScrollTime = Date.now();
-    let lastScrollTop = listElement.scrollTop;
+    if (isAndroid) {
+      // Android: Use v2 speed-limiting scroll logic
+      let lastScrollTime = Date.now();
+      let lastScrollTop = listElement.scrollTop;
+      let rafId = null;
 
-    const handleScroll = (e) => {
-      const currentTime = Date.now();
-      const currentScrollTop = listElement.scrollTop;
-      const timeDelta = currentTime - lastScrollTime;
+      const handleScroll = () => {
+        if (rafId) return;
 
-      // Calculate scroll speed (pixels per millisecond)
-      const scrollSpeed =
-        Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
-      const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED;
+        rafId = requestAnimationFrame(() => {
+          const currentTime = Date.now();
+          const currentScrollTop = listElement.scrollTop;
 
-      if (scrollSpeed > maxSpeed) {
-        // Limit the scroll position
-        const maxScrollDelta = maxSpeed * timeDelta;
-        const direction = currentScrollTop > lastScrollTop ? 1 : -1;
-        listElement.scrollTop = lastScrollTop + maxScrollDelta * direction;
-        e.preventDefault();
+          if (currentTime - lastScrollTime >= SCROLL_THROTTLE_MS) {
+            const timeDelta = currentTime - lastScrollTime;
+            const scrollSpeed =
+              Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
+            const maxSpeed = CONSTANTS.MAX_SCROLL_SPEED;
+
+            if (scrollSpeed > maxSpeed) {
+              const maxScrollDelta = maxSpeed * timeDelta;
+              const direction = currentScrollTop > lastScrollTop ? 1 : -1;
+              listElement.scrollTop =
+                lastScrollTop + maxScrollDelta * direction;
+            }
+
+            lastScrollTime = currentTime;
+            lastScrollTop = listElement.scrollTop;
+          }
+          rafId = null;
+        });
+      };
+
+      listElement.addEventListener("scroll", handleScroll, { passive: true });
+      return () => {
+        listElement.removeEventListener("scroll", handleScroll);
+        if (rafId) cancelAnimationFrame(rafId);
+      };
+    } else {
+      // iOS: Enhanced momentum scrolling logic
+      let isScrolling = false;
+      let lastTime = null;
+
+      function updateScroll(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const deltaTime = timestamp - lastTime;
+        lastTime = timestamp;
+
+        if (
+          Math.abs(smoothedVelocityRef.current) > MOMENTUM_CONFIG.minVelocity
+        ) {
+          // Apply smoothing to the velocity
+          smoothedVelocityRef.current =
+            smoothedVelocityRef.current * MOMENTUM_CONFIG.friction;
+
+          // Apply the smoothed velocity to scroll position
+          listElement.scrollTop += smoothedVelocityRef.current;
+
+          // Check bounds
+          if (
+            listElement.scrollTop <= 0 ||
+            listElement.scrollTop >=
+              listElement.scrollHeight - listElement.clientHeight
+          ) {
+            smoothedVelocityRef.current = 0;
+            velocityRef.current = 0;
+          }
+
+          animationFrameRef.current = requestAnimationFrame(updateScroll);
+        } else {
+          isScrolling = false;
+          lastTime = null;
+        }
       }
 
-      lastScrollTime = currentTime;
-      lastScrollTop = listElement.scrollTop;
-    };
+      function handleTouchStart(e) {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+        velocityRef.current = 0;
+        smoothedVelocityRef.current = 0;
+        lastTouchYRef.current = e.touches[0].clientY;
+        lastTime = null;
+      }
 
-    listElement.addEventListener("scroll", handleScroll, { passive: false });
-    return () => listElement.removeEventListener("scroll", handleScroll);
+      function handleTouchMove(e) {
+        const deltaY = lastTouchYRef.current - e.touches[0].clientY;
+        lastTouchYRef.current = e.touches[0].clientY;
+
+        // Calculate new velocity with smoothing
+        const rawVelocity = deltaY * MOMENTUM_CONFIG.multiplier;
+        const clampedVelocity = Math.max(
+          -MOMENTUM_CONFIG.maxVelocity,
+          Math.min(MOMENTUM_CONFIG.maxVelocity, rawVelocity)
+        );
+
+        // Smooth the velocity transition
+        velocityRef.current = clampedVelocity;
+        smoothedVelocityRef.current =
+          smoothedVelocityRef.current * (1 - MOMENTUM_CONFIG.smoothingFactor) +
+          velocityRef.current * MOMENTUM_CONFIG.smoothingFactor;
+
+        listElement.scrollTop += deltaY;
+      }
+
+      function handleTouchEnd() {
+        if (
+          Math.abs(smoothedVelocityRef.current) > MOMENTUM_CONFIG.minVelocity
+        ) {
+          isScrolling = true;
+          lastTime = null;
+          animationFrameRef.current = requestAnimationFrame(updateScroll);
+        }
+      }
+
+      listElement.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+      listElement.addEventListener("touchmove", handleTouchMove, {
+        passive: true,
+      });
+      listElement.addEventListener("touchend", handleTouchEnd, {
+        passive: true,
+      });
+
+      return () => {
+        listElement.removeEventListener("touchstart", handleTouchStart);
+        listElement.removeEventListener("touchmove", handleTouchMove);
+        listElement.removeEventListener("touchend", handleTouchEnd);
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+      };
+    }
   }, []);
 
   // Track index changes for inactivity
