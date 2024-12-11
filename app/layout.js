@@ -5,12 +5,12 @@ import { GeistMono } from "geist/font/mono";
 import { Cardo } from "next/font/google";
 
 export const metadata = {
-  title: "KAIST Museum Opening Exhibition",
-  description: "KAIST Museum",
+  title: "SoTA | State-of-the-Art | XD Lab",
+  description: "SoTA is a Multi-Device Web Artwork developed by XD Lab",
   openGraph: {
     type: "website",
     locale: "en_UK",
-    siteName: "KAIST Museum Opening Exhibition",
+    siteName: "SoTA | State-of-the-Art | XD Lab",
   },
   robots: {
     index: true,
@@ -47,6 +47,8 @@ export default function RootLayout({ children }) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <link rel="icon" href="/icon.png" />
+        <link rel="apple-touch-icon" href="/icon.png" />
       </head>
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>

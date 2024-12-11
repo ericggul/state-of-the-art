@@ -1,5 +1,11 @@
 export const metadata = {
-  title: "Mobile | ",
+  title: "SoTA | XD Lab",
+  description: "SoTA is a Multi-Device Web Artwork developed by XD Lab",
+  openGraph: {
+    type: "website",
+    locale: "en_UK",
+    siteName: "SoTA | XD Lab",
+  },
   robots: {
     index: true,
     follow: true,
