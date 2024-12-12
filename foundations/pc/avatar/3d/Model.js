@@ -1,5 +1,5 @@
-const PATH = "/3d/avatars-test/final_model.glb";
-const ANIMATIONS_URL = "/3d/avatars-test/animations/final_animation.glb";
+const PATH = "/3d/avatars/final_model_2.glb";
+const ANIMATIONS_URL = "/3d/avatars/animations/final_animation.glb";
 const DEFAULT_MODEL_CONTROLS = {
   position: [0, -2.1, 0],
   scale: 2,
@@ -113,36 +113,44 @@ function ModelEl({ group, nodes, materials, scaleArray }) {
           geometry={nodes.Alpha_Joints.geometry}
           material={materials.Alpha_Joints_MAT}
           skeleton={nodes.Alpha_Joints.skeleton}
-          castShadow
         />
         <skinnedMesh
           geometry={nodes.Alpha_Surface.geometry}
           material={materials.Alpha_Body_MAT}
           skeleton={nodes.Alpha_Surface.skeleton}
-          castShadow
         />
-        {["EyeLeft001", "EyeRight001", "Wolf3D_Head001", "Wolf3D_Teeth001"].map(
-          (name) => (
-            <skinnedMesh
-              key={name}
-              name={name}
-              geometry={nodes[name].geometry}
-              material={
-                materials[
-                  name.includes("Eye")
-                    ? "Wolf3D_Eye.001"
-                    : name.includes("Teeth")
-                    ? "Wolf3D_Teeth.001"
-                    : "Wolf3D_Skin.001"
-                ]
-              }
-              skeleton={nodes[name].skeleton}
-              morphTargetDictionary={nodes[name].morphTargetDictionary}
-              morphTargetInfluences={nodes[name].morphTargetInfluences}
-              castShadow
-            />
-          )
-        )}
+        <skinnedMesh
+          name="EyeLeft001"
+          geometry={nodes.EyeLeft001.geometry}
+          material={materials["Wolf3D_Eye.001"]}
+          skeleton={nodes.EyeLeft001.skeleton}
+          morphTargetDictionary={nodes.EyeLeft001.morphTargetDictionary}
+          morphTargetInfluences={nodes.EyeLeft001.morphTargetInfluences}
+        />
+        <skinnedMesh
+          name="EyeRight001"
+          geometry={nodes.EyeRight001.geometry}
+          material={materials["Wolf3D_Eye.001"]}
+          skeleton={nodes.EyeRight001.skeleton}
+          morphTargetDictionary={nodes.EyeRight001.morphTargetDictionary}
+          morphTargetInfluences={nodes.EyeRight001.morphTargetInfluences}
+        />
+        <skinnedMesh
+          name="Wolf3D_Head001"
+          geometry={nodes.Wolf3D_Head001.geometry}
+          material={materials["Wolf3D_Skin.001"]}
+          skeleton={nodes.Wolf3D_Head001.skeleton}
+          morphTargetDictionary={nodes.Wolf3D_Head001.morphTargetDictionary}
+          morphTargetInfluences={nodes.Wolf3D_Head001.morphTargetInfluences}
+        />
+        <skinnedMesh
+          name="Wolf3D_Teeth001"
+          geometry={nodes.Wolf3D_Teeth001.geometry}
+          material={materials["Wolf3D_Teeth.001"]}
+          skeleton={nodes.Wolf3D_Teeth001.skeleton}
+          morphTargetDictionary={nodes.Wolf3D_Teeth001.morphTargetDictionary}
+          morphTargetInfluences={nodes.Wolf3D_Teeth001.morphTargetInfluences}
+        />
         <primitive object={nodes.mixamorigHips} />
       </group>
     </group>
