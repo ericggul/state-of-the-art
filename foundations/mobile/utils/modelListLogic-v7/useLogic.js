@@ -4,6 +4,7 @@ import { useModelInteractions } from "./useModelInteractions";
 import { useInitialScroll } from "./useInitialScroll";
 import { useSocketCommunication } from "./useSocketCommunication";
 import { CONSTANTS } from "./constants";
+import * as ALL_CONSTANTS from "@/utils/constant";
 
 const SCROLL_THROTTLE_MS = 16; // Approximately 60fps
 
@@ -286,7 +287,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       const startTime = Date.now();
       const countdownInterval = setInterval(() => {
         const remaining = 30 - Math.floor((Date.now() - startTime) / 1000);
-        if (remaining <= 0) {
+        if (remaining < 0) {
           clearInterval(countdownInterval);
         } else {
           setCountdownSeconds(remaining);
@@ -294,7 +295,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       }, 1000);
 
       countdownTimerRef.current = countdownInterval;
-    }, 70 * 1000); // 60 seconds of no index changes
+    }, Math.max(ALL_CONSTANTS.INACTIVITY_TIMEOUT + ALL_CONSTANTS.FRONTEND_INACTIVITY_TIMEOUT - 30 * 1000, 100)); // 60 seconds of no index changes
 
     return () => {
       if (countdownTimerRef.current) {

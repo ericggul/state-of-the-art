@@ -32,7 +32,7 @@ export default function useInactivityCheck() {
 
     const checkInactivity = () => {
       const now = Date.now();
-      if (now - lastInteractionTime >= timeout) {
+      if (now - lastInteractionTime >= timeout - 1000) {
         if (introState == 3) setIntroState(4);
         else setIsEnding(true);
       }
