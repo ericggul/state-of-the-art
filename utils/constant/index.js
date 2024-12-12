@@ -14,8 +14,8 @@ export function iterationSpeedMultiplier(iteration) {
 //hooks > useScreenVisibility
 export const TIMEOUTS = {
   //TRANSITION LOGIC
-  TRANSITION: 6000,
-  BACKEND: 8000,
+  TRANSITION: 7 * 1000,
+  BACKEND: 10 * 1000,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 
@@ -35,8 +35,8 @@ export const DEVICE_DELAY_MULTIPLIER = 450;
 
 //conversation: black and white time
 //backend > useConversation
-export const EXTRA_BLACK_TIME = [0, 5000, 3000, 4000, 1000, 0, 0];
-export const WHITE_TIME = [5000, 4000, 4000, 3000, 3000, 1500, 1500];
+export const EXTRA_BLACK_TIME = [0, 4000, 1000, 1000, 0, 0, 0];
+export const WHITE_TIME = [5000, 4000, 2000, 4000, 4000, 1500, 1500];
 
 export const API_TIMEOUT = 15 * 1000;
 

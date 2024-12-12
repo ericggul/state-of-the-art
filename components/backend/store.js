@@ -44,11 +44,12 @@ const useStore = create((set) => ({
   setLoop: (value) =>
     set({
       loop: value,
-      level: Math.floor(value / 3),
+      level:
+        value >= 8 ? Math.floor((value - 8) / 3) + 4 : Math.floor(value / 2),
       subLevel:
-        value >= 21
-          ? Math.min(Math.floor(value % 6), 5)
-          : Math.min(Math.floor(value % 3), 2),
+        value >= 8
+          ? Math.min(Math.floor(value % 3), 2)
+          : Math.min(Math.floor(value % 2), 1),
     }),
 
   // Complex handlers

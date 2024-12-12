@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import { memo, useEffect, useState, useRef } from "react";
+import { memo, useEffect, useState } from "react";
 import useScreenStore from "@/components/screen/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
 
@@ -16,7 +16,6 @@ const Transition = memo(function Transition() {
   const deviceIndex = useScreenStore((state) => state.deviceIndex);
   const iteration = useScreenStore((state) => state.iteration);
   const isProjector = useScreenStore((state) => state.isProjector);
-  const audioRef = useRef(null);
 
   useEffect(() => {
     const baseDelay =
@@ -56,23 +55,19 @@ const Transition = memo(function Transition() {
 
   useEffect(() => {
     try {
-      audioRef.current = new Audio(audio2);
-      audioRef.current.playbackRate = 1 / iterationSpeedMultiplier(iteration);
+      const audio = new Audio(audio2);
+      if (activate) {
+        audio.playbackRate = 1 / iterationSpeedMultiplier(iteration);
+        audio.play();
+      }
 
       return () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current = null;
+        if (audio) {
+          audio.pause();
         }
       };
     } catch (e) {
       console.log(e);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activate && audioRef.current) {
-      audioRef.current.play();
     }
   }, [activate]);
 
