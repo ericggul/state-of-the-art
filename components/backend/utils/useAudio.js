@@ -1,33 +1,18 @@
-import { useEffect, useRef, useCallback } from "react";
-import useStore from "@/components/backend/store";
+import { useEffect, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
-const audioFiles = [
-  "/audio/test.wav",
-  "/audio/test2.wav",
-  "/audio/test3.wav",
-  "/audio/test4.wav",
-];
+
+const NEW_AUDIO = "/audio/backend/loop1212.wav";
 
 export default function useAudio() {
-  const isblack = useStore((state) => state.isblack);
   const stage = useScreenStore((state) => state.stage);
-
   const mainAudioRef = useRef(null);
-  const robotAudioRef = useRef(null);
-
-  const getRandomAudioFile = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * audioFiles.length);
-    return audioFiles[randomIndex];
-  }, []);
 
   useEffect(() => {
-    if (isblack && stage == "Backend") {
-      // Main audio (random from audioFiles)
-      const newAudioFile = getRandomAudioFile();
+    if (stage === "Backend") {
       if (mainAudioRef.current) {
         mainAudioRef.current.pause();
       }
-      mainAudioRef.current = new Audio(newAudioFile);
+      mainAudioRef.current = new Audio(NEW_AUDIO);
       mainAudioRef.current.loop = true;
 
       mainAudioRef.current.load();
@@ -35,12 +20,9 @@ export default function useAudio() {
         .play()
         .catch((error) => console.error("Main audio playback failed:", error));
     } else {
-      // Pause both audio tracks when isblack is false
+      // Pause both audio tracks when not in Backend stage
       if (mainAudioRef.current) {
         mainAudioRef.current.pause();
-      }
-      if (robotAudioRef.current) {
-        robotAudioRef.current.pause();
       }
     }
 
@@ -50,12 +32,8 @@ export default function useAudio() {
         mainAudioRef.current.pause();
         mainAudioRef.current = null;
       }
-      if (robotAudioRef.current) {
-        robotAudioRef.current.pause();
-        robotAudioRef.current = null;
-      }
     };
-  }, [isblack, getRandomAudioFile, stage]);
+  }, [stage]);
 
   return null;
 }

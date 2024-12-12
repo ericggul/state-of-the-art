@@ -10,11 +10,12 @@ const THRESHOLD_STATE = 3;
 export default function Audio() {
   const introState = useScreenStore((state) => state.introState);
   const isProjector = useScreenStore((state) => state.isProjector);
+  const isTransition = useScreenStore((state) => state.isTransition);
   const [delayedPlaying, setDelayedPlaying] = useState(false);
 
   // Handle the 2s delay for main audio
   useEffect(() => {
-    const shouldPlay = introState >= THRESHOLD_STATE;
+    const shouldPlay = introState >= THRESHOLD_STATE && !isTransition;
     if (shouldPlay) {
       const timer = setTimeout(() => {
         setDelayedPlaying(true);
@@ -23,7 +24,7 @@ export default function Audio() {
     } else {
       setDelayedPlaying(false);
     }
-  }, [introState]);
+  }, [introState, isTransition]);
 
   const { audioRef } = useAudio({ isPlaying: delayedPlaying, isProjector });
   const audioRefIntro = useRef(null);
@@ -34,6 +35,17 @@ export default function Audio() {
       audioRefIntro.current.play();
     }
   }, [introState]);
+
+  // Handle pausing when transition occurs
+  useEffect(() => {
+    if (isTransition && audioRef.current) {
+      try {
+        audioRef.current.pause();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [isTransition]);
 
   return (
     <>

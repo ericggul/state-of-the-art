@@ -47,7 +47,7 @@ function Ending({ socket, isController }) {
       console.log(e);
     }
 
-    window.location.reload(true);
+    window.location.reload();
   }
 
   return <EndingUI isVisible={isVisible} isFadingOut={isFadingOut} />;

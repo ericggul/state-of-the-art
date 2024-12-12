@@ -89,7 +89,7 @@ export default function ControllerWrapper() {
         console.log(targetMobileIdRef.current, data.mobileId);
         if (targetMobileIdRef && targetMobileIdRef.current == data.mobileId) {
           socket.current?.emit("controller-force-reset-active-mobile");
-          setTimeout(() => window.location.reload(true), 2000);
+          setTimeout(() => window.location.reload(), 2000);
         }
       }
 

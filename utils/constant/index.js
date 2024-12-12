@@ -51,7 +51,7 @@ export const PING_TIMEOUT = 8000;
 //   (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
 export const FRONTEND_INACTIVITY_TIMEOUT =
   (IS_DEPLOYMENT ? 1.5 : 1) * 60 * 1000; // 90 seconds
-export const INTRO_INACTIVITY_TIMEOUT = 45 * 1000; // 45 seconds
+export const INTRO_INACTIVITY_TIMEOUT = 35 * 1000; // 45 seconds
 
 //IDLE
 export const IDLE_QR_LINK = IS_DEPLOYMENT

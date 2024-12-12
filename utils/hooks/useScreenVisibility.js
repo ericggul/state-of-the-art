@@ -48,17 +48,19 @@ export default function useScreenVisibility() {
     setIsTransition(true);
 
     timeouts.current.transition = setTimeout(() => {
-      const { mobileVisibility } = useScreenStore.getState();
-      if (!mobileVisibility) {
-        console.log("🔄 Transition ended, visibility:", mobileVisibility);
-        setIsTransition(false);
-      }
+      console.log("removed for testing");
+      // const { mobileVisibility } = useScreenStore.getState();
+      // if (!mobileVisibility) {
+      //   console.log("🔄 Transition ended, visibility:", mobileVisibility);
+      //   setIsTransition(false);
+      // }
     }, TIMEOUTS.TRANSITION * multiplier);
 
     timeouts.current.backend = setTimeout(() => {
       const { mobileVisibility } = useScreenStore.getState();
       if (!mobileVisibility) {
         setStage("Backend");
+        setIsTransition(false);
       }
     }, TIMEOUTS.BACKEND * multiplier);
 

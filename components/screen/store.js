@@ -266,7 +266,7 @@ const useScreenStore = create((set) => ({
     set((state) => {
       // Reset handling could be more explicit
       if (data.type === "reset" && data.isReset) {
-        window.location.reload(true);
+        window.location.reload();
         return state; // Explicit return while reload happens
       }
 

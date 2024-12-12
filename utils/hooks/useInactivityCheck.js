@@ -33,8 +33,9 @@ export default function useInactivityCheck() {
       const now = Date.now();
       if (now - lastInteractionTime > timeout) {
         console.log(introState, "introState");
-        if (introState >= 3) setIntroState(2);
-        else setIsEnding(true);
+        setIsEnding(true);
+        // if (introState >= 3) setIntroState(5);
+        // else setIsEnding(true);
       }
     };
 
