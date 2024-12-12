@@ -5,10 +5,11 @@ const NEW_AUDIO = "/audio/backend/loop1212.wav";
 
 export default function useAudio() {
   const stage = useScreenStore((state) => state.stage);
+  const isProjector = useScreenStore((state) => state.isProjector);
   const mainAudioRef = useRef(null);
 
   useEffect(() => {
-    if (stage === "Backend") {
+    if (stage === "Backend" && isProjector) {
       if (mainAudioRef.current) {
         mainAudioRef.current.pause();
       }
@@ -33,7 +34,7 @@ export default function useAudio() {
         mainAudioRef.current = null;
       }
     };
-  }, [stage]);
+  }, [stage, isProjector]);
 
   return null;
 }

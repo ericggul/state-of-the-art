@@ -41,7 +41,7 @@ const Transition = memo(function Transition() {
   useEffect(() => {
     if (isProjector) {
       const audio = new Audio(audio1);
-      audio.loop = true;
+      // audio.loop = true;
       audio.playbackRate = 1 / iterationSpeedMultiplier(iteration);
       audio.play();
 

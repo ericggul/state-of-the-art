@@ -4,13 +4,12 @@ import { memo, useState, useEffect, useCallback } from "react";
 import * as S from "./styles";
 import dynamic from "next/dynamic";
 
-const IdlePC = dynamic(() => import("@/components/screen/idle/pc/index"));
+const IdlePC = dynamic(() => import("@/components/screen/idle/pc"));
 const IdleProjector = dynamic(() =>
   import("@/components/screen/idle/projector")
 );
 
 const UNMOUNT_DELAY = 3000;
-const FADE_DURATION = 1000; // Audio fade duration
 
 const Idle = memo(function Idle({ $isFrontend, type }) {
   const [unmount, setUnmount] = useState(false);

@@ -17,29 +17,11 @@ import {
   IDLE_MAX_INTERVAL,
 } from "@/utils/constant";
 
-// Create video cache at module level
-const videoCache = new Map();
-const preloadVideo = (src) => {
-  if (!videoCache.has(src)) {
-    const video = document.createElement("video");
-    video.src = src;
-    video.preload = "auto";
-    videoCache.set(src, video);
-  }
-};
-
 const Idle = memo(function Idle() {
   const [windowWidth] = useResize();
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
   const sessionId = useScreenStore((state) => state.sessionId || "");
   const intDeviceIdx = parseInt(deviceIdx, 10);
-  const currentVideoSrc = `/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`;
-
-  // Preload only the video we need for this device
-  useEffect(() => {
-    preloadVideo(currentVideoSrc);
-  }, []); // Empty deps because deviceIdx never changes per instance
-
   const videoRef = useRef(null);
   const [oscillatingOpacity, setOscillatingOpacity] = useState(1);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -103,7 +85,7 @@ const Idle = memo(function Idle() {
       >
         <S.Video
           ref={videoRef}
-          src={currentVideoSrc}
+          src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
           autoPlay
           loop
           muted
