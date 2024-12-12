@@ -41,14 +41,25 @@ const useStore = create((set) => ({
   setLevel: (value) => set({ level: value }),
 
   // Complex setters
+  // setLoop: (value) =>
+  //   set({
+  //     loop: value,
+  //     level:
+  //       value >= 8 ? Math.floor((value - 8) / 6) + 4 : Math.floor(value / 2),
+  //     subLevel:
+  //       value >= 8
+  //         ? Math.min(Math.floor((value - 8) % 6), 5)
+  //         : Math.min(Math.floor(value % 2), 1),
+  //   }),
+
   setLoop: (value) =>
     set({
       loop: value,
       level:
-        value >= 8 ? Math.floor((value - 8) / 3) + 4 : Math.floor(value / 2),
+        value >= 12 ? Math.floor((value - 12) / 6) + 6 : Math.floor(value / 2),
       subLevel:
-        value >= 8
-          ? Math.min(Math.floor(value % 3), 2)
+        value >= 12
+          ? Math.min(Math.floor((value - 12) % 6), 5)
           : Math.min(Math.floor(value % 2), 1),
     }),
 

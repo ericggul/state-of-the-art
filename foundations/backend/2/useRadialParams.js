@@ -17,7 +17,7 @@ export default function useRadialParams(
     if (subLevel === 0) {
       setRadialIdx(getRandom(0.5, 0.6));
     } else if (subLevel === 1) {
-      setRadialIdx(getRandom(0.2, 0.9));
+      setRadialIdx(getRandom(0.2, getRandom(0.9, 2.0)));
     } else {
       setRadialIdx(getRandom(0.3, getRandom(2.0, 12.0)));
     }

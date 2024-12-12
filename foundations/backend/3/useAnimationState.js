@@ -6,8 +6,8 @@ export function useAnimationState(isblack, visible, subLevel) {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    setXRange(1 * (subLevel ** 2 + 0.01));
-    setYRange(8 * (subLevel ** 2 + 0.2));
+    setXRange(1 * ((subLevel + 0.5) ** 2 + 0.1));
+    setYRange(8 * ((subLevel + 0.5) ** 2 + 0.5));
     setIsAnimating(isblack && visible);
   }, [isblack, visible, subLevel]);
 
