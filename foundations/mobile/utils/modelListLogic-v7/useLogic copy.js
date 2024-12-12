@@ -280,9 +280,6 @@ export function useModelListLogic({
   }, [isVisible]);
 
   useEffect(() => {
-    // Don't start countdown if not visible
-    if (!isVisibleRef.current) return;
-
     lastIndexChangeTimeRef.current = Date.now();
 
     // Clear any existing countdown
@@ -294,22 +291,11 @@ export function useModelListLogic({
 
     // Set new inactivity timer
     countdownTimerRef.current = setTimeout(() => {
-      // Double check visibility before showing countdown
-      if (!isVisibleRef.current) return;
-
       setShowResetCountdown(true);
 
       // Simple countdown
       const startTime = Date.now();
       const countdownInterval = setInterval(() => {
-        // Stop countdown if no longer visible
-        if (!isVisibleRef.current) {
-          clearInterval(countdownInterval);
-          setShowResetCountdown(false);
-          setCountdownSeconds(30);
-          return;
-        }
-
         const remaining = 30 - Math.floor((Date.now() - startTime) / 1000);
         if (remaining < 0) {
           clearInterval(countdownInterval);
@@ -319,14 +305,14 @@ export function useModelListLogic({
       }, 1000);
 
       countdownTimerRef.current = countdownInterval;
-    }, Math.max(ALL_CONSTANTS.INACTIVITY_TIMEOUT + ALL_CONSTANTS.FRONTEND_INACTIVITY_TIMEOUT - 30 * 1000, 100));
+    }, Math.max(ALL_CONSTANTS.INACTIVITY_TIMEOUT + ALL_CONSTANTS.FRONTEND_INACTIVITY_TIMEOUT - 30 * 1000, 100)); // 60 seconds of no index changes
 
     return () => {
       if (countdownTimerRef.current) {
         clearTimeout(countdownTimerRef.current);
       }
     };
-  }, [currentIndex, manuallySelectedIndex, isVisible]);
+  }, [currentIndex, manuallySelectedIndex, isVisible]); // Only track actual index changes
 
   return {
     models,

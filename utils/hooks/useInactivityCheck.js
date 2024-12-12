@@ -14,6 +14,11 @@ export default function useInactivityCheck() {
   } = useScreenStore();
 
   const intervalRef = useRef(null);
+  const stageRef = useRef(stage);
+
+  useEffect(() => {
+    stageRef.current = stage;
+  }, [stage]);
 
   useEffect(() => {
     if (intervalRef.current) {
@@ -33,8 +38,10 @@ export default function useInactivityCheck() {
     const checkInactivity = () => {
       const now = Date.now();
       if (now - lastInteractionTime >= timeout - 1000) {
-        if (introState == 3) setIntroState(4);
-        else setIsEnding(true);
+        if (stageRef.current === "Frontend") {
+          if (introState == 3) setIntroState(4);
+          else setIsEnding(true);
+        }
       }
     };
 

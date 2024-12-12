@@ -10,7 +10,7 @@ import useDebounce from "@/utils/hooks/useDebounce";
 import Loading from "@/foundations/mobile/loading";
 import ScrollLoading from "./ScrollLoading";
 
-const Mobile = memo(function Mobile({ socket, mobileId }) {
+const Mobile = memo(function Mobile({ socket, mobileId, isVisible }) {
   const currentArchitectures = useScreenStore(
     (state) => state.currentArchitectures
   );
@@ -24,12 +24,18 @@ const Mobile = memo(function Mobile({ socket, mobileId }) {
         initialModels={modelsArray}
         socket={socket}
         mobileId={mobileId}
+        isVisible={isVisible}
       />
     </S.Container>
   );
 });
 
-const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
+const ModelList = memo(function ModelList({
+  initialModels,
+  socket,
+  mobileId,
+  isVisible,
+}) {
   const {
     models,
     activeIndex,
@@ -42,7 +48,7 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
     showScrollHint,
     showResetCountdown,
     countdownSeconds,
-  } = useModelListLogic({ initialModels, socket, mobileId });
+  } = useModelListLogic({ initialModels, socket, mobileId, isVisible });
 
   if (countdownSeconds < 1) {
     return (

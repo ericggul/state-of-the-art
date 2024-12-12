@@ -34,7 +34,11 @@ export default function Mobile({ sessionId }) {
     sessionId,
     handleNewControllerSessionIdDecline,
   });
-  useMobileVisibility({ socket, mobileId: state.mobileId });
+
+  const { isVisible } = useMobileVisibility({
+    socket,
+    mobileId: state.mobileId,
+  });
 
   if (state.isLoading) {
     return <Loading customText="Initialising State" />;
@@ -80,6 +84,7 @@ export default function Mobile({ sessionId }) {
           socket={socket}
           mobileId={state.mobileId}
           username={state.username}
+          isVisible={isVisible}
         />
       )}
       <AccelerometerHandler
