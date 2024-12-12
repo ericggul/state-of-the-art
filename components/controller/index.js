@@ -74,7 +74,7 @@ export default function Controller({ socket }) {
       console.log(e);
     }
 
-    setTimeout(() => window.location.reload(), 2000);
+    setTimeout(() => window.location.reload(true), 2000);
   };
 
   // Use the auto-reset hook
