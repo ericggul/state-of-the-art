@@ -13,6 +13,7 @@ export default function useInactivityCheck() {
     setIntroState,
   } = useScreenStore();
 
+  const stageRef = useRef(stage);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -32,9 +33,7 @@ export default function useInactivityCheck() {
     const checkInactivity = () => {
       const now = Date.now();
       if (now - lastInteractionTime > timeout) {
-        console.log(introState, "introState");
-        if (introState >= 3) setIntroState(2);
-        else setIsEnding(true);
+        setIsEnding(true);
       }
     };
 

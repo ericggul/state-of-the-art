@@ -19,7 +19,7 @@ export const flattenModels = (models) => {
           citation: value.citation || "",
           explanation: value.explanation || "",
           category: value.category || "",
-          hue: getCategoryHue(value.category),
+          hue: getCategoryHue(value.category, value.name || ""),
         });
         flatten(value, currentVersion);
       }

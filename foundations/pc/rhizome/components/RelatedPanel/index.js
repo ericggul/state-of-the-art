@@ -53,7 +53,7 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
     <>
       <S.LeftLine $hue={hue} />
       <S.PanelTitle>
-        <TextScramble text={`Models similar to ${currentModel}`} />
+        <TextScramble text={`Architectures similar to ${currentModel}`} />
       </S.PanelTitle>
       <S.RelatedPanel $hue={hue}>
         <S.RelatedList ref={listRef}>

@@ -9,8 +9,6 @@ export default function useSocketMobile({
   const socket = useRef(null);
   const initialized = useRef(false);
 
-  console.log("sessionId", sessionId);
-
   useEffect(() => {
     if (
       typeof window !== "undefined" &&

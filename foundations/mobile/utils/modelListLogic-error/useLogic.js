@@ -90,12 +90,6 @@ export function useModelListLogic({
     }
   }, [currentIndex]);
 
-  const velocityRef = useRef(0);
-  const lastTouchYRef = useRef(0);
-  const lastScrollTopRef = useRef(0);
-  const animationFrameRef = useRef(null);
-  const smoothedVelocityRef = useRef(0);
-
   useEffect(() => {
     const scrollElement = outerRef?.current;
     if (!scrollElement) return;
@@ -150,7 +144,7 @@ export function useModelListLogic({
       }, 1000);
 
       countdownTimerRef.current = countdownInterval;
-    }, 60000);
+    }, 120 * 1000);
 
     return () => {
       if (countdownTimerRef.current) {

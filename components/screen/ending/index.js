@@ -1,10 +1,16 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 import * as CONST from "@/utils/constant";
 import EndingUI from "./EndingUI";
+import useScreenStore from "@/components/screen/store";
 
 function Ending({ socket, isController }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+
+  const stage = useScreenStore((state) => state.stage);
+  const resetTimeoutRef = useRef(
+    stage === "Frontend" ? CONST.TIMEOUTS.RESET_FRONTEND : CONST.TIMEOUTS.RESET
+  );
 
   useEffect(() => {
     // Fade in on mount
@@ -15,11 +21,11 @@ function Ending({ socket, isController }) {
     // Start fade out before reset
     const fadeOutTimeout = setTimeout(() => {
       setIsFadingOut(true);
-    }, CONST.TIMEOUTS.RESET - 4000);
+    }, resetTimeoutRef.current - 4000);
 
     const resetTimeout = setTimeout(() => {
       reset();
-    }, CONST.TIMEOUTS.RESET);
+    }, resetTimeoutRef.current);
 
     return () => {
       clearTimeout(fadeInTimeout);

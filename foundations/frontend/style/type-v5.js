@@ -70,7 +70,7 @@ export const TYPE_STYLES = {
     name: "Boltzmann Machine",
     colors: {
       outer: "#ff00ff",
-      inner: "hsl(30, 70%,80%)",
+      inner: "hsl(30, 70%, 80%)",
       highlight: "#ffff00",
     },
     material: {
@@ -98,13 +98,8 @@ export const TYPE_STYLES = {
     ...BASE_STYLE,
     name: "Variational Autoencoder",
     colors: {
-      // outer: "hsl(30, 70%, 45%)",
-      // inner: "hsl(20, 95%, 55%)",
-      // connection: "hsl(20, 65%, 43%)",
-      // latent: "hsl(30, 80%, 55%)",
-
-      outer: "hsl(30, 70%, 45%)",
-      inner: "hsl(10, 100%, 80%)",
+      outer: "hsl(20, 70%, 45%)",
+      inner: "hsl(20, 100%, 80%)",
       connection: "hsl(20, 100%, 67%)",
       latent: "hsl(20, 80%, 55%)",
     },

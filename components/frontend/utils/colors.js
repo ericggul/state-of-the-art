@@ -84,8 +84,21 @@ const extractHue = (colorString) => {
 };
 
 // Get base hue from TYPE_STYLES for a given category
-const getBaseHue = (category) => {
+const getBaseHue = (category, modelName = "") => {
   if (!category) return null;
+
+  // Special case for hopfield_boltzmann category
+  if (category === "hopfield_boltzmann") {
+    const nameLower = modelName.toLowerCase();
+    if (nameLower.includes("hopfield")) {
+      return extractHue(TYPE_STYLES.hopfield?.colors?.inner);
+    }
+    if (nameLower.includes("boltzmann")) {
+      return extractHue(TYPE_STYLES.boltzmann?.colors?.inner);
+    }
+    // Fallback to hopfield if model name doesn't match
+    return extractHue(TYPE_STYLES.hopfield?.colors?.inner);
+  }
 
   const style = TYPE_STYLES[category];
   if (!style?.colors?.inner) return null;
@@ -94,19 +107,21 @@ const getBaseHue = (category) => {
 };
 
 // Category to hue mapping with fallbacks
-export const getCategoryHue = (category) => {
-  const baseHue = getBaseHue(category);
+export const getCategoryHue = (category, modelName = "") => {
+  const baseHue = getBaseHue(category, modelName);
+
   return baseHue ?? 0; // Fallback to default hue if category not found
 };
 
 // Generate color with the extracted hue
-export const getCategoryColor = (category) => {
-  const hue = getCategoryHue(category);
+export const getCategoryColor = (category, modelName = "") => {
+  const hue = getCategoryHue(category, modelName);
   return `hsla(${hue}, 70%, 45%, 1)`;
 };
 
 // Utility function to convert any color to HSLA
 export const toHSLA = (color, saturation = 70, lightness = 45, alpha = 1) => {
   const hue = extractHue(color);
+
   return `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
 };
