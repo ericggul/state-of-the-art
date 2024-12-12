@@ -5,15 +5,27 @@ import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
 import { useAudioFade } from "../utils/useAudioFade";
-import { VIDEOS } from "../utils/constants";
 
 const AUDIO_URL = "/audio/idle/idle1209.wav";
+const VIDEO_URL = "/videos/01_close.mp4";
 const FADE_OUT_THRESHOLD = 3;
 const FADE_OUT_DURATION = 2500;
 
+// Create a video preloader outside the component
+const videoCache = new Map();
+const preloadVideo = () => {
+  if (!videoCache.has(VIDEO_URL)) {
+    const video = document.createElement("video");
+    video.src = VIDEO_URL;
+    video.preload = "auto";
+    videoCache.set(VIDEO_URL, video);
+  }
+};
+
+// Preload the video once at module level
+preloadVideo();
+
 const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
-  const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
-  const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -164,14 +176,7 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
         $isInitialFade={isInitialLoad}
         onTransitionEnd={handleTransitionEnd}
       >
-        <video
-          ref={videoRef}
-          src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
+        <video ref={videoRef} src={VIDEO_URL} autoPlay loop muted playsInline />
       </S.VideoWrapper>
       <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" />
     </S.Container>
