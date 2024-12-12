@@ -23,6 +23,10 @@ export default function useInactivityCheck() {
 
     if (stage !== "Frontend") return;
 
+    if (introState === 4) {
+      setIntroState(3);
+    }
+
     const timeout =
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT

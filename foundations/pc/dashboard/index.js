@@ -72,6 +72,7 @@ export default function Dashboard() {
 
   return (
     <S.Container $hue={debouncedHue}>
+      <S.Bg $hue={debouncedHue} />
       <Frame />
       <Lines />
       <S.Wrapper>

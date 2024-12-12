@@ -15,7 +15,7 @@ export function iterationSpeedMultiplier(iteration) {
 export const TIMEOUTS = {
   //TRANSITION LOGIC
   TRANSITION: 7 * 1000,
-  BACKEND: 10 * 1000,
+  BACKEND: 9.5 * 1000,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 

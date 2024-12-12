@@ -26,6 +26,10 @@ export const Container = styled.div`
   padding: 4vw;
   cursor: none;
   padding-top: 6vw;
+`;
+
+export const Bg = styled.div`
+  ${WholeContainer}
   --hue: ${({ $hue }) => $hue};
   animation: ${shadowPulse} 4s ease-in-out infinite;
 `;

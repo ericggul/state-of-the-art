@@ -9,8 +9,8 @@ export const Container = styled.div`
   background: #000;
   transition: all 0.5s;
   cursor: none !important;
-  --hue: ${({ hue }) => hue};
 
+  --hue: ${({ hue }) => hue};
   animation: ${shadowPulse} 4s ease-in-out infinite;
 
   img {

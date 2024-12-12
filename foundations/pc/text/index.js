@@ -211,8 +211,6 @@ function TextContent({ currentArchitectures, hue }) {
         </Suspense>
       </S.Canvas>
 
-      {/* <S.LeftBlur /> */}
-
       <S.StructureText ref={containerRef} $needsScroll={needsScroll} $hue={hue}>
         <div className={`model-structure${needsScroll ? " scrolling" : ""}`}>
           {architectureName && (
