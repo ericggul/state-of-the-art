@@ -105,6 +105,4 @@ function setupEventListeners(handlers) {
     window.removeEventListener("pageshow", handlers.handlePageShow);
     window.removeEventListener("pagehide", handlers.handlePageHide);
   };
-
-  return { isVisible };
 }
