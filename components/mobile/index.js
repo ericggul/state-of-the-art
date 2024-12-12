@@ -35,7 +35,7 @@ export default function Mobile({ sessionId }) {
     handleNewControllerSessionIdDecline,
   });
 
-  const { isVisible } = useMobileVisibility({
+  const isVisible = useMobileVisibility({
     socket,
     mobileId: state.mobileId,
   });

@@ -15,7 +15,7 @@ export function iterationSpeedMultiplier(iteration) {
 export const TIMEOUTS = {
   //TRANSITION LOGIC
   TRANSITION: 7 * 1000,
-  BACKEND: 9.5 * 1000,
+  BACKEND: 9.3 * 1000,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 
@@ -50,7 +50,7 @@ export const PING_TIMEOUT = 8000;
 // export const FRONTEND_INACTIVITY_TIMEOUT =
 //   (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
 export const FRONTEND_INACTIVITY_TIMEOUT =
-  (IS_DEPLOYMENT ? 1.5 : 1) * 60 * 1000; // 90 seconds
+  (IS_DEPLOYMENT ? 1.5 : 0.8) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 25 * 1000;
 export const INACTIVITY_TIMEOUT = 10 * 1000;
 
