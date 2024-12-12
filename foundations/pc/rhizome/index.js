@@ -289,7 +289,7 @@ export default function Rhizome() {
   const relatedModels = useRelatedModels(currentArchitectures);
 
   return (
-    <S.Container>
+    <S.Container hue={debouncedHue}>
       <svg ref={svgRef} width="100vw" height="100vh" />
       {currentArchitectures?.length > 0 && (
         <RelatedPanel

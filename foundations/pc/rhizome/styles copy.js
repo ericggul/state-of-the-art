@@ -1,6 +1,5 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { FlexCenterStyle, WholeContainer } from "@/styles";
-import { shadowPulse } from "../styles/animations";
 
 export const Container = styled.div`
   ${WholeContainer}
@@ -9,9 +8,8 @@ export const Container = styled.div`
   background: #000;
   transition: all 0.5s;
   cursor: none !important;
-  --hue: ${({ hue }) => hue};
 
-  animation: ${shadowPulse} 4s ease-in-out infinite;
+  box-shadow: inset 0 -2rem 2rem ${({ hue }) => `hsla(${hue}, 100%, 40%, 0.2)`};
 
   img {
     width: 100%;

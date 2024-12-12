@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ANIMATION } from "../../constants";
-import TypewriterText from "../TypewriterText";
 import TextScramble from "@/foundations/pc/utils/TextScramble";
 import * as S from "./styles";
 
@@ -54,7 +53,7 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
     <>
       <S.LeftLine $hue={hue} />
       <S.PanelTitle>
-        <TextScramble text={`State-of-the-Art similar to ${currentModel}`} />
+        <TextScramble text={`Models similar to ${currentModel}`} />
       </S.PanelTitle>
       <S.RelatedPanel $hue={hue}>
         <S.RelatedList ref={listRef}>
@@ -75,7 +74,7 @@ export default function RelatedPanel({ currentModel, relatedModels, hue }) {
                     </S.ModelVersion>
                   </S.ModelHeader>
                   <S.RelationText $hue={hue}>
-                    <TextScramble text={model.relation} />
+                    <TextScramble text={"Similarity: " + model.relation} />
                   </S.RelationText>
                   <S.ConnectionStrength $value={model.value / 10} $hue={hue} />
                 </S.RelatedItem>

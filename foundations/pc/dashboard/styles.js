@@ -8,7 +8,7 @@ import {
   HEIGHT,
 } from "@/foundations/pc/frame/full/styles";
 
-const KEY_HUE = 230;
+import { shadowPulse } from "../styles/animations";
 
 const scanline = keyframes`
   0% { transform: translateY(-100%); }
@@ -26,6 +26,8 @@ export const Container = styled.div`
   padding: 4vw;
   cursor: none;
   padding-top: 6vw;
+  --hue: ${({ $hue }) => $hue};
+  animation: ${shadowPulse} 4s ease-in-out infinite;
 `;
 
 export const Wrapper = styled.div`

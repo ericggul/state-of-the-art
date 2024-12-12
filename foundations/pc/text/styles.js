@@ -7,14 +7,6 @@ const scanline = keyframes`
   100% { transform: translateY(100%); }
 `;
 
-// Add this at the top with other utility functions
-const cycleHue = (hue) => {
-  const h = ((hue % 360) + 360) % 360; // Normalize hue to 0-360
-  if (h < 60) return h + 180;
-  if (h > 240) return h - 180;
-  return h;
-};
-
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
