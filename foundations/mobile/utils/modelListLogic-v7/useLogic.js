@@ -294,7 +294,7 @@ export function useModelListLogic({ initialModels, socket, mobileId }) {
       }, 1000);
 
       countdownTimerRef.current = countdownInterval;
-    }, 60000); // 60 seconds of no index changes
+    }, 70 * 1000); // 60 seconds of no index changes
 
     return () => {
       if (countdownTimerRef.current) {

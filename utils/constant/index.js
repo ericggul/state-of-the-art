@@ -23,7 +23,7 @@ export const TIMEOUTS = {
   ENDING: 150 * 1000,
   ENDING_BASE: 45 * 1000,
   RESET: 18 * 1000,
-  RESET_FRONTEND: 10 * 1000,
+  RESET_FRONTEND: 0.2 * 1000,
 };
 
 //transition: delay between devices
@@ -50,8 +50,9 @@ export const PING_TIMEOUT = 8000;
 // export const FRONTEND_INACTIVITY_TIMEOUT =
 //   (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
 export const FRONTEND_INACTIVITY_TIMEOUT =
-  (IS_DEPLOYMENT ? 1.5 : 1) * 60 * 1000; // 90 seconds
+  (IS_DEPLOYMENT ? 1.5 : 0.1) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 35 * 1000; // 45 seconds
+export const INACTIVITY_TIMEOUT = 10 * 1000;
 
 //IDLE
 export const IDLE_QR_LINK = IS_DEPLOYMENT

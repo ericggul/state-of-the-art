@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
 import { useAudio } from "@/utils/hooks/audio/useAudio";
 
@@ -19,10 +19,26 @@ const Intro2 = memo(function Intro2() {
 });
 
 const Intro4 = memo(function Intro4() {
+  const [countdown, setCountdown] = useState(10);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <S.Container>
+    <S.Container
+      style={{
+        background: `rgba(0, 0, 0, .5)`,
+        backdropFilter: `blur(5px)`,
+        WebkitBackdropFilter: `blur(5px)`,
+      }}
+    >
       <p>Scroll down on your phone to continue</p>
-      <p>Experience resets after 10 seconds of inactivity</p>
+      <p>Experience resets in {countdown} seconds</p>
     </S.Container>
   );
 });

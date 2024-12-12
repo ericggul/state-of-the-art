@@ -23,20 +23,16 @@ export default function useInactivityCheck() {
 
     if (stage !== "Frontend") return;
 
-    if (introState === 4) {
-      setIntroState(3);
-    }
-
     const timeout =
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT
         : introState === 4
-        ? 10 * 1000 // 20 seconds for intro4
+        ? CONST.INACTIVITY_TIMEOUT
         : CONST.FRONTEND_INACTIVITY_TIMEOUT;
 
     const checkInactivity = () => {
       const now = Date.now();
-      if (now - lastInteractionTime > timeout) {
+      if (now - lastInteractionTime >= timeout) {
         if (introState == 3) setIntroState(4);
         else setIsEnding(true);
       }
@@ -51,4 +47,10 @@ export default function useInactivityCheck() {
       }
     };
   }, [stage, introState, userName, lastInteractionTime]);
+
+  useEffect(() => {
+    if (introState === 4) {
+      setIntroState(3);
+    }
+  }, [lastInteractionTime]);
 }
