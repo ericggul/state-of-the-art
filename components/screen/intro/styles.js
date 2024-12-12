@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
+  flex-direction: column;
   color: white;
   background: black;
   backdrop-filter: blur(10px);

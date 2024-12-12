@@ -18,6 +18,15 @@ const Intro2 = memo(function Intro2() {
   return <S.Container>Scroll down on your phone</S.Container>;
 });
 
+const Intro4 = memo(function Intro4() {
+  return (
+    <S.Container>
+      <p>Scroll down on your phone to continue</p>
+      <p>Experience resets after 10 seconds of inactivity</p>
+    </S.Container>
+  );
+});
+
 const TurnPhone = memo(function TurnPhone() {
   return <S.Container>Please turn your phone back on</S.Container>;
 });
@@ -33,13 +42,14 @@ function Intro() {
   return (
     <S.Wrapper
       style={{
-        opacity: introState >= 3 ? 0 : 1,
+        opacity: introState === 3 ? 0 : 1,
         background: introState >= 2 ? "transparent" : "black",
       }}
     >
       {introState === 0 && <Intro0 />}
       {introState === 1 && <Intro1 />}
       {introState === 2 && <Intro2 />}
+      {introState === 4 && <Intro4 />}
       {!mobileVisibility && introState <= 2 && <TurnPhone />}
       {isProjector && (
         <audio ref={audioRef} src={SOUND_URL} autoPlay={false} loop />

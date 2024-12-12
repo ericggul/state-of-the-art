@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from "react";
 import useScreenStore from "@/components/screen/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
 
-const audio1 = "/audio/transition/transition1212.wav";
+const audio1 = "/audio/transition/transition2.wav";
 const audio2 = "/audio/transition/beep1212.wav";
 import * as CONST from "@/utils/constant";
 

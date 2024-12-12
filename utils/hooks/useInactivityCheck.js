@@ -16,7 +16,6 @@ export default function useInactivityCheck() {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    // Clear any existing interval when stage changes
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -27,19 +26,19 @@ export default function useInactivityCheck() {
     const timeout =
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT
+        : introState === 4
+        ? 10 * 1000 // 20 seconds for intro4
         : CONST.FRONTEND_INACTIVITY_TIMEOUT;
 
     const checkInactivity = () => {
       const now = Date.now();
       if (now - lastInteractionTime > timeout) {
-        console.log(introState, "introState");
-        setIsEnding(true);
-        // if (introState >= 3) setIntroState(5);
-        // else setIsEnding(true);
+        if (introState == 3) setIntroState(4);
+        else setIsEnding(true);
       }
     };
 
-    intervalRef.current = setInterval(checkInactivity, 10 * 1000); // Check every 10 seconds
+    intervalRef.current = setInterval(checkInactivity, 10 * 1000);
 
     return () => {
       if (intervalRef.current) {
