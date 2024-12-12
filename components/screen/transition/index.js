@@ -42,7 +42,9 @@ const Transition = memo(function Transition() {
     if (isProjector) {
       const audio = new Audio(audio1);
       audio.loop = true;
+      audio.playbackRate = 1 / iterationSpeedMultiplier(iteration);
       audio.play();
+
       return () => {
         audio.pause();
       };
@@ -54,6 +56,7 @@ const Transition = memo(function Transition() {
       const audio = new Audio(audio2);
       if (activate) {
         audio.loop = true;
+        audio.playbackRate = 1 / iterationSpeedMultiplier(iteration);
         audio.play();
       }
 
@@ -66,8 +69,6 @@ const Transition = memo(function Transition() {
       console.log(e);
     }
   }, [activate]);
-
-  console.log(activate, "activate");
 
   return <>{activate && <BlueEl />}</>;
 });
