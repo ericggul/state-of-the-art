@@ -46,7 +46,10 @@ const ModelList = memo(function ModelList({ initialModels, socket, mobileId }) {
 
   if (countdownSeconds <= 1) {
     return (
-      <Loading customText="Session expired. Please scan QR code again to reconnect" />
+      <Loading
+        customText="Session expired. Please scan QR code again to reconnect"
+        isDeclined={true}
+      />
     );
   }
 

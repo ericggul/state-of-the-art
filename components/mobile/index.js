@@ -42,7 +42,10 @@ export default function Mobile({ sessionId }) {
 
   if (isDeclined.status) {
     return (
-      <Loading customText="Session expired. Please scan QR code again to reconnect" />
+      <Loading
+        customText="Session expired. Please scan QR code again to reconnect"
+        isDeclined={true}
+      />
     );
   }
 

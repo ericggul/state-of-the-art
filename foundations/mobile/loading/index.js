@@ -1,8 +1,13 @@
 "use client";
 
 import styled, { keyframes } from "styled-components";
+import { FlexCenterStyle, WholeContainer } from "@/styles";
+import { useRouter } from "next/navigation";
 
 const LoadingContainer = styled.div`
+  ${WholeContainer}
+  ${FlexCenterStyle}
+  position: fixed;
   width: 100vw;
   height: 100vh;
   height: 100dvh;
@@ -12,8 +17,8 @@ const LoadingContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: #fff;
-  position: relative;
   overflow: hidden;
+  left: 0 !important;
 `;
 
 const TopVerticalLine = styled.div`
@@ -147,16 +152,56 @@ const ProgressBar = styled.div`
   animation: ${progress} 1.5s ease-in-out infinite;
 `;
 
-export default function Loading({ customText = "Initialising Interface" }) {
+const ExplanationButton = styled.button`
+  position: absolute;
+  bottom: 2rem;
+  padding: 0.8rem 1.6rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+export default function Loading({
+  customText = "Initialising Interface",
+  isDeclined = false,
+}) {
+  const router = useRouter();
+
+  const handleExplanationClick = () => {
+    router.push("/");
+  };
+
   return (
     <LoadingContainer>
       <TopVerticalLine />
       <BottomVerticalLine />
-      {/* <Scanline /> */}
       <LoadingText>{customText}</LoadingText>
       <ProgressContainer>
         <ProgressBar />
       </ProgressContainer>
+      {isDeclined && (
+        <ExplanationButton onClick={handleExplanationClick}>
+          Learn about the artwork
+        </ExplanationButton>
+      )}
     </LoadingContainer>
   );
 }
