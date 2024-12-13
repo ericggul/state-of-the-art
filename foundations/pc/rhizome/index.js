@@ -18,6 +18,7 @@ import useDebounce from "@/utils/hooks/useDebounce";
 import * as S from "./styles";
 
 import Frame from "@/foundations/pc/frame/full";
+import Legend from "./components/Legend";
 
 export default function Rhizome() {
   const currentArchitectures = useScreenStore(
@@ -99,11 +100,11 @@ export default function Rhizome() {
       .selectAll("circle")
       .transition()
       .duration(DURATION)
-      .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
+      .attr("fill", `hsla(${debouncedHue}, 100%, 75%, 0.3)`)
       .attr("opacity", VISUAL.NODE.DEFAULT.OPACITY)
       .attr("r", VISUAL.NODE.DEFAULT.RADIUS)
-      .attr("stroke-width", 0);
-    // .attr("stroke-width", VISUAL.NODE.DEFAULT.STROKE_WIDTH);
+      .attr("stroke", `hsla(${debouncedHue}, 100%, 75%, 0.5)`)
+      .attr("stroke-width", 1);
 
     nodesRef.current
       .selectAll("text")
@@ -143,10 +144,17 @@ export default function Rhizome() {
           .select("circle")
           .transition()
           .duration(DURATION)
-          .attr("fill", (d) => getVersionColor(d.majorVersion, debouncedHue))
-          .attr("opacity", VISUAL.NODE.HIGHLIGHTED.OPACITY)
-          .attr("r", 3)
-          .attr("stroke-width", 0);
+          .attr("fill", `hsla(${debouncedHue}, 100%, 75%, 0.8)`)
+          .attr("opacity", 1)
+          .attr("r", VISUAL.NODE.HIGHLIGHTED.RADIUS)
+          .attr("stroke-width", 0)
+          .style(
+            "filter",
+            `drop-shadow(${VISUAL.NODE.HIGHLIGHTED.GLOW.replace(
+              "HUE",
+              debouncedHue
+            )})`
+          );
 
         nodeToHighlight
           .select("text")
@@ -166,12 +174,14 @@ export default function Rhizome() {
         // Highlight connected nodes (text at bottom)
         nodesRef.current.each(function (d) {
           if (connectedNodes.has(d.text)) {
-            // d3.select(this)
-            //   .select("circle")
-            //   .transition()
-            //   .duration(DURATION)
-            //   .attr("r", 3)
-            //   .attr("stroke-width", 0);
+            d3.select(this)
+              .select("circle")
+              .transition()
+              .duration(DURATION)
+              .attr("fill", `hsla(${debouncedHue}, 100%, 75%, 0.5)`)
+              .attr("stroke", `hsla(${debouncedHue}, 100%, 75%, 1)`)
+              .attr("r", VISUAL.NODE.SUB_HIGHLIGHTED.RADIUS)
+              .attr("stroke-width", 1);
 
             d3.select(this)
               .select("text")
@@ -298,6 +308,7 @@ export default function Rhizome() {
           hue={debouncedHue}
         />
       )}
+      <Legend hue={debouncedHue} />
       <Frame isCondensed={true} />
     </S.Container>
   );
