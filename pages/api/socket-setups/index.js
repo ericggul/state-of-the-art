@@ -7,11 +7,17 @@ export default function socketSetup({ socket, io }) {
   ///////////
   socket.on("screen-init", () => {
     socket.join("screen");
+    if (activeMobile) {
+      activeMobile = null;
+    }
   });
 
   socket.on("controller-init", () => {
     socket.join("screen");
     socket.join("controller");
+    if (activeMobile) {
+      activeMobile = null;
+    }
   });
 
   socket.on("mobile-init", ({ mobileId, sessionId }) => {
