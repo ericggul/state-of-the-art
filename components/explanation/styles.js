@@ -145,3 +145,35 @@ export const TextWrapper = styled.div`
   letter-spacing: -0.02em;
   word-break: keep-all;
 `;
+
+export const ImageContainer = styled.div`
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0 3rem;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+`;
+
+export const ImageWrapper = styled.div`
+  flex: 1;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+`;
+
+export const StyledImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+`;
