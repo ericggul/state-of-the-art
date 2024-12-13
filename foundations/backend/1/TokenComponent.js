@@ -10,6 +10,7 @@ const TokenComponent = memo(function TokenComponent({
   isAnimating,
   animInterval,
   subLevel,
+  isProjector,
 }) {
   const [displayEmbeddings, setDisplayEmbeddings] = useState({
     pos: [],
@@ -34,10 +35,12 @@ const TokenComponent = memo(function TokenComponent({
     [isAnimating, subLevel, isTarget, x, y]
   );
 
+  const embeddingLength = useMemo(() => (isProjector ? 25 : 20), [isProjector]);
+
   useEffect(() => {
     if (!embedding) return;
-    const pos = embedding.filter((el) => el > 0).slice(0, 25);
-    const neg = embedding.filter((el) => el < 0).slice(0, 25);
+    const pos = embedding.filter((el) => el > 0).slice(0, embeddingLength);
+    const neg = embedding.filter((el) => el < 0).slice(0, embeddingLength);
     setDisplayEmbeddings({ pos, neg });
   }, [embedding]);
 

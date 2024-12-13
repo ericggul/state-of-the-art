@@ -19,7 +19,7 @@ const Intro2 = memo(function Intro2() {
 });
 
 const Intro4 = memo(function Intro4() {
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(15);
 
   useEffect(() => {
     const timer = setInterval(() => {

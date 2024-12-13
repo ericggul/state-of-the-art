@@ -16,6 +16,7 @@ function LevelOne({ visible }) {
     subLevel,
   } = useStore();
   const stage = useScreenStore((state) => state.stage);
+  const isProjector = useScreenStore((state) => state.isProjector);
 
   const similarityMatrix = useComputeSimilarity({
     newEmbeddings: { tokens, embeddings },
@@ -25,7 +26,7 @@ function LevelOne({ visible }) {
   const isAnimating = useMemo(() => isblack && visible, [isblack, visible]);
 
   const ANIM_INTERVAL = useMemo(
-    () => [300, 120, 100][subLevel] || 120,
+    () => [250, 120, 100][subLevel] || 120,
     [subLevel]
   );
 
@@ -66,6 +67,7 @@ function LevelOne({ visible }) {
           isAnimating={isAnimating}
           animInterval={ANIM_INTERVAL}
           subLevel={subLevel}
+          isProjector={isProjector}
         />
       )),
     [

@@ -15,12 +15,12 @@ export function iterationSpeedMultiplier(iteration) {
 export const TIMEOUTS = {
   //TRANSITION LOGIC
   TRANSITION: 7 * 1000,
-  BACKEND: 9.3 * 1000,
+  BACKEND: 9.25 * 1000,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 
   ////RESET LOGIC
-  ENDING: 120 * 1000,
+  ENDING: 130 * 1000,
   ENDING_BASE: 45 * 1000,
   RESET: 18 * 1000,
   RESET_FRONTEND: 0.2 * 1000,
@@ -52,7 +52,7 @@ export const PING_TIMEOUT = 8000;
 export const FRONTEND_INACTIVITY_TIMEOUT =
   (IS_DEPLOYMENT ? 1.5 : 0.8) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 25 * 1000;
-export const INACTIVITY_TIMEOUT = 10 * 1000;
+export const INACTIVITY_TIMEOUT = 15 * 1000;
 
 //IDLE
 export const IDLE_QR_LINK = IS_DEPLOYMENT
@@ -60,8 +60,8 @@ export const IDLE_QR_LINK = IS_DEPLOYMENT
   : typeof window !== "undefined"
   ? `${window.location.protocol}//${window.location.host}/mobile`
   : "http://localhost:3000/mobile";
-export const IDLE_MIN_INTERVAL = 7 * 1000;
-export const IDLE_MAX_INTERVAL = 20 * 1000;
+export const IDLE_MIN_INTERVAL = 6 * 1000;
+export const IDLE_MAX_INTERVAL = 22 * 1000;
 
 export const IDLE_TEXTS = [
   "Scan the QR Code to experience the State-of-the-Art.",

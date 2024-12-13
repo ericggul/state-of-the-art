@@ -342,6 +342,9 @@ export default function useViseme() {
       } else if (introState === 2) {
         const mobileMessage = `${userName}, Please scroll down to explore state of the art neural network architectures.`;
         handleIntroSpeech(mobileMessage);
+      } else if (introState === 4) {
+        const resetMessage = `WARNING. Please scroll down or the session will automatically reset.`;
+        handleIntroSpeech(resetMessage);
       } else if (introState >= 2 && mobileVisibility && iteration >= 2) {
         const welcomeMessage = `Welcome back, ${userName}. Shall we continue our exploration?`;
         handleIntroSpeech(welcomeMessage);

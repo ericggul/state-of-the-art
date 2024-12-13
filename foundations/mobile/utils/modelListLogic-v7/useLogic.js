@@ -326,7 +326,7 @@ export function useModelListLogic({
       }, 1000);
 
       countdownTimerRef.current = countdownInterval;
-    }, Math.max(ALL_CONSTANTS.INACTIVITY_TIMEOUT + ALL_CONSTANTS.FRONTEND_INACTIVITY_TIMEOUT - 30 * 1000, 100));
+    }, Math.max(ALL_CONSTANTS.INACTIVITY_TIMEOUT + ALL_CONSTANTS.FRONTEND_INACTIVITY_TIMEOUT - 29 * 1000, 100));
 
     return () => {
       if (countdownTimerRef.current) {
