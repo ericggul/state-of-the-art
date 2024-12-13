@@ -20,15 +20,6 @@ const nextConfig = {
       layers: true,
     };
 
-    // Add module rule for HDR files
-    config.module.rules.push({
-      test: /\.hdr$/,
-      type: "asset/resource",
-      generator: {
-        filename: "static/chunks/[path][name].[hash][ext]",
-      },
-    });
-
     return config;
   },
   async rewrites() {
@@ -47,6 +38,52 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Origin",
             value: "*",
+          },
+        ],
+      },
+      {
+        // Video files caching
+        source: "/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Accept-Ranges",
+            value: "bytes",
+          },
+        ],
+      },
+      {
+        // HDR files caching
+        source: "/3d/environment/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Content-Type",
+            value: "application/octet-stream",
+          },
+        ],
+      },
+      {
+        // Audio files caching
+        source: "/audio/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Content-Type",
+            value: "audio/wav",
+          },
+          {
+            key: "Accept-Ranges",
+            value: "bytes",
           },
         ],
       },
