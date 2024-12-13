@@ -272,7 +272,6 @@ const useScreenStore = create((set) => ({
 
       const updates = {};
       if (data.type === "stage" && state.stage !== data.stage) {
-        console.log("updating state from controller!");
         updates.stage = data.stage;
         updates.lastInteractionTime = Date.now();
       }
@@ -285,13 +284,9 @@ const useScreenStore = create((set) => ({
 
   handleNewControllerSessionIdDecline: (data) => {
     console.log("session id decline", data);
-    console.log(data.mobileId, "mobileId");
 
     if (data.decline) {
       set((state) => {
-        console.log(state);
-        console.log(state.targetMobileId, "targetMobileId");
-        console.log(data.mobileId, "data.mobileId");
         if (state.targetMobileId === data.mobileId) {
           return Object.entries(RESET_STATE).some(
             ([key, value]) => state[key] !== value

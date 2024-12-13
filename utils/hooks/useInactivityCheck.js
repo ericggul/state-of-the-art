@@ -32,7 +32,7 @@ export default function useInactivityCheck() {
       introState <= 2
         ? CONST.INTRO_INACTIVITY_TIMEOUT
         : introState === 4
-        ? CONST.INACTIVITY_TIMEOUT
+        ? CONST.INACTIVITY_TIMEOUT + CONST.FRONTEND_INACTIVITY_TIMEOUT
         : CONST.FRONTEND_INACTIVITY_TIMEOUT;
 
     const checkInactivity = () => {
@@ -45,7 +45,7 @@ export default function useInactivityCheck() {
       }
     };
 
-    intervalRef.current = setInterval(checkInactivity, 10 * 1000);
+    intervalRef.current = setInterval(checkInactivity, 5 * 1000);
 
     return () => {
       if (intervalRef.current) {

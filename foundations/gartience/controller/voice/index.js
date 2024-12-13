@@ -18,7 +18,6 @@ export default function Voice({ socket, setState, onModelSelect }) {
 
   useEffect(() => {
     try {
-      console.log(currentIndex);
       if (currentIndex >= SCRIPT.length - 2) {
         if (socket.current) {
           socket.current.emit("gartience-new-chaos", { chaos: true });

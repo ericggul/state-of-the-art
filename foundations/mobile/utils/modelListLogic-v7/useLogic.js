@@ -279,17 +279,11 @@ export function useModelListLogic({
     isVisibleRef.current = isVisible;
   }, [isVisible]);
 
-  console.log("isVisible", isVisible);
-
-  console.log("isVisibleRef.current", isVisibleRef.current);
-
   useEffect(() => {
     // Don't start countdown if not visible
     if (!isVisibleRef.current) return;
 
     lastIndexChangeTimeRef.current = Date.now();
-
-    console.log("isVisibleRef.current", isVisibleRef.current);
 
     // Clear any existing countdown
     if (countdownTimerRef.current) {
@@ -301,7 +295,6 @@ export function useModelListLogic({
     // Set new inactivity timer
     countdownTimerRef.current = setTimeout(() => {
       // Double check visibility before showing countdown
-      console.log("isVisibleRef.current", isVisibleRef.current);
       if (!isVisibleRef.current) return;
 
       setShowResetCountdown(true);

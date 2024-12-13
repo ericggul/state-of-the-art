@@ -25,8 +25,6 @@ const Transition = memo(function Transition() {
     const adjustedDelay2 =
       CONST.TIMEOUTS.TRANSITION * iterationSpeedMultiplier(iteration);
 
-    console.log(iteration, adjustedDelay, adjustedDelay2);
-
     const timeout = setTimeout(() => {
       setActivate(true);
     }, adjustedDelay);

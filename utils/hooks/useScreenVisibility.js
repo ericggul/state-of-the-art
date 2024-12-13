@@ -27,7 +27,6 @@ export default function useScreenVisibility() {
 
   const clearTimeouts = () => {
     try {
-      console.log("🧹 Clearing timeouts:", Object.keys(timeouts.current));
       Object.values(timeouts.current).forEach((timeout) => {
         if (timeout) clearTimeout(timeout);
       });
@@ -41,20 +40,8 @@ export default function useScreenVisibility() {
     if (iterationRef.current == 0) return;
     clearTimeouts();
     const multiplier = iterationSpeedMultiplier(iterationRef.current);
-    console.log("📅 Scheduling state changes:", {
-      iteration: iterationRef.current,
-      multiplier,
-    });
-    setIsTransition(true);
 
-    timeouts.current.transition = setTimeout(() => {
-      console.log("removed for testing");
-      // const { mobileVisibility } = useScreenStore.getState();
-      // if (!mobileVisibility) {
-      //   console.log("🔄 Transition ended, visibility:", mobileVisibility);
-      //   setIsTransition(false);
-      // }
-    }, TIMEOUTS.TRANSITION * multiplier);
+    setIsTransition(true);
 
     timeouts.current.backend = setTimeout(() => {
       const { mobileVisibility } = useScreenStore.getState();
@@ -94,7 +81,6 @@ export default function useScreenVisibility() {
   };
 
   const setFrontendState = () => {
-    console.log("🎭 Setting Frontend state");
     clearTimeouts();
     setStage("Frontend");
     setIsTransition(false);

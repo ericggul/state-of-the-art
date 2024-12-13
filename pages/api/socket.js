@@ -25,8 +25,6 @@ export default function SocketHandler(req, res) {
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
-    console.log("Client connected:", socket.id);
-
     setup({ socket, io });
     orientationSetup({ socket, io });
     gartienceSetup({ socket, io });
@@ -36,6 +34,5 @@ export default function SocketHandler(req, res) {
     });
   });
 
-  console.log("Setting up socket with enhanced ping configuration");
   res.end();
 }
