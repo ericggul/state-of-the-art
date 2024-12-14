@@ -1,4 +1,4 @@
-import { TYPE_STYLES } from "@/foundations/frontend/style/type-v5";
+import { TYPE_STYLES } from "@/foundations/frontend/style/type-v6";
 
 // Helper function to convert hex to HSL and extract hue
 const hexToHue = (hex) => {

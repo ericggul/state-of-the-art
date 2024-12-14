@@ -15,7 +15,7 @@ const RNNLayers = React.memo(({ structure, style, model }) => {
     const gridConfig = GRID_CONFIGS[model] || {};
 
     return structure.map((layer, i) => {
-      const height = layer.dimensions[1];
+      const height = layer?.dimensions?.[1] ?? 20;
       const y = cumulativeHeight + height / 2;
       cumulativeHeight += height + layerGap;
 
@@ -35,6 +35,7 @@ const RNNLayers = React.memo(({ structure, style, model }) => {
 
       return {
         ...layer,
+        dimensions: layer.dimensions || [20, 20, 1],
         position: [0, y, 0],
         grid,
       };
@@ -42,8 +43,10 @@ const RNNLayers = React.memo(({ structure, style, model }) => {
   }, [structure, model]);
 
   const totalHeight =
-    layers[layers.length - 1].position[1] +
-    layers[layers.length - 1].dimensions[1] / 2;
+    layers.length > 0
+      ? layers[layers.length - 1].position[1] +
+        (layers[layers.length - 1].dimensions?.[1] ?? 20) / 2
+      : 0;
   const centerOffset = totalHeight / 2;
 
   const handleLayerExpand = (index, isExpanded) => {

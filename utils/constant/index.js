@@ -4,7 +4,7 @@ export const IS_DEPLOYMENT =
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
 
-export const CONTROLLER_AUTO_RESET_INTERVAL = 192 * 1000; // 10 minutes in milliseconds
+export const CONTROLLER_AUTO_RESET_INTERVAL = 200 * 1000; // 10 minutes in milliseconds
 
 export function iterationSpeedMultiplier(iteration) {
   return 1 / iteration;
@@ -15,7 +15,7 @@ export function iterationSpeedMultiplier(iteration) {
 export const TIMEOUTS = {
   //TRANSITION LOGIC
   TRANSITION: 7 * 1000,
-  BACKEND: 9.15 * 1000,
+  BACKEND: 9.1 * 1000,
   PROJECTOR_OFFSET: 2000,
   MOBILE_RESET: 500,
 
@@ -50,7 +50,7 @@ export const PING_TIMEOUT = 8000;
 // export const FRONTEND_INACTIVITY_TIMEOUT =
 //   (IS_DEPLOYMENT ? 1.5 : 8) * 60 * 1000; // 90 seconds
 export const FRONTEND_INACTIVITY_TIMEOUT =
-  (IS_DEPLOYMENT ? 1.5 : 0.8) * 60 * 1000; // 90 seconds
+  (IS_DEPLOYMENT ? 1.5 : 10) * 60 * 1000; // 90 seconds
 export const INTRO_INACTIVITY_TIMEOUT = 25 * 1000;
 export const INACTIVITY_TIMEOUT = 15 * 1000;
 
@@ -74,4 +74,4 @@ export const IDLE_TEXTS = [
 export const VERIFY_NAME_TIMEOUT = 3500;
 
 // export const SESSION_VALIDITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
-export const SESSION_VALIDITY_TIMEOUT = 192 * 1000; // 3 minutes in milliseconds
+export const SESSION_VALIDITY_TIMEOUT = 200 * 1000; // 3 minutes in milliseconds

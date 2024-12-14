@@ -16,7 +16,7 @@ import BoltzmannLayers from "../arch/layers/BoltzmannLayers";
 
 //type v2: 1125
 //type v3: 1126, 쨍한 느낌 주기
-import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type-v5";
+import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type-v6";
 
 import CommonScene from "../utils/CommonScene";
 import useScreenStore from "@/components/screen/store";
