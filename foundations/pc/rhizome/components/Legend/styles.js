@@ -3,7 +3,7 @@ import { LEFT, HEIGHT } from "@/foundations/pc/frame/full/styles";
 
 export const LegendContainer = styled.div`
   position: absolute;
-  width: 15vw;
+  width: 17vw;
   bottom: ${100 - HEIGHT - 3}vh;
   right: ${LEFT}vw;
   padding: 1vw;
