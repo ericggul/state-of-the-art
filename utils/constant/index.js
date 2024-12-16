@@ -4,7 +4,7 @@ export const IS_DEPLOYMENT =
 export const MIX_BACKEND_ITERATION = 500;
 export const MIX_BACKEND_LEVEL = 6;
 
-export const CONTROLLER_AUTO_RESET_INTERVAL = 198.5 * 1000; // 10 minutes in milliseconds
+export const CONTROLLER_AUTO_RESET_INTERVAL = 198.5 * 2 * 1000; // 10 minutes in milliseconds
 
 export function iterationSpeedMultiplier(iteration) {
   return 1 / iteration;
