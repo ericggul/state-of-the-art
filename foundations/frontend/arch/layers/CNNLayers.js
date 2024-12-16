@@ -7,7 +7,11 @@ import useScreenStore from "@/components/screen/store";
 import { Text } from "@react-three/drei";
 
 const CNNLayers = React.memo(({ structure, style, model }) => {
-  // Add spring animation for initial scale
+  if (!structure || !Array.isArray(structure)) {
+    console.error("Invalid structure in CNNLayers:", structure);
+    return null;
+  }
+
   const { scale } = useSpring({
     from: { scale: 0 },
     to: { scale: 1 },
@@ -23,17 +27,25 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
   const layerPositions = [];
   let cumulativeHeight = 0;
 
-  // First, calculate the heights of all layers
+  // First, calculate the heights of all layers with validation
   const layerHeights = structure.map((layer) => {
-    // For composite layers, take the maximum height among sublayers
+    if (!layer) {
+      console.error("Invalid layer in structure:", layer);
+      return 10; // Default height
+    }
+
     if (layer.sublayers) {
+      if (!Array.isArray(layer.sublayers)) {
+        console.error("Invalid sublayers:", layer);
+        return 10;
+      }
       const sublayerHeights = layer.sublayers.map(
         (sublayer) => sublayer?.dimensions?.[1] ?? 10
       );
       return Math.max(...sublayerHeights);
     } else {
       if (!layer?.dimensions?.[1]) {
-        console.log("Invalid layer dimensions:", layer);
+        console.error("Invalid layer dimensions:", layer);
         return 10; // Return default height
       }
       return layer.dimensions[1];

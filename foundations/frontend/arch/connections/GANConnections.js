@@ -5,25 +5,31 @@ import { INTERLAYER_MARGIN_X, INTERLAYER_MARGIN_Y } from "../Sublayer";
 
 function GANConnections({ layers, style, model }) {
   const connections = useMemo(() => {
-    if (!layers) return [];
+    if (!layers || !Array.isArray(layers)) return [];
 
     const temp = [];
-    const generators = layers.filter((layer) =>
-      layer.stack.includes("generator")
+    const generators = layers.filter(
+      (layer) => layer && layer.stack && layer.stack.includes("generator")
     );
-    const discriminators = layers.filter((layer) =>
-      layer.stack.includes("discriminator")
+    const discriminators = layers.filter(
+      (layer) => layer && layer.stack && layer.stack.includes("discriminator")
     );
+
+    if (generators.length === 0 || discriminators.length === 0) return [];
 
     const generatorGroups = groupLayersByStack(generators);
     const discriminatorGroups = groupLayersByStack(discriminators);
 
     Object.values(generatorGroups).forEach((group) => {
-      temp.push(...createMultipleConnections(group, model));
+      if (group && Array.isArray(group)) {
+        temp.push(...createMultipleConnections(group, model));
+      }
     });
 
     Object.values(discriminatorGroups).forEach((group) => {
-      temp.push(...createMultipleConnections(group, model));
+      if (group && Array.isArray(group)) {
+        temp.push(...createMultipleConnections(group, model));
+      }
     });
 
     connectGeneratorsToDiscriminators(

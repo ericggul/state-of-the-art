@@ -54,17 +54,5 @@ export const GRID_CONFIGS = {
 
 // Function to get model structure based on model name
 export function getModelStructure(modelName) {
-  try {
-    const model = MODELS[modelName];
-    if (!model) {
-      console.warn(
-        `Model structure not found for ${modelName}, returning empty array`
-      );
-      return [];
-    }
-    return model;
-  } catch (error) {
-    console.warn(`Error getting model structure for ${modelName}:`, error);
-    return [];
-  }
+  return MODELS[modelName];
 }

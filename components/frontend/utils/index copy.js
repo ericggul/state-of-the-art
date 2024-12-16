@@ -85,23 +85,18 @@ export const useModelStructure = (
       setIsLoading(true);
       prevArchRef.current = currentArchitectures[0].name;
 
-      try {
-        const rawModelName = currentArchitectures[0].name;
-        const formattedName = formatModelName(rawModelName);
+      const rawModelName = currentArchitectures[0].name;
+      const formattedName = formatModelName(rawModelName);
 
-        setModelName(formattedName);
-        const modelStructure = getModelStructure(formattedName);
+      setModelName(formattedName);
+      const modelStructure = getModelStructure(formattedName);
 
-        if (Array.isArray(modelStructure) && modelStructure.length > 0) {
-          setStructure(modelStructure);
-        } else {
-          console.warn(
-            `Invalid model structure for ${formattedName} (original: ${rawModelName}), using empty array`
-          );
-          setStructure([]);
-        }
-      } catch (error) {
-        console.warn("Error processing model structure:", error);
+      if (modelStructure) {
+        setStructure(modelStructure);
+      } else {
+        console.warn(
+          `No model structure found for ${formattedName} (original: ${rawModelName})`
+        );
         setStructure([]);
       }
     }

@@ -26,30 +26,14 @@ export default function GANLayers({ structure, style, model }) {
   const layerGap = 10; // Gap between layers
 
   const layers = useMemo(() => {
-    if (!structure || !Array.isArray(structure)) {
-      console.error("Invalid structure in GANLayers:", structure);
-      return [];
-    }
-
     // Scale down dimensions if they exceed the threshold
-    const scaledStructure = structure.map((layer) => {
-      if (!layer?.dimensions || !Array.isArray(layer.dimensions)) {
-        console.error("Invalid layer dimensions:", layer);
-        return {
-          ...layer,
-          dimensions: [1, 1, 1], // Default dimensions
-        };
-      }
-      return {
-        ...layer,
-        dimensions: scaleDimensions(layer.dimensions),
-      };
-    });
+    const scaledStructure = structure.map((layer) => ({
+      ...layer,
+      dimensions: scaleDimensions(layer.dimensions),
+    }));
 
     // Calculate heights for all layers
-    const layerHeights = scaledStructure.map(
-      (layer) => layer?.dimensions?.[1] ?? 1
-    );
+    const layerHeights = scaledStructure.map((layer) => layer.dimensions[1]);
 
     // Calculate cumulative positions
     const positions = [];
