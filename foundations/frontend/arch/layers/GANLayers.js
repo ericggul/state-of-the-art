@@ -76,15 +76,32 @@ export default function GANLayers({ structure, style, model }) {
     });
   }, [structure, layerHeight, layerGap, model]);
 
-  const groupLayers = (stack) =>
-    layers.filter((layer) => layer.stack.includes(stack));
+  // const groupLayers = (stack) =>
+  //   layers.filter((layer) => layer.stack.includes(stack));
 
-  const generatorALayers = groupLayers("generator_A");
-  const generatorBLayers = groupLayers("generator_B");
-  const discriminatorALayers = groupLayers("discriminator_A");
-  const discriminatorBLayers = groupLayers("discriminator_B");
-  const generalGeneratorLayers = groupLayers("generator");
-  const generalDiscriminatorLayers = groupLayers("discriminator");
+  const groupLayers = (stack) => {
+    if (!layers || !Array.isArray(layers)) {
+      console.error("Invalid layers array in groupLayers");
+      return [];
+    }
+
+    return layers.filter((layer) => {
+      if (!layer || typeof layer.stack === "undefined") {
+        console.warn(
+          `Invalid layer or missing stack property: ${JSON.stringify(layer)}`
+        );
+        return false;
+      }
+      return layer.stack.includes(stack);
+    });
+  };
+
+  const generatorALayers = groupLayers("generator_A") || [];
+  const generatorBLayers = groupLayers("generator_B") || [];
+  const discriminatorALayers = groupLayers("discriminator_A") || [];
+  const discriminatorBLayers = groupLayers("discriminator_B") || [];
+  const generalGeneratorLayers = groupLayers("generator") || [];
+  const generalDiscriminatorLayers = groupLayers("discriminator") || [];
 
   return (
     <group>

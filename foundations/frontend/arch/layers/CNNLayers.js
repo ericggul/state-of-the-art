@@ -33,7 +33,7 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
       return Math.max(...sublayerHeights);
     } else {
       if (!layer?.dimensions?.[1]) {
-        console.error("Invalid layer dimensions:", layer);
+        console.log("Invalid layer dimensions:", layer);
         return 10; // Return default height
       }
       return layer.dimensions[1];
@@ -89,168 +89,143 @@ const CNNLayers = React.memo(({ structure, style, model }) => {
 });
 
 const CNNLayer = React.memo(({ position, layer, style, model }) => {
+  // 1. Define ALL hooks at the top before any conditional logic
   const [expanded, setExpanded] = useState(false);
   const isProjector = useScreenStore((state) => state.isProjector);
-  const [error, setError] = useState(null);
+  const { smoothedExpanded } = useSpring({
+    smoothedExpanded: expanded ? 1 : 0,
+    config: { mass: 1, tension: 120, friction: 13 },
+  });
 
-  try {
-    // More permissive validation for FC layers
-    if (!layer?.dimensions || !Array.isArray(layer.dimensions)) {
-      console.error("Invalid layer dimensions:", layer);
-      return null;
-    }
-
-    // Special handling for FC and output layers which might have different dimension structures
-    const isFCOrOutput = layer.type === "fc" || layer.type === "output";
-    if (isFCOrOutput) {
-      if (layer.dimensions.length < 1) {
-        console.error("Invalid FC/output layer dimensions:", layer);
-        return null;
-      }
-    } else {
-      // Regular layer validation
-      if (layer.dimensions.length < 3) {
-        console.error("Invalid layer dimensions:", layer);
-        return null;
-      }
-    }
-
-    if (
-      !layer?.zSpan ||
-      !Array.isArray(layer.zSpan) ||
-      layer.zSpan.length < 2
-    ) {
-      console.error("Invalid layer zSpan:", layer);
-      return null;
-    }
-
-    const { smoothedExpanded } = useSpring({
-      smoothedExpanded: expanded ? 1 : 0,
-      config: { mass: 1, tension: 120, friction: 13 },
-    });
-
-    // Calculate font size based on layer dimensions
-    const calculateFontSize = () => {
-      try {
-        const [width, height, depth] = layer.dimensions;
-        const layerSize = Math.sqrt(width ** 2 + height ** 2 + depth ** 2);
-        return Math.max(layerSize * 0.05, 2);
-      } catch (e) {
-        console.log(e);
-        return 2;
-      }
+  useEffect(() => {
+    const toggleExpanded = () => {
+      setExpanded((prev) => !prev);
     };
 
-    useEffect(() => {
-      const toggleExpanded = () => {
-        setExpanded((prev) => !prev);
-      };
+    const minInterval = 1000;
+    const maxInterval = 8000;
+    const randomInterval =
+      Math.random() * (maxInterval - minInterval) + minInterval;
 
-      const minInterval = 1000;
-      const maxInterval = 8000;
-      const randomInterval =
-        Math.random() * (maxInterval - minInterval) + minInterval;
+    const timer = setInterval(toggleExpanded, randomInterval);
 
-      const timer = setInterval(toggleExpanded, randomInterval);
+    return () => clearInterval(timer);
+  }, []);
 
-      return () => clearInterval(timer);
-    }, []);
-
-    const gridConfig = GRID_CONFIGS[model] || {};
-    let gridTypeConfig = gridConfig[layer.type] || {
-      xCount: layer.zSpan[0],
-      yCount: layer.zSpan[1],
-      xInterval: layer.dimensions[0] * 0.6,
-      yInterval: layer.dimensions[1] * 0.6,
-    };
-
-    gridTypeConfig.xInterval = layer.dimensions[0] * 0.54;
-    gridTypeConfig.yInterval = layer.dimensions[1] * 0.54;
-
-    const grid = {
-      xCount: gridTypeConfig.xCount,
-      yCount: gridTypeConfig.yCount,
-      xInterval: gridTypeConfig.xInterval,
-      yInterval: gridTypeConfig.yInterval,
-    };
-
-    const node = {
-      size: [layer.dimensions[0] * 0.5, layer.dimensions[1] * 0.5, 1],
-      wireframeDivision: 1,
-    };
-
-    const unexpandedNode = {
-      size: [
-        layer.dimensions[0],
-        layer.dimensions[1],
-        Math.max(layer.dimensions[2] * 0.1, 0.5),
-      ],
-      wireframeDivision: 1,
-    };
-
-    const color = style?.colors?.inner || "#ffffff"; // Fallback color
-
-    return (
-      <group position={position}>
-        <animated.group
-          scale-x={smoothedExpanded}
-          scale-y={smoothedExpanded}
-          scale-z={smoothedExpanded}
-        >
-          <InstancedNodes
-            {...grid}
-            node={node}
-            color={color}
-            style={style}
-            isProjector={isProjector}
-          />
-          {!isProjector && (
-            <Text
-              position={[0, 0, 0]}
-              fontSize={calculateFontSize()}
-              color={color}
-              anchorX="center"
-              anchorY="middle"
-              rotation={[-Math.PI / 2, 0, 0]}
-              renderOrder={1}
-              depthTest={false}
-            >
-              {layer.name || layer.type}
-            </Text>
-          )}
-        </animated.group>
-        <animated.group
-          scale-x={smoothedExpanded.to((v) => 1 - v)}
-          scale-y={smoothedExpanded.to((v) => 1 - v)}
-          scale-z={smoothedExpanded.to((v) => 1 - v)}
-        >
-          <Node
-            {...unexpandedNode}
-            color={color}
-            style={style}
-            isProjector={isProjector}
-          />
-          {!isProjector && (
-            <Text
-              position={[0, 0, 0]}
-              fontSize={calculateFontSize()}
-              color={color}
-              anchorX="center"
-              anchorY="middle"
-              rotation={[-Math.PI / 2, 0, 0]}
-              renderOrder={1}
-              depthTest={false}
-            >
-              {layer.name || layer.type}
-            </Text>
-          )}
-        </animated.group>
-      </group>
-    );
-  } catch (err) {
-    console.error("Error rendering CNNLayer:", err, { layer, model });
+  // 2. Then do validation
+  if (!layer?.dimensions || !Array.isArray(layer.dimensions)) {
+    console.error("Invalid layer dimensions:", layer);
     return null;
   }
+
+  if (!layer?.zSpan || !Array.isArray(layer.zSpan) || layer.zSpan.length < 2) {
+    console.error("Invalid layer zSpan:", layer);
+    return null;
+  }
+
+  // Calculate font size based on layer dimensions
+  const calculateFontSize = () => {
+    try {
+      const [width, height, depth] = layer.dimensions;
+      const layerSize = Math.sqrt(width ** 2 + height ** 2 + depth ** 2);
+      return Math.max(layerSize * 0.05, 2);
+    } catch (e) {
+      console.log(e);
+      return 2;
+    }
+  };
+
+  const gridConfig = GRID_CONFIGS[model] || {};
+  let gridTypeConfig = gridConfig[layer.type] || {
+    xCount: layer.zSpan[0],
+    yCount: layer.zSpan[1],
+    xInterval: layer.dimensions[0] * 0.6,
+    yInterval: layer.dimensions[1] * 0.6,
+  };
+
+  gridTypeConfig.xInterval = layer.dimensions[0] * 0.54;
+  gridTypeConfig.yInterval = layer.dimensions[1] * 0.54;
+
+  const grid = {
+    xCount: gridTypeConfig.xCount,
+    yCount: gridTypeConfig.yCount,
+    xInterval: gridTypeConfig.xInterval,
+    yInterval: gridTypeConfig.yInterval,
+  };
+
+  const node = {
+    size: [layer.dimensions[0] * 0.5, layer.dimensions[1] * 0.5, 1],
+    wireframeDivision: 1,
+  };
+
+  const unexpandedNode = {
+    size: [
+      layer.dimensions[0],
+      layer.dimensions[1],
+      Math.max(layer.dimensions[2] * 0.1, 0.5),
+    ],
+    wireframeDivision: 1,
+  };
+
+  const color = style?.colors?.inner || "#ffffff"; // Fallback color
+
+  return (
+    <group position={position}>
+      <animated.group
+        scale-x={smoothedExpanded}
+        scale-y={smoothedExpanded}
+        scale-z={smoothedExpanded}
+      >
+        <InstancedNodes
+          {...grid}
+          node={node}
+          color={color}
+          style={style}
+          isProjector={isProjector}
+        />
+        {!isProjector && (
+          <Text
+            position={[0, 0, 0]}
+            fontSize={calculateFontSize()}
+            color={color}
+            anchorX="center"
+            anchorY="middle"
+            rotation={[-Math.PI / 2, 0, 0]}
+            renderOrder={1}
+            depthTest={false}
+          >
+            {layer.name || layer.type}
+          </Text>
+        )}
+      </animated.group>
+      <animated.group
+        scale-x={smoothedExpanded.to((v) => 1 - v)}
+        scale-y={smoothedExpanded.to((v) => 1 - v)}
+        scale-z={smoothedExpanded.to((v) => 1 - v)}
+      >
+        <Node
+          {...unexpandedNode}
+          color={color}
+          style={style}
+          isProjector={isProjector}
+        />
+        {!isProjector && (
+          <Text
+            position={[0, 0, 0]}
+            fontSize={calculateFontSize()}
+            color={color}
+            anchorX="center"
+            anchorY="middle"
+            rotation={[-Math.PI / 2, 0, 0]}
+            renderOrder={1}
+            depthTest={false}
+          >
+            {layer.name || layer.type}
+          </Text>
+        )}
+      </animated.group>
+    </group>
+  );
 });
 
 const CompositeLayer = React.memo(({ position, layer, style, model }) => {
