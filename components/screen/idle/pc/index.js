@@ -31,7 +31,7 @@ const Idle = memo(function Idle() {
   const currentVideoIndex = intDeviceIdx % VIDEOS.length;
 
   const currentVideoSrc = useMemo(() => {
-    return `/videos/${VIDEOS[currentVideoIndex]}.mp4`;
+    return `/videos/${VIDEOS[currentVideoIndex]}.webm`;
   }, [currentVideoIndex]);
 
   // Fade logic unchanged

@@ -5,7 +5,6 @@ import * as S from "./styles";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
 import { useAudioFade } from "../utils/useAudioFade";
-import { VIDEOS } from "../utils/constants";
 
 const AUDIO_URL = "/audio/idle/idle1209.wav";
 const FADE_OUT_THRESHOLD = 3;
@@ -27,7 +26,7 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
   const { fadeAudio, cleanup: cleanupFade } = useAudioFade();
 
   const currentVideoSrc = useMemo(() => {
-    return `/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`;
+    return `/videos/projector.mp4`;
   }, [intDeviceIdx]);
 
   const initAudioContext = useCallback(() => {
