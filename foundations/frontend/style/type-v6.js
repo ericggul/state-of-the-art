@@ -22,7 +22,6 @@ export const BASE_STYLE = {
 };
 
 export const TYPE_STYLES = {
-  // v1.x Foundation Models
   basic_nn: {
     ...BASE_STYLE,
     name: "Basic Neural Network",
