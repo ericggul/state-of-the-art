@@ -48,8 +48,8 @@ export const QRCodeWrapper = styled.div`
 
   animation: fadeIn 4s ease both;
   svg {
-    width: 15vw;
-    height: 15vw;
+    width: 18vw;
+    height: 18vw;
   }
 `;
 

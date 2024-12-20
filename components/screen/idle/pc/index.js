@@ -9,13 +9,15 @@ import { useVideoFade } from "../utils/useVideoFade";
 import { useTypewriter } from "../utils/useTypewriter";
 import { VIDEOS } from "../utils/constants";
 import useRandomInterval from "@/utils/hooks/intervals/useRandomInterval";
-
 import {
   IDLE_TEXTS,
   IDLE_QR_LINK,
   IDLE_MIN_INTERVAL,
   IDLE_MAX_INTERVAL,
 } from "@/utils/constant";
+
+// Move cache outside component and make it persistent
+const videoCache = new Map();
 
 const Idle = memo(function Idle() {
   const [windowWidth] = useResize();
@@ -25,32 +27,82 @@ const Idle = memo(function Idle() {
   const videoRef = useRef(null);
   const [oscillatingOpacity, setOscillatingOpacity] = useState(1);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const currentVideoIndex = intDeviceIdx % VIDEOS.length;
+
+  const currentVideoSrc = useMemo(() => {
+    return `/videos/${VIDEOS[currentVideoIndex]}.mp4`;
+  }, [currentVideoIndex]);
+
+  // Fade logic unchanged
   const isVisible = useVideoFade(videoRef);
 
   const qrLinkWithSessionId = useMemo(() => {
     return `${IDLE_QR_LINK}?sessionId=${sessionId}`;
   }, [sessionId]);
 
+  // Handle video loading and caching
   useEffect(() => {
     const video = videoRef.current;
-    if (video) {
-      if (video.readyState < 3) {
-        video.load();
-      }
+    if (!video) return;
 
-      const playVideo = async () => {
-        try {
-          await video.play();
-        } catch (error) {
-          if (error.name === "AbortError" && video.readyState >= 3) {
-            video.play().catch((e) => console.error("Retry failed:", e));
+    let isMounted = true;
+
+    const loadVideo = async () => {
+      try {
+        // If video is already playing the correct source, do nothing
+        if (video.src && video.src === videoCache.get(currentVideoSrc)) {
+          return;
+        }
+
+        setIsLoading(true);
+
+        // Use existing blob URL if available
+        if (videoCache.has(currentVideoSrc)) {
+          video.src = videoCache.get(currentVideoSrc);
+        } else {
+          // Only fetch if we don't have it cached
+          const response = await fetch(currentVideoSrc);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          videoCache.set(currentVideoSrc, blobUrl);
+          if (isMounted) {
+            video.src = blobUrl;
           }
         }
-      };
 
-      playVideo();
-    }
-  }, [intDeviceIdx]);
+        // Wait for video to be ready
+        await new Promise((resolve) => {
+          video.addEventListener("canplay", resolve, { once: true });
+        });
+
+        if (isMounted) {
+          await video.play();
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Video loading/playback failed:", error);
+        setIsLoading(false);
+      }
+    };
+
+    loadVideo();
+
+    return () => {
+      isMounted = false;
+      // Don't revoke blob URLs here, keep them for reuse
+    };
+  }, [currentVideoSrc]);
+
+  // Cleanup blob URLs only on unmount
+  useEffect(() => {
+    return () => {
+      videoCache.forEach((blobUrl) => {
+        URL.revokeObjectURL(blobUrl);
+      });
+      videoCache.clear();
+    };
+  }, []);
 
   const handleOscillation = useCallback(() => {
     if (!isInitialLoad) {
@@ -69,29 +121,23 @@ const Idle = memo(function Idle() {
   );
 
   const targetText = IDLE_TEXTS[intDeviceIdx % IDLE_TEXTS.length];
-
   const { text: displayText, isVisible: isTextVisible } = useTypewriter(
     targetText,
     oscillatingOpacity === 0 && !isInitialLoad
   );
 
+  console.log("Video cache size:", videoCache.size);
+  console.log("Cache contents:", Array.from(videoCache.keys()));
+
   return (
     <S.Container>
       <S.Background
-        $isVisible={isVisible}
+        $isVisible={isVisible && !isLoading}
         $oscillatingOpacity={oscillatingOpacity}
         $isInitialFade={isInitialLoad}
         onTransitionEnd={handleTransitionEnd}
       >
-        <S.Video
-          ref={videoRef}
-          src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        />
+        <S.Video ref={videoRef} loop muted playsInline preload="none" />
       </S.Background>
       <S.QRCodeWrapper>
         <QRCodeSVG
@@ -99,7 +145,6 @@ const Idle = memo(function Idle() {
           size={windowWidth * 0.15}
           fgColor="white"
           bgColor="transparent"
-          // key={qrLinkWithSessionId}
         />
         <S.AnimatedText
           $oscillatingOpacity={oscillatingOpacity}
