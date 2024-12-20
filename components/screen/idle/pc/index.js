@@ -104,6 +104,25 @@ const Idle = memo(function Idle() {
     };
   }, []);
 
+  // Add effect to handle video playback based on visibility
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // When text is showing (opacity is 0) or loading, pause the video
+    if (oscillatingOpacity === 0 || isLoading) {
+      video.pause();
+    } else {
+      // Only play if we have a valid source
+      if (video.src) {
+        video.play().catch((error) => {
+          console.error("Video play failed:", error);
+        });
+      }
+    }
+  }, [oscillatingOpacity, isLoading]);
+
+  // Modify handleOscillation to include video control
   const handleOscillation = useCallback(() => {
     if (!isInitialLoad) {
       setOscillatingOpacity((prev) => (prev === 1 ? 0 : 1));
