@@ -56,6 +56,35 @@ export default function socketSetup({ socket, io }) {
       .emit("new-mobile-sessionId-check", { sessionId, mobileId });
   });
 
+  socket.on("mobile-init-from-controller", ({ mobileId, sessionId }) => {
+    console.log(`📱 Mobile init from controller: ${mobileId} ${sessionId}`);
+    console.log("current active mobile", activeMobile);
+    if (!activeMobile) {
+      activeMobile = {
+        mobileId,
+        socketId: socket.id,
+        status: "active",
+      };
+    }
+    if (activeMobile && activeMobile.mobileId == mobileId) {
+      console.log("updating current active mobile", activeMobile);
+      console.log("new socket id", socket.id);
+
+      activeMobile = {
+        ...activeMobile,
+        socketId: socket.id,
+        status: "active",
+      };
+    }
+
+    socket.to("screen").emit("new-mobile-init", { mobileId });
+    socket.to("screen").emit("new-mobile-visibility-change", {
+      isVisible: true,
+      mobileId,
+      origin: "init",
+    });
+  });
+
   //////VISIBILITY
   socket.on("mobile-new-visibility-change", (data) => {
     console.log(

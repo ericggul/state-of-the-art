@@ -91,6 +91,15 @@ export default function ControllerWrapper() {
           socket.current?.emit("controller-force-reset-active-mobile");
           setTimeout(() => window.location.reload(), 2000);
         }
+      } else {
+        try {
+          socket.current?.emit("mobile-init-from-controller", {
+            mobileId: data.mobileId,
+            sessionId: data.sessionId,
+          });
+        } catch (e) {
+          console.log(e);
+        }
       }
 
       return result.isValid;
