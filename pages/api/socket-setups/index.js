@@ -31,8 +31,7 @@ export default function socketSetup({ socket, io }) {
       };
     }
     if (activeMobile && activeMobile.mobileId == mobileId) {
-      console.log("updating active mobile");
-      console.log("current active mobile", activeMobile);
+      console.log("updating current active mobile", activeMobile);
       console.log("new socket id", socket.id);
 
       activeMobile = {
