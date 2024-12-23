@@ -293,33 +293,33 @@ export const TYPE_STYLES = {
       },
       pointLight2: {
         position: [100, -200, -100],
-        intensity: 3,
+        intensity: 1,
         color: "hsl(300, 100%, 80%)",
       },
       pointLight3: {
         position: [-200, -100, 100],
-        intensity: 3,
+        intensity: 1,
         color: "hsl(150, 100%, 50%)",
       },
       pointLight4: {
         position: [200, 100, -100],
-        intensity: 3,
+        intensity: 1,
         color: "hsl(180, 100%, 80%)",
       },
 
       directionalLight: {
         position: [0, 150, 0],
-        intensity: 1,
+        intensity: 2,
         color: "hsl(180, 100%, 50%)",
       },
       directionalLight1: {
         position: [-50, 0, 0],
-        intensity: 1,
+        intensity: 2,
         color: "hsl(180, 100%, 50%)",
       },
       directionalLight2: {
         position: [50, 0, 0],
-        intensity: 1,
+        intensity: 2,
         color: "hsl(180, 100%, 50%)",
       },
       ambientLight: { intensity: 20, color: `hsl(210, 100%, 50%)` },
@@ -327,7 +327,7 @@ export const TYPE_STYLES = {
 
     postprocessing: {
       bloom: {
-        intensity: 0.1,
+        intensity: 0.05,
         luminanceThreshold: 1.0,
         luminanceSmoothing: 13,
       },

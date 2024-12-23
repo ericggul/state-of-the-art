@@ -66,7 +66,7 @@ const formatModelName = (name) => {
 
 export const useModelStructure = (
   currentArchitectures,
-  debounceDelay = 1000
+  debounceDelay = 1100
 ) => {
   const [modelName, setModelName] = useState(null);
   const [structure, setStructure] = useState([]);
