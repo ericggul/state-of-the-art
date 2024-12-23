@@ -159,12 +159,15 @@ const Idle = memo(function Idle() {
         <S.Video ref={videoRef} loop muted playsInline preload="none" />
       </S.Background>
       <S.QRCodeWrapper>
-        <QRCodeSVG
-          value={qrLinkWithSessionId}
-          size={windowWidth * 0.15}
-          fgColor="white"
-          bgColor="transparent"
-        />
+        <S.SVGWrapper>
+          <QRCodeSVG
+            value={qrLinkWithSessionId}
+            size={windowWidth * 0.18}
+            fgColor="white"
+            bgColor="transparent"
+          />
+        </S.SVGWrapper>
+
         <S.AnimatedText
           $oscillatingOpacity={oscillatingOpacity}
           $isInitialFade={isInitialLoad}

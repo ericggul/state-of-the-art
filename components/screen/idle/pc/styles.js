@@ -46,7 +46,24 @@ export const QRCodeWrapper = styled.div`
     }
   }
 
-  animation: fadeIn 4s ease both;
+  animation: fadeIn 6s ease both;
+  animation-delay: 2s;
+`;
+
+export const SVGWrapper = styled.div`
+  width: 18vw;
+  height: 18vw;
+
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.1);
+
+  margin: 2vw;
+  padding: 2vw;
+  border-radius: 2vw;
+
+  ${FlexCenterStyle}
+
   svg {
     width: 18vw;
     height: 18vw;
@@ -56,7 +73,7 @@ export const QRCodeWrapper = styled.div`
 export const AnimatedText = styled.p`
   font-size: 1.75vw;
   font-weight: lighter;
-  margin-top: 3vw;
+  margin-top: 2.5vw;
   text-align: center;
   max-width: 70vw;
   color: white;

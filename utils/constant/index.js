@@ -62,7 +62,7 @@ export const IDLE_QR_LINK = IS_DEPLOYMENT
   ? `${window.location.protocol}//${window.location.host}/mobile`
   : "http://localhost:3000/mobile";
 export const IDLE_MIN_INTERVAL = 6 * 1000;
-export const IDLE_MAX_INTERVAL = 22 * 1000;
+export const IDLE_MAX_INTERVAL = 18 * 1000;
 
 export const IDLE_TEXTS = [
   "Scan the QR Code to experience the State-of-the-Art.",
