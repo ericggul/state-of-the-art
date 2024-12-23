@@ -93,10 +93,11 @@ export default function ControllerWrapper() {
         }
       } else {
         try {
-          socket.current?.emit("mobile-init-from-controller", {
-            mobileId: data.mobileId,
-            sessionId: data.sessionId,
-          });
+          //TO DO: FIX
+          // socket.current?.emit("mobile-init-from-controller", {
+          //   mobileId: data.mobileId,
+          //   sessionId: data.sessionId,
+          // });
         } catch (e) {
           console.log(e);
         }
