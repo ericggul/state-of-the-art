@@ -66,7 +66,7 @@ const formatModelName = (name) => {
 
 export const useModelStructure = (
   currentArchitectures,
-  debounceDelay = 1000
+  debounceDelay = 1100
 ) => {
   const [modelName, setModelName] = useState(null);
   const [structure, setStructure] = useState([]);
@@ -85,18 +85,23 @@ export const useModelStructure = (
       setIsLoading(true);
       prevArchRef.current = currentArchitectures[0].name;
 
-      const rawModelName = currentArchitectures[0].name;
-      const formattedName = formatModelName(rawModelName);
+      try {
+        const rawModelName = currentArchitectures[0].name;
+        const formattedName = formatModelName(rawModelName);
 
-      setModelName(formattedName);
-      const modelStructure = getModelStructure(formattedName);
+        setModelName(formattedName);
+        const modelStructure = getModelStructure(formattedName);
 
-      if (modelStructure) {
-        setStructure(modelStructure);
-      } else {
-        console.warn(
-          `No model structure found for ${formattedName} (original: ${rawModelName})`
-        );
+        if (Array.isArray(modelStructure) && modelStructure.length > 0) {
+          setStructure(modelStructure);
+        } else {
+          console.warn(
+            `Invalid model structure for ${formattedName} (original: ${rawModelName}), using empty array`
+          );
+          setStructure([]);
+        }
+      } catch (error) {
+        console.warn("Error processing model structure:", error);
         setStructure([]);
       }
     }
