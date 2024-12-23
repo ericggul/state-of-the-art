@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, Suspense } from "react";
 import * as S from "./styles";
 import Architecture3D from "@/foundations/frontend/3d";
 import Audio from "./utils/audio";
@@ -13,7 +13,10 @@ const ScreenFrontend = memo(function ScreenFrontend({
   return (
     <>
       <S.Container>
-        <Architecture3D isTesting={isTesting} initVersion={initVersion} />
+        <Suspense fallback={null}>
+          <Architecture3D isTesting={isTesting} initVersion={initVersion} />
+        </Suspense>
+
         <Audio />
         <AudioTransition />
       </S.Container>
