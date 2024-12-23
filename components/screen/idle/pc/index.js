@@ -145,9 +145,6 @@ const Idle = memo(function Idle() {
     oscillatingOpacity === 0 && !isInitialLoad
   );
 
-  console.log("Video cache size:", videoCache.size);
-  console.log("Cache contents:", Array.from(videoCache.keys()));
-
   return (
     <S.Container>
       <S.Background
