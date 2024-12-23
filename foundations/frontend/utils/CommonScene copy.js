@@ -1,5 +1,5 @@
 // Visualization.js
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { OrbitControls, Environment } from "@react-three/drei";
 import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -14,34 +14,17 @@ const HAL_9000_LIGHT = {
 };
 
 export default function CommonScene({ children, style }) {
-  const [envFailed, setEnvFailed] = useState(false);
-
-  // Reset the failure state whenever the style object changes,
-  // allowing us to re-attempt loading the environment map.
-  useEffect(() => {
-    setEnvFailed(false);
-  }, [style]);
-
   return (
     <>
-      {!envFailed && (
-        <Suspense fallback={null}>
-          <Environment
-            files={`/3d/environment/${
-              style.lighting.environment || "apartment"
-            }.hdr`}
-            intensity={style.lighting.envIntensity || 0.1}
-            blurriness={style.lighting.envMapBlurriness || 0.5}
-            onError={(error) => {
-              console.warn(
-                "Environment load error: skipping environment.",
-                error
-              );
-              setEnvFailed(true);
-            }}
-          />
-        </Suspense>
-      )}
+      <Suspense fallback={null}>
+        <Environment
+          files={`/3d/environment/${
+            style.lighting.environment || "apartment"
+          }.hdr`}
+          intensity={style.lighting.envIntensity || 0.1}
+          blurriness={style.lighting.envMapBlurriness || 0.5}
+        />
+      </Suspense>
       <ambientLight intensity={2} />
       {style.lighting.pointLight && (
         <pointLight {...style.lighting.pointLight} />
