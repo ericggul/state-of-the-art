@@ -3,8 +3,8 @@ import { memo, useEffect, useState, useRef } from "react";
 import useScreenStore from "@/components/screen/store";
 import { iterationSpeedMultiplier } from "@/utils/constant";
 
-const audio1 = "/audio/transition/transition2.wav";
-const audio2 = "/audio/transition/beep1.wav";
+const audio1 = "/audio/transition/transition.wav";
+const audio2 = "/audio/transition/beep.wav";
 import * as CONST from "@/utils/constant";
 
 const BlueEl = memo(function BlueEl() {
