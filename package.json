@@ -19,6 +19,7 @@
     "@langchain/community": "^0.3.4",
     "@langchain/core": "^0.3.9",
     "@langchain/openai": "^0.3.5",
+    "@next/third-parties": "^15.1.2",
     "@react-spring/three": "^9.7.3",
     "@react-three/drei": "^9.117.3",
     "@react-three/fiber": "^8.16.8",

@@ -3,6 +3,7 @@ import StyledComponentsRegistry from "@/lib/registry";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Cardo } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata = {
   title: "SoTA | State-of-the-Art | XD Lab",
@@ -51,6 +52,7 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning={true}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
+      <GoogleAnalytics gaId="G-8QQYWE73S3" />
     </html>
   );
 }
