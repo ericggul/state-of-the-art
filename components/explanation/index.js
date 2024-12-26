@@ -13,8 +13,21 @@ function Explanation() {
           <S.Subtitle>State-of-the-Art</S.Subtitle>
 
           <S.InfoSection>
-            <S.InfoText>Multi-Device Web Artwork, 2024</S.InfoText>
-            <S.InfoText>4 displays, 2 Projections, 4 channel-sound</S.InfoText>
+            <S.InfoText>
+              Multi-Device Web Artwork, 2024
+              <br />4 displays, 2 Projections, 4 channel-sound
+            </S.InfoText>
+
+            <S.ExhibitionInfo>
+              KAIST Art Museum Opening Media Art Exhibition
+              <br />
+              Dec 17 2024 - Jun 30 2025
+            </S.ExhibitionInfo>
+            <S.ExhibitionInfo>
+              KAIST 미술관 개관 미디어아트 기획전
+              <br />
+              2024.12.17 - 2025.6.30
+            </S.ExhibitionInfo>
             <S.TechStack>
               Next.js, Three.js, Socket.io, OpenAI API, Claude 3.5, Langchain,
               TouchDesigner, Blender, Ableton Live, Viseme, D3.js
@@ -94,7 +107,7 @@ export default memo(Explanation);
 
 export const stateOfTheArtText = {
   ko: [
-    "인공지능 연구에서 State-of-the-Art(이하 SoTA)는 기존의 모델들보다 퍼포먼스가 우수한, 거의 예술의 경지에 다다른 모델들을 일컫는다. 인간이 창조했지만 인간보다 더 뛰어난 인공적(Artificial | Künstliche) 창조물을 예술(Art | Kunst) 이라 일컫는것 보다 더 자연스러운 수식어도 없을 것이다. 그러나, 여기서 AI 연구자들이 일컫는 '예술'이란 난해한 현대예술이 아닌, 미켈란젤로나 티치아노처럼 절대적 아름다움을 추구하는 전통적인, 재현적인 예술을 의미할 터이��. 예컨대 SoTA의 이상향은 모더니즘 이전, 재현 중심의 고전 예술에 비견된다.",
+    "인공지능 연구에서 State-of-the-Art(이하 SoTA)는 기존의 모델들보다 퍼포먼스가 우수한, 거의 예술의 경지에 다다른 모델들을 일컫는다. 인간이 창조했지만 인간보다 더 뛰어난 인공적(Artificial | Künstliche) 창조물을 예술(Art | Kunst) 이라 일컫는것 보다 더 자연스러운 수식어도 없을 것이다. 그러나, 여기서 AI 연구자들이 일컫는 '예술'이란 난해한 현대예술이 아닌, 미켈란젤로나 티치아노처럼 절대적 아름다움을 추구하는 전통적인, 재현적인 예술을 의미할 터이다. 예컨대 SoTA의 이상향은 모더니즘 이전, 재현 중심의 고전 예술에 비견된다.",
     "그러나 최근 SoTA의 이상향이 점차 변하고 있는듯 하다. 종전에는 Convolution의 필터링 방식이나 Transformer의 Attention 메카니즘과 같이 뇌의 구조 혹은 논리의 구조에 영감을 얻어 AI 연구자가 직접 설계한 인공신경망 모델이 SoTA의 성과를 이룩했다면, 이제는 GPU 대량 학습에 의한, 규모의 경제에 의한 대량 훈련이 SoTA의 기록을 연일 갱신한다. 예컨대 리시 서튼(Rich Sutton)이 지적했듯, 인간 연구자의 재현적 설계 기법이 점차 무어의 법칙에 의존한 기계적 스케일링으로 대체되는 씁쓸한 교훈을 AI 연구자들은 마주하고 있다. 예컨대 사진 이후의 예술이 재현에서 추상으로 바뀌었듯, SoTA 또한 점차 재현의 영역에서 추상의 영역으로 전이되고 있다.",
     "1930년대 발터 벤야민(Walter Benjamin)이 기술복제시대의 새로운 미학을 제시했듯이, 2020년대 우리는 AI복제시대에 들어서며 SoTA의 새로운 기준을 마주한다. 기술복제시대 이후 조형예술이 모더니즘과 추상화의 계보를 따라 점차 ‘예술을 위한 예술(L’art pour l’art)’ 로 나아갔듯, AI의 대량 생산도 ‘AI를 위한 AI(L'IA pour l'IA)’로 향할 가능성이 크다. 구글 전 CEO 에릭 슈미트(Eric Schmidt)가 경고한, 인간 이해할 수 없는 언어로 대화하는 LLM(Large Language Model | 대형 언어 모델) 에이전트 시대의 도래는 이를 뒷받침한다. SoTA는 점차 더 대형화되고 추상화되어, 인간의 손길을 떠난 채 스스로 진화해나갈 것이다. 이미 가장 뛰어난 AI가 SAT, IMO, 복잡한 코딩 작업에서 인간을 능가하고 있는 현시점에서, 더 뛰어난 AI가 등장할때 우리는 어떤 잣대로 SoTA를 평가하고 이해할 수 있을 것인가? 그 기준은 인간 지능의 영역을 넘어선 지점에 자리한다. SoTA는 점차 인간의 이해를 넘어, 미지의 추상적 영역으로 향하고 있다.",
     "벤야민 이후 20년, 서양 미술은 모더니즘과 추상 회화의 절정에 이르며 잭슨 폴록(Jackson Pollock)을 필두로 한 추상표현주의(Abstract Expressionism) 시대를 맞이했다. 당대 유력 평론가 그린버그(Clement Greenberg)는 모더니즘 회화의 핵심으로 캔버스의 물질적 평면성을 강조했고, 추상표현주의는 그 평면성을 극단으로 끌어올린 결과였다. 이처럼 모더니즘(Modernism)의 끝자락에 추상표현주의가 자리했다면, 연결주의(Connectionism)에 기반한 SoTA 인공신경망의 끝에는 수많은 선들이 무작위적으로 연결되는 추상적 표현이 자리잡지 않을까? 근래의 SoTA는 재현적인 아름다움이 아닌, 폴록의 액션페인팅과 같이 기계의 연결구조를 고도로 추상화한 형태를 지니지 않을까? 본 작품이 모더니즘-추상표현주의의 계보를 은유하여, 인공신경망 속 무수한 연결 구조를 시각화한 이유도 여기에 있다.",

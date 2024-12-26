@@ -53,12 +53,19 @@ export const InfoSection = styled.div`
   margin: 1.5rem 0;
 `;
 
-export const InfoText = styled.p`
+export const InfoText = styled.h3`
   font-size: clamp(0.9rem, 3vw, 1rem);
   color: rgba(255, 255, 255, 0.8);
   margin: 0.4rem 0;
   font-weight: 300;
   line-height: 1.4;
+`;
+
+export const ExhibitionInfo = styled(InfoText)`
+  margin-top: 1.2rem;
+  font-size: clamp(0.85rem, 2.8vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.75);
+  font-style: italic;
 `;
 
 export const TechStack = styled(InfoText)`
