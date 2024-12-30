@@ -1,18 +1,33 @@
 "use client";
 
-import { memo, useRef, useState, useEffect, useCallback } from "react";
+import { memo, useRef, useState, useEffect, useCallback, useMemo } from "react";
 import * as S from "./styles";
+import useResize from "@/utils/hooks/useResize";
 import useScreenStore from "@/components/screen/store";
 import { useVideoFade } from "../utils/useVideoFade";
 import { useAudioFade } from "../utils/useAudioFade";
-import { VIDEOS } from "../utils/constants";
+
+import { QRCodeSVG } from "qrcode.react";
+
+import {
+  IDLE_TEXTS,
+  IDLE_QR_LINK,
+  IDLE_MIN_INTERVAL,
+  IDLE_MAX_INTERVAL,
+} from "@/utils/constant";
 
 const AUDIO_URL = "/audio/idle/idle1209.wav";
 const FADE_OUT_THRESHOLD = 3;
 const FADE_OUT_DURATION = 2500;
 
+// Introduce a cache for video files
+const videoCache = new Map();
+
 const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
+  const [windowWidth] = useResize();
+
   const deviceIdx = useScreenStore((state) => state.deviceIndex || 0);
+  const sessionId = useScreenStore((state) => state.sessionId || "");
   const intDeviceIdx = parseInt(deviceIdx, 10);
   const audioRef = useRef(null);
   const videoRef = useRef(null);
@@ -22,6 +37,10 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isVisible = useVideoFade(videoRef);
   const { fadeAudio, cleanup: cleanupFade } = useAudioFade();
+
+  const currentVideoSrc = useMemo(() => {
+    return `/videos/projector.mp4`;
+  }, [intDeviceIdx]);
 
   const initAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
@@ -34,7 +53,6 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
   const handleTimeUpdate = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     const timeLeft = audio.duration - audio.currentTime;
     if (timeLeft <= FADE_OUT_THRESHOLD) {
       fadeAudio(audio, audio.volume, 0);
@@ -77,14 +95,66 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     setIsInitialLoad(false);
   }, []);
 
-  // Add audio loop handler
   const handleAudioLoop = useCallback(() => {
     const video = videoRef.current;
     const audio = audioRef.current;
     if (video && audio) {
-      // Reset video time to match audio
       video.currentTime = audio.currentTime;
     }
+  }, []);
+
+  // Video loading and caching logic
+  useEffect(() => {
+    let isMounted = true;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const loadVideo = async () => {
+      try {
+        // Use cached blob if available
+        if (videoCache.has(currentVideoSrc)) {
+          if (isMounted && videoRef.current) {
+            videoRef.current.src = videoCache.get(currentVideoSrc);
+          }
+        } else {
+          const response = await fetch(currentVideoSrc);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          videoCache.set(currentVideoSrc, blobUrl);
+          if (isMounted && videoRef.current) {
+            videoRef.current.src = blobUrl;
+          }
+        }
+
+        await new Promise((resolve) => {
+          video.addEventListener("canplay", resolve, { once: true });
+        });
+
+        if (isMounted) {
+          await video.play().catch(() => {
+            // If autoplay fails, it can remain paused until user interaction
+          });
+        }
+      } catch (error) {
+        console.error("Video loading/playback failed:", error);
+      }
+    };
+
+    loadVideo();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentVideoSrc]);
+
+  // Clean up blob URLs on unmount
+  useEffect(() => {
+    return () => {
+      videoCache.forEach((blobUrl) => {
+        URL.revokeObjectURL(blobUrl);
+      });
+      videoCache.clear();
+    };
   }, []);
 
   // Initial audio setup
@@ -93,8 +163,7 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
       try {
         const context = initAudioContext();
         const audio = audioRef.current;
-
-        if (context.state === "running" && audio) {
+        if (context.state === "running" && audio && videoRef.current) {
           audio.volume = 0;
           audio.currentTime = videoRef.current?.currentTime || 0;
           await audio.play();
@@ -110,7 +179,6 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     return cleanupFade;
   }, [initAudioContext, fadeAudio, cleanupFade]);
 
-  // Modify audio time update handler
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !isAudioPermitted) return;
@@ -124,7 +192,6 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     };
   }, [isAudioPermitted, handleTimeUpdate, handleAudioLoop]);
 
-  // Initial sync effect
   useEffect(() => {
     if (!isAudioPermitted || initialSyncDoneRef.current) return;
 
@@ -135,7 +202,6 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     return () => video.removeEventListener("timeupdate", handleInitialSync);
   }, [isAudioPermitted, handleInitialSync]);
 
-  // Add effect to handle unmounting
   useEffect(() => {
     if (isUnmounting && audioRef.current) {
       fadeAudio(
@@ -147,7 +213,6 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     }
   }, [isUnmounting, fadeAudio]);
 
-  // Modify cleanup effect to avoid double fade
   useEffect(() => {
     return () => {
       const audio = audioRef.current;
@@ -157,6 +222,10 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
     };
   }, [fadeAudio, isUnmounting]);
 
+  const qrLinkWithSessionId = useMemo(() => {
+    return `${IDLE_QR_LINK}?sessionId=${sessionId}`;
+  }, [sessionId]);
+
   return (
     <S.Container onClick={handleScreenClick}>
       <S.VideoWrapper
@@ -164,15 +233,29 @@ const Idle = memo(function Idle({ $isFrontend, isUnmounting }) {
         $isInitialFade={isInitialLoad}
         onTransitionEnd={handleTransitionEnd}
       >
-        <video
-          ref={videoRef}
-          src={`/videos/${VIDEOS[intDeviceIdx % VIDEOS.length]}.mp4`}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
+        <video ref={videoRef} autoPlay loop muted playsInline />
+
+        <S.QRCodeWrapper>
+          <S.SVGWrapper>
+            <QRCodeSVG
+              value={qrLinkWithSessionId}
+              size={windowWidth * 0.12}
+              fgColor="white"
+              bgColor="transparent"
+            />
+          </S.SVGWrapper>
+
+          <S.AnimatedText
+            // $oscillatingOpacity={oscillatingOpacity}
+            // $isInitialFade={isInitialLoad}
+            // $isVisible={isTextVisible}
+            $isVisible={true}
+          >
+            {"Scan the QR to start"}
+          </S.AnimatedText>
+        </S.QRCodeWrapper>
       </S.VideoWrapper>
+
       <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" />
     </S.Container>
   );

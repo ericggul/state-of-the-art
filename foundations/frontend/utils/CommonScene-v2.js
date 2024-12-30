@@ -1,62 +1,47 @@
-"use client";
-
-import React, { useState, useEffect, Suspense } from "react";
+// Visualization.js
+import React, { useState, useEffect } from "react";
 import { OrbitControls, Environment } from "@react-three/drei";
+import { Suspense } from "react";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { ErrorBoundary } from "react-error-boundary";
 
 const HAL_9000_LIGHT = {
-  position: [0, 0, 0],
-  color: 0xff0000,
-  intensity: 1000,
-  distance: 10000,
-  decay: 1.0,
+  position: [0, 0, 0], // Center of the scene
+  color: 0xff0000, // Bright red
+  intensity: 1000, // Strong intensity
+  distance: 10000, // Adjust based on your scene size
+  decay: 1.0, // longer decay?
   power: 2000,
 };
 
-// Separate Environment component with its own error handling
-function EnvironmentWithFallback({ style }) {
+export default function CommonScene({ children, style }) {
   const [envFailed, setEnvFailed] = useState(false);
 
+  // Reset the failure state whenever the style object changes,
+  // allowing us to re-attempt loading the environment map.
   useEffect(() => {
     setEnvFailed(false);
   }, [style]);
 
-  if (envFailed) return null;
-
-  return (
-    <ErrorBoundary
-      fallback={null}
-      onError={(error) => {
-        console.warn("Environment failed to load:", error);
-        setEnvFailed(true);
-      }}
-    >
-      <Suspense fallback={null}>
-        <Environment
-          files={`/3d/environment/${
-            style.lighting.environment || "apartment"
-          }.hdr`}
-          intensity={style.lighting.envIntensity || 0.1}
-          blurriness={style.lighting.envMapBlurriness || 0.5}
-          onError={(error) => {
-            console.warn(
-              "Environment load error: skipping environment.",
-              error
-            );
-            setEnvFailed(true);
-          }}
-        />
-      </Suspense>
-    </ErrorBoundary>
-  );
-}
-
-export default function CommonScene({ children, style }) {
   return (
     <>
-      <EnvironmentWithFallback style={style} />
-
+      {!envFailed && (
+        <Suspense fallback={null}>
+          <Environment
+            files={`/3d/environment/${
+              style.lighting.environment || "apartment"
+            }.hdr`}
+            intensity={style.lighting.envIntensity || 0.1}
+            blurriness={style.lighting.envMapBlurriness || 0.5}
+            onError={(error) => {
+              console.warn(
+                "Environment load error: skipping environment.",
+                error
+              );
+              setEnvFailed(true);
+            }}
+          />
+        </Suspense>
+      )}
       <ambientLight intensity={2} />
       {style.lighting.pointLight && (
         <pointLight {...style.lighting.pointLight} />
@@ -83,12 +68,11 @@ export default function CommonScene({ children, style }) {
       {style.lighting.ambientLight && (
         <ambientLight {...style.lighting.ambientLight} />
       )}
-
       <pointLight {...HAL_9000_LIGHT} />
       {children}
       <OrbitControls enablePan={true} />
       <EffectComposer>
-        {style.postprocessing?.bloom && (
+        {style.postprocessing && style.postprocessing.bloom && (
           <Bloom {...style.postprocessing.bloom} />
         )}
       </EffectComposer>

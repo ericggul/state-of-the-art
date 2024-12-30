@@ -20,7 +20,7 @@ import { TYPE_STYLES, DEFAULT_STYLE } from "../style/type-v6";
 
 import CommonScene from "../utils/CommonScene";
 import useScreenStore from "@/components/screen/store";
-import LoadingUI from "../components/LoadingUI";
+import LoadingUI from "./LoadingUI";
 
 const MODEL_COMPONENTS = {
   basic_nn: BasicNNLayers,

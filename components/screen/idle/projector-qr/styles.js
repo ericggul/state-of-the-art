@@ -4,36 +4,28 @@ import styled from "styled-components";
 export const Container = styled.div`
   ${WholeContainer}
   ${FlexCenterStyle}
-  position: relative;
 `;
 
-export const Background = styled.div`
-  position: absolute;
-  inset: 0;
-  opacity: ${({ $isVisible, $oscillatingOpacity }) => {
-    const baseOpacity = $isVisible ? 1 : 0;
-    return typeof $oscillatingOpacity === "number"
-      ? baseOpacity * $oscillatingOpacity
-      : baseOpacity;
-  }};
-  transition: opacity
-    ${({ $isVisible }) => (typeof $isVisible === "boolean" ? "3s" : "1.5s")}
-    ease;
-  ${({ $isVisible }) =>
-    typeof $isVisible === "boolean" && "transition-delay: 0.5s;"}
-  display: block !important;
-`;
-
-export const Video = styled.video`
+export const VideoWrapper = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block !important;
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 3s ease;
+  transition-delay: ${({ $isInitialFade }) => ($isInitialFade ? "0.5s" : "0s")};
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 export const QRCodeWrapper = styled.div`
   ${FlexCenterStyle}
-  position: relative;
+  position: absolute;
+  width: 100vw;
+  bottom: 3vw;
+
   flex-direction: column;
   z-index: 1;
 
@@ -51,15 +43,16 @@ export const QRCodeWrapper = styled.div`
 `;
 
 export const SVGWrapper = styled.div`
-  width: 18vw;
-  height: 18vw;
+  width: 12vw;
+  height: 12vw;
+  // position: absolute;
 
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   background-color: rgba(0, 0, 0, 0.1);
 
-  margin: 2vw;
-  padding: 2vw;
+  margin: 1vw;
+  padding: 1vw;
   border-radius: 2vw;
 
   ${FlexCenterStyle}
@@ -71,9 +64,9 @@ export const SVGWrapper = styled.div`
 `;
 
 export const AnimatedText = styled.p`
-  font-size: 1.75vw;
+  font-size: 1.5vw;
   font-weight: lighter;
-  margin-top: 2.5vw;
+  margin-top: 0vw;
   text-align: center;
   max-width: 70vw;
   color: white;
