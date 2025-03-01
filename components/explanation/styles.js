@@ -49,6 +49,24 @@ export const Subtitle = styled.h2`
   margin: 0 0 2rem;
 `;
 
+export const VideoContainer = styled.div`
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+
+  @media (max-width: 768px) {
+    margin: 1.5rem 0;
+  }
+`;
+
+export const VideoWrapper = styled.div`
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  position: relative;
+`;
+
 export const InfoSection = styled.div`
   margin: 1.5rem 0;
 `;
