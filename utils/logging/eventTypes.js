@@ -6,7 +6,9 @@ export const EVENT_TYPES = {
   
   // Frontend user interactions
   USERNAME_ENTERED: "username_entered",
-  ACCELEROMETER_ACTIVATED: "accelerometer_activated", 
+  ACCELEROMETER_ACTIVATED: "accelerometer_activated",
+  ACCELEROMETER_DEACTIVATED: "accelerometer_deactivated",
+  ACCELEROMETER_ACTIVITY: "accelerometer_activity",
   INTRO_PROGRESSION: "intro_progression",
   ARCHITECTURE_INTERACTION: "architecture_interaction",
   USER_INACTIVITY_START: "user_inactivity_start",
