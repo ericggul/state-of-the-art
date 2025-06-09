@@ -14,13 +14,25 @@ export default function useUserLogger() {
   const previousStateRef = useRef({});
   const lastLogTimeRef = useRef({});
   
-  // HCI-focused accelerometer data tracking (gesture patterns)
+  // HCI-focused accelerometer data tracking (3D camera interaction patterns)
   const accelerometerDataRef = useRef({
+    // Gesture counting
     gestureCount: 0,          // Significant movements (HCI interactions)
     peakMagnitude: 0,         // Highest magnitude in period
     totalSamples: 0,          // Total accelerometer samples
     lastGesture: 0,           // Timestamp of last gesture
-    lastLoggedGesture: 0      // Timestamp of last logged gesture event
+    lastLoggedGesture: 0,     // Timestamp of last logged gesture event
+    
+    // 3D Camera-specific tracking
+    orientationChanges: 0,    // Camera viewpoint changes
+    zoomInteractions: 0,      // Zoom in/out gestures (z-axis > 1.0)
+    maxZAcceleration: 0,      // Peak z-axis acceleration (zoom intensity)
+    viewingPatterns: [],      // Track viewing behavior patterns
+    lastOrientation: { alpha: 0, beta: 0, gamma: 0 },
+    
+    // Interaction analysis
+    interactionStyle: 'exploring', // exploring, focusing, inactive
+    dominantAxis: 'none'      // Which axis user moves most (x, y, z)
   });
 
   // Store state
@@ -38,22 +50,10 @@ export default function useUserLogger() {
   const allStoreState = useScreenStore();
   
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 [STORE] State changed - key values:', {
-        targetMobileId: allStoreState.targetMobileId,
-        userName: allStoreState.userName,
-        isAccelerometerActive: allStoreState.isAccelerometerActive,
-        stage: allStoreState.stage
-      });
-    }
-    
     if (!loggerRef.current?.isActive()) return;
     
     // Force check username changes
     if (allStoreState.userName && allStoreState.userName !== previousStateRef.current.userName) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🚨 [USERNAME] Detected via store observer:', allStoreState.userName);
-      }
       loggerRef.current.logEvent(EVENT_TYPES.USERNAME_ENTERED, {
         userName: allStoreState.userName
       }, PHASE_TYPES.FRONTEND);
@@ -62,10 +62,6 @@ export default function useUserLogger() {
     
     // Force check accelerometer changes
     if (allStoreState.isAccelerometerActive !== previousStateRef.current.isAccelerometerActive) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🚨 [ACCELEROMETER] State change detected via store observer:', allStoreState.isAccelerometerActive);
-      }
-      
       if (allStoreState.isAccelerometerActive) {
         loggerRef.current.logEvent(EVENT_TYPES.ACCELEROMETER_ACTIVATED, {
           isActive: true,
@@ -85,20 +81,10 @@ export default function useUserLogger() {
     }
   }, [allStoreState]);
 
-  // DEBUG: Log all store values - development only
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 [UserLogger DEBUG] Store values:', {
-      targetMobileId, sessionId, userName, isAccelerometerActive, introState, 
-      stage, isEnding, currentArchitectures, mobileVisibility
-    });
-  }
-
-  // Accelerometer data processing (HCI-optimized for meaningful interaction patterns)
+  // Accelerometer data processing (3D Camera HCI-optimized for viewing behavior analysis)
   const handleAccelerometerData = useCallback((data) => {
     try {
       if (!loggerRef.current?.isActive()) return;
-      
-      // REMOVED: Mobile ID check - not needed in single mobile system
       
       // ONE-TIME: Log accelerometer activation only once per session
       if (!allStoreState.isAccelerometerActive && !previousStateRef.current.accelerometerLogged) {
@@ -109,85 +95,147 @@ export default function useUserLogger() {
         
         previousStateRef.current.accelerometerLogged = true;
         previousStateRef.current.isAccelerometerActive = true;
-        if (process.env.NODE_ENV === 'development') {
-          console.log('✅ [ACCELEROMETER] Activated - logged once');
-        }
       }
       
       const now = Date.now();
-      const { acceleration } = data;
+      const { acceleration, orientation } = data;
       
-      if (acceleration && typeof acceleration.x === 'number') {
-        // HCI-FOCUSED: Calculate movement magnitude for gesture detection
+      if (acceleration && orientation && typeof acceleration.x === 'number') {
+        // 3D CAMERA ANALYSIS: Track both acceleration and orientation like OrientationCamera.js
         const magnitude = Math.sqrt(
           acceleration.x * acceleration.x + 
           acceleration.y * acceleration.y + 
           acceleration.z * acceleration.z
         );
         
-        // PEAK DETECTION: Track significant movements (gestures, shakes, taps)
-        const isSignificantMovement = magnitude > 15.0; // Threshold for intentional gestures
-        const isPeakMovement = magnitude > 25.0; // Threshold for strong gestures/shakes
+        // ZOOM INTERACTION DETECTION: Based on OrientationCamera.js logic (accelDiff.z > 1.0)
+        const isZoomGesture = Math.abs(acceleration.z) > 1.0; // Same threshold as OrientationCamera
+        const isSignificantMovement = magnitude > 12.0; // Lower threshold for 3D interactions
         
+        // ORIENTATION CHANGE DETECTION: Track viewpoint changes (improved logic)
+        const currentOrientation = {
+          alpha: orientation.alpha || 0,
+          beta: orientation.beta || 0, 
+          gamma: orientation.gamma || 0
+        };
+        
+        // Initialize lastOrientation if it's the first sample
+        if (accelerometerDataRef.current.totalSamples === 0) {
+          accelerometerDataRef.current.lastOrientation = currentOrientation;
+        }
+        
+        const orientationDelta = Math.abs(
+          currentOrientation.alpha - accelerometerDataRef.current.lastOrientation.alpha
+        ) + Math.abs(
+          currentOrientation.beta - accelerometerDataRef.current.lastOrientation.beta  
+        ) + Math.abs(
+          currentOrientation.gamma - accelerometerDataRef.current.lastOrientation.gamma
+        );
+        
+        const isOrientationChange = orientationDelta > 10.0; // Increased threshold for more meaningful changes
+        
+        // UPDATE COUNTERS: Track 3D interaction patterns
         if (isSignificantMovement) {
           accelerometerDataRef.current.gestureCount++;
-          accelerometerDataRef.current.lastGesture = now;
           accelerometerDataRef.current.peakMagnitude = Math.max(
             accelerometerDataRef.current.peakMagnitude || 0, 
             magnitude
           );
         }
         
+        if (isZoomGesture) {
+          accelerometerDataRef.current.zoomInteractions++;
+          accelerometerDataRef.current.maxZAcceleration = Math.max(
+            accelerometerDataRef.current.maxZAcceleration || 0,
+            Math.abs(acceleration.z)
+          );
+        }
+        
+        if (isOrientationChange) {
+          accelerometerDataRef.current.orientationChanges++;
+          accelerometerDataRef.current.lastOrientation = currentOrientation;
+        }
+        
+        // DOMINANT AXIS ANALYSIS: Which direction user moves most
+        const maxAxis = Math.max(Math.abs(acceleration.x), Math.abs(acceleration.y), Math.abs(acceleration.z));
+        if (maxAxis === Math.abs(acceleration.x)) accelerometerDataRef.current.dominantAxis = 'x';
+        else if (maxAxis === Math.abs(acceleration.y)) accelerometerDataRef.current.dominantAxis = 'y';  
+        else if (maxAxis === Math.abs(acceleration.z)) accelerometerDataRef.current.dominantAxis = 'z';
+        
         accelerometerDataRef.current.totalSamples++;
         
-        // HCI LOGGING: Log meaningful interaction patterns every 5 seconds OR on significant events
+        // 3D HCI LOGGING: Every 1 second OR on significant zoom gestures (less frequent)
         const lastAccelLog = lastLogTimeRef.current.accelerometerActivity || 0;
         const timeSinceLastLog = now - lastAccelLog;
-        const shouldLogPeriodic = timeSinceLastLog >= 5000; // 5 seconds for HCI analysis
-        const shouldLogGesture = isPeakMovement && (now - (accelerometerDataRef.current.lastLoggedGesture || 0)) > 2000;
+        const shouldLogPeriodic = timeSinceLastLog >= 1000; // 1 second for balanced analysis
+        const shouldLogZoomGesture = isZoomGesture && (now - (accelerometerDataRef.current.lastLoggedGesture || 0)) > 1000; // Reduce zoom trigger frequency
         
-        if ((shouldLogPeriodic && accelerometerDataRef.current.gestureCount > 0) || shouldLogGesture) {
-          // ENGAGEMENT CLASSIFICATION: Classify user interaction level
-          const engagementLevel = accelerometerDataRef.current.gestureCount > 10 ? 'high' : 
-                                 accelerometerDataRef.current.gestureCount > 3 ? 'medium' : 'low';
+        if ((shouldLogPeriodic && accelerometerDataRef.current.totalSamples > 10) || shouldLogZoomGesture) { // Require minimum samples
+          // 3D INTERACTION CLASSIFICATION
+          const viewingEngagement = accelerometerDataRef.current.orientationChanges > 8 ? 'active_exploration' :
+                                  accelerometerDataRef.current.orientationChanges > 2 ? 'moderate_viewing' : 'static_viewing';
           
-          const interactionPattern = {
-            engagementLevel,
-            gestureCount: accelerometerDataRef.current.gestureCount,
+          const zoomEngagement = accelerometerDataRef.current.zoomInteractions > 5 ? 'high_zoom' :
+                               accelerometerDataRef.current.zoomInteractions > 1 ? 'some_zoom' : 'no_zoom';
+          
+          const overallEngagement = (accelerometerDataRef.current.gestureCount > 15 && accelerometerDataRef.current.orientationChanges > 5) ? 'high' :
+                                   (accelerometerDataRef.current.gestureCount > 5 || accelerometerDataRef.current.orientationChanges > 2) ? 'medium' : 'low';
+          
+          const cameraInteractionPattern = {
+            // Overall engagement
+            engagementLevel: overallEngagement,
+            
+            // 3D Camera specific metrics
+            viewingBehavior: viewingEngagement,
+            zoomBehavior: zoomEngagement,
+            orientationChanges: accelerometerDataRef.current.orientationChanges,
+            zoomInteractions: accelerometerDataRef.current.zoomInteractions,
+            maxZoomIntensity: Math.round((accelerometerDataRef.current.maxZAcceleration || 0) * 100) / 100,
+            dominantMovementAxis: accelerometerDataRef.current.dominantAxis,
+            
+            // General movement metrics  
+            totalGestures: accelerometerDataRef.current.gestureCount,
             peakMagnitude: Math.round((accelerometerDataRef.current.peakMagnitude || 0) * 100) / 100,
             totalSamples: accelerometerDataRef.current.totalSamples,
-            periodMs: shouldLogGesture ? 'gesture_triggered' : 5000,
-            interactionType: isPeakMovement ? 'strong_gesture' : 'periodic_summary'
+            
+            // Logging metadata
+            periodMs: shouldLogZoomGesture ? 'zoom_triggered' : 1000,
+            interactionType: shouldLogZoomGesture ? 'zoom_gesture' : '3d_camera_summary'
           };
           
-          loggerRef.current.logEvent(EVENT_TYPES.ACCELEROMETER_ACTIVITY, interactionPattern, PHASE_TYPES.FRONTEND);
-          
-          if (process.env.NODE_ENV === 'development') {
-            console.log('📊 [ACCELEROMETER] HCI Pattern:', engagementLevel, 'gestures:', accelerometerDataRef.current.gestureCount);
+          // SAFE LOGGING: Absolutely no impact on existing functionality
+          try {
+            loggerRef.current.logEvent(EVENT_TYPES.ACCELEROMETER_ACTIVITY, cameraInteractionPattern, PHASE_TYPES.FRONTEND);
+          } catch (loggingError) {
+            // SILENT FAILURE: Never interrupt main functionality
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('⚠️ [LOGGING] Silent error:', loggingError);
+            }
           }
           
           // RESET: Reset counters for next period
           accelerometerDataRef.current.gestureCount = 0;
+          accelerometerDataRef.current.orientationChanges = 0;
+          accelerometerDataRef.current.zoomInteractions = 0;
           accelerometerDataRef.current.totalSamples = 0;
           accelerometerDataRef.current.peakMagnitude = 0;
+          accelerometerDataRef.current.maxZAcceleration = 0;
+          accelerometerDataRef.current.dominantAxis = 'none';
           lastLogTimeRef.current.accelerometerActivity = now;
           
-          if (shouldLogGesture) {
+          if (shouldLogZoomGesture) {
             accelerometerDataRef.current.lastLoggedGesture = now;
           }
         }
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('💥 [ACCELEROMETER] Error:', error);
+        console.error('💥 [3D CAMERA] Error:', error);
       }
     }
   }, [allStoreState]);
 
   // Setup orientation socket ALWAYS (not just when accelerometer is active)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔌 [SOCKET] Setting up orientation socket, accelerometer active:', isAccelerometerActive);
-  }
   const orientationSocket = useSocketScreenOrientation({
     handleNewMobileOrientation: handleAccelerometerData  // Always handle data
   });
@@ -365,13 +413,9 @@ export default function useUserLogger() {
 
   // Architecture interactions
   useEffect(() => {
-    console.log('🏗️ [ARCH] Architecture effect triggered:', {
-      currentArchitectures: currentArchitectures?.length || 0,
-      isActive: loggerRef.current?.isActive()
-    });
+   
     
     if (!loggerRef.current?.isActive()) {
-      console.log('❌ [ARCH] Logger not active, skipping architecture log');
       return;
     }
 
@@ -380,7 +424,6 @@ export default function useUserLogger() {
     const prevArch = prevArchitectures?.[0];
 
     if (currentArch && currentArch.name !== prevArch?.name) {
-      console.log('🎯 [ARCH] Logging architecture interaction:', currentArch.name);
       loggerRef.current.logEvent(EVENT_TYPES.ARCHITECTURE_INTERACTION, {
         architecture: currentArch.name,
         category: currentArch.category,
@@ -389,9 +432,8 @@ export default function useUserLogger() {
       }, PHASE_TYPES.FRONTEND);
       
       previousStateRef.current.currentArchitectures = currentArchitectures;
-      console.log('✅ [ARCH] Architecture interaction logged');
     } else {
-      console.log('⏭️ [ARCH] No architecture change to log');
+  
     }
   }, [currentArchitectures]);
 

@@ -46,21 +46,12 @@ if (typeof window !== 'undefined' && !LOGGING_CONFIG.IS_PRODUCTION) {
       viewLatest: () => {
         const logs = getAllStoredLogs();
         if (logs.length > 0) {
-          if (process.env.NODE_ENV === 'development') {
-      console.log('Latest log:', logs[0]);
-    }
           return logs[0];
         } else {
-          if (process.env.NODE_ENV === 'development') {
-      console.log('No logs found');
-    }
           return null;
         }
       }
     };
-    if (process.env.NODE_ENV === 'development') {
-      console.log('📊 SoTA Log Management available via window.sotaLogs');
-    }
   });
 }
 

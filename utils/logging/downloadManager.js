@@ -61,14 +61,6 @@ export const downloadJSON = (data, filename) => {
       }
     }
     
-    if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
-      console.log('💾 Log saved:', filename, {
-        sessionId: data.sessionData?.sessionId,
-        username: data.sessionData?.userName,
-        events: data.sessionData?.events?.length || 0
-      });
-    }
-    
     return localStorageSuccess; // Return true if localStorage worked
   } catch (error) {
     console.error('Download failed:', error);
@@ -106,10 +98,6 @@ export const saveToLocalStorage = (data, filename) => {
     
     localStorage.setItem(key, JSON.stringify(logEntry, null, 2));
     
-        if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
-      console.log('💾 Log saved to localStorage:', key);
-    }
-    
     return true;
   } catch (error) {
     if (LOGGING_CONFIG.DEBUG) {
@@ -131,7 +119,7 @@ export const generateFilename = (sessionId, userName = '', timestamp = '') => {
     const safeUserName = userName.replace(/[^a-zA-Z0-9]/g, '_') || 'unknown';
     const safeTimestamp = timestamp || new Date().toISOString().replace(/[:.]/g, '-');
     
-    return `${LOGGING_CONFIG.FILE_PREFIX}_${sessionId}_${safeUserName}_${safeTimestamp}.json`;
+    return `${LOGGING_CONFIG.FILE_PREFIX}_${safeUserName}_${sessionId}_${safeTimestamp}.json`;
   } catch (error) {
     // Fallback filename
     return `${LOGGING_CONFIG.FILE_PREFIX}_${sessionId || Date.now()}_${Date.now()}.json`;
@@ -179,9 +167,6 @@ export const exportAllLogs = () => {
   try {
     const logs = getAllStoredLogs();
     if (logs.length === 0) {
-      if (process.env.NODE_ENV === 'development') {
-      console.log('No logs to export');
-    }
       return false;
     }
     

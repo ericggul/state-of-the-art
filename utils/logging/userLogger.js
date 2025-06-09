@@ -51,10 +51,6 @@ export class UserLogger {
         mobileId
       }, PHASE_TYPES.FRONTEND);
 
-      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
-        console.log('🚀 User logging session started:', sessionId);
-      }
-
     } catch (error) {
       this.handleError('startSession', error);
     }
@@ -94,10 +90,6 @@ export class UserLogger {
         this.events.shift();
       }
 
-      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
-        console.log('📝 Event logged:', eventType, data);
-      }
-
     } catch (error) {
       this.handleError('logEvent', error);
     }
@@ -110,8 +102,6 @@ export class UserLogger {
    */
   updateCounters(eventType, data) {
     try {
-      console.log('📊 [UserLogger] updateCounters called:', eventType, data);
-      
       switch (eventType) {
         case EVENT_TYPES.ARCHITECTURE_INTERACTION:
           this.architectureCount++;
@@ -127,13 +117,8 @@ export class UserLogger {
           }
           break;
         case EVENT_TYPES.USERNAME_ENTERED:
-          console.log('🎯 [UserLogger] Processing USERNAME_ENTERED:', data);
           if (this.sessionData) {
-            console.log('📝 [UserLogger] Before username update:', this.sessionData.userName);
             this.sessionData.userName = data.userName || '';
-            console.log('📝 [UserLogger] After username update:', this.sessionData.userName);
-          } else {
-            console.log('❌ [UserLogger] No sessionData to update username');
           }
           break;
         case EVENT_TYPES.USER_INACTIVITY_START:
@@ -141,7 +126,6 @@ export class UserLogger {
           break;
       }
     } catch (error) {
-      console.error('💥 [UserLogger] updateCounters error:', error);
       this.handleError('updateCounters', error);
     }
   }
@@ -301,7 +285,7 @@ export class UserLogger {
 
       const downloadSuccess = downloadJSON(finalData, filename);
 
-            if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
+      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('🏁 User logging session ended:', reason, downloadSuccess ? '✅ Saved' : '❌ Save failed');
       }
 
@@ -370,7 +354,7 @@ export class UserLogger {
       this.events = [];
       this.sessionData = null;
       
-            if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
+      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('🛑 User logging force stopped');
       }
     } catch (error) {
