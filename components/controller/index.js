@@ -88,10 +88,11 @@ export default function Controller({ socket }) {
       const success = enableAutoDownload();
       if (success) {
         setAutoDownloadEnabled(true);
-        alert('자동 다운로드가 활성화되었습니다! 이제 세션이 끝날 때마다 로그가 자동으로 다운로드됩니다.');
+        alert(`✅ 자동 다운로드 활성화 중...\n\n🔥 중요! 브라우저에서 "여러 파일 다운로드 허용" 팝업이 나타나면 반드시 "허용"을 클릭하세요!\n\n📁 테스트 파일 3개가 다운로드됩니다 (삭제해도 됩니다)\n🔄 설정 완료 후 모든 세션 로그가 자동 다운로드됩니다\n\n⚙️ 만약 팝업이 안 나타나면:\nChrome: 주소창 옆 다운로드 아이콘 → 설정 → "${window.location.hostname}" 허용\nSafari: 설정 → 웹사이트 → 다운로드 → "${window.location.hostname}" 허용`);
       }
     } catch (error) {
       console.error('Failed to enable auto download:', error);
+      alert('❌ 자동 다운로드 활성화에 실패했습니다.');
     }
   };
 
@@ -131,6 +132,15 @@ export default function Controller({ socket }) {
           <S.ResetButton onClick={handleEnableAutoDownload} style={{ backgroundColor: '#4CAF50', marginBottom: '10px' }}>
             로그 자동 다운로드 활성화
           </S.ResetButton>
+        )}
+
+        {autoDownloadEnabled && (
+          <div style={{ backgroundColor: '#E8F5E8', padding: '10px', marginBottom: '10px', borderRadius: '4px', fontSize: '12px', color: '#2E7D32' }}>
+            ✅ 자동 다운로드 활성화됨<br/>
+            💡 팁: 브라우저에서 "여러 파일 다운로드" 차단 시<br/>
+            Chrome: 주소창 옆 다운로드 아이콘 → 설정<br/>
+            Safari: 설정 → 웹사이트 → 다운로드
+          </div>
         )}
 
         <S.ResetButton onClick={handleForceReset}>

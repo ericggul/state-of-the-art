@@ -25,16 +25,34 @@ export const downloadJSON = (data, filename) => {
       });
       
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = filename;
-      anchor.style.display = 'none';
       
-      // Try to trigger download without user interaction
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-      URL.revokeObjectURL(url);
+      // Create download link
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.style.display = 'none';
+      
+      // Force click multiple times to ensure download
+      document.body.appendChild(a);
+      
+      // Try multiple click approaches
+      a.click();
+      
+      // Alternative click method
+      setTimeout(() => {
+        const event = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        });
+        a.dispatchEvent(event);
+      }, 10);
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
       
       downloadSuccess = true;
     } catch (downloadError) {
@@ -43,18 +61,29 @@ export const downloadJSON = (data, filename) => {
       }
     }
     
-    if (LOGGING_CONFIG.DEBUG) {
+    if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
       console.log('💾 Log saved:', filename, {
-        localStorage: localStorageSuccess ? '✅' : '❌',
-        download: downloadSuccess ? '✅' : '⚠️ (requires user interaction)'
+        sessionId: data.sessionData?.sessionId,
+        username: data.sessionData?.userName,
+        events: data.sessionData?.events?.length || 0
       });
     }
     
     return localStorageSuccess; // Return true if localStorage worked
   } catch (error) {
-    if (LOGGING_CONFIG.DEBUG) {
-      console.warn('❌ Save failed:', error);
+    console.error('Download failed:', error);
+    
+    // Emergency fallback: copy to clipboard
+    try {
+      const jsonString = JSON.stringify(data, null, 2);
+      navigator.clipboard.writeText(jsonString);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('⚠️ Download failed, data copied to clipboard instead');
+      }
+    } catch (clipboardError) {
+      // Silent failure
     }
+    
     return false;
   }
 };
@@ -77,7 +106,7 @@ export const saveToLocalStorage = (data, filename) => {
     
     localStorage.setItem(key, JSON.stringify(logEntry, null, 2));
     
-    if (LOGGING_CONFIG.DEBUG) {
+        if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
       console.log('💾 Log saved to localStorage:', key);
     }
     
@@ -150,7 +179,9 @@ export const exportAllLogs = () => {
   try {
     const logs = getAllStoredLogs();
     if (logs.length === 0) {
+      if (process.env.NODE_ENV === 'development') {
       console.log('No logs to export');
+    }
       return false;
     }
     
@@ -177,13 +208,17 @@ export const exportAllLogs = () => {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
       
+      if (process.env.NODE_ENV === 'development') {
       console.log('📁 All logs exported successfully:', filename);
+    }
       return true;
     } catch (downloadError) {
       console.warn('Export download failed, saving to localStorage:', downloadError);
       const exportKey = `sota_export_${Date.now()}`;
       localStorage.setItem(exportKey, JSON.stringify(exportData, null, 2));
+      if (process.env.NODE_ENV === 'development') {
       console.log('📁 All logs exported to localStorage:', exportKey);
+    }
       return true;
     }
   } catch (error) {
@@ -207,7 +242,9 @@ export const cleanupOldLogs = (keepCount = 10) => {
       localStorage.removeItem(log.key);
     }
     
-    console.log(`🧹 Cleaned up ${logsToRemove.length} old log entries, kept ${keepCount} recent ones`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🧹 Cleaned up ${logsToRemove.length} old log entries, kept ${keepCount} recent ones`);
+    }
   } catch (error) {
     console.warn('Failed to cleanup old logs:', error);
   }

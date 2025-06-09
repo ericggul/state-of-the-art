@@ -51,7 +51,7 @@ export class UserLogger {
         mobileId
       }, PHASE_TYPES.FRONTEND);
 
-      if (LOGGING_CONFIG.DEBUG) {
+      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('🚀 User logging session started:', sessionId);
       }
 
@@ -94,7 +94,7 @@ export class UserLogger {
         this.events.shift();
       }
 
-      if (LOGGING_CONFIG.DEBUG) {
+      if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('📝 Event logged:', eventType, data);
       }
 
@@ -293,7 +293,7 @@ export class UserLogger {
 
       const downloadSuccess = downloadJSON(finalData, filename);
 
-      if (LOGGING_CONFIG.DEBUG) {
+            if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('🏁 User logging session ended:', reason, downloadSuccess ? '✅ Saved' : '❌ Save failed');
       }
 
@@ -362,7 +362,7 @@ export class UserLogger {
       this.events = [];
       this.sessionData = null;
       
-      if (LOGGING_CONFIG.DEBUG) {
+            if (LOGGING_CONFIG.DEBUG && process.env.NODE_ENV === 'development') {
         console.log('🛑 User logging force stopped');
       }
     } catch (error) {
