@@ -7,6 +7,7 @@ import useSocketScreen from "@/utils/socket/useSocketScreen";
 import useScreenVisibility from "@/utils/hooks/useScreenVisibility";
 import useInactivityCheck from "@/utils/hooks/useInactivityCheck";
 import { checkSessionValidity } from "@/components/controller/utils/sessionCheck";
+import useUserLogger from "@/components/controller/hooks/useUserLogger";
 
 const Controller = dynamic(() => import("@/components/controller"));
 
@@ -56,6 +57,9 @@ export default function ControllerWrapper() {
 
   useScreenVisibility();
   useInactivityCheck();
+
+  // User interaction logging (silent, no effect on existing functionality)
+  const { isLogging } = useUserLogger();
 
   const validityChecked = useRef(false);
 

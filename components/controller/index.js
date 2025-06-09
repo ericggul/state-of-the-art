@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import useScreenStore from "@/components/screen/store";
 import * as S from "./styles";
 import useAutoReset from "./utils/useAutoReset";
+import { enableAutoDownload, isAutoDownloadEnabled } from "@/utils/logging/config";
 
 const Ending = dynamic(() => import("@/components/screen/ending"));
 
@@ -19,6 +20,7 @@ export default function Controller({ socket }) {
   } = useScreenStore();
 
   const sessionId = useMemo(() => Date.now().toString(), []);
+  const [autoDownloadEnabled, setAutoDownloadEnabled] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -46,6 +48,10 @@ export default function Controller({ socket }) {
       }
     }
   }, [sessionId, setSessionId, stage]);
+
+  useEffect(() => {
+    setAutoDownloadEnabled(isAutoDownloadEnabled());
+  }, []);
 
   const formattedSessionTime = useMemo(() => {
     if (!sessionId) return "";
@@ -75,6 +81,18 @@ export default function Controller({ socket }) {
     }
 
     setTimeout(() => window.location.reload(true), 2000);
+  };
+
+  const handleEnableAutoDownload = () => {
+    try {
+      const success = enableAutoDownload();
+      if (success) {
+        setAutoDownloadEnabled(true);
+        alert('자동 다운로드가 활성화되었습니다! 이제 세션이 끝날 때마다 로그가 자동으로 다운로드됩니다.');
+      }
+    } catch (error) {
+      console.error('Failed to enable auto download:', error);
+    }
   };
 
   // Use the auto-reset hook
@@ -108,6 +126,12 @@ export default function Controller({ socket }) {
           value={mobileVisibility ? "Active" : "Inactive"}
         />
         <StatusItem active={stage === "Frontend"} label="Stage" value={stage} />
+
+        {!autoDownloadEnabled && (
+          <S.ResetButton onClick={handleEnableAutoDownload} style={{ backgroundColor: '#4CAF50', marginBottom: '10px' }}>
+            로그 자동 다운로드 활성화
+          </S.ResetButton>
+        )}
 
         <S.ResetButton onClick={handleForceReset}>
           Force Reset All Screens

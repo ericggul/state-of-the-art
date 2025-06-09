@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+SoTA artwork is ALREADY IN PRODUCTION: NO CURRENT WORKING FUNCTIONALITY SHOULD BE CHANGED.
+And we're here adding a feature to log the user data for HCI research purpose -- again, NO WORKING FUNCTIONALITY/USER EXPERIENCE/INTERACTIVE FLOW should be changed. Only the user's mobile's real-time log should be logged within the controller.
+
+## SoTA User Interaction Logging Rules
+
+### Core Principles
+- **ZERO IMPACT**: Logging must never affect user experience or artwork functionality
+- **USER-FOCUSED**: Log user interactions and key transitions only, not backend AI conversations
+- **SILENT FAILURE**: All logging wrapped in try-catch with no user-visible errors
+- **CONSERVATIVE**: Feature flag controlled, easily disabled
+- **ISOLATED**: Logging code completely separate from main application logic
+
+### Implementation Requirements
+- **Controller Only**: Implement logging exclusively in controller component
+- **Store Observer**: Use observer pattern to watch state changes, never modify state
+- **Error Boundaries**: Comprehensive error handling at every level
+- **Local Download**: Use browser download API for JSON file generation
+- **Timestamp Strategy**: Relative timestamps from session start (mobile connection = timestamp 0)
+
+### Event Logging Focus
+**Frontend Phase (User Interaction):**
+- Session start, username entry, accelerometer activation
+- Intro progression, architecture exploration, user inactivity
+- Scroll vs tap interactions, engagement patterns
+
+**Transition Points (Key Moments):**
+- Frontend→Backend transition with reason and timing
+- Backend start (abstract phase begins)
+- Ending start (credits phase)
+- Session end with completion reason
+
+**DO NOT LOG:**
+- Backend conversation details (AI-generated content)
+- Internal state changes unrelated to user behavior
+- System performance metrics
+
+### File Structure
+utils/logging/
+├── userLogger.js // Main logging class
+├── eventTypes.js // Event constants
+├── downloadManager.js // Download utilities
+└── config.js // Configuration
+components/controller/hooks/
+└── useUserLogger.js // Store observer hook
+
+
+### Data Structure
+- Session metadata (ID, username, timestamps)
+- Event array with relative timestamps and phases
+- HCI-focused summary (engagement patterns, interaction balance)
+- No backend conversation content
+
+### Error Handling
+- Try-catch around all logging operations
+- localStorage fallback for failed downloads
+- Graceful degradation if logging system fails
+- No blocking operations or user-visible errors
+
+### Performance
+- Debounced state observation
+- Minimal memory footprint
+- Clean up on session end
+- Non-blocking file operations
+
+Remember, you have to be VERY convservative about your code updates. Verify that you have 97% confidence rate before moving/implementing anything.
