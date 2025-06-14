@@ -43,9 +43,9 @@ export const API_TIMEOUT = 15 * 1000;
 
 //heartbeat: mobile
 export const HEARTBEAT_INTERVAL = 2000;
-export const HEARTBEAT_TIMEOUT = 8000;
+export const HEARTBEAT_TIMEOUT = 6000;
 export const PING_INTERVAL = 1000;
-export const PING_TIMEOUT = 8000;
+export const PING_TIMEOUT = 6000;
 
 ///inactivity from frontend
 // export const FRONTEND_INACTIVITY_TIMEOUT =
